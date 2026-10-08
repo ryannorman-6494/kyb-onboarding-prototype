@@ -1,0 +1,17 @@
+/* Xplor Apollo — base element defaults */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--xpl-font-family-default);
+  font-size: var(--xpl-font-size-body);
+  line-height: var(--xpl-line-height-body);
+  font-weight: var(--xpl-font-weight-normal);
+  color: var(--xpl-text-default);
+  background: var(--xpl-background-surface-subtlest);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+a { color: var(--xpl-text-link-default); text-decoration: none; }
+a:hover { color: var(--xpl-text-link-hovered); }
+::selection { background: var(--xpl-color-purple-200); }

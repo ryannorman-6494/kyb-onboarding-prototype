@@ -1,0 +1,46 @@
+/* Xplor Apollo — Spacing, radii, borders, elevation */
+:root {
+  /* Spacing scale (4px base grid) */
+  --xpl-space-0: 0;
+  --xpl-space-2: 2px;
+  --xpl-space-4: 4px;
+  --xpl-space-6: 6px;
+  --xpl-space-8: 8px;
+  --xpl-space-10: 10px;
+  --xpl-space-12: 12px;
+  --xpl-space-16: 16px;
+  --xpl-space-24: 24px;
+  --xpl-space-32: 32px;
+  --xpl-space-40: 40px;
+  --xpl-space-48: 48px;
+  --xpl-space-56: 56px;
+  --xpl-space-64: 64px;
+  --xpl-space-72: 72px;
+  --xpl-space-80: 80px;
+  --xpl-space-112: 112px;
+  --xpl-space-144: 144px;
+
+  /* Corner radii */
+  --xpl-radius-none: 0;
+  --xpl-radius-small: 2px;
+  --xpl-radius-default: 8px;
+  --xpl-radius-large: 16px;
+  --xpl-radius-full: 9999px;
+  --xpl-radius-button: var(--xpl-radius-full);
+
+  /* Border widths */
+  --xpl-border-none: 0px;
+  --xpl-border-small: 1px;
+  --xpl-border-large: 2px;
+
+  /* Elevation / shadows */
+  --xpl-shadow-xs: 0 1px 2px rgba(48,45,59,0.06);
+  --xpl-shadow-sm: 0 1px 3px rgba(48,45,59,0.08), 0 1px 2px rgba(48,45,59,0.06);
+  --xpl-shadow-md: 0 4px 8px rgba(48,45,59,0.08), 0 2px 4px rgba(48,45,59,0.06);
+  --xpl-shadow-lg: 0 20px 25px rgba(0,0,0,0.10), 0 8px 10px rgba(0,0,0,0.04);
+  --xpl-shadow-overlay: 0 20px 25px rgba(0,0,0,0.10);
+  /* 1px inset hairline used on cards, inputs, toasts */
+  --xpl-border-hairline: inset 0 0 0 1px var(--xpl-border-default);
+  /* focus ring: white halo + purple ring (matches Apollo buttons/inputs) */
+  --xpl-focus-ring: 0 0 0 2px var(--xpl-background-surface-default), 0 0 0 4px var(--xpl-color-purple-600);
+}

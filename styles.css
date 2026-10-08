@@ -1,0 +1,14 @@
+/* ============================================================
+   Xplor Apollo — Design System
+   Global CSS entry point. Consumers link THIS file only.
+   Everything below is @import-ed and shipped together.
+   ============================================================ */
+
+/* Foundations / design tokens */
+@import "tokens/palette.css";        /* raw color palette  */
+@import "tokens/semantic-light.css"; /* semantic colors — light (default) */
+@import "tokens/semantic-dark.css";  /* semantic colors — dark (.dark / [data-theme=dark]) */
+@import "tokens/fonts.css";          /* self-hosted Roboto + Roboto Mono */
+@import "tokens/typography.css";     /* font family, weights, type scale */
+@import "tokens/spacing.css";        /* spacing, radii, borders, elevation */
+@import "tokens/base.css";           /* element resets + body defaults */
