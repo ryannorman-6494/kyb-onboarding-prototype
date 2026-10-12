@@ -970,10 +970,50 @@
       "area": "Flow",
       "where": "Left progress column · footer",
       "t": "Progress saves after every field, and the flow now says so in two places",
-      "b": "Ops confirmed the real build autosaves on every field entry, with no action needed to keep it. The footer button, previously “Save and finish later”, is renamed “Finish later” since it no longer describes a save action. The “N steps to go” line in the left progress column is replaced with a live Saved / Saving… tell (check or clock icon, text only, no badge background) that flips briefly on every field input or checkbox change, so the applicant has a constant, always-visible answer to “is this saved” without opening the save dialog. “Saved” stays green; “Saving…” is the same neutral grey as the rest of the line. The “About N minutes left” estimate stays, vertically centered with the tell, with a “·” between them as before.",
+      "b": "Ops confirmed the real build autosaves on every field entry, with no action needed to keep it. The footer button, previously “Save and finish later”, is renamed “Finish later” since it no longer describes a save action. The “N steps to go” line in the left progress column is replaced with a live Saved / Saving… tell (check icon when saved, a small spinner while saving, text only, no badge background) that switches to “Saving…” for about a second whenever an edit is committed (a field is left with a new value, or a checkbox, radio or select changes) and then returns to “Saved”, since a real save may take around a second, so the applicant has a constant, always-visible answer to “is this saved” without opening the save dialog. “Saved” stays green; “Saving…” is the same neutral grey as the rest of the line. The “About N minutes left” estimate stays, vertically centered with the tell, with a “·” between them as before.",
       "tradeoff": "The step count disappears from that line; it is still readable from the left-hand step list and the “Step N of 7” eyebrow at the top of the page, so nothing is lost, but someone scanning only the progress-note line loses the step count at a glance. A first pass put “Saved” in a filled green badge; Ryan found it too bright and it was reverted to plain coloured text.",
       "by": "Ryan",
       "when": "2026-10-08"
+    },
+    {
+      "id": "website-https",
+      "area": "Flow",
+      "where": "Business details",
+      "t": "A website typed without https:// gets it added quietly",
+      "b": "When the applicant leaves the website field, a value with no scheme (for example “riversidepilates.com”) becomes “https://riversidepilates.com” with no message. Anything already starting with a scheme is left alone, and the field stays optional. The persona test that prompted this typed a bare address and saw nothing happen.",
+      "tradeoff": "The field now shows a longer string than the person typed. A site that only serves plain http would be given a link that may not open; we assume https is the safe default.",
+      "by": "Ryan",
+      "when": "2026-10-12"
+    },
+    {
+      "id": "terminal-none",
+      "area": "Flow",
+      "where": "Business activity",
+      "t": "Terminal list ends with “None”, not “None yet”",
+      "b": "The last option in the POS / terminal list is “None” instead of “None yet”, which read as an admission to someone who simply does not want a reader.",
+      "tradeoff": "“None” loses the hint that a reader can be added later.",
+      "by": "Ryan",
+      "when": "2026-10-12"
+    },
+    {
+      "id": "signatory-title-fallback",
+      "area": "Flow",
+      "where": "Step 7 · Sign it off",
+      "t": "Signatory title fills from the first owner even when added with the plain button",
+      "b": "The step 7 signatory title now fills from the first owner's title when no owner is marked as the applicant, the same way the signatory name already follows the first owner. An owner added with the plain “Add an owner or director” button therefore carries their title (“Director” until edited) into step 7 instead of leaving the field empty; “Add myself” is unchanged and still gives “Owner / CEO”.",
+      "tradeoff": "The default “Director” is a placeholder, not a fact: a signer who is the owner must still change it, and it is now prefilled where before it forced a deliberate entry. The field stays editable and required.",
+      "by": "Ryan",
+      "when": "2026-10-12"
+    },
+    {
+      "id": "final-step-focus",
+      "area": "Flow",
+      "where": "Step 7 · Review and sign",
+      "t": "Final step drops the rates tick and collapses “What happens next”",
+      "b": "Rates and the fee schedule are already agreed before this flow starts, so the final step no longer asks for an “I accept the rates and fee schedule” tick. “What happens next” below the signature is now a collapsed bar that opens on click, so nothing competes with signing, which is the one action that matters on this step.",
+      "tradeoff": "Applicants who would have used the rates line to double-check pricing now have to find it elsewhere; the fee schedule is still reachable from the agreement link. The three-step “what happens next” reassurance is one click further away, so some may submit without reading it.",
+      "by": "Ryan",
+      "when": "2026-10-12"
     },
     {
       "id": "approved-add-merchant",
@@ -1040,7 +1080,7 @@
     taxLiens: "", taxLiensWhy: "", msb: "",
     pci: "", saq: "", pciDate: "",
     matchConsent: false, ofacAck: false,
-    acceptAgreement: false, acceptRates: false, acceptPrivacy: false, acceptEsign: false,
+    acceptAgreement: false, acceptPrivacy: false, acceptEsign: false,
     signAuthority: false
   };
 
@@ -1218,7 +1258,8 @@
     inviteStep: 0,
     inviteOwner: 0,
     returnTo: null,
-    saving: false
+    saving: false,
+    nextOpen: false
   }, freshState());
 
   // Switching the data option starts the run over. A half-filled form crossed
@@ -1243,12 +1284,12 @@
     setState({ toast: { id: Date.now(), text: text } });
     toastTimer = setTimeout(() => setState({ toast: null }), 4500);
   }
-  // Flips the rail's Saved / Saving tell for a moment on every field edit (decision autosave-tell).
+  // Flips the rail's Saved / Saving tell while a committed edit saves (decision autosave-tell). Autosave is assumed to take about a second.
   let savingTimer = 0;
   function pulseSave() {
     clearTimeout(savingTimer);
     if (!state.saving) setState({ saving: true });
-    savingTimer = setTimeout(() => setState({ saving: false }), 900);
+    savingTimer = setTimeout(() => setState({ saving: false }), 1000);
   }
   const set = (id, v) => setState((s) => ({ a: Object.assign({}, s.a, { [id]: v }) }));
   const go = (screen, step) => setState({ screen, step: step || state.step, saveOpen: false });
@@ -1535,7 +1576,7 @@
     if (step === 7) {
       cardsFor(7).forEach((c) => c && c.fields.forEach(add));
       const signatory = (a.signatoryName !== undefined ? a.signatoryName : (a.sigSame === "no" ? (a.sigName || "") : (ownerVal(state.owners[0] || {}, "name") || ""))).trim();
-      const title = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : ((owners.filter((o) => o.self)[0] || {}).role || ""));
+      const title = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((owners.filter((o) => o.self)[0] || state.owners[0]) || {}).role || ""));
       if (!signatory) errs.signatoryName = "Enter the signatory's full legal name.";
       if (!String(title).trim()) errs.signatoryTitle = "Enter the signatory's title.";
       if (!state.sign.trim()) errs.sign = "Type your full legal name to sign.";
@@ -1750,7 +1791,7 @@
         ]),
         card("s3-payfac", isNonprofit() ? "How you'll appear on statements" : "How you'll appear to customers", "", [
           fld("descriptor", "Billing descriptor", "descriptor", { span: true, hint: "This is what " + (isNonprofit() ? "the people paying you" : "your customers") + " will see on their statement. Use a name they'll recognize — it's the single biggest thing you can do to avoid “I don't know this charge” disputes." }),
-          a.cpSplit !== "0" ? fld("posType", "POS / terminal type", "select", { conditional: true, placeholder: "Choose a terminal", options: ["Xplor Pay countertop terminal", "Xplor Pay mobile reader", "Third-party terminal", "None yet"] }) : null,
+          a.cpSplit !== "0" ? fld("posType", "POS / terminal type", "select", { conditional: true, placeholder: "Choose a terminal", options: ["Xplor Pay countertop terminal", "Xplor Pay mobile reader", "Third-party terminal", "None"] }) : null,
           // Only someone arriving from an existing Xplor account has a platform to show; a new applicant would be asked about a product they may not use.
           isSample() ? fld("platform", "Platform", "text", { optional: true, hint: "Already filled in from your Xplor account." }) : null,
           fld("velocityAck", "I've read the daily and monthly transaction limits for my volume tier", "check", { span: true, hint: "$5,000 per transaction and $60,000 per month to start. Ask us any time to raise it." })
@@ -1814,7 +1855,6 @@
       return [
         card("s7-terms", "What you're agreeing to", "", [
           fld("acceptAgreement", "I accept the Xplor Pay merchant services agreement", "check", { span: true, viewKey: "agreement", hint: "No minimum term and no exit fee." }),
-          fld("acceptRates", "I accept the rates and fee schedule", "check", { span: true, viewKey: "rates", hint: "2.6% + 30¢ per card payment. No monthly fee. Payout next business day." }),
           fld("acceptPrivacy", "I accept the privacy policy and terms of service", "check", { span: true, viewKey: "privacy" }),
           fld("acceptEsign", "I agree to sign electronically", "check", { span: true, hint: "We need this before a typed signature counts." }),
           fld("signAuthority", isSole() ? "I confirm I'm signing for my own business" : "I confirm I'm authorized to sign for " + a.legalName, "check", { span: true, hint: "Recorded with a timestamp for the audit trail." })
@@ -1903,7 +1943,7 @@
     const selfOwner = owners.filter((o) => o.self)[0];
     const defaultSigner = a.sigSame === "no" ? (a.sigName || "") : (ownerVal(st.owners[0] || {}, "name") || "");
     const signatoryName = a.signatoryName !== undefined ? a.signatoryName : defaultSigner;
-    const signatoryTitle = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : ((selfOwner && selfOwner.role) || ""));
+    const signatoryTitle = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((selfOwner || st.owners[0]) || {}).role || ""));
     // "Signed by" is only true once the typed signature matches the signatory.
     const sigNorm = (t) => String(t).trim().replace(/\s+/g, " ").toLowerCase();
     const signedNow = !!signatoryName.trim() && sigNorm(st.sign) === sigNorm(signatoryName);
@@ -2334,7 +2374,7 @@
   <div class="brand">${mark(22)}<span class="brand-name">Xplor Pay</span></div>
   <div class="progress-head"><span class="progress-title" id="progress-label">Your progress</span><span class="progress-pct">${v.pct}%</span></div>
   <div class="meter" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v.pct}"><span class="meter-fill" data-width="${v.pct}"></span></div>
-  <p class="progress-note">${v.remainingLabel} · <span class="save-tell${state.saving ? " is-saving" : ""}" data-key="save-tell" role="status">${icon(state.saving ? "clock" : "check", 12)}${state.saving ? "Saving…" : "Saved"}</span></p>
+  <p class="progress-note">${v.remainingLabel} · <span class="save-tell${state.saving ? " is-saving" : ""}" data-key="save-tell" role="status">${state.saving ? html`<span class="save-spinner" aria-hidden="true"></span>` : icon("check", 12)}${state.saving ? "Saving…" : "Saved"}</span></p>
   <ol class="steps">${items}</ol>
   <button type="button" class="btn btn-neutral btn-sm rail-help" data-click="${on(openHelp)}">${icon("help", 15)}Get help</button>
 </nav>`;
@@ -2595,13 +2635,13 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     <span class="sign-ok">${icon("shield", 13)}ESIGN Act compliant · a signed copy is emailed to you</span>
   </div>
 </section>
-<section class="next-panel" data-key="s7-next" aria-labelledby="next-h">
-  <h2 class="next-head" id="next-h">What happens next</h2>
-  <ol class="next-grid">
+<section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
+  <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
+  ${state.nextOpen && html`<ol class="next-grid" id="next-body">
     <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trullio</div><div class="next-body">${v.submitNote}</div></div></li>
     <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">Usually under 2 hours. Feel free to close this window — we'll email and text you.</div></div></li>
     <li class="next-item"><span class="next-num">3</span><div><div class="next-title">Start taking payments</div><div class="next-body">Your first payout lands the next business day after your first sale.</div></div></li>
-  </ol>
+  </ol>`}
 </section>`;
   }
 
@@ -3079,8 +3119,9 @@ ${protoView()}`;
     if (el && root.contains(el)) run(el, name, e);
   }
   root.addEventListener("click", (e) => dispatch("data-click", e));
-  root.addEventListener("input", (e) => { if (e.target.type !== "checkbox") { dispatch("data-input", e); pulseSave(); } });
-  root.addEventListener("change", (e) => { if (e.target.type === "checkbox") { dispatch("data-change", e); pulseSave(); } });
+  root.addEventListener("input", (e) => { if (e.target.type !== "checkbox") dispatch("data-input", e); });
+  // A save starts when an edit is committed, not on each keystroke: "change" fires when a text field is left with a new value, and at once for checkboxes, radios and selects.
+  root.addEventListener("change", (e) => { if (e.target.type === "checkbox") dispatch("data-change", e); if (e.target.closest && e.target.closest("input, select, textarea")) pulseSave(); });
   // Blur doesn't bubble, so it is caught on the way down.
   root.addEventListener("blur", (e) => { if (e.target.hasAttribute && e.target.hasAttribute("data-blur")) run(e.target, "data-blur", e); }, true);
   root.addEventListener("focus", (e) => { if (e.target.hasAttribute && e.target.hasAttribute("data-focus")) run(e.target, "data-focus", e); }, true);
@@ -3092,6 +3133,11 @@ ${protoView()}`;
   // Leaving a field is when its problem, if any, is shown.
   root.addEventListener("focusout", (e) => {
     const id = e.target && e.target.id;
+    // A website typed without a scheme gets https:// added as the person leaves the field, with no message (decision website-https).
+    if (id === "f-website") {
+      const w = String(state.a.website || "").trim();
+      if (w && !/^[a-z][a-z0-9+.-]*:\/\//i.test(w)) set("website", "https://" + w);
+    }
     if (id && id.indexOf("f-") === 0 && !state.touched[id.slice(2)]) setState({ touched: Object.assign({}, state.touched, { [id.slice(2)]: true }) });
   });
   document.addEventListener("keydown", (e) => {

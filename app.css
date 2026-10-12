@@ -181,6 +181,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .progress-note { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--xpl-text-subdued); margin-bottom: 16px; }
 .save-tell { display: inline-flex; align-items: center; gap: 3px; font-size: 12px; font-weight: 600; color: var(--xpl-color-green-800); }
 .save-tell.is-saving { color: var(--xpl-text-subdued); }
+.save-spinner { width: 10px; height: 10px; border-radius: 9999px; border: 2px solid var(--xpl-color-neutral-300); border-top-color: var(--xpl-text-subdued); animation: xspin 700ms linear infinite; }
 .steps { display: flex; flex-direction: column; gap: 2px; }
 .step { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 9px 8px; border: none; border-radius: 8px; background: transparent; }
 button.step { cursor: pointer; }
@@ -299,8 +300,14 @@ textarea.input { height: auto; padding: 10px 12px; line-height: 1.45; resize: ve
 .sign-input { max-width: 420px; height: 52px; padding: 0 16px; font-size: 22px; font-style: italic; color: var(--xpl-text-strong); }
 .sign-meta { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; font-size: 12px; color: var(--xpl-text-subdued); }
 .sign-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--xpl-color-green-800); }
-.next-panel { margin-top: 8px; background: var(--xpl-color-brand-primary-deepspace); border-radius: 8px; padding: 28px 32px 32px; color: #fff; }
-.next-head { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 22px; }
+.next-panel { margin-top: 8px; background: var(--xpl-color-brand-primary-deepspace); border-radius: 8px; padding: 18px 32px; color: #fff; }
+.next-head { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+.next-panel.is-open { padding-bottom: 32px; }
+.next-panel.is-open .next-head { margin-bottom: 22px; }
+.next-toggle { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0; border: none; background: transparent; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+.next-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 4px; }
+.next-chev { transition: transform 160ms ease; }
+.is-open .next-chev { transform: rotate(180deg); }
 .next-grid { list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 32px; }
 .next-item { position: relative; display: flex; flex-direction: column; gap: 14px; }
 /* A hairline joins each numbered step to the next one. */
