@@ -2371,7 +2371,7 @@
       return html`<li><div class="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
     });
     return html`<nav class="rail" data-key="rail" aria-label="Verification steps">
-  <div class="brand">${mark(22)}<span class="brand-name">Xplor Pay</span></div>
+  <div class="brand"><img class="brand-logo" src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="1354" height="295"></div>
   <div class="progress-head"><span class="progress-title" id="progress-label">Your progress</span><span class="progress-pct">${v.pct}%</span></div>
   <div class="meter" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v.pct}"><span class="meter-fill" data-width="${v.pct}"></span></div>
   <p class="progress-note">${v.remainingLabel} · <span class="save-tell${state.saving ? " is-saving" : ""}" data-key="save-tell" role="status">${state.saving ? html`<span class="save-spinner" aria-hidden="true"></span>` : icon("check", 12)}${state.saving ? "Saving…" : "Saved"}</span></p>

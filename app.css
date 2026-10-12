@@ -172,7 +172,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 /* rail */
 .rail { position: sticky; top: 40px; align-self: start; max-height: calc(100vh - 80px); overflow-y: auto; }
 .brand { display: flex; align-items: center; gap: 9px; margin-bottom: 18px; }
-.brand-name { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; color: var(--xpl-text-strong); }
+.brand-logo { display: block; height: 26px; width: auto; }
 .progress-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
 .progress-title { font-size: 12px; font-weight: 600; color: var(--xpl-text-strong); }
 .progress-pct { font-size: 12px; font-weight: 600; color: var(--xpl-color-purple-700); }
