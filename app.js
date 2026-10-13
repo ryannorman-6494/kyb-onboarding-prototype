@@ -1074,6 +1074,16 @@
       "tradeoff": "The value is copied by hand into app.css (the Atlas repo clone only has the combined button shadow, not the split inner and outer tokens), so it will drift if Atlas changes the cast shadow.",
       "by": "Ryan",
       "when": "2026-10-13"
+    },
+    {
+      "id": "no-id-verified-labels",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · Submitted screen",
+      "t": "Nothing in the flow says an ID is verified",
+      "b": "The green “ID verified” badge on an owner card is removed, along with every other place that said an owner's ID was verified: the ownership note (“N of M owners have verified their ID”), the review row, and the submitted screen's tick line. No step verifies an ID: the applicant only types the details at step 2 and adds the file at step 6, and checking happens after submitting. The submitted screen now says what is true: “Your own ID is the only one to check”, “Every ID is in and being checked”, or how many IDs are in. The sample business no longer has a pre-verified owner.",
+      "tradeoff": "A returning applicant gets no sign that any check has finished. If real verification results ever come back before approval, a status like this would need to return, driven by real data.",
+      "by": "Ryan",
+      "when": "2026-10-13"
     }
   ];
 
@@ -1215,7 +1225,7 @@
   function freshOwners() {
     return isSample()
       ? [
-          { id: 1, name: "Dana Whitfield", initials: "DW", pct: 60, role: "Owner / CEO", status: "verified", self: true },
+          { id: 1, name: "Dana Whitfield", initials: "DW", pct: 60, role: "Owner / CEO", status: "pending", self: true },
           { id: 2, name: "Marcus Lee", initials: "ML", pct: 30, role: "Director", status: "pending", self: false }
         ]
       : [];
@@ -1957,7 +1967,6 @@
     const pct = isStatus ? 100 : Math.round(((progStep - 1) / 7) * 100);
     const owners = st.owners.map((o) => Object.assign({}, o, ownerInfo(o)));
     const ownedPct = owners.reduce((x, o) => x + o.pct, 0);
-    const verified = owners.filter((o) => o.status === "verified").length;
     // Only an owner who was sent a link and has not replied is still owed. Everyone else's ID is in by the time the applicant reaches step 7, because step 6 will not continue without it.
     const invitedLeft = owners.filter((o) => o.status === "invited");
     const settled = owners.length - invitedLeft.length;
@@ -2037,12 +2046,12 @@
           ? "Add everyone who owns 25% or more. " + fmtPct(100 - ownedPct) + "% is still unaccounted for."
         : ownedPct < 100
           ? "Every owner at 25% or more is listed. The remaining " + fmtPct(100 - ownedPct) + "% sits with smaller holders, who don't need identifying."
-          : "All 100% accounted for. " + verified + " of " + owners.length + " owners have verified their ID.",
-      ownersVerifiedLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : verified + " of " + owners.length + (isCompany() ? " owners" : " people") + " verified",
+          : "All 100% accounted for.",
+      ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
-      reviewNote: (() => { const idToCome = (o) => o.status === "invited"; return solo ? (idToCome(owners[0]) ? "Your ID is still to come" : "Your ID arrived and is being checked") : owners.map((o) => (o.self ? "Your" : o.name + "'s") + " ID " + (idToCome(o) ? "still to come" : o.status === "verified" ? "verified" : "arrived")).join(" · "); })(),
+      reviewNote: (() => { const idToCome = (o) => o.status === "invited"; return solo ? (idToCome(owners[0]) ? "Your ID is still to come" : "Your ID arrived and is being checked") : owners.map((o) => (o.self ? "Your" : o.name + "'s") + " ID " + (idToCome(o) ? "still to come" : "arrived")).join(" · "); })(),
       othersTitle: solo ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's done their bit" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
-      othersBody: solo ? (owners[0].self ? "You're the only owner listed, so nobody else needs to verify their ID." : "Only one owner is listed and their ID is in, so nobody else needs to send anything.") : settled === owners.length ? "Everyone you invited has finished their part, so nothing is waiting on a person." : "We've nudged " + invitedLeft.map((o) => o.name).join(" and ") + " to finish. Your review carries on in the meantime.",
+      othersBody: solo ? (owners[0].self ? "You're the only owner listed, so nobody else needs to send their ID." : "Only one owner is listed and their ID is in, so nobody else needs to send anything.") : settled === owners.length ? "Everyone you invited has finished their part, so nothing is waiting on a person." : "We've nudged " + invitedLeft.map((o) => o.name).join(" and ") + " to finish. Your review carries on in the meantime.",
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
       checkNote: "Checking " + [st.einFound && "your " + orgWord() + " registration", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
@@ -2456,7 +2465,6 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
       <div class="person-meta">${o.status === "invited" && !String(ownerVal(o, "name")).trim() ? "Waiting for their details" : (o.self ? "You · " : "") + (isSole() ? "Sole owner" : isNonprofit() ? o.role : fmtPct(o.pct) + "% · " + o.role)}</div>
     </div>
     ${Object.keys(ERR).some((k) => k.indexOf("o" + o.id + "_") === 0) && html`<span class="pill pill--danger">${icon("alert", 13)}Needs a look</span>`}
-    ${o.status === "verified" && html`<span class="pill pill--positive">${icon("check", 13, "i-b")}ID verified</span>`}
     ${!recipient && o.status === "invited" && html`<span class="pill pill--warning">${icon("clock", 13)}Invited · ${o.inviteEmail || "filling in their own details"}</span>`}
     ${!recipient && o.status === "received" && html`<span class="pill pill--positive">${icon("check", 13, "i-b")}Details received${o.receivedAt ? " · " + o.receivedAt : ""}</span>`}
     ${!recipient && o.status === "pending" && !isSole() && !o.self && html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => openDelegate(o.id))}">${icon("mail", 14)}Send them a link</button>`}
@@ -2771,7 +2779,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   <section class="card card--p20">
     <h2 class="tile-title">${v.othersTitle}</h2>
     <p class="tile-body">${v.othersBody}</p>
-    <span class="ok-line">${icon("check", 14, "i-b")}${v.ownersVerifiedLabel}</span>
+    <span class="ok-line">${icon("check", 14, "i-b")}${v.ownersIdLabel}</span>
   </section>
 </div>`;
   }
