@@ -1,17 +1,24 @@
-/* Xplor Apollo — base element defaults */
+/* Base element defaults, on Atlas tokens. Body copy is the Atlas Body/Default text style. */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  font-family: var(--xpl-font-family-default);
-  font-size: var(--xpl-font-size-body);
-  line-height: var(--xpl-line-height-body);
-  font-weight: var(--xpl-font-weight-normal);
-  color: var(--xpl-text-default);
-  background: var(--xpl-background-surface-subtlest);
+  font-family: var(--type-body-default-family), system-ui, sans-serif;
+  font-size: var(--type-body-default-size);
+  line-height: var(--type-body-default-line-height);
+  font-weight: var(--type-body-default-weight);
+  color: var(--color-text-primary);
+  background: var(--color-background-shell);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-a { color: var(--xpl-text-link-default); text-decoration: none; }
-a:hover { color: var(--xpl-text-link-hovered); }
-::selection { background: var(--xpl-color-purple-200); }
+a { color: var(--color-text-link-default); text-decoration: none; }
+a:hover { color: var(--color-text-link-hover); }
+::selection { background: var(--color-background-brand-subtle); }
+
+/* Helpers that are not Atlas tokens. Atlas family tokens are bare names, so the mono stack needs fallbacks. */
+:root {
+  --font-mono: var(--type-code-default-family), ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  /* Prototype-only: the dark approved-page card keeps the Xplor deep-space brand colour, which has no Atlas semantic token. */
+  --brand-deepspace: #220021;
+}

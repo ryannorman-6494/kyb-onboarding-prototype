@@ -986,6 +986,26 @@
       "when": "2026-10-12"
     },
     {
+      "id": "no-optional-tag",
+      "area": "Flow",
+      "where": "Form fields · callouts",
+      "t": "No “Optional” tag on fields; callouts use the default radius",
+      "b": "The small “Optional” tag beside optional field labels is gone. A required field still carries the red asterisk, so a field without one is optional, which is enough for now. Field hints that say “skip this” are unchanged. The callout corners drop from the large radius (12px) to the default radius (8px, radius/default) in the same pass.",
+      "tradeoff": "Nothing now says outright that a field can be skipped, so someone scanning for the optional ones relies on noticing the missing asterisk. Atlas rule 4 gives surfaces containing other components the large radius; callouts now use default as a designer call rather than that rule.",
+      "by": "Ryan",
+      "when": "2026-10-13"
+    },
+    {
+      "id": "atlas-adoption",
+      "area": "Flow",
+      "where": "Whole flow",
+      "t": "The flow is built on the Atlas design system tokens and components",
+      "b": "The prototype now runs on the Atlas design system instead of its own Apollo token copy. Colour, type, radius, spacing, shadow, focus and motion come from Atlas tokens (Xplor Pay brand, light), generated into tokens/atlas.css by tools/build-atlas-tokens.mjs from the Atlas token repo. Where Atlas has a component the prototype is re-skinned to it: Button (primary, secondary, tertiary at the Atlas sizes), Text field (border and glow focus), Checkbox (16px box in a 24px target, offset focus ring), Callout (info is a calm grey, severity carried by icon and text), Badge, Toast (neutral surface, severity bar), Menu items, popovers and dialogs (radius large, Atlas elevation) and a Yes / No pair drawn as the Segmented control. Where Atlas has no component yet the existing prototype pattern stays, bound to Atlas tokens: the left progress rail, owner cards, document rows, billing statement preview and the timeline. The “What happens next” panel moved from the dark deep-space fill to a light sunken surface so it stays quiet next to the signature.",
+      "tradeoff": "This is a visual match built in plain CSS, not the real MUI components, so details such as keyboard behaviour, focus handling and exact spacing can differ from Odin. Button heights follow Atlas (Large 40, Medium 32), so the old 44 and 48 pixel buttons are smaller. The dark approved-page card still uses the Xplor deep-space colour, which has no Atlas semantic token. The mock app shell, prototype controls and design-decision pins keep their own styling because they are not product UI. The Atlas Progress bar page still uses old token names, so the progress meter is Atlas-coloured but not built from that component.",
+      "by": "Ryan",
+      "when": "2026-10-13"
+    },
+    {
       "id": "terminal-none",
       "area": "Flow",
       "where": "Business activity",
@@ -1658,7 +1678,8 @@
       value: raw !== undefined ? raw : (o.dflt !== undefined ? o.dflt : ""),
       span: !!o.span,
       unsure: !!o.unsure,
-      chip: o.optional ? "Optional" : "",
+      // No "Optional" tag: a field without the red asterisk is optional (decision 96).
+      chip: "",
       // Only Optional fields are tagged. A field that appears because of an earlier answer (conditional) is required like any other, since it is only shown when it applies.
       required: !o.optional,
       hint: o.hint || "",
