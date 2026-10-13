@@ -1084,6 +1084,16 @@
       "tradeoff": "A returning applicant gets no sign that any check has finished. If real verification results ever come back before approval, a status like this would need to return, driven by real data.",
       "by": "Ryan",
       "when": "2026-10-13"
+    },
+    {
+      "id": "input-border-neutral-300",
+      "area": "Flow",
+      "where": "Whole flow · Text fields and selects",
+      "t": "Field borders are one step lighter again (neutral/300) and so is their hover, and the agreement no longer says “verified bank account”",
+      "b": "The resting border of text fields and selects moves from neutral/400 to neutral/300 (#DDDDE3), at the designer's request, in Figma (`color/border/input`, Light), in the Atlas token repo (branch chore/border-input-neutral-300, not yet pushed) and in the prototype's regenerated tokens. The hover border of a field is one step lighter too: neutral/600 instead of neutral/700, through a new Atlas token `color/border/hover` that only fields use, so checkbox and radio outlines (border/strong) keep their darker colour. Dark mode hover is unchanged. In the same pass the agreement's “1. What we provide” and “Payouts” lines say “your bank account” rather than “your verified bank account”, since nothing in the flow verifies the account.",
+      "tradeoff": "About 1.3:1 against white, well under the 3:1 WCAG 2.2 target for the edge of a control. Focus, error and hover still change the border, so the state is carried, but an empty field is faint on a bright screen, and the hover is a gentler nudge than before.",
+      "by": "Ryan",
+      "when": "2026-10-13"
     }
   ];
 
@@ -2538,7 +2548,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     agreement: {
       title: "Merchant services agreement", meta: "PDF · 12 pages · version 4.2",
       sections: [
-        ["1. What we provide", "Xplor Pay processes card payments for your business and pays the proceeds out to your verified bank account."],
+        ["1. What we provide", "Xplor Pay processes card payments for your business and pays the proceeds out to your bank account."],
         ["2. Fees", "You pay the rates in your fee schedule and nothing else. There is no monthly fee and no setup fee."],
         ["3. Term and ending the agreement", "There is no minimum term. You can close your account at any time and there is no exit fee."],
         ["4. Disputes and chargebacks", "If a cardholder disputes a payment, we will tell you what evidence is needed and by when, and you keep control of the response."]
@@ -2549,7 +2559,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
       sections: [
         ["Card payments", "2.6% + 30¢ for each card payment taken."],
         ["Monthly fees", "None."],
-        ["Payouts", "Sent to your verified bank account the next business day after a sale."]
+        ["Payouts", "Sent to your bank account the next business day after a sale."]
       ]
     },
     privacy: {

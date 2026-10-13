@@ -235,7 +235,8 @@
   --color-border-divider: #eaebef;
   --color-border-error: #c2210f;
   --color-border-focus: #8857fa;
-  --color-border-input: #c9cad1;
+  --color-border-hover: #8b8b96;
+  --color-border-input: #dddde3;
   --color-border-strong: #6a6b76;
   --color-border-subtle: #f4f4f7;
   --color-border-warning: #f58029;
@@ -277,10 +278,10 @@
   --component-button-secondary-border: #eaebef;
   --component-button-secondary-foreground: #40404c;
   --component-input-background: #ffffff;
-  --component-input-border-default: #c9cad1;
+  --component-input-border-default: #dddde3;
   --component-input-border-error: #c2210f;
   --component-input-border-focus: #8857fa;
-  --component-input-border-hover: #6a6b76;
+  --component-input-border-hover: #8b8b96;
   --component-input-focus-glow-color: #f4f2ff;
   --component-input-helper-color-default: #6a6b76;
   --component-input-helper-color-error: #c2210f;
@@ -295,6 +296,7 @@
   --component-nav-item-icon-selected: #793ef7;
   --component-nav-item-text-default: #40404c;
   --component-nav-item-text-selected: #6923f4;
+  --component-segmented-control-background: #f4f4f7;
 
   /* Text styles as shorthands (derived). Pair with letter-spacing: var(--type-<role>-letter-spacing). */
   --font-amount-default: var(--type-amount-default-weight) var(--type-amount-default-size)/var(--type-amount-default-line-height) var(--type-amount-default-family), system-ui, sans-serif;
