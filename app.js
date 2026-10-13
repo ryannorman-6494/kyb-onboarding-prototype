@@ -750,7 +750,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Owner card buttons are plain until hovered, and an owner can be removed",
-      "b": "The Open/Collapse button on an owner card no longer has a grey background; it turns grey only on hover. The new Remove button beside it uses the same plain style. Remove deletes the owner and what was typed for them, and is not shown to a sole proprietor, whose only owner is themselves.",
+      "b": "The Open/Collapse button on an owner card no longer has a grey background; it turns grey only on hover. The new Remove button beside it uses the same plain style and carries a trash-can icon. Remove deletes the owner and what was typed for them, and is not shown to a sole proprietor, whose only owner is themselves.",
       "tradeoff": "Plain buttons are less obviously buttons until hovered. Remove acts at once with a toast and no confirmation or undo, so a filled-in card can be lost by a misclick.",
       "by": "Ryan",
       "when": "2026-10-06"
@@ -1064,6 +1064,16 @@
       "tradeoff": "It now overlaps the page on short viewports instead of pushing content up; the status screens' bottom padding was increased to keep the last card clear of it, but a very small window could still see overlap.",
       "by": "Ryan",
       "when": "2026-10-08"
+    },
+    {
+      "id": "secondary-button-no-bevel",
+      "area": "Flow",
+      "where": "Whole flow · Secondary buttons",
+      "t": "Secondary buttons lose the inner bevel and keep only the soft drop shadow",
+      "b": "Following the designer's Atlas update, secondary (outlined) buttons such as Back, Get help, Send them a link and Look up no longer have the inset white and black bevel. They keep the one-pixel cast shadow under the border. Primary buttons keep the full bevel. The owner card Remove button also gets a trash-can icon in place of the cross.",
+      "tradeoff": "The value is copied by hand into app.css (the Atlas repo clone only has the combined button shadow, not the split inner and outer tokens), so it will drift if Atlas changes the cast shadow.",
+      "by": "Ryan",
+      "when": "2026-10-13"
     }
   ];
 
@@ -2450,7 +2460,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     ${!recipient && o.status === "invited" && html`<span class="pill pill--warning">${icon("clock", 13)}Invited · ${o.inviteEmail || "filling in their own details"}</span>`}
     ${!recipient && o.status === "received" && html`<span class="pill pill--positive">${icon("check", 13, "i-b")}Details received${o.receivedAt ? " · " + o.receivedAt : ""}</span>`}
     ${!recipient && o.status === "pending" && !isSole() && !o.self && html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => openDelegate(o.id))}">${icon("mail", 14)}Send them a link</button>`}
-    ${!recipient && !isSole() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${o.name}" data-click="${on(() => removeOwner(o.id))}">${icon("x", 14)}Remove</button>`}
+    ${!recipient && !isSole() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${o.name}" data-click="${on(() => removeOwner(o.id))}">${icon("trash", 14)}Remove</button>`}
     <button type="button" class="btn btn-xs person-toggle" aria-expanded="${String(isOpen)}" data-click="${on(toggle)}">${isOpen ? "Collapse" : "Open"}${icon("chev-d", 14)}</button>
   </div>
   ${isOpen && html`<div class="person-body" data-key="body"><div class="fields">${ownerFields(o).map(fieldView)}</div></div>`}

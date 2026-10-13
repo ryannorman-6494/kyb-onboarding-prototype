@@ -49,6 +49,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 /* ---------- Buttons (Atlas Button: emphasis x size) ---------- */
 /* Primary = brand fill, secondary = bordered, tertiary = text only. Sizes follow the Atlas Button sizes: small 24, medium 32, large 40 (label type follows the size; large is the same 14px as medium). */
 .btn {
+  --shadow-button-outer: 0px 1px 3px 0px #00000014; /* Atlas cast shadow only: secondary buttons have no inner bevel */
   display: inline-flex; align-items: center; justify-content: center; gap: var(--component-button-gap);
   height: var(--component-button-height-medium); padding: 0 var(--component-button-padding-x-medium);
   border: var(--component-button-border-width) solid transparent; border-radius: var(--component-button-radius);
@@ -60,7 +61,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .btn-primary { background: var(--component-button-primary-background-default); color: var(--component-button-primary-foreground); box-shadow: var(--shadow-button-contained); }
 .btn-primary:hover { background: var(--component-button-primary-background-hover); }
 .btn-primary:active { background: var(--color-background-brand-active); }
-.btn-outline, .btn-quiet, .btn-neutral, .btn-soft { background: var(--component-button-secondary-background-default); border-color: var(--component-button-secondary-border); color: var(--component-button-secondary-foreground); box-shadow: var(--shadow-button-contained); }
+.btn-outline, .btn-quiet, .btn-neutral, .btn-soft { background: var(--component-button-secondary-background-default); border-color: var(--component-button-secondary-border); color: var(--component-button-secondary-foreground); box-shadow: var(--shadow-button-outer); }
 .btn-outline:hover, .btn-quiet:hover, .btn-neutral:hover, .btn-soft:hover { background: var(--component-button-secondary-background-hover); }
 .btn-ghost { background: transparent; color: var(--color-text-brand); }
 .btn-ghost:hover { background: var(--component-button-secondary-background-hover); }
