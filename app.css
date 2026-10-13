@@ -47,7 +47,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .mark svg { fill: currentColor; }
 
 /* ---------- Buttons (Atlas Button: emphasis x size) ---------- */
-/* Primary = brand fill, secondary = bordered, tertiary = text only. Sizes follow the Atlas Button sizes: small 24, medium 32, large 40 (label type follows the size). */
+/* Primary = brand fill, secondary = bordered, tertiary = text only. Sizes follow the Atlas Button sizes: small 24, medium 32, large 40 (label type follows the size; large is the same 14px as medium). */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--component-button-gap);
   height: var(--component-button-height-medium); padding: 0 var(--component-button-padding-x-medium);
@@ -70,7 +70,10 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .btn-light { background: #fff; color: var(--color-neutral-1200); font-weight: var(--type-control-bold-weight); }
 .btn-on-dark { background: transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); color: #fff; }
 
-/* Prototype size names mapped onto the Atlas sizes: xl / lg / md / next are Large, the rest Medium. */
+/* Icons inside a control are 16px at every size (Atlas 0048); size is carried by height and padding. */
+.btn > .i { width: var(--component-button-icon-size); height: var(--component-button-icon-size); }
+
+/* Prototype size names mapped onto the Atlas sizes: xl / lg / md / next are Large, the rest Medium. Large uses Control/Large, which is 14/20 like Control/Default since Atlas 0048. */
 .btn-xl, .btn-lg, .btn-md, .btn-next { height: var(--component-button-height-large); padding: 0 var(--component-button-padding-x-large); font: var(--font-control-large); letter-spacing: var(--type-control-large-letter-spacing); }
 .btn-sm, .btn-xs, .btn-tile, .btn-2xs { height: var(--component-button-height-medium); padding: 0 var(--component-button-padding-x-medium); flex: none; }
 

@@ -996,6 +996,16 @@
       "when": "2026-10-13"
     },
     {
+      "id": "atlas-sync-2",
+      "area": "Flow",
+      "where": "Whole flow",
+      "t": "Atlas tweaks synced: 14px large controls, 16px button icons, lighter button bevel",
+      "b": "Synced to the Atlas token repo after the designer's tweaks. Large controls now use the default control text (14px, not 16px, Atlas 0048), so a large button's label matches a medium one and only height and padding differ. Icons inside buttons are 16px at every size. The primary and secondary button bevel is lighter (inset highlight 15% white, inset shade 8% black), and the input border stays neutral/400. Values come from the regenerated tokens/atlas.css, so rerun tools/build-atlas-tokens.mjs after any Atlas change.",
+      "tradeoff": "The prototype follows the Atlas repo as it stood on the branch with the shadow change, not the Figma file directly. A few Figma token renames (for example the input focus glow and the pressed colour on the primary button) may not be in the repo yet, and the prototype will need a mapping update once they are exported.",
+      "by": "Ryan",
+      "when": "2026-10-13"
+    },
+    {
       "id": "atlas-adoption",
       "area": "Flow",
       "where": "Whole flow",

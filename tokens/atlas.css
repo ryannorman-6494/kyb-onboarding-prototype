@@ -72,7 +72,7 @@
   --radius-full: 9999px;
   --radius-large: 12px;
   --radius-small: 4px;
-  --shadow-button-contained: inset 2px 2px 2px 0px #ffffff33, inset -2px -2px 2px 0px #00000033, 0px 1px 3px 0px #00000014;
+  --shadow-button-contained: inset 2px 2px 2px 0px #ffffff26, inset -2px -2px 2px 0px #00000014, 0px 1px 3px 0px #00000014;
   --shadow-lg: 0px 16px 32px -8px #14141c26, 0px 4px 8px -4px #14141c0d;
   --shadow-md: 0px 8px 16px -4px #14141c17, 0px 2px 4px -2px #14141c0d;
   --shadow-sm: 0px 2px 4px -1px #14141c12, 0px 4px 8px -2px #14141c0d;
@@ -153,8 +153,8 @@
   --type-control-default-weight: 500;
   --type-control-large-family: Roboto;
   --type-control-large-letter-spacing: 0px;
-  --type-control-large-line-height: 24px;
-  --type-control-large-size: 16px;
+  --type-control-large-line-height: 20px;
+  --type-control-large-size: 14px;
   --type-control-large-weight: 500;
   --type-control-small-family: Roboto;
   --type-control-small-letter-spacing: 0px;
