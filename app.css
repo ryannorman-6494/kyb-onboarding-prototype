@@ -245,8 +245,8 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .affix--secure input { letter-spacing: 0.06em; }
 .affix--secure input[readonly] { cursor: default; }
 
-/* Yes / No as an Atlas Segmented control: a sunken track, the selected segment lifts onto a raised surface. */
-.yn { display: inline-flex; gap: var(--space-layout-pair); padding: 0; border-radius: var(--radius-default); background: var(--color-background-surface-sunken); }
+/* Yes / No as an Atlas Segmented control (0042, 0049): a track with its own fill, the selected segment lifts onto a raised surface. */
+.yn { display: inline-flex; gap: var(--space-layout-pair); padding: 0; border-radius: var(--radius-default); background: var(--component-segmented-control-background); }
 .yn-btn { height: var(--component-button-height-large); min-width: 76px; padding: 0 var(--component-button-padding-x-large); border: var(--component-button-border-width) solid transparent; border-radius: var(--radius-default); background: transparent; font: var(--font-control-default); letter-spacing: var(--type-control-default-letter-spacing); color: var(--color-text-subtle); cursor: pointer; }
 .yn-btn:hover { color: var(--color-text-primary); }
 .yn-btn[aria-pressed="true"] { background: var(--color-background-surface-raised-1); border-color: var(--color-border-default); box-shadow: var(--shadow-xs); color: var(--color-text-primary); }

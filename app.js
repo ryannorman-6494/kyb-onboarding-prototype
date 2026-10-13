@@ -1094,6 +1094,16 @@
       "tradeoff": "About 1.3:1 against white, well under the 3:1 WCAG 2.2 target for the edge of a control. Focus, error and hover still change the border, so the state is carried, but an empty field is faint on a bright screen, and the hover is a gentler nudge than before.",
       "by": "Ryan",
       "when": "2026-10-13"
+    },
+    {
+      "id": "segmented-track-fill",
+      "area": "Flow",
+      "where": "Yes / No answers",
+      "t": "The Yes / No track uses Atlas's own segmented-control fill, one step darker than before",
+      "b": "The track behind a Yes / No pair was the sunken surface colour (nearly the same as the page). Atlas 0049 gave the Segmented control its own track fill (neutral/100, #F4F4F7), so the prototype now reads `--component-segmented-control-background`, and the track is easier to tell from the page and from the raised, selected segment. Nothing else about the control changes.",
+      "tradeoff": "The track is still only about 1.1:1 against the page, so the control is identified by its shape and the raised selected segment, not by the track alone. Atlas accepts this and says so in 0049.",
+      "by": "Ryan",
+      "when": "2026-10-13"
     }
   ];
 
