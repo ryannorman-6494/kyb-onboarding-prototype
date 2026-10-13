@@ -637,3 +637,9 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 /* Back sits on a white fill, like Get help. */
 .btn-neutral.back-btn { background: var(--color-background-surface-raised-1); }
 .btn-neutral.back-btn:hover { background: var(--color-background-hover); }
+
+/* Sales intake form: the fee amounts sit three to a row. */
+.fields--3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+@media (max-width: 720px) { .fields--3 { grid-template-columns: minmax(0,1fr); } }
+.actions--sales { margin-top: 48px; }
+.s-contract { margin-bottom: 18px; }
