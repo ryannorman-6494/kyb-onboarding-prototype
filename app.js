@@ -1104,6 +1104,16 @@
       "tradeoff": "The track is still only about 1.1:1 against the page, so the control is identified by its shape and the raised selected segment, not by the track alone. Atlas accepts this and says so in 0049.",
       "by": "Ryan",
       "when": "2026-10-13"
+    },
+    {
+      "id": "tone-of-voice-pass",
+      "area": "Flow",
+      "where": "Whole flow · Copy",
+      "t": "Copy follows Xplor's Verbal Identity Guidelines",
+      "b": "A pass through every line of applicant-facing copy against the guide: active voice, we and you, contractions, everyday words, short lines, and what happens next. Jargon (tokenized, underwriting, legal entity status), idioms (takings, sort it out, on the hook, done their bit, feel free), passive sentences and negative framing (Don't worry, can't finish until) were rewritten, and unprovable claims such as “turns days of manual review into minutes” and “your best defence” were softened. The full before-and-after list is in TONE-OF-VOICE-CHANGES.html and .csv in the project folder.",
+      "tradeoff": "Legal and consent text (agreement, privacy and terms, W-9 certification, ESIGN and card-network consents) was left alone because it needs a compliance check, not a style edit. Claims that need proof (“Faster approval”, “under 2 hours”, the 2.6% + 30¢ rate, security wording, “ESIGN Act compliant”) are flagged but unchanged. Button labels and step names were kept so they match the personas and earlier decisions.",
+      "by": "Ryan",
+      "when": "2026-10-13"
     }
   ];
 
@@ -1417,7 +1427,7 @@
   const back = () => (state.step <= 1 ? setState({ screen: "bizType" }) : setState({ step: state.step - 1 }));
 
   const BIZ_TYPES = [
-    { id: "company", label: "Company", desc: "A registered business with legal entity status, such as an LLC, corporation or partnership." },
+    { id: "company", label: "Company", desc: "A registered business, such as an LLC, corporation or partnership." },
     { id: "individual", label: "Individual / Sole proprietor", desc: "You are the sole owner of an unincorporated business." },
     { id: "non-profit", label: "Non-profit organization", desc: "Charitable organizations, foundations and non-governmental organizations." }
   ];
@@ -1593,7 +1603,7 @@
     if (f.kind === "select") return v ? "" : "Choose one.";
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
-    if (!String(v).trim()) return "This is needed to continue.";
+    if (!String(v).trim()) return "Fill this in to continue.";
     const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
@@ -1792,7 +1802,7 @@
       sub("screen", "Screening"),
       f("pep", "Is this person a politically exposed person?", "yn", {
         span: true,
-        hint: "A PEP holds, or has held, a senior public role: head of state, senior official, judge, senior military. Answering yes doesn't disqualify you, it just adds one extra screening step."
+        hint: "A PEP holds, or has held, a senior public role: head of state, senior official, judge, senior military. Answering yes doesn't disqualify you. It adds one extra screening step."
       })
     ];
   }
@@ -1844,16 +1854,16 @@
           fld("avgTicket", "Average transaction amount", "currency", { placeholder: "38" }),
           fld("maxTicket", "Maximum single transaction", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your biggest single payment or donation, even if it only happens now and then." : "Your biggest single sale, even if it only happens now and then." }),
           fld("cpSplit", "Card present %", "mono", { placeholder: "70", hint: "In person, on a card machine. Online, in-app and phone " + (isNonprofit() ? "payments" : "sales") + " count as the rest." })
-        ], { pinId: "underwriting-plain", assurance: "Go over one of these and nothing breaks. We'll just have a quick word before raising your limit." }),
+        ], { pinId: "underwriting-plain", assurance: "If you go over one of these, nothing breaks. We'll have a quick word before we raise your limit." }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "Primary payment channel" : "Primary sales channel", "select", { placeholder: "Choose a channel", options: ["In-person", "Online", "In-person and online", "Mobile", "Phone / mail order (MOTO)"] }),
           fld("goods", isNonprofit() ? "What people pay or give for" : "Type of goods or services", "select", { placeholder: "Choose a type", options: isNonprofit() ? ["Donations", "Tickets and events", "Memberships and subscriptions", "Services", "Physical goods", "Mixed"] : ["Services", "Services and subscriptions", "Physical goods", "Digital goods", "Mixed"] }),
           fld("recurring", isNonprofit() ? "Recurring donations or memberships?" : "Recurring billing or subscriptions?", "yn"),
           fld("trial", "Free trial or deferred billing?", "yn"),
-          fld("marketplace", isNonprofit() ? "Do you take payments on behalf of other organizations?" : "Do you take payments on behalf of other businesses?", "yn", { span: true, hint: (isNonprofit() ? "Chapters, member groups or fundraisers collecting through you, say." : "Contractors or instructors invoicing through you, say.") + " Saying yes changes who's on the hook, so we have to ask straight out." }),
+          fld("marketplace", isNonprofit() ? "Do you take payments on behalf of other organizations?" : "Do you take payments on behalf of other businesses?", "yn", { span: true, hint: (isNonprofit() ? "Chapters, member groups or fundraisers collecting through you, say." : "Contractors or instructors invoicing through you, say.") + " Saying yes changes who's responsible, so we have to ask directly." }),
           fld("international", isNonprofit() ? "Do you take payments from outside " + (ca ? "Canada" : "the US") + "?" : "Do you sell outside " + (ca ? "Canada" : "the US") + "?", "yn"),
           a.international === "yes" ? fld("countries", isNonprofit() ? "Countries payments come from" : "Countries sold to", "text", { conditional: true, placeholder: "e.g. Canada, United Kingdom" }) : null,
-          fld("refundPolicy", "Refund / return policy URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org/refunds" : "yourbusiness.com/refunds", hint: "A clear policy is your best defence against chargebacks. Leave it blank if you don't have one." })
+          fld("refundPolicy", "Refund / return policy URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org/refunds" : "yourbusiness.com/refunds", hint: "A clear policy helps with chargebacks. Leave it blank if you don't have one." })
         ]),
         card("s3-hist", "Processing history", "", [
           fld("prior", "Have you accepted card payments before?", "yn", { span: true }),
@@ -1861,7 +1871,7 @@
           a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null,
         ]),
         card("s3-payfac", isNonprofit() ? "How you'll appear on statements" : "How you'll appear to customers", "", [
-          fld("descriptor", "Billing descriptor", "descriptor", { span: true, hint: "This is what " + (isNonprofit() ? "the people paying you" : "your customers") + " will see on their statement. Use a name they'll recognize — it's the single biggest thing you can do to avoid “I don't know this charge” disputes." }),
+          fld("descriptor", "Billing descriptor", "descriptor", { span: true, hint: "This is what " + (isNonprofit() ? "the people paying you" : "your customers") + " will see on their statement. Use a name they'll recognize. It helps avoid “I don't know this charge” disputes." }),
           a.cpSplit !== "0" ? fld("posType", "POS / terminal type", "select", { conditional: true, placeholder: "Choose a terminal", options: ["Xplor Pay countertop terminal", "Xplor Pay mobile reader", "Third-party terminal", "None"] }) : null,
           // Only someone arriving from an existing Xplor account has a platform to show; a new applicant would be asked about a product they may not use.
           isSample() ? fld("platform", "Platform", "text", { optional: true, hint: "Already filled in from your Xplor account." }) : null,
@@ -1896,7 +1906,7 @@
       return [
         card("s4-manual", "Settlement account", "", bankFields, {
           pinId: "bank-no-debit",
-          assurance: "Payouts in only. Xplor can pay into this account and has no authority to take anything out. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter at step 6."
+          assurance: "Payouts in only. Xplor can pay into this account but can't take anything out. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter at step 6."
         })
       ];
     }
@@ -1915,7 +1925,7 @@
           fld("pci", "Do you follow the card industry's data security rules (PCI DSS)?", "yn", { span: true, unsure: true, hint: "If you only take payments through Xplor Pay, the answer is yes. We look after the card data." }),
           a.pci === "yes" ? fld("saq", "Which security questionnaire do you fill in (SAQ type)?", "select", { conditional: true, optional: true, hint: "If you only use Xplor Pay, skip this: we fill the form in for you. Not sure? Pick the first option.", placeholder: "Choose an SAQ type", options: ["SAQ A (payments fully outsourced)", "SAQ A-EP", "SAQ B", "SAQ B-IP", "SAQ C", "SAQ D"] }) : null,
           a.pci === "yes" ? fld("pciDate", "When did you last complete it?", "mono", { conditional: true, optional: true, hint: "Skip this if you only use Xplor Pay.", placeholder: datePh() }) : null
-        ], { pinId: "assurance-callouts", assurance: "Card data never touches your systems, so your yearly PCI form is the shortest one going — and we fill it in for you." }),
+        ], { pinId: "assurance-callouts", assurance: "Card data never touches your systems, so your yearly PCI form is the short one, and we fill it in for you." }),
         card("s5-consent", "Two consents we have to collect", "", [
           fld("matchConsent", "I agree to a check of the card networks' list of closed merchant accounts", "check", { span: true, hint: "Also called a MATCH or TMF check. Mastercard requires it for every merchant account." }),
           ca ? null : fld("ofacAck", "I understand we'll check your name against the US government sanctions list", "check", { span: true, hint: "Known as OFAC screening. Every US merchant goes through it." })
@@ -1937,11 +1947,11 @@
 
   function whyFor(step, ca) {
     return {
-      1: { t: "Why are we asking?", b: "Your bank needs to see that the " + orgWord() + " really exists and that its name, number and address all line up. Matching the registry for you is what turns days of manual review into minutes.", p: ["Checked against " + (ca ? "CRA and provincial registries" : "IRS and Secretary of State records"), "A match is one less document to dig out", "Your description sets your merchant category for you"] },
-      2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. There's no way around this one." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. There's no way around this one.", p: [(ca ? "SIN" : "SSN") + " and ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
-      3: { t: "Why do you need numbers?", b: "This is underwriting, not a credit check. Your answers set sensible limits and show what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
+      1: { t: "Why are we asking?", b: "Your bank needs to see that the " + orgWord() + " really exists and that its name, number and address all line up. Matching the registry for you speeds up the review.", p: ["Checked against " + (ca ? "CRA and provincial registries" : "IRS and Secretary of State records"), "A match is one less document to dig out", "Your description sets your merchant category for you"] },
+      2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(ca ? "SIN" : "SSN") + " and ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
+      3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. We check it against the bank letter you add at step 6, so your payouts only ever go where they should.", p: ["Payouts in only. Xplor gets no authority to debit", "You can change this account later"] },
-      5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal — it just sends your file to a person rather than straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
+      5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal. It means a person reviews your file instead of it going straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
       6: { t: "Why do you need files?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Checking them as they upload means a blurry scan gets caught now, not after a three-day wait.", p: ["Scanned for malware, stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Most decisions come back in under 2 hours", "Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
     }[step];
@@ -2044,8 +2054,8 @@
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: "Add the account your payouts should go to. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter for it in step 6.",
         5: "Every application includes these. Saying yes to one is never an automatic no — it just means someone reads your file.",
-        6: "We check each file as it uploads, so if something won't do you'll know straight away.",
-        7: "Look over everything you've told us. Sign, and it all goes over in one go."
+        6: "We check each file as it uploads, so you'll know straight away if something doesn't work.",
+        7: "Check everything you've told us. When you sign, we send it all in one go."
       }[st.step],
       stepComplete: stepComplete,
       missing: missing,
@@ -2056,7 +2066,7 @@
       lookupLabel: ca ? "Business Number (BN)" : "Employer Identification Number (EIN)",
       lookupPlaceholder: ca ? "123456789" : "12-3456789",
       lookupNote: isSole() ? "If you have one, we'll use it to fill in what we can. If you don't, you can carry on without it." : ca ? "We'll match it against CRA and provincial registry records and fill in the rest for you." : "We'll match it against IRS and state registry records and fill in the rest for you.",
-      lookupAssurance: (ca ? "Your BN" : "Your EIN") + " is tokenized the moment you submit it. It's used once to verify the " + orgWord() + " and is never shown back to Xplor staff.",
+      lookupAssurance: (ca ? "Your BN" : "Your EIN") + " is protected the moment you submit it. We use it once to verify the " + orgWord() + " and Xplor staff never see it.",
       lookupResult: lookupResultText(st),
       ownershipTotal: fmtPct(ownedPct) + "% of 100%",
       ownedWidth: Math.max(0, Math.min(100, ownedPct)),
@@ -2070,7 +2080,7 @@
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
       reviewNote: (() => { const idToCome = (o) => o.status === "invited"; return solo ? (idToCome(owners[0]) ? "Your ID is still to come" : "Your ID arrived and is being checked") : owners.map((o) => (o.self ? "Your" : o.name + "'s") + " ID " + (idToCome(o) ? "still to come" : "arrived")).join(" · "); })(),
-      othersTitle: solo ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's done their bit" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
+      othersTitle: solo ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's finished their part" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
       othersBody: solo ? (owners[0].self ? "You're the only owner listed, so nobody else needs to send their ID." : "Only one owner is listed and their ID is in, so nobody else needs to send anything.") : settled === owners.length ? "Everyone you invited has finished their part, so nothing is waiting on a person." : "We've nudged " + invitedLeft.map((o) => o.name).join(" and ") + " to finish. Your review carries on in the meantime.",
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
@@ -2335,7 +2345,7 @@
   <div class="welcome-inner">
     <span class="tag tag--purple">${icon("shield", 13)}Welcome to Xplor Pay</span><span class="tag tag--green">${icon("bolt", 13)}Faster approval</span>
     <h1 class="welcome-title">Let's get you set up to take payments${pin("step-count-7")}</h1>
-    <p class="welcome-lede">We'll walk you through it in seven short steps — about 15 minutes in total. You can stop whenever you like and pick up right where you left off.${pin("welcome-length")}</p>
+    <p class="welcome-lede">We'll walk you through seven short steps. It takes about 15 minutes, and you can stop and pick up right where you left off.${pin("welcome-length")}</p>
     <div class="need-bar">
       <h2 class="need-head">What you'll need</h2>
     </div>
@@ -2343,7 +2353,7 @@
       ${need("building", "Your registration and tax numbers", v.needRegistration)}
       ${need("users", "Details of the people who own your organization", v.needIds)}
       ${need("card", "Your bank account and a few documents", v.needBank)}
-      ${need("chart", "A rough idea of what you take on card", "Monthly takings, your average sale, and whether you sell in person, online or both. A rough guess is fine.")}
+      ${need("chart", "A rough idea of your card sales", "Your monthly total, your average sale, and whether you sell in person, online or both. A rough guess is fine.")}
     </div>
     <div class="actions">
       <button type="button" class="btn btn-outline btn-lg" data-click="${on(openSave)}">Someone else handles our finances</button>${pin("welcome-delegate")}
@@ -2353,11 +2363,11 @@
     <div class="info info--below" data-mouseenter="${on(() => setState({ infoOpen: true }))}" data-mouseleave="${on(() => setState({ infoOpen: false }))}">
       <button type="button" class="info-trigger" aria-expanded="${String(state.infoOpen)}" data-click="${on(() => setState({ infoOpen: true }))}">${icon("help", 15, "i-accent")}What we do with your information${icon("info", 14)}</button>
       ${state.infoOpen && html`<div class="popover" data-key="info-pop"><div class="popover-body"><ul class="popover-list">
-        <li>Encrypted in transit and at rest.</li>
-        <li>Tax and national ID numbers are tokenized — Xplor staff can't read them.</li>
-        <li>Identity checks are done by Trullio, our verification partner.</li>
-        <li>Used only to verify you, never for marketing.</li>
-        <li>Progress saves automatically after every field.</li>
+        <li>We encrypt your information as it travels and while it's stored.</li>
+        <li>We protect tax and national ID numbers, so Xplor staff can't read them.</li>
+        <li>Trullio, our verification partner, runs the identity checks.</li>
+        <li>We only use it to verify you, never for marketing.</li>
+        <li>We save your progress after every field.</li>
       </ul></div></div>`}
     </div>
   </div>
@@ -2380,8 +2390,8 @@
       <section class="card entry-card">${contact}</section>
     </div>
   </div>`;
-      if (mode === "expired") return dead("clock", "Link expired", "This link has run out", "Links stop working after a while, so only the right person can open your application. Your answers are still saved. Call us and we'll send a fresh link.");
-      if (mode === "closed") return dead("lock", "Link closed", "This link has been closed", "If you weren't expecting that, call us and we'll sort it out.");
+      if (mode === "expired") return dead("clock", "Link expired", "This link has expired", "Links stop working after a while, so only the right person can open your application. Your answers are still saved. Call us and we'll send a fresh link.");
+      if (mode === "closed") return dead("lock", "Link closed", "This link has been closed", "If you weren't expecting that, call us and we'll help.");
       if (mode === "locked") return dead("lock", "Paused", "Too many tries", "We've paused this link to keep your application safe. Call us and we'll get you back in.");
       const sent = mode === "code";
       return html`<div class="welcome" data-key="entry-${mode}">
@@ -2413,7 +2423,7 @@
   <div class="welcome-inner">
     <span class="tag tag--purple">${icon("shield", 13)}About your business</span>
     <h1 class="welcome-title">What type of business are you?${pin("business-type-first")}</h1>
-    <p class="welcome-lede">Tell us how your business is structured so we can tailor the verification process. It decides which questions you see, so you only answer what applies to you.</p>
+    <p class="welcome-lede">Tell us how your business is set up. We'll only ask the questions that apply to you.</p>
     <div class="biz-list" role="radiogroup" aria-label="Business type">
       ${BIZ_TYPES.map((t) => html`<button type="button" class="biz-card${state.bizType === t.id ? " is-selected" : ""}" role="radio" aria-checked="${String(state.bizType === t.id)}" data-key="biz-${t.id}" data-click="${on(() => chooseBizType(t.id))}">
         <span class="biz-radio" aria-hidden="true"></span>
@@ -2640,7 +2650,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
       <div${state.w9Err && /legal name/.test(state.w9Err) ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-w9name">Type your full legal name to sign</label>
       <input class="input sign-input" id="f-w9name" value="${state.w9Name}" placeholder="${w.signer || "Your full legal name"}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ w9Name: e.target.value, w9Err: "" }))}" data-blur="${on(() => { const w = w9Info(); const norm = (t) => String(t).trim().replace(/\s+/g, " ").toLowerCase(); if (state.w9Name.trim() && w.signer && norm(state.w9Name) !== norm(w.signer)) setState({ w9Err: "Type your full legal name exactly as it appears in step 2." }); })}"></div>
       ${state.w9Err && html`<p class="field-error" role="alert">${state.w9Err}</p>`}
-    </div>` : html`<div class="w9-sign"><p class="field-error" role="alert">A W-9 needs your EIN, and none has been given. Add it in step 1, or close this and upload your own signed copy.</p></div>`}
+    </div>` : html`<div class="w9-sign"><p class="field-error" role="alert">A W-9 needs your EIN, and we don't have one yet. Add it in step 1, or close this and upload your own signed copy.</p></div>`}
     <div class="docv-foot">
       <span class="small-note">Prototype preview: sample text, not the real form.</span>
       <span class="w9-actions">
@@ -2701,14 +2711,14 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   <input class="input sign-input" id="f-sign" value="${state.sign}" placeholder="${v.signatoryName || "Your full legal name"}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ sign: e.target.value }))}">${errView("sign")}</div>
   <div class="sign-meta">
     <span>Signed on ${new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })} · the date and time are recorded when you submit</span>
-    <span class="sign-ok">${icon("shield", 13)}ESIGN Act compliant · a signed copy is emailed to you</span>
+    <span class="sign-ok">${icon("shield", 13)}ESIGN Act compliant · we'll email you a signed copy</span>
   </div>
 </section>
 <section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
   <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
   ${state.nextOpen && html`<ol class="next-grid" id="next-body">
     <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trullio</div><div class="next-body">${v.submitNote}</div></div></li>
-    <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">Usually under 2 hours. Feel free to close this window — we'll email and text you.</div></div></li>
+    <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">Usually under 2 hours. You can close this window, and we'll email and text you.</div></div></li>
     <li class="next-item"><span class="next-num">3</span><div><div class="next-title">Start taking payments</div><div class="next-body">Your first payout lands the next business day after your first sale.</div></div></li>
   </ol>`}
 </section>`;
@@ -2776,17 +2786,17 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   </div>
   <ol class="timeline">
     <li class="tl-item"><span class="tl-dot tl-dot--done">${icon("check", 12, "i-bb")}</span><div class="tl-body"><div class="tl-title">Application received</div><div class="tl-note">${v.receivedNote}</div></div></li>
-    <li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "The checks can't finish until what's still owed is in · " : ""}${v.checkNote} · ${v.reviewNote}</div></div></li>
+    <li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote} · ${v.reviewNote}</div></div></li>
     <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">Usually within 2 hours${waits.length ? " of the last item arriving" : ""} · we'll email and text you</div></div></li>
   </ol>
-  ${waits.length ? html`<p class="hero-callout">Your decision can't be made until everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">Nothing else for you to do right now. If anyone does have a question it'll turn up here as one clear request, not a start-again email.</p>`}
+  ${waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, you'll see it here as one clear request.</p>`}
 </section>
 ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">${v.invitedOwners.map((o) => html`<section class="card card--p20 doc is-later" data-key="owner-wait-${o.id}">
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("clock", 17)}</span>
     <div class="grow">
       <div class="doc-titlebar"><h3 class="doc-title">${o.name} · waiting for ${o.inviteEmail}</h3></div>
-      <p class="body-sm">They fill in their own details and ID. Checks can't finish until they have.</p>
+      <p class="body-sm">They'll fill in their own details and ID. We can finish the checks once they have.</p>
     </div>
   </div>
 </section>`)}</div>` : ""}
@@ -2807,7 +2817,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   function rfiView() {
     return html`<div class="callout callout--warning" data-key="rfi-alert" role="status">
   ${icon("alert", 18)}
-  <div><div class="warn-title">Just one thing to sort${pin("rfi-not-restart")}</div><div>You're not back at the start. Fix this one item and the checks carry on exactly where they left off, usually within the hour.</div></div>
+  <div><div class="warn-title">Just one thing to fix${pin("rfi-not-restart")}</div><div>You're not back at the start. Fix this one item and the checks carry on exactly where they left off, usually within the hour.</div></div>
 </div>
 <section class="card" data-key="rfi-card">
   <h1 class="rfi-title">The address on your bank verification doesn't match your registered address</h1>
@@ -2825,7 +2835,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     return html`<section class="approved" data-key="approved">
   <span class="approved-tag">${icon("check", 13, "i-b")}Approved in 1 hour 12 minutes</span>
   <h1 class="approved-title">Riverside Pilates is approved</h1>
-  <p class="approved-body">Your application has been approved. Add a merchant to start taking transactions, then invite your team and order card readers.</p>
+  <p class="approved-body">We've approved your application. Add a merchant to start taking transactions, then invite your team and order card readers.</p>
   <div class="btn-row">
     <button type="button" class="btn btn-light btn-lg">Add a merchant</button>
     <button type="button" class="btn btn-on-dark btn-lg">Open payments dashboard</button>
@@ -2836,7 +2846,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 </div>
 <section class="unlock" data-key="approved-unlock" aria-labelledby="unlock-h">
   <h2 class="unlock-title" id="unlock-h">Now that you're approved</h2>
-  <p class="unlock-sub">These need a live account, so they were waiting on this.</p>
+  <p class="unlock-sub">These need a live account, so they're ready now.</p>
   <div class="unlock-grid">
     <article class="card card--p20">
       <div class="unlock-head"><span class="icon-tile">${icon("users", 17)}</span><h3 class="tile-title">Invite your team</h3><span class="pill pill--positive">Unlocked</span></div>
@@ -2845,7 +2855,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     </article>
     <article class="card card--p20">
       <div class="unlock-head"><span class="icon-tile">${icon("card", 17)}</span><h3 class="tile-title">Order card readers</h3><span class="pill pill--positive">Unlocked</span></div>
-      <p class="tile-body">Get readers for the counter or for taking payments around the studio. Delivery timing is shown when you order.</p>
+      <p class="tile-body">Get readers for the counter or for taking payments around the studio. You'll see delivery timing when you order.</p>
       <button type="button" class="btn btn-outline btn-tile">Order devices</button>
     </article>
   </div>
@@ -2874,13 +2884,13 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     <div class="dialog-head">
       <span class="icon-tile icon-tile--positive">${icon("check", 18, "i-b")}</span>
       <div class="grow">
-        <h2 class="dialog-title" id="save-title">Don't worry, it's all saved</h2>
+        <h2 class="dialog-title" id="save-title">Your answers are saved</h2>
         <p class="dialog-sub" id="save-sub">${v.saveProgressNote}</p>
       </div>
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeSave)}">${icon("x", 18)}</button>
     </div>
     <p class="dialog-body">Come back any time with the link in your email. We'll send you a code to open it.${pin("return-via-email-link")}</p>
-    <p class="dialog-body">Send a link to whoever should pick it up — your bookkeeper for the bank details, say, or a co-owner for their own ID. They'll land exactly where you left off and only see the parts that are theirs.</p>
+    <p class="dialog-body">Send a link to whoever should pick it up, such as your bookkeeper for the bank details or a co-owner for their own ID. They'll land exactly where you left off and see only their part.</p>
     <form class="dialog-form" data-submit="${on(() => { if (!SAVE_EMAIL_OK.test(state.saveEmail.trim())) { setState({ saveEmailErr: "Enter an email like name@example.com." }); return; } closeSave(); })}"${state.saveEmailErr ? html` data-error="1"` : ""}>
       <label class="sr-only" for="save-email">Email address to send the link to</label>
       <input class="input" id="save-email" type="email" value="${state.saveEmail}" placeholder="name@example.com" autocomplete="email" spellcheck="false" data-input="${on((e) => setState({ saveEmail: e.target.value, saveEmailErr: "" }))}" data-blur="${on(() => setState({ saveEmailErr: state.saveEmail.trim() && !SAVE_EMAIL_OK.test(state.saveEmail.trim()) ? "Enter an email like name@example.com." : "" }))}">
@@ -2905,7 +2915,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
       </div>
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDelegate)}">${icon("x", 18)}</button>
     </div>
-    <p class="dialog-body">Enter the email of the person who will fill in these details. They won't see the rest of your application. You can carry on in the meantime, and we'll show here when they're done.</p>
+    <p class="dialog-body">Enter the email of the person who'll fill in these details. They won't see the rest of your application. Carry on in the meantime, and we'll show you here when they're done.</p>
     <form class="dialog-form" data-submit="${on(sendDelegate)}"${state.delegateErr ? html` data-error="1"` : ""}>
       <label class="sr-only" for="delegate-email">Email address to send the link to</label>
       <input class="input" id="delegate-email" type="email" value="${state.delegateEmail}" placeholder="name@example.com" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ delegateEmail: e.target.value, delegateErr: "" }))}" data-blur="${on(() => setState({ delegateErr: state.delegateEmail.trim() && !SAVE_EMAIL_OK.test(state.delegateEmail.trim()) ? "Enter an email like name@example.com." : "" }))}">
