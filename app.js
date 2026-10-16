@@ -11,7 +11,7 @@
  *   ?region=ca      Canada instead of the United States
  *   ?chrome=shell   render inside the Xplor app shell
  *   ?why=0          hide the "why we ask" panel
- *   ?start=         where the flow starts: (none) the sales form | merchant | sample
+ *   ?start=         where the flow starts: (none) login | sales | merchant (one-time code) | sample
  *   ?link=          how the emailed link opens: returning | review | info | approved | expired | closed
  *
  * Security: nothing leaves the page. There are no network calls (the CSP in
@@ -73,9 +73,11 @@
     closed: "Closed link"
   };
   const LINK_NEW = "New applicant";
-  // Where the whole prototype starts (decision start-as-option): the internal sales form, or the merchant's side.
+  // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
+  // (demoted to a Prototype option, not deleted) the internal sales form, the one-time-code link, or the sample business.
+  const START_LOGIN = "Merchant: login (temporary password)";
   const START_SALES = "Sales person (internal form)";
-  const START_NEW = "Merchant: new applicant";
+  const START_NEW = "Merchant: one-time code (email link)";
   const START_SAMPLE = "Merchant: sample business";
 
   // Only whitelisted values are read from the URL, so query-string input
@@ -85,7 +87,7 @@
     return {
       region: q.get("region") === "ca" ? "Canada" : "United States",
       chrome: q.get("chrome") === "shell" ? "Inside app shell" : "Standalone flow",
-      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : START_SALES,
+      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : q.get("start") === "sales" ? START_SALES : START_LOGIN,
       data: q.get("data") === "sample" || q.get("start") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW
@@ -97,6 +99,7 @@
     if (ctx.chrome === "Inside app shell") q.set("chrome", "shell");
     if (ctx.start === START_NEW) q.set("start", "merchant");
     if (ctx.start === START_SAMPLE) q.set("start", "sample");
+    if (ctx.start === START_SALES) q.set("start", "sales");
     if (ctx.data === "Sample business" && ctx.start !== START_SAMPLE) q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
     Object.keys(LINKS).forEach((k) => { if (ctx.link === LINKS[k]) q.set("link", k); });
@@ -108,7 +111,7 @@
   const isCa = () => ctx.region === "Canada";
 
   const CONTEXT_OPTIONS = {
-    start: [START_SALES, START_NEW, START_SAMPLE],
+    start: [START_LOGIN, START_SALES, START_NEW, START_SAMPLE],
     region: ["United States", "Canada"],
     chrome: ["Standalone flow", "Inside app shell"],
     data: ["Empty", "Sample business"],
@@ -1139,10 +1142,20 @@
       "area": "Flow",
       "where": "Prototype options",
       "t": "Choose where the prototype starts",
-      "b": "The prototype always opens on the salesperson's form. A new Flow starts as option in Prototype options switches the start to the merchant's side: a new applicant at the code screen, or the sample business. The existing Link opened as and Data options still work on top of it. The address takes ?start=merchant or ?start=sample.",
-      "tradeoff": "Any saved address that relied on the old start (such as ?data=sample on its own) now opens the sales form first. Add ?start=merchant to those, including the address the usability-testing kit tests.",
+      "b": "A Flow starts as option in Prototype options switches where the prototype opens: the merchant's login (the default, decision login-default-start), the salesperson's form, the merchant's one-time-code link, or the sample business. The existing Link opened as and Data options still work on top of it. The address takes ?start=sales, ?start=merchant or ?start=sample; no parameter means login.",
+      "tradeoff": "Any saved address that relied on an earlier default (such as ?data=sample on its own, from when the sales form opened first) now opens the login screen first. Add ?start=merchant to those, including the address the usability-testing kit tests.",
       "by": "Ryan",
       "when": "2026-10-13"
+    },
+    {
+      "id": "login-default-start",
+      "area": "Flow",
+      "where": "Before the welcome page",
+      "t": "The prototype now opens on a password login, not the sales form",
+      "b": "The merchant's first screen is now email and password sign-in with a temporary password, forcing a password change before continuing, the same shape as a first real sign-in. It replaces the sales form as the default start. Submitting the new password lands wherever the existing Link opened as option sends it (the welcome page for a new applicant, or further into the flow for a returning one), reusing the same openLink() logic as the one-time-code screen. Neither the sales form nor the one-time-code link were deleted: both are still reachable from Prototype options > Flow starts as, alongside the new login and the sample business, the same demote-don't-delete pattern already used for Link opened as.",
+      "tradeoff": "No real account exists in the prototype, so any email and password sign in and the password-strength check is only a client-side length and match check (8+ characters, both fields the same). Whether a merchant actually receives a temporary password by email, and how, is not covered by anything built so far and needs an ops answer before this is more than a placeholder.",
+      "by": "Ryan",
+      "when": "2026-10-16"
     },
     {
       "id": "sales-prefill",
@@ -1315,7 +1328,7 @@
   }
 
   // Every prototype starts at the "Check it's you" code screen, whatever state the link is in.
-  function startScreen() { return ctx.start === START_SALES ? "sales" : "entry"; }
+  function startScreen() { return ctx.start === START_SALES ? "sales" : ctx.start === START_LOGIN ? "login" : "entry"; }
   function entryModeFor() { return ctx.link === LINKS.expired ? "expired" : ctx.link === LINKS.closed ? "closed" : "send"; }
 
   function freshState() {
@@ -1328,6 +1341,14 @@
       entryCode: "",
       entryErr: "",
       entryTries: 0,
+      // The login screen (decision login-default-start): which stage ("credentials" or "change"), the typed values, and any error.
+      loginStage: "credentials",
+      loginEmail: "",
+      loginPassword: "",
+      loginErr: "",
+      newPassword: "",
+      confirmPassword: "",
+      changeErr: "",
       // The internal sales form's contract-upload stub.
       salesContract: { state: "idle", file: "", read: "" },
       // The sample business is for demoing the later screens, so step 1 is
@@ -1456,6 +1477,22 @@
     }
     const screen = ctx.link === LINKS.info ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
     setState({ screen, submittedAt: "9:12 AM" });
+  }
+
+  // Login (decision login-default-start): a temporary password always forces a change, same as a real first sign-in
+  // would. Prototype: any non-empty email and password sign in; nothing is checked against a real account.
+  const EMAIL_OK = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function submitLogin() {
+    const email = state.loginEmail.trim();
+    if (!EMAIL_OK.test(email)) { setState({ loginErr: "Enter an email like name@example.com." }); return; }
+    if (!state.loginPassword) { setState({ loginErr: "Enter your temporary password." }); return; }
+    setState({ loginStage: "change", loginErr: "" });
+  }
+  function submitNewPassword() {
+    const pw = state.newPassword, confirm = state.confirmPassword;
+    if (pw.length < 8) { setState({ changeErr: "Use at least 8 characters." }); return; }
+    if (pw !== confirm) { setState({ changeErr: "Passwords don't match." }); return; }
+    openLink();
   }
   // Continue, save and submit all go through here: nothing moves on until the
   // step is complete, and a failed attempt shows every problem at once.
@@ -2430,6 +2467,54 @@
 </div>`;
   }
 
+    // The default front door (decision login-default-start): email and a temporary password, then a forced
+    // password change, same shape as a real first sign-in. Lands wherever openLink() sends it.
+    function loginView() {
+      if (state.loginStage === "change") {
+        return html`<div class="welcome" data-key="login-change">
+    <div class="welcome-inner">
+      <span class="tag tag--purple">${icon("lock", 13)}Secure sign-in</span>
+      <h1 class="welcome-title">Change your password${pin("login-default-start")}</h1>
+      <p class="welcome-lede">Your temporary password has to be changed before you continue.</p>
+      <form class="card entry-card" data-submit="${on(submitNewPassword)}"${state.changeErr ? html` data-error="1"` : ""}>
+        <div class="stack">
+          <div><label class="field-label field-label--block" for="login-new-pw">New password</label>
+          <input class="input" id="login-new-pw" type="password" autocomplete="new-password" value="${state.newPassword}" data-input="${on((e) => setState({ newPassword: e.target.value, changeErr: "" }))}"></div>
+          <div><label class="field-label field-label--block" for="login-confirm-pw">Enter new password again</label>
+          <input class="input" id="login-confirm-pw" type="password" autocomplete="new-password" value="${state.confirmPassword}" data-input="${on((e) => setState({ confirmPassword: e.target.value, changeErr: "" }))}"></div>
+        </div>
+        ${state.changeErr && html`<p class="field-error" role="alert">${state.changeErr}</p>`}
+        <div class="entry-actions">
+          <div class="footer-end"><button type="submit" class="btn btn-primary btn-lg">Send${icon("arrow-r", 19)}</button></div>
+        </div>
+      </form>
+    </div>
+  </div>`;
+      }
+      return html`<div class="welcome" data-key="login">
+    <div class="welcome-inner">
+      <span class="tag tag--purple">${icon("lock", 13)}Secure sign-in</span>
+      <h1 class="welcome-title">Sign in with your email and password${pin("login-default-start")}</h1>
+      <p class="welcome-lede">Use the temporary password we sent you to get started.</p>
+      <form class="card entry-card" data-submit="${on(submitLogin)}"${state.loginErr ? html` data-error="1"` : ""}>
+        <div class="stack">
+          <div><label class="field-label field-label--block" for="login-email">Email</label>
+          <input class="input" id="login-email" type="email" autocomplete="username" placeholder="name@host.com" value="${state.loginEmail}" data-input="${on((e) => setState({ loginEmail: e.target.value, loginErr: "" }))}"></div>
+          <div><label class="field-label field-label--block" for="login-password">Password</label>
+          <input class="input" id="login-password" type="password" autocomplete="current-password" placeholder="Password" value="${state.loginPassword}" data-input="${on((e) => setState({ loginPassword: e.target.value, loginErr: "" }))}"></div>
+        </div>
+        ${state.loginErr && html`<p class="field-error" role="alert">${state.loginErr}</p>`}
+        <div class="entry-actions">
+          <div class="footer-end">
+            <button type="button" class="btn btn-ghost btn-md" data-click="${on(() => showToast("Prototype: password reset isn't simulated."))}">Send me another password</button>
+            <button type="submit" class="btn btn-primary btn-lg">Sign in${icon("arrow-r", 19)}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>`;
+    }
+
     // Before the welcome page: the emailed link alone does not open the application (decisions 89 to 91).
     function entryView() {
       const mode = state.entryMode;
@@ -3264,9 +3349,10 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const v = vals();
     return html`<div class="page" data-key="page">
   <div class="frame">
-    ${v.showShell && !v.isEntry && state.screen !== "sales" && shellView(v)}
+    ${v.showShell && !v.isEntry && state.screen !== "sales" && state.screen !== "login" && shellView(v)}
     <div class="content" data-key="content">
       ${state.screen === "sales" && salesView()}
+      ${state.screen === "login" && loginView()}
       ${v.isEntry && entryView()}
       ${v.isWelcome && welcomeView(v)}
       ${v.isBizType && bizTypeView()}
@@ -3370,11 +3456,12 @@ ${protoView()}`;
     morphChildren(root, tpl.content);
     applyWidths();
 
-    if (state.screen !== last.screen || state.step !== last.step || state.inviteStep !== last.inviteStep) {
+    if (state.screen !== last.screen || state.step !== last.step || state.inviteStep !== last.inviteStep || state.loginStage !== last.loginStage) {
       if (last.screen !== null) window.scrollTo(0, 0);
       const cur = STEPS[state.step - 1];
       document.title = (state.screen === "flow" ? "Step " + state.step + " of 7 · " + stepName(cur)
         : state.screen === "sales" ? "New merchant account"
+        : state.screen === "login" ? (state.loginStage === "change" ? "Change your password" : "Sign in")
         : state.screen === "entry" ? "Check it's you"
         : state.screen === "welcome" ? "Business verification"
         : state.screen === "bizType" ? "Your business type"
@@ -3414,7 +3501,7 @@ ${protoView()}`;
       const codeField = document.getElementById("entry-code");
       if (codeField) codeField.focus();
     }
-    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, entryMode: state.entryMode };
+    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, entryMode: state.entryMode, loginStage: state.loginStage };
     const hot = state.comboOpen && document.querySelector(".combo-opt.is-active");
     if (hot && hot.scrollIntoView) hot.scrollIntoView({ block: "nearest" });
     // Hand over to enhance.js (animation layer).
