@@ -1129,8 +1129,8 @@
       "area": "Flow",
       "where": "Before the merchant's link",
       "t": "The flow starts with the salesperson's account request",
-      "b": "Once a deal is agreed, the salesperson who agreed it fills in one internal form (parent, account, owner, point of contact, processing, fees and payouts) before the merchant gets a link. It replaces a Google Form. It uses the same fields, cards and buttons as the merchant's flow, with no progress rail, because it is an internal tool and a person fills it in once. The merchant never sees it. The submit button stays disabled until every required answer is valid, with the same hover note as the merchant's steps. Format rules that used to live only in helper text (account ID like CE-1, the account ID in brackets in the name, fees as US dollars, the descriptor at 10 characters or fewer, a date that is today or later) are now checked as each field is left. After submitting, the page lists the documents to have ready when the DocuSign email arrives.",
-      "tradeoff": "The 19 category codes are a stand-in, not the real dropdown. The named contact for urgent requests is not in the source, so the hint says to contact the onboarding team. LER and SMAA are shown as written in the source and not expanded. Nothing is sent: there is no DocuSign email and no link is created, so the button into the merchant's side is a prototype control. Fees are US dollars only, as in the source form.",
+      "b": "Once a deal is agreed, the salesperson who agreed it fills in one internal form (parent, account, owner, point of contact, processing, fees and payouts) before the merchant gets a link. It replaces a Google Form. It uses the same fields, cards and buttons as the merchant's flow, with no progress rail, because it is an internal tool and a person fills it in once. The merchant never sees it. The submit button stays disabled until every required answer is valid, with the same hover note as the merchant's steps. Format rules that used to live only in helper text (account ID like CE-1, the account ID in brackets in the name, fees as US dollars, the descriptor at 10 characters or fewer, a date that is today or later) are now checked as each field is left. Submitting goes straight to the merchant's code screen (no interstitial page): an earlier version showed the salesperson a 'have these documents ready' checklist (LER, W-9, bank letter, owner ID, SMAA), but those are the merchant's documents, not the salesperson's, so the page was confusing and was removed (Ryan's call, 2026-10-15). Whether and where that checklist belongs is still open.",
+      "tradeoff": "The 19 category codes are a stand-in, not the real dropdown. The named contact for urgent requests is not in the source, so the hint says to contact the onboarding team. LER and SMAA are shown as written in the source and not expanded. Nothing is sent: there is no DocuSign email and no link is created, so submit goes straight into the merchant's side. Fees are US dollars only, as in the source form.",
       "by": "Ryan",
       "when": "2026-10-13"
     },
@@ -1328,10 +1328,8 @@
       entryCode: "",
       entryErr: "",
       entryTries: 0,
-      // The internal sales form: whether it has been submitted, and when.
-      salesDone: false,
+      // The internal sales form's contract-upload stub.
       salesContract: { state: "idle", file: "", read: "" },
-      salesAt: "",
       // The sample business is for demoing the later screens, so step 1 is
       // already looked up rather than making you press the button first.
       // Which kind of business the applicant is, chosen on the page after the welcome screen.
@@ -2493,7 +2491,6 @@
     ["feeCcMerchant", "Credit Card Merchant Fee"], ["feeAmex", "Amex Fee"], ["feeMastercard", "Mastercard Fee"],
     ["feeVisa", "Visa Fee"], ["feeDiscover", "Discover Fee"]
   ];
-  const SALES_DOCS = ["LER", "W-9", "A voided check or a bank letter", "A copy of the owner's driver's license (non-government entities only)", "SMAA"];
 
   function salesSections() {
     const a = state.a;
@@ -2583,7 +2580,7 @@
     const region = a.s_country === "Canada" ? "Canada" : /^(United States|Puerto Rico)$/.test(a.s_country || "") ? "United States" : ctx.region;
     salesPrefill = { a: pa, ownerEmail: t("s_ownerEmail"), owners: [{ id: 1, name: ownerName, initials: initialsOf(ownerName), pct: 100, role: "Owner / CEO", status: "pending", self: true, added: true, me: true }] };
     if (region !== ctx.region) setCtx({ region });
-    setState({ salesDone: true, salesAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }), a: Object.assign({}, state.a, pa), owners: salesPrefill.owners.map((o) => Object.assign({}, o)) });
+    setState({ screen: "entry", a: Object.assign({}, state.a, pa), owners: salesPrefill.owners.map((o) => Object.assign({}, o)) });
   }
 
   // Simulated contract read: no file picker opens and no file is read. After a short wait the fee and payout fields are filled with
@@ -2625,7 +2622,6 @@
   }
 
   function salesView() {
-    if (state.salesDone) return salesDoneView();
     const secs = salesSections();
     const all = (secs.reduce((x, s) => x.concat(s.fields), []));
     const errs = {};
@@ -2649,24 +2645,6 @@
   <div class="actions actions--sales">
     <button type="button" class="btn btn-soft btn-sm" data-click="${on(fillSalesExample)}">${icon("pen", 14)}Fill with example (prototype)</button>
     ${gateView({ stepComplete: !missing.length, missing }, btn)}
-  </div>
-</div></div>`;
-  }
-
-  function salesDoneView() {
-    const a = state.a;
-    return html`<div class="welcome" data-key="sales-done"><div class="welcome-inner">
-  <section class="hero-card" data-key="s-thanks">
-    <div class="hero-head"><span class="hero-icon">${icon("check", 20)}</span><div><h1 class="hero-title">Account request sent</h1><p class="hero-sub">${a.s_name} · sent at ${state.salesAt}</p></div></div>
-    <p class="hero-callout">A DocuSign email follows. When it arrives, have the documents below ready.</p>
-  </section>
-  <section class="card" data-key="s-docs">
-    <div class="card-head"><div class="grow"><h2 class="card-title">Have these ready after the DocuSign email</h2></div></div>
-    <ul class="help-list">${SALES_DOCS.map((d) => html`<li><span class="help-label">${d}</span></li>`)}</ul>
-  </section>
-  <div class="actions">
-    <button type="button" class="btn btn-outline btn-lg" data-click="${on(() => setState({ salesDone: false }))}">${icon("chev-l", 17)}Back to the form</button>
-    <button type="button" class="btn btn-primary btn-lg" data-click="${on(() => setState({ screen: "entry" }))}">See what the merchant gets next${icon("arrow-r", 19)}</button>
   </div>
 </div></div>`;
   }
