@@ -9,7 +9,6 @@
  * Prototype context (the design's props) comes from the query string or the
  * "Prototype options" panel:
  *   ?region=ca      Canada instead of the United States
- *   ?chrome=shell   render inside the Xplor app shell
  *   ?why=0          hide the "why we ask" panel
  *   ?start=         where the flow starts: (none) login | sales | merchant (one-time code) | sample
  *   ?link=          how the emailed link opens: returning | review | info | approved | expired | closed
@@ -86,7 +85,6 @@
     const q = new URLSearchParams(location.search);
     return {
       region: q.get("region") === "ca" ? "Canada" : "United States",
-      chrome: q.get("chrome") === "shell" ? "Inside app shell" : "Standalone flow",
       start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : q.get("start") === "sales" ? START_SALES : START_LOGIN,
       data: q.get("data") === "sample" || q.get("start") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
@@ -96,7 +94,6 @@
   function writeContext() {
     const q = new URLSearchParams();
     if (ctx.region === "Canada") q.set("region", "ca");
-    if (ctx.chrome === "Inside app shell") q.set("chrome", "shell");
     if (ctx.start === START_NEW) q.set("start", "merchant");
     if (ctx.start === START_SAMPLE) q.set("start", "sample");
     if (ctx.start === START_SALES) q.set("start", "sales");
@@ -113,7 +110,6 @@
   const CONTEXT_OPTIONS = {
     start: [START_LOGIN, START_SALES, START_NEW, START_SAMPLE],
     region: ["United States", "Canada"],
-    chrome: ["Standalone flow", "Inside app shell"],
     data: ["Empty", "Sample business"],
     link: [LINK_NEW].concat(Object.keys(LINKS).map((k) => LINKS[k]))
   };
@@ -1152,7 +1148,7 @@
       "area": "Flow",
       "where": "Before the welcome page",
       "t": "The prototype now opens on a password login, not the sales form",
-      "b": "The merchant's first screen is now email and password sign-in with a temporary password, forcing a password change before continuing, the same shape as a first real sign-in. It replaces the sales form as the default start. Submitting the new password lands wherever the existing Link opened as option sends it (the welcome page for a new applicant, or further into the flow for a returning one), reusing the same openLink() logic as the one-time-code screen. Neither the sales form nor the one-time-code link were deleted: both are still reachable from Prototype options > Flow starts as, alongside the new login and the sample business, the same demote-don't-delete pattern already used for Link opened as.",
+      "b": "The merchant's first screen is now email and password sign-in with a temporary password, forcing a password change before continuing, the same shape as a first real sign-in. It replaces the sales form as the default start. Submitting the new password lands wherever the existing Link opened as option sends it (the welcome page for a new applicant, or further into the flow for a returning one), reusing the same openLink() logic as the one-time-code screen. Neither the sales form nor the one-time-code link were deleted: both are still reachable from Prototype options > Flow starts as, alongside the new login and the sample business, the same demote-don't-delete pattern already used for Link opened as. The main button names what happens next: Continue on the credentials screen, because it only moves the merchant on to the forced password change, and Sign in on the change-password screen, because that is the step that actually signs them in. The Chrome option (standalone flow or inside the app shell) was removed from Prototype options as no longer needed, so the flow always renders standalone.",
       "tradeoff": "No real account exists in the prototype, so any email and password sign in and the password-strength check is only a client-side length and match check (8+ characters, both fields the same). Whether a merchant actually receives a temporary password by email, and how, is not covered by anything built so far and needs an ops answer before this is more than a placeholder.",
       "by": "Ryan",
       "when": "2026-10-16"
@@ -1176,6 +1172,26 @@
       "tradeoff": "In the prototype nothing is read: the same made-up amounts fill in every time, with Visa, Mastercard and Discover left blank to show a read that misses things. Whether a real read can get all of this, how it shows a low-confidence value, and whether it should also fill the owner, account and processing sections are not decided. A contract read after the salesperson has typed fees overwrites them.",
       "by": "Ryan",
       "when": "2026-10-13"
+    },
+    {
+      "id": "field-why-popover",
+      "area": "Fields",
+      "where": "Step 2 · Government ID number and SSN / SIN, and the photo ID upload in step 6",
+      "t": "Why we ask sits behind a question icon on the encrypted fields",
+      "b": "The Why we ask sentence that ran as hint text under the encrypted ID number and SSN or SIN fields is now a small question icon and Why we ask label under the field. Hovering or focusing it opens a popover with the same text, the same pattern as the Why we ask note at the top of each step, but with the text at body-small size. Escape closes it. The field builder takes a why option, so any other field can use it later.",
+      "tradeoff": "The reason is no longer visible without hovering, so someone who never hovers will not read it. On a touch device it opens on tap.",
+      "by": "Ryan",
+      "when": "2026-10-19"
+    },
+    {
+      "id": "status-screens-polish",
+      "area": "Status",
+      "where": "Step 7, the under-review screen and the more-info page",
+      "t": "Status screens: white What happens next, no ID-arrived line, devices to order, a page heading on more info",
+      "b": "The What happens next panel on step 7 is now white (the raised surface, same as cards) so it stands out from the page instead of sinking into it. On the under-review screen the checks line no longer ends with the owner ID status (Your ID arrived, or a name's ID arrived), because the owner cards below already say who the application is waiting on. The something-to-do-while-you-wait tile now suggests ordering payment devices rather than setting up prices. The more-info page used to open on a warning callout; it now opens with a heading, One thing to fix, and the reassurance that the applicant is not back at the start sits under it as the lede. The secondary button reads Email us instead of Have a chat about it.",
+      "tradeoff": "The ID status is gone from the timeline, so the only place it shows is the owner cards for people still invited. The Order your payment devices button does nothing in the prototype, and Email us only shows a prototype toast. Losing the warning colour makes the page calmer, but it no longer signals that something needs action except through the heading and the upload button.",
+      "by": "Ryan",
+      "when": "2026-10-19"
     }
   ];
 
@@ -1404,6 +1420,7 @@
     openNote: "",
     notesListOpen: false,
     whyOpen: false,
+    fieldWhy: "",
     nextTip: false,
     editMasked: "",
     viewDoc: "",
@@ -1836,6 +1853,7 @@
       // Only Optional fields are tagged. A field that appears because of an earlier answer (conditional) is required like any other, since it is only shown when it applies.
       required: !o.optional,
       hint: o.hint || "",
+      why: o.why || "",
       viewKey: o.viewKey || "",
       placeholder: o.placeholder || "",
       sensitive: !!o.sensitive,
@@ -1884,13 +1902,13 @@
       f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
       sub("id", "Their ID"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's license", "Passport", "National ID card"] }),
-      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "As shown on the document", hint: "Why we ask: we match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
+      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "As shown on the document", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: COUNTRIES }),
       f("natId", ca ? "Social Insurance Number (SIN)" : "Social Security Number (SSN)", "masked", {
         sensitive: true,
         placeholder: ca ? "000 000 000" : "000-00-0000",
-        hint: (ca ? "Why we ask: anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Why we ask: anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
+        why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
       }),
       sub("screen", "Screening"),
       f("pep", "Is this person a politically exposed person?", "yn", {
@@ -2054,7 +2072,8 @@
     const a = state.a;
     const idRows = owners.map((o) => ({
       key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Required",
-      hint: "Passport or driver's license. All four corners in shot and no glare. Why we ask: to confirm you are who you say you are. It goes only to Trullio, our verification partner.",
+      hint: "Passport or driver's license. All four corners in shot and no glare.",
+      why: "To confirm you are who you say you are. It goes only to Trullio, our verification partner.",
       file: "id-" + o.id + "-license.jpg",
       read: "Read: " + o.name + " · " + (ownerVal(o, "idType") || "photo ID") + (digitsOf(ownerVal(o, "idExpiry")).length === 8 ? " · expires " + digitsOf(ownerVal(o, "idExpiry")).slice(-4) : "") + (o.name && ownerVal(o, "idType") ? " — matches step 2" : "")
     }));
@@ -2126,7 +2145,7 @@
       isInvitee: st.screen === "invitee",
       inviteDocs: docListFor(owners, ca, true).filter((d) => d.key === "id_" + st.inviteOwner),
       invitedOwners: owners.filter((o) => o.status === "invited"),
-      showShell: ctx.chrome === "Inside app shell",
+      showShell: false,
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
       needRegistration: ca ? "Step 1 starts with your CRA business number. If we find a record we'll fill in the rest, so there's less for you to type." : "Step 1 starts with your EIN. If we find a record we'll fill in the rest, so there's less for you to type.",
@@ -2172,7 +2191,6 @@
           : "All 100% accounted for.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
-      reviewNote: (() => { const idToCome = (o) => o.status === "invited"; return solo ? (idToCome(owners[0]) ? "Your ID is still to come" : "Your ID arrived and is being checked") : owners.map((o) => (o.self ? "Your" : o.name + "'s") + " ID " + (idToCome(o) ? "still to come" : "arrived")).join(" · "); })(),
       othersTitle: solo ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's finished their part" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
       othersBody: solo ? (owners[0].self ? "You're the only owner listed, so nobody else needs to send their ID." : "Only one owner is listed and their ID is in, so nobody else needs to send anything.") : settled === owners.length ? "Everyone you invited has finished their part, so nothing is waiting on a person." : "We've nudged " + invitedLeft.map((o) => o.name).join(" and ") + " to finish. Your review carries on in the meantime.",
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
@@ -2257,6 +2275,13 @@
   // The asterisk is decorative; screen readers get the word.
   const REQ = html`<span class="req-star" aria-hidden="true">*</span><span class="sr-only"> (required)</span>`;
 
+  // "Why we ask" for a sensitive field: a question icon and label that open a popover on hover or focus, same pattern as the step-level note.
+  function fieldWhyView(f) {
+    const open = () => setState({ fieldWhy: f.id });
+    const close = () => { if (state.fieldWhy === f.id) setState({ fieldWhy: "" }); };
+    return html`<span class="field-why" data-mouseenter="${on(open)}" data-mouseleave="${on(close)}"><button type="button" class="field-why-trigger" aria-expanded="${String(state.fieldWhy === f.id)}" data-click="${on(open)}" data-focus="${on(open)}" data-blur="${on(close)}">${icon("help", 14, "i-accent")}Why we ask</button>${state.fieldWhy === f.id && html`<span class="field-why-pop" role="note"><span class="field-why-body">${f.why}</span></span>`}</span>`;
+  }
+
   function fieldView(f) {
     const id = "f-" + f.id;
     const wrap = f.span ? "span-2" : "";
@@ -2338,6 +2363,7 @@
   <div class="field-head">${label}${f.chip && html`<span class="chip">${f.chip}</span>`}${f.sensitive && html`<span class="chip chip--secure">${icon("lock", 10, "i-b")}Encrypted</span>`}</div>
   ${control}
   ${errView(f.id)}
+  ${f.why && fieldWhyView(f)}
   ${f.hint && html`<p class="field-hint" id="${hintId}">${f.hint}</p>`}
 </div>`;
   }
@@ -2485,7 +2511,7 @@
         </div>
         ${state.changeErr && html`<p class="field-error" role="alert">${state.changeErr}</p>`}
         <div class="entry-actions">
-          <div class="footer-end"><button type="submit" class="btn btn-primary btn-lg">Send${icon("arrow-r", 19)}</button></div>
+          <div class="footer-end"><button type="submit" class="btn btn-primary btn-lg">Sign in${icon("arrow-r", 19)}</button></div>
         </div>
       </form>
     </div>
@@ -2507,7 +2533,7 @@
         <div class="entry-actions">
           <div class="footer-end">
             <button type="button" class="btn btn-ghost btn-md" data-click="${on(() => showToast("Prototype: password reset isn't simulated."))}">Send me another password</button>
-            <button type="submit" class="btn btn-primary btn-lg">Sign in${icon("arrow-r", 19)}</button>
+            <button type="submit" class="btn btn-primary btn-lg">Continue${icon("arrow-r", 19)}</button>
           </div>
         </div>
       </form>
@@ -2863,6 +2889,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     <div class="grow">
       <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3><span class="req">${d.requirement}</span></div>
       <p class="body-sm">${d.hint}</p>
+      ${d.why && fieldWhyView({ id: "doc_" + d.key, why: d.why })}
       ${errView("doc_" + d.key)}
     </div>
     ${action}
@@ -3103,7 +3130,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   </div>
   <ol class="timeline">
     <li class="tl-item"><span class="tl-dot tl-dot--done">${icon("check", 12, "i-bb")}</span><div class="tl-body"><div class="tl-title">Application received</div><div class="tl-note">${v.receivedNote}</div></div></li>
-    <li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote} · ${v.reviewNote}</div></div></li>
+    <li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote}</div></div></li>
     <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">Usually within 2 hours${waits.length ? " of the last item arriving" : ""} · we'll email and text you</div></div></li>
   </ol>
   ${waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, you'll see it here as one clear request.</p>`}
@@ -3120,8 +3147,8 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 <div class="two-up" data-key="submitted-tiles">
   <section class="card card--p20">
     <h2 class="tile-title">Something to do while you wait</h2>
-    <p class="tile-body">Add your prices and plans now and you'll be able to sell the moment you're approved.</p>
-    <button type="button" class="btn btn-outline btn-tile">Set up your prices</button>
+    <p class="tile-body">Order your card readers now so they're on their way and ready when you're approved.</p>
+    <button type="button" class="btn btn-outline btn-tile">Order your payment devices</button>
   </section>
   <section class="card card--p20">
     <h2 class="tile-title">${v.othersTitle}</h2>
@@ -3132,16 +3159,16 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   }
 
   function rfiView() {
-    return html`<div class="callout callout--warning" data-key="rfi-alert" role="status">
-  ${icon("alert", 18)}
-  <div><div class="warn-title">Just one thing to fix${pin("rfi-not-restart")}</div><div>You're not back at the start. Fix this one item and the checks carry on exactly where they left off, usually within the hour.</div></div>
-</div>
+    return html`<header data-key="rfi-head">
+  <h1 class="step-title">One thing to fix${pin("rfi-not-restart")}</h1>
+  <p class="step-sub">You're not back at the start. Fix this one item and the checks carry on exactly where they left off, usually within the hour.</p>
+</header>
 <section class="card" data-key="rfi-card">
-  <h1 class="rfi-title">The address on your bank verification doesn't match your registered address</h1>
+  <h2 class="rfi-title">The address on your bank verification doesn't match your registered address</h2>
   <p class="rfi-body">Your bank letter shows <span class="mono">1140 SW Alder St</span>, but Riverside Pilates LLC is registered at <span class="mono">418 SE Water Ave</span>. Send us either a letter showing the registered address, or a utility bill for the Alder St site.</p>
   <div class="btn-row">
     <button type="button" class="btn btn-primary btn-md" data-click="${on(() => setState({ screen: "submitted" }))}">${icon("upload", 17)}Upload a replacement</button>
-    <button type="button" class="btn btn-neutral btn-md btn-tight">Have a chat about it</button>
+    <button type="button" class="btn btn-neutral btn-md btn-tight" data-click="${on(() => showToast("Prototype: email isn't simulated."))}">Email us</button>
   </div>
   <p class="rfi-foot">${icon("check", 14, "i-ok")}Identity, ownership, tax, processing and signature checks are all complete and stay complete.</p>
 </section>`;
@@ -3331,7 +3358,6 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     <div class="proto-title">Prototype options</div>
     ${select("Flow starts as", "start", "start-as-option")}
     ${select("Region", "region")}
-    ${select("Chrome", "chrome")}
     ${select("Data", "data")}
     ${select("Link opened as", "link", "check-its-you")}
     <hr class="proto-rule">
@@ -3549,6 +3575,7 @@ ${protoView()}`;
     else if (state.delegateOpen) closeDelegate();
     else if (state.saveOpen) setState({ saveOpen: false });
     else if (state.whyOpen) setState({ whyOpen: false });
+    else if (state.fieldWhy) setState({ fieldWhy: "" });
     else if (state.nextTip) setState({ nextTip: false });
     else if (state.infoOpen) setState({ infoOpen: false });
     else if (state.protoOpen) setState({ protoOpen: false });
