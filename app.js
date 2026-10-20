@@ -1184,6 +1184,16 @@
       "when": "2026-10-19"
     },
     {
+      "id": "approved-welcome",
+      "area": "Status",
+      "where": "Approved page",
+      "t": "Approval is a welcome to Xplor Pay, with one way in: the dashboard",
+      "b": "The approved page is the first thing a new business sees as a customer, so it now opens with Welcome to Xplor Pay, and the tag above it names the business and how fast it was approved. The description is unchanged. Add a merchant is gone as a button because it is the first thing they do once they are inside the dashboard, so Open payments dashboard is the single primary button. The four cards under the main card (Merchant ID, Payouts to, Descriptor, First payout) are removed. The main card's background moves from flat deep space to a gradient from deep space into the Xplor Pay purple.",
+      "tradeoff": "The Merchant ID, payout account, descriptor and first payout timing no longer appear on this page, so the dashboard has to show them. Add a merchant is now only mentioned in the description, with nothing on this page to click for it. The Open payments dashboard button does nothing in the prototype.",
+      "by": "Ryan",
+      "when": "2026-10-19"
+    },
+    {
       "id": "status-screens-polish",
       "area": "Status",
       "where": "Step 7, the under-review screen and the more-info page",
@@ -3175,19 +3185,14 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   }
 
   function approvedView(v) {
-    const stat = (label, value, mono) => html`<div class="card card--p20"><div class="stat-label">${label}</div><div class="stat-value${mono ? " mono" : ""}">${value}</div></div>`;
     return html`<section class="approved" data-key="approved">
-  <span class="approved-tag">${icon("check", 13, "i-b")}Approved in 1 hour 12 minutes</span>
-  <h1 class="approved-title">Riverside Pilates is approved</h1>
+  <span class="approved-tag">${icon("check", 13, "i-b")}Riverside Pilates approved in 1 hour 12 minutes</span>
+  <h1 class="approved-title">Welcome to Xplor Pay</h1>
   <p class="approved-body">We've approved your application. Add a merchant to start taking transactions, then invite your team and order card readers.</p>
   <div class="btn-row">
-    <button type="button" class="btn btn-light btn-lg">Add a merchant</button>
-    <button type="button" class="btn btn-on-dark btn-lg">Open payments dashboard</button>
+    <button type="button" class="btn btn-light btn-lg">Open payments dashboard</button>
   </div>
 </section>
-<div class="stats" data-key="approved-stats">
-  ${stat("Merchant ID", "XPL-4471-0092", true)}${stat("Payouts to", v.payoutAccountLabel)}${stat("Descriptor", state.a.descriptor || "Not set", true)}${stat("First payout", "Next business day")}
-</div>
 <section class="unlock" data-key="approved-unlock" aria-labelledby="unlock-h">
   <h2 class="unlock-title" id="unlock-h">Now that you're approved</h2>
   <p class="unlock-sub">These need a live account, so they're ready now.</p>
