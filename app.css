@@ -650,3 +650,38 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .field-why-trigger:hover, .field-why-trigger:focus-visible { color: var(--color-text-brand); text-decoration: underline; text-underline-offset: 3px; }
 .field-why-pop { position: absolute; left: 0; top: 100%; z-index: 20; padding-top: 8px; width: 340px; max-width: 80vw; }
 .field-why-body { display: block; background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-md); padding: 16px; font-size: var(--type-body-small-size); line-height: 1.55; color: var(--color-text-subtle); }
+
+/* ---------- Welcome email (first screen) ---------- */
+.mailview { flex: 1; width: 100%; max-width: 760px; margin: 0 auto; padding: 32px 20px 64px; }
+.mail-bar { background: var(--color-background-surface-raised-1); border-radius: var(--radius-large) var(--radius-large) 0 0; box-shadow: inset 0 0 0 1px var(--color-border-default); padding: 20px 28px; }
+.mail-subject { font: var(--font-section-subtitle); color: var(--color-text-primary); margin-bottom: 14px; }
+.mail-meta { display: flex; align-items: center; gap: 12px; font: var(--font-body-small); color: var(--color-text-secondary); }
+.mail-to { color: var(--color-text-subtle); }
+.mail-avatar { width: 36px; height: 36px; flex: none; border-radius: var(--radius-full); background: var(--color-purple-600); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.em-wrap { background: #F1F6FA; padding: 24px 16px 20px; border-radius: 0 0 var(--radius-large) var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default); border-top: 0; }
+.em { max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; color: #545D63; font-family: "Roboto", Arial, sans-serif; font-size: 16px; line-height: 24px; }
+.em-logo { padding: 28px 40px 24px; }
+.em-logo img { display: block; height: auto; }
+.em-hero { padding: 44px 40px; background: linear-gradient(135deg, #401F9F 0%, #6923F4 100%); color: #fff; }
+.em-hero h1 { margin: 0 0 12px; font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: -0.01em; color: #fff; }
+.em-hero p { margin: 0; color: #EAF0F4; }
+.em-body { padding: 36px 40px 36px; }
+.em-body h2 { margin: 0 0 8px; font-size: 20px; line-height: 24px; font-weight: 700; color: #282F35; }
+.em-body p { margin: 0 0 20px; }
+.em-creds { background: #F1F6FA; border: 1px solid #CCD4DA; border-radius: 8px; padding: 20px 24px; margin-bottom: 28px; }
+.em-label { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: #545D63; margin-bottom: 4px; }
+.em-val { font-size: 18px; line-height: 26px; color: #282F35; margin-bottom: 16px; word-break: break-all; }
+.em-val:last-child { margin-bottom: 0; }
+.em-mono { font-family: "Courier New", Courier, monospace; }
+.em-btn { display: inline-block; border: none; cursor: pointer; background: #6923F4; color: #fff; font: 700 16px/22px "Roboto", Arial, sans-serif; padding: 15px 44px; border-radius: 8px; }
+.em-btn:hover { background: #5a1bd9; }
+.em-btn:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: var(--border-focus-offset); }
+.em-rule { border: 0; border-top: 1px solid #EAF0F4; margin: 32px 0; }
+.em-steps { list-style: none; margin: 16px 0 24px; padding: 0; }
+.em-step { display: flex; gap: 16px; font-size: 15px; line-height: 22px; margin-bottom: 20px; }
+.em-step strong { color: #282F35; }
+.em-step-num { flex: none; width: 28px; height: 28px; border-radius: 14px; background: #EBE5FF; color: #6923F4; font-weight: 700; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+.em-note { background: #F1F6FA; border-left: 4px solid #3ACBCA; border-radius: 4px; padding: 16px 20px; font-size: 14px; line-height: 21px; }
+.em-note strong { color: #282F35; }
+.em-foot { max-width: 600px; margin: 20px auto 0; text-align: center; font-size: 12px; line-height: 18px; color: #8C969F; }
+@media (max-width: 620px) { .em-logo, .em-hero, .em-body { padding-left: 20px; padding-right: 20px; } .em-hero h1 { font-size: 28px; line-height: 34px; } .mailview { padding: 12px 8px 40px; } }

@@ -74,7 +74,7 @@
   const LINK_NEW = "New applicant";
   // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
   // (demoted to a Prototype option, not deleted) the one-time-code link or the sample business.
-  const START_LOGIN = "Merchant: login (temporary password)";
+  const START_LOGIN = "Merchant: welcome email, then login";
   const START_NEW = "Merchant: one-time code (email link)";
   const START_SAMPLE = "Merchant: sample business";
 
@@ -1182,6 +1182,16 @@
       "when": "2026-10-19"
     },
     {
+      "id": "welcome-email-first",
+      "area": "Flow",
+      "where": "First screen, before sign-in",
+      "t": "The prototype starts with the welcome email",
+      "b": "The prototype now opens on the email a new merchant gets from Xplor Pay: Welcome to Xplor Pay, their username and a temporary password, a Sign in button and three next steps, shown inside a simple inbox frame. Pressing Sign in goes to the sign-in screen, which then asks for the password change as before. The email mirrors the real HTML template in the email folder, so the story the prototype tells is the one the merchant would live. Flow starts as now reads Merchant: welcome email, then login. The username and password in the email are made-up demo values.",
+      "tradeoff": "The email is a drawing, not the real template, so the two can drift apart and need updating together. The sign-in screen does not read the username or password from the email, so any email and password still works. The email uses Roboto Bold for headings because Poppins is not loaded in the prototype, so it looks slightly different from the real template.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
       "id": "yn-common-defaults",
       "area": "Fields",
       "where": "Every Yes / No control; step 6 uploaded files",
@@ -1388,7 +1398,7 @@
   }
 
   // Every prototype starts at the "Check it's you" code screen, whatever state the link is in.
-  function startScreen() { return ctx.start === START_LOGIN ? "login" : "entry"; }
+  function startScreen() { return ctx.start === START_LOGIN ? "email" : "entry"; }
   function entryModeFor() { return ctx.link === LINKS.expired ? "expired" : ctx.link === LINKS.closed ? "closed" : "send"; }
 
   function freshState() {
@@ -2534,6 +2544,42 @@
 </div>`;
   }
 
+    // The email the merchant gets before they ever see the prototype (decision welcome-email-first). It mirrors
+    // email/welcome-email.html. The username and password are made-up demo values, never real credentials.
+    function emailView() {
+      const step = (n, t, d) => html`<li class="em-step"><span class="em-step-num">${n}</span><span><strong>${t}</strong><br>${d}</span></li>`;
+      return html`<div class="mailview" data-key="email">
+  <div class="mail-bar">
+    <div class="mail-subject">Welcome to Xplor Pay: your sign-in details${pin("welcome-email-first")}</div>
+    <div class="mail-meta"><span class="mail-avatar" aria-hidden="true">X</span><span><strong>Xplor Pay</strong> &lt;no-reply@xplorpay.example&gt;<br><span class="mail-to">To: dana@riversidepilates.example</span></span></div>
+  </div>
+  <div class="em-wrap">
+    <div class="em">
+      <div class="em-logo"><img src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="150"></div>
+      <div class="em-hero"><h1>Welcome to Xplor Pay</h1><p>Your account is ready. Here are your sign-in details, so you can sign in and get started.</p></div>
+      <div class="em-body">
+        <h2>Your sign-in details</h2>
+        <p>Use these to sign in for the first time. Your temporary password works for 7 days, so sign in before then.</p>
+        <div class="em-creds">
+          <div class="em-label">Username</div><div class="em-val">dana@riversidepilates.example</div>
+          <div class="em-label">Temporary password</div><div class="em-val em-mono">Xp-7Kd2-demo</div>
+        </div>
+        <button type="button" class="em-btn" data-click="${on(() => setState({ screen: "login", loginStage: "credentials", loginErr: "" }))}">Sign in</button>
+        <hr class="em-rule">
+        <h2>What happens next</h2>
+        <ol class="em-steps">
+          ${step(1, "Sign in", "Use the username and temporary password above.")}
+          ${step(2, "Choose a new password", "We'll ask you to replace the temporary one straight away.")}
+          ${step(3, "Start your application", "Tell us about your business, and you'll be ready to take payments.")}
+        </ol>
+        <div class="em-note"><strong>Didn't expect this email?</strong> You can ignore it, and nothing will change. If you'd like to check, contact us at support@xplorpay.example.</div>
+      </div>
+    </div>
+    <p class="em-foot">This email was sent to dana@riversidepilates.example because an Xplor Pay account was set up for you.<br>&copy; Xplor Technologies. All rights reserved.</p>
+  </div>
+</div>`;
+    }
+
     // The default front door (decision login-default-start): email and a temporary password, then a forced
     // password change, same shape as a real first sign-in. Lands wherever openLink() sends it.
     function loginView() {
@@ -3237,6 +3283,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   <div class="frame">
     ${v.showShell && !v.isEntry && state.screen !== "login" && shellView(v)}
     <div class="content" data-key="content">
+      ${state.screen === "email" && emailView()}
       ${state.screen === "login" && loginView()}
       ${v.isEntry && entryView()}
       ${v.isWelcome && welcomeView(v)}
@@ -3345,6 +3392,7 @@ ${protoView()}`;
       if (last.screen !== null) window.scrollTo(0, 0);
       const cur = STEPS[state.step - 1];
       document.title = (state.screen === "flow" ? "Step " + state.step + " of 7 · " + stepName(cur)
+        : state.screen === "email" ? "Welcome to Xplor Pay: your sign-in details"
         : state.screen === "login" ? (state.loginStage === "change" ? "Change your password" : "Sign in")
         : state.screen === "entry" ? "Check it's you"
         : state.screen === "welcome" ? "Business verification"
