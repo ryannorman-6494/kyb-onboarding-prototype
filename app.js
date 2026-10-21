@@ -10,7 +10,7 @@
  * "Prototype options" panel:
  *   ?region=ca      Canada instead of the United States
  *   ?why=0          hide the "why we ask" panel
- *   ?start=         where the flow starts: (none) login | sales | merchant (one-time code) | sample
+ *   ?start=         where the flow starts: (none) login | merchant (one-time code) | sample
  *   ?link=          how the emailed link opens: returning | review | info | approved | expired | closed
  *
  * Security: nothing leaves the page. There are no network calls (the CSP in
@@ -73,9 +73,8 @@
   };
   const LINK_NEW = "New applicant";
   // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
-  // (demoted to a Prototype option, not deleted) the internal sales form, the one-time-code link, or the sample business.
+  // (demoted to a Prototype option, not deleted) the one-time-code link or the sample business.
   const START_LOGIN = "Merchant: login (temporary password)";
-  const START_SALES = "Sales person (internal form)";
   const START_NEW = "Merchant: one-time code (email link)";
   const START_SAMPLE = "Merchant: sample business";
 
@@ -85,7 +84,7 @@
     const q = new URLSearchParams(location.search);
     return {
       region: q.get("region") === "ca" ? "Canada" : "United States",
-      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : q.get("start") === "sales" ? START_SALES : START_LOGIN,
+      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : START_LOGIN,
       data: q.get("data") === "sample" || q.get("start") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW
@@ -96,7 +95,6 @@
     if (ctx.region === "Canada") q.set("region", "ca");
     if (ctx.start === START_NEW) q.set("start", "merchant");
     if (ctx.start === START_SAMPLE) q.set("start", "sample");
-    if (ctx.start === START_SALES) q.set("start", "sales");
     if (ctx.data === "Sample business" && ctx.start !== START_SAMPLE) q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
     Object.keys(LINKS).forEach((k) => { if (ctx.link === LINKS[k]) q.set("link", k); });
@@ -108,7 +106,7 @@
   const isCa = () => ctx.region === "Canada";
 
   const CONTEXT_OPTIONS = {
-    start: [START_LOGIN, START_SALES, START_NEW, START_SAMPLE],
+    start: [START_LOGIN, START_NEW, START_SAMPLE],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
     link: [LINK_NEW].concat(Object.keys(LINKS).map((k) => LINKS[k]))
@@ -1184,6 +1182,46 @@
       "when": "2026-10-19"
     },
     {
+      "id": "yn-common-defaults",
+      "area": "Fields",
+      "where": "Every Yes / No control; step 6 uploaded files",
+      "t": "Every Yes / No starts on the most common answer, Yes first, and uploads lose the green read-back",
+      "b": "Every Yes / No control now has Yes on the left and starts on the most common answer, so most applicants only change one when it does not apply. Step 3: recurring billing or subscriptions Yes; free trial or deferred billing No; payments on behalf of other businesses No; selling outside the country No; accepted card payments before No. Step 5: legal proceedings No, a terminated merchant account No, tax liens or judgments No, money service business No, and the card industry security rules (PCI DSS) Yes, since the hint says that is the answer for anyone using only Xplor Pay. Earlier calls stay: operate at the same address Yes, signing it yourself Yes, politically exposed person No. The green read-back line that appeared under an uploaded file on step 6 (Read: name, matches step 2) is removed; the file name and Replace stay.",
+      "tradeoff": "Pre-answered compliance declarations (legal proceedings, terminations, tax liens, money service business) can be passed over without being read, and a wrong No is a false declaration. Ops or compliance should decide whether those four should start blank. The recurring billing Yes and the prior-card No fit the clubs and studios Xplor sells to but not every merchant, and Yes on PCI shows the optional questionnaire fields straight away. Without the read-back the applicant no longer sees what the system took from the file, so a wrong read goes unnoticed.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "yes-first-defaults",
+      "area": "Fields",
+      "where": "Step 1 trading address, step 2 signatory and politically exposed person, encrypted fields",
+      "t": "Three Yes / No questions start answered with Yes first, and encrypted fields lose the purple border",
+      "b": "Three Yes / No questions now put Yes on the left and start with an answer chosen: Is that also where you operate? and Will you be signing it yourself? default to Yes, and Is this person a politically exposed person? defaults to No. Each is the answer most applicants would give, so most people have nothing to do and only change it when it does not apply. The other Yes / No questions are unchanged: No on the left and nothing chosen, because there is no safe guess for them. The purple border that marked the encrypted fields (ID number, SSN or SIN, account numbers) is gone; they now have the same grey border as every other field, and the lock icon and Encrypted tag still mark them.",
+      "tradeoff": "Yes first on three questions and No first on the rest means the order is no longer the same everywhere on the form; if that bothers testers, flip the rest to Yes first too. A pre-chosen answer can be missed, so someone who is a politically exposed person could leave it on No without reading it, which matters for a compliance question. Without the purple border an encrypted field looks like any other field until the lock and tag are noticed.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "sales-form-removed",
+      "area": "Flow",
+      "where": "Prototype options · Flow starts as",
+      "t": "The internal sales form is removed from the prototype",
+      "b": "The internal salesperson form is gone from the prototype: the screen, its Prototype options entry (Flow starts as no longer offers Sales person), the ?start=sales address and the code that carried the salesperson's answers into the merchant's side (owner, trading name, category, masked email on the code screen, contract upload and the sales fee fields). Flow starts as now offers the merchant login (default), the one-time-code link and the sample business. An old ?start=sales address opens the login instead. Decisions sales-intake-first, sales-prefill and sales-contract-upload stay in the register as history but no longer describe anything in the prototype.",
+      "tradeoff": "Nothing in the prototype now shows how a deal reaches the merchant, so the merchant's login and the one-time-code screen start cold with no prefilled answers. The code screen's masked email is a fixed placeholder again. The deploy/ site and usability-kit-share copy only change when next deployed or re-synced.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "static-cards-flat",
+      "area": "Visual",
+      "where": "All non-clickable cards",
+      "t": "Cards that aren't clickable sit almost flat",
+      "b": "Cards that can't be clicked (the main surface cards, owner cards, the review summary, the status hero card, document rows and the what-you-need panel) now carry almost no drop shadow, down from the Atlas xs elevation to a 1px faint contact line, so the 1px border does the work of separating them from the page. Anything clickable keeps its shadow and hover treatment: buttons, the business-type radio cards, the Yes / No control. The shadow is one variable, --lift-static in app.css, so it can be nudged in one place.",
+      "tradeoff": "With less shadow the cards sit flatter on the page, so the page leans more on the border and the white-on-grey contrast to separate them. If that looks too flat on a bright screen, raise --lift-static a notch rather than going back to the old value.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
       "id": "approved-welcome",
       "area": "Status",
       "where": "Approved page",
@@ -1230,13 +1268,13 @@
   // walked the way a new applicant meets it; "Sample business" in the prototype
   // options swaps in a finished Riverside Pilates for demoing the later screens.
   const EMPTY_ANSWERS = {
-    sigSame: "", structure: "", incorporated: "", legalName: "", dba: "", stateInc: "",
+    sigSame: "yes", structure: "", incorporated: "", legalName: "", dba: "", stateInc: "",
     website: "", phone: "", email: "", description: "", regAddress: "",
-    tradingSame: "", tradingAddress: "",
+    tradingSame: "yes", tradingAddress: "",
     monthlyVolume: "", avgTicket: "", maxTicket: "", cpSplit: "",
-    channel: "", goods: "", recurring: "", trial: "", marketplace: "",
-    international: "", countries: "", refundPolicy: "",
-    prior: "", priorName: "", priorCbRatio: "",
+    channel: "", goods: "", recurring: "yes", trial: "no", marketplace: "no",
+    international: "no", countries: "", refundPolicy: "",
+    prior: "no", priorName: "", priorCbRatio: "",
     achVolume: "", descriptor: "", posType: "",
     // Comes from the Xplor account rather than being typed, so it's filled in
     // even on an empty run — the hint on the field says as much.
@@ -1244,9 +1282,9 @@
     velocityAck: false,
     bankName: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
     institution: "", transit: "",
-    legalProceedings: "", legalProceedingsWhy: "", priorTermination: "", priorTerminationWhy: "",
-    taxLiens: "", taxLiensWhy: "", msb: "",
-    pci: "", saq: "", pciDate: "",
+    legalProceedings: "no", legalProceedingsWhy: "", priorTermination: "no", priorTerminationWhy: "",
+    taxLiens: "no", taxLiensWhy: "", msb: "no",
+    pci: "yes", saq: "", pciDate: "",
     matchConsent: false, ofacAck: false,
     acceptAgreement: false, acceptPrivacy: false, acceptEsign: false,
     signAuthority: false
@@ -1330,9 +1368,6 @@
   const searchMcc = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); const hits = t.length ? MCC_LIST.filter((x) => t.every((w) => x.hay.indexOf(w) > -1)) : MCC_LIST; return hits.filter((x) => mccRank(x) === 0).concat(hits.filter((x) => mccRank(x) === 1)); };
 
   // A returning visitor to the emailed link gets a saved business back, so that visit borrows the sample one.
-  // What the salesperson entered, carried into the merchant's side as starting answers (decision sales-prefill). Null until the
-  // sales form is submitted. It survives resets of the merchant's answers; changing a Prototype option clears it.
-  let salesPrefill = null;
   let restored = false;
   const isSample = () => ctx.data === "Sample business" || restored;
   const isSole = () => state.bizType === "individual";
@@ -1344,7 +1379,6 @@
   const isCompany = () => !isSole() && !isNonprofit();
 
   function freshOwners() {
-    if (!isSample() && salesPrefill) return salesPrefill.owners.map((o) => Object.assign({}, o));
     return isSample()
       ? [
           { id: 1, name: "Dana Whitfield", initials: "DW", pct: 60, role: "Owner / CEO", status: "pending", self: true },
@@ -1354,7 +1388,7 @@
   }
 
   // Every prototype starts at the "Check it's you" code screen, whatever state the link is in.
-  function startScreen() { return ctx.start === START_SALES ? "sales" : ctx.start === START_LOGIN ? "login" : "entry"; }
+  function startScreen() { return ctx.start === START_LOGIN ? "login" : "entry"; }
   function entryModeFor() { return ctx.link === LINKS.expired ? "expired" : ctx.link === LINKS.closed ? "closed" : "send"; }
 
   function freshState() {
@@ -1375,8 +1409,6 @@
       newPassword: "",
       confirmPassword: "",
       changeErr: "",
-      // The internal sales form's contract-upload stub.
-      salesContract: { state: "idle", file: "", read: "" },
       // The sample business is for demoing the later screens, so step 1 is
       // already looked up rather than making you press the button first.
       // Which kind of business the applicant is, chosen on the page after the welcome screen.
@@ -1418,7 +1450,7 @@
       saveEmailErr: "",
       saveEmail: sample ? "finance@riversidepilates.com" : "",
 
-      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample || !salesPrefill ? {} : salesPrefill.a)
+      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS)
     };
   }
 
@@ -1479,7 +1511,7 @@
 
   // "Check it's you" (decision 90). Nothing is emailed: any six digits open the link, except 000000, which is refused so the
   // wrong-code and too-many-tries states can be seen. Three wrong codes pause the link.
-  const maskedEmail = () => { const e = salesPrefill && salesPrefill.ownerEmail; const m = e && e.match(/^(.)[^@]*(@.+)$/); return m ? m[1] + "•••" + m[2] : "d•••@riversidepilates.example"; };
+  const maskedEmail = () => { return "d•••@riversidepilates.example"; };
   const sendCode = (again) => { setState({ entryMode: "code", entryCode: "", entryErr: "", entryTries: 0 }); showToast(again ? "New code sent" : "Code sent"); };
   function submitCode() {
     const digits = state.entryCode.replace(/\D/g, "");
@@ -1560,7 +1592,7 @@
       bizType: t,
       // Only a sole proprietor starts with a person listed (themselves). Everyone else adds the owners, since the applicant is often not one.
       owners: t === "individual" ? [{ id: 1, name: "You", initials: "?", pct: 100, role: "Owner", status: "pending", self: true }] : state.owners.map((o) => (t === "non-profit" && o.me && o.added ? Object.assign({}, o, { role: "Director", pct: 10 }) : o)),
-      a: Object.assign({}, state.a, t === "individual" ? Object.assign({ structure: "Sole proprietor" }, salesPrefill && !state.a.legalName ? { legalName: salesPrefill.a.o1_name } : {}) : t === "non-profit" ? { structure: "Non-profit" } : {})
+      a: Object.assign({}, state.a, t === "individual" ? { structure: "Sole proprietor" } : t === "non-profit" ? { structure: "Non-profit" } : {})
     });
   }
   const openHelp = () => setState({ helpOpen: true });
@@ -1628,7 +1660,7 @@
 
   // Dates are typed as digits and laid out as they go in, in the region's order, so the slashes are never the applicant's job.
   // "3/5/1990" is read as 03 / 05 / 1990 rather than as digits 351990.
-  const DATE_KEYS = ["dob", "idExpiry", "incorporated", "pciDate", "s_reqDate"];
+  const DATE_KEYS = ["dob", "idExpiry", "incorporated", "pciDate"];
   const isDateKey = (id) => DATE_KEYS.indexOf(String(id).replace(/^o\d+_/, "")) > -1;
   function formatDateInput(raw) {
     let t = String(raw);
@@ -1647,7 +1679,6 @@
     if (day < 1 || day > new Date(year, month, 0).getDate()) return "That day isn't right for the month. This field goes " + datePh() + ".";
     const when = new Date(year, month - 1, day), today = new Date(); today.setHours(0, 0, 0, 0);
     if (year < 1900) return "Check the year: it can't be before 1900.";
-    if (key === "s_reqDate") return when < today ? "Pick today or a later date." : "";
     if (key === "idExpiry" ? when < today : when > today) return key === "idExpiry" ? "This ID has expired. Use one that is still valid." : "That date is in the future.";
     return "";
   }
@@ -1677,7 +1708,7 @@
     if (problem) { setState({ lookupErr: problem }); return; }
     // A sole trader's number confirms the EIN only; there is no registry record of a company to fill in.
     const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: "Non-profit" }) : REGISTRY_RESULT;
-    setState((s) => ({ lookupErr: "", noEin: false, einFound: true, lookupConfirmed: isSole(), lookupRejected: false, manualBiz: false, a: Object.assign({}, s.a, filled, salesPrefill && salesPrefill.a.dba ? { dba: salesPrefill.a.dba } : {}) }));
+    setState((s) => ({ lookupErr: "", noEin: false, einFound: true, lookupConfirmed: isSole(), lookupRejected: false, manualBiz: false, a: Object.assign({}, s.a, filled) }));
     showToast(lookupResultText(state));
   }
   const lookupResultText = (st) => isSole() ? "Noted: your " + (isCa() ? "business number" : "EIN") + " ending " + (digitsOf(st.lookupId).slice(-4) || "—") + ". There's no registry record to fill in for you, so check the details below." : isCa() ? "Found: Riverside Pilates Inc. · BN 123456789 RC0001 · active" : "Found: Riverside Pilates LLC · EIN ending " + (digitsOf(st.lookupId).slice(-4) || "7208") + " · active in Oregon since 2019";
@@ -1803,7 +1834,7 @@
         name: isSole() && o.self ? (state.a.legalName || "") : "", dob: "",
         home: me && isSole() ? (state.a.regAddress || "") : "",
         email: me && (isSole() || o.me) ? (state.a.email || "") : "", phone: me && (isSole() || o.me) ? (state.a.phone || "") : "",
-        idNumber: "", idExpiry: "", pep: "", natId: "",
+        idNumber: "", idExpiry: "", pep: "no", natId: "",
         residence: me ? country : "", idCountry: me ? country : ""
       });
     }
@@ -2360,7 +2391,7 @@
         control = html`<textarea class="input" id="${id}" rows="3" placeholder="${f.placeholder}"${described} data-input="${onInput}">${f.value}</textarea>`;
         break;
       case "yn":
-        control = html`<div class="yn" role="group" aria-labelledby="l-${f.id}"${described}><button type="button" class="yn-btn" aria-pressed="${String(f.value === "no")}" data-click="${on(() => set(f.id, "no"))}">No</button><button type="button" class="yn-btn" aria-pressed="${String(f.value === "yes")}" data-click="${on(() => set(f.id, "yes"))}">Yes</button>${f.unsure && html`<button type="button" class="yn-btn" aria-pressed="${String(f.value === "unsure")}" data-click="${on(() => set(f.id, "unsure"))}">Unsure</button>`}</div>`;
+        control = html`<div class="yn" role="group" aria-labelledby="l-${f.id}"${described}><button type="button" class="yn-btn" aria-pressed="${String(f.value === "yes")}" data-click="${on(() => set(f.id, "yes"))}">Yes</button><button type="button" class="yn-btn" aria-pressed="${String(f.value === "no")}" data-click="${on(() => set(f.id, "no"))}">No</button>${f.unsure && html`<button type="button" class="yn-btn" aria-pressed="${String(f.value === "unsure")}" data-click="${on(() => set(f.id, "unsure"))}">Unsure</button>`}</div>`;
         break;
       default:
         control = html`<input class="input" id="${id}" value="${f.value}" placeholder="${f.placeholder}"${described} data-input="${onInput}">`;
@@ -2594,182 +2625,6 @@
   </div>`;
     }
 
-  // ---------------------------------------------------------------------------
-  // Sales intake (decision sales-intake-first): the internal form a salesperson fills in once a deal is agreed, before the
-  // merchant is sent a link. It replaces a Google Form. Nothing is sent anywhere. Simulated sales submit.
-  // ---------------------------------------------------------------------------
-
-  const SALES_PARENTS = ["ClubEssential", "ForeUp", "Vermont Systems (VSI)", "RecDesk", "RecDesk CAN", "Camp Brain US", "Camp Brain CAN", "Momence", "Exerp"];
-  const SALES_COUNTRIES = ["United States", "Canada", "Australia", "New Zealand", "Puerto Rico", "United Kingdom", "Mexico"];
-  // 19 codes picked as a stand-in for the real dropdown, which the form owner has not supplied. Not checked against the card networks.
-  const SALES_MCCS = ["5812", "5941", "7032", "7911", "7933", "7941", "7991", "7992", "7993", "7996", "7997", "7998", "7999", "8211", "8220", "8299", "8351", "8398", "8641"];
-  const SALES_FEES = [
-    ["feeTieredAch", "Tiered ACH Fee"], ["feeBuyerMax", "Buyer Maximum Fee"], ["feeMerchantMax", "Merchant Maximum Fee"],
-    ["feeBuyerAch", "Buyer ACH Fee"], ["feeMerchantAch", "Merchant ACH Fee"], ["feeAncillary", "Ancillary Fee"],
-    ["feeDisputeFixed", "Dispute Fixed Fee"], ["feeDisputeInquiry", "Dispute Inquiry Fee"], ["feeAchCreditReturn", "ACH Credit Return Fee"],
-    ["feeAchDebitReturn", "ACH Debit Return Fee"], ["feeDebitBuyer", "Debit Card Buyer Fee"], ["feeDebitMerchant", "Debit Card Merchant Fee"],
-    ["feeCcInterchangePlus", "Credit Card Interchange Plus Fee"], ["feeCcInterchange", "Credit Card Interchange Fee"], ["feeCcBuyer", "Credit Card Buyer Fee"],
-    ["feeCcMerchant", "Credit Card Merchant Fee"], ["feeAmex", "Amex Fee"], ["feeMastercard", "Mastercard Fee"],
-    ["feeVisa", "Visa Fee"], ["feeDiscover", "Discover Fee"]
-  ];
-
-  function salesSections() {
-    const a = state.a;
-    const f = (id, label, o) => Object.assign({ id: "s_" + id, label, kind: "text", required: true, placeholder: "", hint: "", value: a["s_" + id] === undefined ? "" : a["s_" + id] }, o);
-    const dollars = (id, label) => f(id, label, { kind: "currency", required: false, prefix: "$", placeholder: "0.00" });
-    const mccOptions = SALES_MCCS.map((c) => (mccByCode(c) ? mccByCode(c).label : c));
-    return [
-      { key: "s-account", title: "Account", cols: 2, fields: [
-        f("parent", "Parent ID", { kind: "select", options: SALES_PARENTS, placeholder: "Choose a parent" }),
-        f("accountId", "Account ID", { placeholder: "CE-1", hint: "The parent's short code, a dash and a number, like CE-1." }),
-        f("name", "Name", { span: true, placeholder: "ClubEssential Demo [CE-1]", hint: "The business's DBA, with the account ID in square brackets." }),
-        f("type", "Account Type", { kind: "select", options: ["Club"], value: a.s_type === undefined ? "Club" : a.s_type }),
-        f("country", "Country", { kind: "select", options: SALES_COUNTRIES, placeholder: "Choose a country" })
-      ] },
-      { key: "s-owner", title: "Owner", note: "One owner, with their full name as it appears on their email.", cols: 2, fields: [
-        f("ownerName", "Contact Name", { span: true, placeholder: "Full name" }),
-        f("ownerEmail", "Contact Email", { placeholder: "name@example.com" }),
-        f("ownerPhone", "Contact Phone", { placeholder: "(555) 010-0100" })
-      ] },
-      { key: "s-poc", title: "Point of contact", note: "You, as the person submitting this form.", cols: 2, fields: [
-        f("pocName", "POC Name", { span: true, placeholder: "Full name" }),
-        f("pocEmail", "POC Email", { placeholder: "name@example.com" }),
-        f("pocPhone", "POC Phone", { placeholder: "(555) 010-0100" })
-      ] },
-      { key: "s-processing", title: "Processing", cols: 2, fields: [
-        f("reqDate", "Merchant Account Requested Date", { placeholder: datePh(), hint: "Allow 5 business days. For an urgent request, contact the onboarding team directly." }),
-        f("mids", "Number of MIDs", { placeholder: "2" }),
-        f("midDesc", "Description of MIDs", { kind: "long", span: true, placeholder: "One ECOM and one card-present", hint: "List each one, ECOM and card-present." }),
-        f("descriptor", "Bank Depositor Descriptor", { required: false, placeholder: "Up to 10 characters", hint: "Leave blank if it doesn't apply." }),
-        f("mcc", "Merchant Category Code", { kind: "select", options: mccOptions, placeholder: "Choose a code" })
-      ] },
-      { key: "s-fees", title: "Fees", note: "All optional. Enter US dollar amounts, like 0.04.", cols: 3, fields: SALES_FEES.map((x) => dollars(x[0], x[1])) },
-      { key: "s-payouts", title: "Payouts", cols: 2, fields: [
-        f("fundingType", "Payout Funding Type", { kind: "select", options: ["Net", "Gross"], placeholder: "Choose one" }),
-        f("fundingSpeed", "Payout Funding Speed", { kind: "select", options: ["Next Day ACH", "Same Day ACH"], placeholder: "Choose one" }),
-        f("submitType", "Payout Submit Type", { kind: "select", options: ["Automatic", "Manual"], placeholder: "Choose one" })
-      ] }
-    ];
-  }
-
-  // What is wrong with one sales-form field, or "" if it is fine.
-  function salesError(f) {
-    const v = f.value, t = String(v).trim();
-    if (!f.required) {
-      if (!t) return "";
-      if (f.kind === "currency" && !/^\d[\d,]*(\.\d{1,4})?$/.test(t.replace(/^\$/, ""))) return "Enter a US dollar amount, like 0.04.";
-      if (f.id === "s_descriptor" && t.length > 10) return "Use 10 characters or fewer.";
-      return "";
-    }
-    if (f.kind === "check") return v === true ? "" : "Tick this to continue.";
-    if (!t) return f.kind === "select" ? "Choose one." : "Fill this in to continue.";
-    const d = digitsOf(t);
-    if (f.id === "s_accountId" && !/^[A-Za-z]+-\d+$/.test(t)) return "Use the format CE-1.";
-    if (f.id === "s_name") {
-      const id = String(state.a.s_accountId || "").trim();
-      if (t.indexOf("[") < 0 || t.indexOf("]") < 0 || (id && t.indexOf("[" + id + "]") < 0)) return "Add the account ID in square brackets, like ClubEssential Demo [CE-1].";
-    }
-    if ((f.id === "s_ownerName" || f.id === "s_pocName") && t.split(/\s+/).length < 2) return "Enter a first and last name.";
-    if ((f.id === "s_ownerEmail" || f.id === "s_pocEmail") && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(t)) return "Enter an email like name@example.com.";
-    if ((f.id === "s_ownerPhone" || f.id === "s_pocPhone") && (d.length < 10 || d.length > 15)) return "Enter the full number, including the area code.";
-    if (f.id === "s_reqDate") return dateProblem("s_reqDate", t);
-    if (f.id === "s_mids" && !(/^\d+$/.test(t) && parseInt(t, 10) >= 1)) return "Enter a whole number, 1 or more.";
-    return "";
-  }
-
-  // Example answers so the form can be filled in one click while demoing (prototype only). All invented.
-  function fillSalesExample() {
-    const d = new Date(); d.setDate(d.getDate() + 7);
-    const two = (n) => (n < 10 ? "0" : "") + n;
-    setState((s) => ({ a: Object.assign({}, s.a, {
-      s_parent: "ClubEssential", s_accountId: "CE-1", s_name: "Riverside Pilates [CE-1]", s_type: "Club", s_country: "United States",
-      s_ownerName: "Dana Whitfield", s_ownerEmail: "dana@riversidepilates.example", s_ownerPhone: "(555) 010-0117",
-      s_pocName: "Jordan Ellis", s_pocEmail: "jordan.ellis@xplorpay.example", s_pocPhone: "(555) 010-0142",
-      s_reqDate: two(d.getMonth() + 1) + " / " + two(d.getDate()) + " / " + d.getFullYear(), s_mids: "2", s_midDesc: "One ECOM and one card-present",
-      s_descriptor: "RIVERSIDE", s_mcc: (mccByCode("7999") || { label: "7999" }).label, s_feeTieredAch: "0.04", s_feeAmex: "2.9",
-      s_fundingType: "Net", s_fundingSpeed: "Next Day ACH", s_submitType: "Automatic"
-    }) }));
-  }
-
-  // Turns the salesperson's answers into the merchant's starting answers: the owner (as the person the link goes to), the business
-  // contact details, the trading name, the category and the country. Everything stays editable on the merchant's side.
-  function submitSales() {
-    const a = state.a, t = (k) => String(a[k] || "").trim();
-    const ownerName = t("s_ownerName");
-    const pa = { o1_name: ownerName, o1_email: t("s_ownerEmail"), o1_phone: t("s_ownerPhone"), dba: t("s_name").replace(/\s*\[[^\]]*\]\s*$/, "") };
-    if (t("s_mcc")) pa.category = t("s_mcc");
-    const region = a.s_country === "Canada" ? "Canada" : /^(United States|Puerto Rico)$/.test(a.s_country || "") ? "United States" : ctx.region;
-    salesPrefill = { a: pa, ownerEmail: t("s_ownerEmail"), owners: [{ id: 1, name: ownerName, initials: initialsOf(ownerName), pct: 100, role: "Owner / CEO", status: "pending", self: true, added: true, me: true }] };
-    if (region !== ctx.region) setCtx({ region });
-    setState({ screen: "entry", a: Object.assign({}, state.a, pa), owners: salesPrefill.owners.map((o) => Object.assign({}, o)) });
-  }
-
-  // Simulated contract read: no file picker opens and no file is read. After a short wait the fee and payout fields are filled with
-  // made-up values, as if the contract had been read. Three fees are left blank to show what a read that misses things looks like.
-  const CONTRACT_READ = {
-    s_feeTieredAch: "0.04", s_feeBuyerMax: "5.00", s_feeMerchantMax: "5.00", s_feeBuyerAch: "0.25", s_feeMerchantAch: "0.25", s_feeAncillary: "1.00",
-    s_feeDisputeFixed: "15.00", s_feeDisputeInquiry: "5.00", s_feeAchCreditReturn: "3.00", s_feeAchDebitReturn: "3.00", s_feeDebitBuyer: "0.50",
-    s_feeDebitMerchant: "0.30", s_feeCcInterchangePlus: "0.30", s_feeCcInterchange: "1.95", s_feeCcBuyer: "2.90", s_feeCcMerchant: "2.60", s_feeAmex: "3.50",
-    s_feeMastercard: "", s_feeVisa: "", s_feeDiscover: "",
-    s_fundingType: "Net", s_fundingSpeed: "Next Day ACH", s_submitType: "Automatic"
-  };
-  const setContract = (st, file, read) => setState({ salesContract: { state: st, file: file || "", read: read || "" } });
-  function uploadContract() {
-    setContract("uploading");
-    setTimeout(() => setContract("reading"), 900);
-    setTimeout(() => {
-      const found = Object.keys(CONTRACT_READ).filter((k) => CONTRACT_READ[k] && k.indexOf("s_fee") === 0).length;
-      const missed = Object.keys(CONTRACT_READ).filter((k) => !CONTRACT_READ[k]).length;
-      setState((s) => ({ a: Object.assign({}, s.a, CONTRACT_READ), salesContract: { state: "done", file: "Riverside Pilates - Merchant Agreement.pdf", read: "Filled " + found + " fees and 3 payout settings" + (missed ? ". " + missed + " fees weren't in the contract, so they're blank." : ".") } }));
-      showToast("We read the contract and filled in the fees and payouts. Check them before you submit.");
-    }, 2000);
-  }
-  function contractView() {
-    const c = state.salesContract, busy = c.state === "uploading" || c.state === "reading";
-    const action = c.state === "idle" ? html`<button type="button" class="btn btn-outline btn-sm" aria-label="Choose the contract file" data-click="${on(uploadContract)}">${icon("upload", 15)}Choose file</button>`
-      : c.state === "done" ? html`<span class="state-pill state-pill--done">${icon("check", 14, "i-b")}Read</span>`
-      : html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>${c.state === "uploading" ? "Uploading" : "Reading it"}</span>`;
-    return html`<article class="card card--p20 doc s-contract${c.state === "done" ? " is-done" : busy ? " is-busy" : ""}" data-key="s-contract">
-  <div class="doc-row">
-    <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
-    <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">Signed contract</h3></div>
-      <p class="body-sm">Upload the contract and we'll fill in the fees and payouts from it. Check them before you submit.</p>
-    </div>
-    ${action}
-  </div>
-  ${c.state === "done" && html`<div class="doc-file"><span class="doc-file-name">${c.file}</span><span class="doc-readback">${c.read}</span><button type="button" class="btn-link" aria-label="Replace the contract" data-click="${on(() => setContract("idle"))}">Replace</button></div>`}
-</article>`;
-  }
-
-  function salesView() {
-    const secs = salesSections();
-    const all = (secs.reduce((x, s) => x.concat(s.fields), []));
-    const errs = {};
-    all.forEach((f) => { const m = salesError(f); if (m) errs[f.id] = m; });
-    ERR = {};
-    Object.keys(errs).forEach((k) => { if (state.touched[k]) ERR[k] = errs[k]; });
-    // The button stays disabled until every answer is valid, with a hover note listing what is missing, as in the merchant flow.
-    const missing = all.filter((f) => errs[f.id]).map((f) => f.label);
-    const btn = html`<button type="button" class="btn btn-primary btn-lg"${missing.length ? " disabled" : ""} data-click="${on(() => !missing.length && submitSales())}">Submit account request${icon("arrow-r", 19)}</button>`;
-    return html`<div class="welcome" data-key="sales"><div class="welcome-inner">
-  <span class="tag tag--purple">${icon("users", 13)}Internal · Sales</span>
-  <h1 class="welcome-title">New merchant onboarding account${pin("sales-intake-first")}</h1>
-  <p class="welcome-lede">Fill this in once the deal is agreed. We use it to set up the merchant's account before they get their onboarding link.</p>
-  <div class="stack">
-    ${secs.map((s) => html`<section class="card" data-key="${s.key}">
-      <div class="card-head"><div class="grow"><h2 class="card-title">${s.title}</h2>${s.note && html`<p class="card-note">${s.note}</p>`}</div></div>
-      ${s.key === "s-fees" && contractView()}
-      <div class="fields${s.cols === 3 ? " fields--3" : ""}">${s.fields.map((f) => fieldView(Object.assign({}, f, { span: f.span })))}</div>
-    </section>`)}
-  </div>
-  <div class="actions actions--sales">
-    <button type="button" class="btn btn-soft btn-sm" data-click="${on(fillSalesExample)}">${icon("pen", 14)}Fill with example (prototype)</button>
-    ${gateView({ stepComplete: !missing.length, missing }, btn)}
-  </div>
-</div></div>`;
-  }
-
   // Page 2: who you are, asked before any field so nothing that doesn't apply is shown.
   function bizTypeView() {
     return html`<div class="welcome" data-key="biztype">
@@ -2904,7 +2759,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     </div>
     ${action}
   </div>
-  ${s === "done" && html`<div class="doc-file"><span class="doc-file-name">${cur.file}</span><span class="doc-readback">${cur.read}</span><button type="button" class="btn-link" aria-label="Replace ${d.title}" data-click="${on(() => setDoc(d.key, "idle"))}">Replace</button></div>`}
+  ${s === "done" && html`<div class="doc-file"><span class="doc-file-name">${cur.file}</span><button type="button" class="btn-link" aria-label="Replace ${d.title}" data-click="${on(() => setDoc(d.key, "idle"))}">Replace</button></div>`}
 </article>`;
   }
 
@@ -3354,7 +3209,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
       const pick = (e) => {
         setCtx({ [key]: options.indexOf(e.target.value) > -1 ? e.target.value : options[0] });
         if (key === "start") setCtx({ data: ctx.start === START_SAMPLE ? "Sample business" : ctx.start === START_NEW ? "Empty" : ctx.data });
-        if (key === "data" || key === "link" || key === "start") { restored = false; salesPrefill = null; resetData(); }
+        if (key === "data" || key === "link" || key === "start") { restored = false; resetData(); }
       };
       return html`<label><span class="field-label field-label--block">${label}${pinId && pin(pinId)}</span><select class="input" data-input="${on(pick)}">${options.map((op) => html`<option${attr("selected", ctx[key] === op)}>${op}</option>`)}</select></label>`;
     };
@@ -3380,9 +3235,8 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const v = vals();
     return html`<div class="page" data-key="page">
   <div class="frame">
-    ${v.showShell && !v.isEntry && state.screen !== "sales" && state.screen !== "login" && shellView(v)}
+    ${v.showShell && !v.isEntry && state.screen !== "login" && shellView(v)}
     <div class="content" data-key="content">
-      ${state.screen === "sales" && salesView()}
       ${state.screen === "login" && loginView()}
       ${v.isEntry && entryView()}
       ${v.isWelcome && welcomeView(v)}
@@ -3491,7 +3345,6 @@ ${protoView()}`;
       if (last.screen !== null) window.scrollTo(0, 0);
       const cur = STEPS[state.step - 1];
       document.title = (state.screen === "flow" ? "Step " + state.step + " of 7 · " + stepName(cur)
-        : state.screen === "sales" ? "New merchant account"
         : state.screen === "login" ? (state.loginStage === "change" ? "Change your password" : "Sign in")
         : state.screen === "entry" ? "Check it's you"
         : state.screen === "welcome" ? "Business verification"
