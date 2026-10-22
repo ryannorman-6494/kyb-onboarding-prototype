@@ -70,6 +70,8 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .btn-jump:hover { background: var(--color-background-brand-subtle); color: var(--color-text-link-hover); }
 .btn:disabled, .btn[aria-disabled="true"] { background: var(--component-button-disabled-background); border-color: transparent; color: var(--component-button-disabled-foreground); box-shadow: none; cursor: not-allowed; }
 /* Prototype-only buttons that sit on the dark approved card */
+.btn-light-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.45); font-weight: var(--type-control-bold-weight); }
+.btn-light-outline:hover { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.7); }
 .btn-light { background: #fff; color: var(--color-neutral-1200); font-weight: var(--type-control-bold-weight); }
 .btn-on-dark { background: transparent; box-shadow: inset 0 0 0 1px rgba(255,255,255,.3); color: #fff; }
 
@@ -154,6 +156,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
 .actions { position: relative; }
 .actions .btn { width: 100%; white-space: normal; }
+.actions--single { grid-template-columns: minmax(0,1fr); }
 /* The design-decision pin floats on the join between the two buttons rather than taking a grid cell. */
 .actions > .note { position: absolute; top: -9px; left: calc(50% - 30px); margin: 0; }
 .info { position: relative; display: inline-block; }
@@ -263,6 +266,9 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .check input:checked::after { content: ""; position: absolute; left: 2px; top: 2.5px; width: 8px; height: 4px; border-left: 2px solid var(--color-icon-on-brand); border-bottom: 2px solid var(--color-icon-on-brand); transform: rotate(-45deg); }
 .check input:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: var(--border-focus-offset); }
 [data-error] .check input { border-color: var(--color-border-error); }
+.check.is-disabled, .check.is-disabled input { cursor: not-allowed; }
+.check.is-disabled input { background: var(--color-neutral-200); border-color: var(--color-border-default); }
+.check.is-disabled .check-label { color: var(--color-text-subtle); }
 .check-label { display: block; margin-top: 2px; font: var(--font-body-default); color: var(--color-text-primary); }
 .check-hint { display: block; font: var(--font-caption-default); color: var(--color-text-subtle); margin-top: var(--space-layout-pair); }
 
@@ -685,3 +691,18 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .em-note strong { color: #282F35; }
 .em-foot { max-width: 600px; margin: 20px auto 0; text-align: center; font-size: 12px; line-height: 18px; color: #8C969F; }
 @media (max-width: 620px) { .em-logo, .em-hero, .em-body { padding-left: 20px; padding-right: 20px; } .em-hero h1 { font-size: 28px; line-height: 34px; } .mailview { padding: 12px 8px 40px; } }
+
+/* Owner card actions menu (decision owner-actions-menu). The card clips its contents, so it stops clipping while the menu is open. */
+.person.has-menu { overflow: visible; }
+.kebab-wrap { position: relative; display: inline-flex; }
+.kebab { padding-left: 8px; padding-right: 8px; }
+.action-menu { position: absolute; z-index: 30; right: 0; top: calc(100% + 4px); min-width: 210px; margin: 0; padding: 4px; list-style: none; background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-md); animation: xrise 160ms ease both; }
+.action-opt { display: flex; width: 100%; gap: var(--space-layout-related); align-items: center; min-height: var(--component-menu-item-height-medium); padding: 0 var(--component-menu-item-padding-x); border: none; border-radius: var(--radius-default); background: transparent; font: var(--font-body-default); color: var(--color-text-primary); text-align: left; cursor: pointer; }
+.action-opt:hover, .action-opt:focus-visible { background: var(--color-background-hover); }
+.action-opt--danger { color: var(--color-text-error); }
+.action-sep { height: 1px; margin: 4px 0; background: var(--color-border-subtle); }
+.pill--neutral { background: var(--color-background-surface-sunken); color: var(--color-text-secondary); }
+.btn-critical { color: var(--color-text-error); }
+.dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-layout-related); flex-wrap: wrap; }
+.gate-foot { display: block; margin-top: 8px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
+.invite-note { margin: 12px 0 4px; }

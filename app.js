@@ -10,6 +10,7 @@
  * "Prototype options" panel:
  *   ?region=ca      Canada instead of the United States
  *   ?why=0          hide the "why we ask" panel
+ *   ?slice=2        slice 2 (invite owners); no parameter means slice 1 (one person, no invites)
  *   ?start=         where the flow starts: (none) login | merchant (one-time code) | sample
  *   ?link=          how the emailed link opens: returning | review | info | approved | expired | closed
  *
@@ -72,6 +73,10 @@
     closed: "Closed link"
   };
   const LINK_NEW = "New applicant";
+  // Which slice of the product is shown (decision slices-option). Slice 1 is the default: one person fills in everything and
+  // nobody can be invited. Slice 2 is the fuller build, where an owner can be invited to fill in their own details.
+  const SLICE_1 = "Slice 1: one person, no invites";
+  const SLICE_2 = "Slice 2: invite owners";
   // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
   // (demoted to a Prototype option, not deleted) the one-time-code link or the sample business.
   const START_LOGIN = "Merchant: welcome email, then login";
@@ -83,6 +88,7 @@
   function readContext() {
     const q = new URLSearchParams(location.search);
     return {
+      slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : START_LOGIN,
       data: q.get("data") === "sample" || q.get("start") === "sample" ? "Sample business" : "Empty",
@@ -92,6 +98,7 @@
   }
   function writeContext() {
     const q = new URLSearchParams();
+    if (ctx.slice === SLICE_2) q.set("slice", "2");
     if (ctx.region === "Canada") q.set("region", "ca");
     if (ctx.start === START_NEW) q.set("start", "merchant");
     if (ctx.start === START_SAMPLE) q.set("start", "sample");
@@ -104,8 +111,11 @@
   let ctx = readContext();
   function setCtx(patch) { ctx = Object.assign({}, ctx, patch); writeContext(); schedule(); }
   const isCa = () => ctx.region === "Canada";
+  // Invites, owner links and hand-offs to someone else exist in slice 2 only.
+  const invitesOn = () => ctx.slice === SLICE_2;
 
   const CONTEXT_OPTIONS = {
+    slice: [SLICE_1, SLICE_2],
     start: [START_LOGIN, START_NEW, START_SAMPLE],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
@@ -152,6 +162,7 @@
     },
     {
       "id": "welcome-delegate",
+      "slice": "2",
       "area": "Flow",
       "where": "Welcome",
       "t": "Give “someone else handles this” equal billing",
@@ -161,6 +172,7 @@
     },
     {
       "id": "save-link-scope",
+      "slice": "2",
       "area": "Trust",
       "where": "Save and finish later",
       "t": "Resume links are scoped, addressed and expiring",
@@ -207,6 +219,7 @@
     },
     {
       "id": "owner-self-serve",
+      "slice": "2",
       "area": "Flow",
       "where": "Step 2 · Owners & signatory",
       "t": "Owners can be invited rather than transcribed",
@@ -410,6 +423,7 @@
     },
     {
       "id": "approved-unlocks",
+      "slice": "2",
       "area": "Flow",
       "where": "Approved",
       "t": "Team invites and device orders appear once approved",
@@ -703,6 +717,7 @@
     },
     {
       "id": "delegate-owner-step",
+      "slice": "2",
       "area": "Flow",
       "where": "Step 2 · Owners, and the submitted screen",
       "t": "Each owner can be sent a link to fill in their own details",
@@ -833,6 +848,7 @@
     },
     {
       "id": "rail-waiting-on-owners",
+      "slice": "2",
       "area": "Flow",
       "where": "Progress panel · step 2",
       "t": "The step list says step 2 is done but still waiting on owner details",
@@ -1250,6 +1266,158 @@
       "tradeoff": "The ID status is gone from the timeline, so the only place it shows is the owner cards for people still invited. The Order your payment devices button does nothing in the prototype, and Email us only shows a prototype toast. Losing the warning colour makes the page calmer, but it no longer signals that something needs action except through the heading and the upload button.",
       "by": "Ryan",
       "when": "2026-10-19"
+    },
+    {
+      "id": "owner-actions-menu",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "Step 2, each owner card",
+      "t": "Owner card actions move into a three-dot menu",
+      "b": "The owner card header was filling up with Send them a link, Remove and Open. Now the one shortcut that matters stays on show while the owner has not been invited (Send invite, or Send a new invite after access was removed), and everything else sits in a three-dot menu at the far right of the card, after Open or Collapse. What the menu offers depends on the owner: not invited, only Remove owner; invited and not yet signed in, Resend invite, Change email, Cancel invite, then Remove owner; signed in, Remove access, then Remove owner. Remove owner is last, below a divider, in red with a trash icon. Change email reopens the invite dialog with the address filled in and sends a fresh invite. Cancel invite, Resend invite and Change email act straight away with a toast. A sole proprietor has no menu, since there is no one to remove. The menu closes on a click outside, on Escape or when an item is chosen.",
+      "tradeoff": "A menu hides Remove, which used to be one click away, behind a second click. A not-invited owner's menu holds only Remove owner, so for them it is a one-item menu kept for a steady layout. The dialog's body text and the seven-day note still describe a link; they are due a rewrite for the sign-in model in the PRD (Invitations and delegation, FR-05).",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "remove-access-vs-owner",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "Step 2, owner card menu",
+      "t": "Remove access and Remove owner are different things, and the second asks first once the person has signed in",
+      "b": "Following the PRD (FR-07), taking someone's access away does not delete what they entered. Remove access, offered once the invited person has signed in, opens a dialog: Remove Dana's access? They won't be able to sign in. What they already entered stays, and you can fill in the rest yourself. The card then reads Access removed, becomes an ordinary card the applicant fills in, and offers Send a new invite. Before they have signed in, the same step is called Cancel invite, needs no dialog (nothing is lost) and returns the card to not invited. Remove owner takes the person off the application, ends their access and deletes what they entered. If they have signed in it asks first (Remove Dana and everything they entered?, saying it cannot be undone); if they have not, it removes at once with a toast, as before.",
+      "tradeoff": "Two removal actions with different outcomes ask the applicant to hold a distinction in their head, and the PRD does not say whether Remove owner should keep the typed data, so deleting it is our assumption. Cancel invite has no undo. The dialog is the only warning that a signed-in person's work is lost on Remove owner.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "invite-states",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "Step 2, owner card and Prototype options",
+      "t": "An invited owner is Invited, Signed in, Details received or Access removed",
+      "b": "The PRD (FR-05) says the applicant sees who they invited and whether they have signed in. The card pill now has four states: Invited (amber, clock, with the email) until the person signs in; Signed in (grey, user icon, with the email) once they have; Details received (green, check, with the time) once they press Send my details on their own screens; and Access removed (grey) after the applicant removed their access. Signed in shows no time, to keep it from going stale. Details received was taken out for a while on the assumption that an invited person had the whole form, then brought back when invitees were kept to their own card and ID (decision invitee-own-card-only), where finishing is a real moment. Cancelling or re-sending an invite resets it. Needs a look stays on the applicant's own view of the card and is not shown to the invited person, who sees their own field errors inline. In Prototype options, Preview what Dana sees is now Sign in as Dana, which opens their side and flips the card to Signed in; finishing there flips it to Details received.",
+      "tradeoff": "Details received does not mean the invited person's part passes the checks: step 6 and 7 still wait on their card and ID, so the pill can say received while the hover note still says Waiting on them. The invitee's own screens (landing, their card and ID, thank-you, and the Send my details button) still open from a link rather than a sign-in, and nothing on them sets a temporary password; they need rewording for the sign-in model. Signed in and Details received are set by prototype controls; in the product they come from a real sign-in and a real submit.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "invite-no-exemption",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "Steps 2, 6 and 7, owner card",
+      "t": "Inviting an owner no longer excuses their details; steps 6 and 7 wait for them",
+      "b": "Until now an invited owner was exempt from every check: step 2 skipped their fields, step 6 dropped their ID row, and the 75% rule was waived, so an invite that was never answered could be submitted with an empty owner. The PRD says what an invited person enters counts toward the application and that, if they never respond, the applicant fills it in. So: step 2 still lets the applicant continue while an invited owner is incomplete (they can carry on in the meantime), but steps 6 and 7 do not pass until that owner's details are in, and their photo ID row is back in step 6, with the hint that they can add it or the applicant can. The disabled-button hover note names who is missing (Waiting on Dana: their details, photo ID) and ends with a line pointing at the card: Fill it in yourself on the Owners step, or remove their access. Opening an invited owner's card shows the line Dana has been invited. Anything you add here counts toward the application. The step list note Waiting on one owner's details shows only while an invited owner's details or ID are still missing. After submit nobody can be owed, so the confirmation's waiting-on cards and nudge wording no longer appear.",
+      "tradeoff": "An unanswered invite can now hold the whole application at step 6 until the applicant fills the card in or removes access, where before it never did. This supersedes the waiting-on wording in the earlier confirmation-ID-tile decision. Two people may edit the same card; the PRD says the last save wins for a step, which the prototype does not model yet (open question).",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "invite-email-change",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "Step 2, owner card menu",
+      "t": "A wrong invite email can be changed until the person signs in",
+      "b": "The PRD only covers Ops correcting the business contact's email (FR-03); it says nothing about an invited person's address. Change email is in the card menu only while the invite is unanswered. It reopens the invite dialog with the address filled in (Update and resend) and the old invite stops working, with a toast saying so. Once the person has signed in the menu has no Change email: if the address was wrong, the applicant removes access and sends a new invite.",
+      "tradeoff": "Someone who mistyped an address and was never signed in is covered, but a person who signed in with the wrong account has to be removed and invited again, which loses nothing they entered because Remove access keeps it. Whether the real product can revoke an unanswered temporary password when the address changes is for engineering to confirm.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "concurrent-edit-notice",
+      "slice": "2",
+      "area": "Steps 2 and 6",
+      "where": "Top of step 2 and step 6, under the description",
+      "t": "If an invited person saved their details while the applicant is on the step, a note says so",
+      "b": "The PRD (Invitations and delegation, failure cases) says that when two people edit the same step the last save wins at the step level. An invited person only sees their own owner card and photo ID (decision invitee-own-card-only), so the only place two people can collide is that card on step 2 and that ID on step 6. There a grey note sits under the step description: Marcus J. Lee updated their details at 9:12 AM. You're seeing their latest answers. It blocks nothing, asks nothing of the applicant, and goes once they leave the step. There is no live presence indicator and no keep-mine-or-theirs choice. In Prototype options, Simulate: Marcus edits their details shows the note on those two steps, since the prototype has no second person.",
+      "tradeoff": "The note says an edit happened but not what changed, so an applicant who typed over the invited person's answer cannot tell which one survived. It clears once the step is left, so the prototype cannot show the realistic case of an edit made while the applicant was on another step. The note is shown to the applicant only; the invited person's own screens do not yet say when the applicant changed their card. Last save wins is the PRD's rule, not a finding that it is the right one.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "invite-owners-only",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "Step 2, owner cards",
+      "t": "Only owners can be invited, for now",
+      "b": "The PRD (Invitations and delegation, FR-05) lets the business contact invite anyone to help fill in the form, such as a bookkeeper. The prototype keeps invites on owner cards only, as it is today. There is no separate Invite someone to help button and no helper list, so a person who is not an owner cannot be invited from the application.",
+      "tradeoff": "This is narrower than the PRD. A bookkeeper or assistant can only be brought in by being listed as an owner, which would wrongly count them toward ownership and ask for their photo ID, or by sharing the applicant's own sign-in, which the PRD does not allow. The save dialog's hand-off link also stays as it is, still described as a link. Ryan chose this on 2026-10-21 to keep scope down; revisit if non-owner helpers turn out to be common.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "invitee-own-card-only",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "What an invited owner sees",
+      "t": "An invited owner sees only their own card and photo ID, not the whole application",
+      "b": "The PRD (Invitations and delegation, FR-06) says an invited user sees the same onboarding form as the business contact. We chose not to follow that. An invited owner signs in and sees only their own owner card and their own photo ID, as the prototype's recipient screens already do: no other owner's details, no bank account, no tax number and no signing step. Because they never reach step 7, the question of who may sign and submit does not arise for them. The applicant still fills in the rest, can fill in an invited owner's card themselves (decision invite-no-exemption), and is the only person who signs and submits.",
+      "tradeoff": "This departs from FR-06 and from the single onboarding-only system role the PRD assumes (create:application), so it needs raising with the PRD owner (Gaurav Pimputkar, Tachyon) and with engineering: showing one card and one document to an invited user is a finer permission than a system role gives. It does protect other owners' personal details and the business's bank and tax details from anyone who was only asked for their own ID. If the role cannot be narrowed, the choice is back to the full form, which brings the signing question with it.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "approval-access-business-contact",
+      "slice": "2",
+      "area": "Status",
+      "where": "Approved page, and what happens to invited owners",
+      "t": "On approval only the business contact gets full access; invited owners lose theirs",
+      "b": "The PRD (Invitations and delegation, FR-09) gives the business contact and everyone they invited full business access on approval. We chose the narrower route: only the business contact is moved to full access. An invited owner's access was only ever for their own card and photo ID (decision invitee-own-card-only), and it ends when the application is approved. Anyone who should work in the business afterwards is invited from the approved page's Invite your team, as any new person would be. The prototype shows nothing new for this: the approved page and its Invite your team tile are unchanged.",
+      "tradeoff": "This departs from FR-09. An owner who helped fill in the form may expect to keep their sign-in and finds it no longer works at approval, and nothing in the prototype tells them. The business contact has to re-invite them, which asks for the same details again. The choice does keep a person who was only asked for their own ID from receiving the business's bank and tax details the moment approval lands. It needs raising with the PRD owner (Gaurav Pimputkar, Tachyon) and with engineering, together with decision invitee-own-card-only. The approved page could warn the business contact that invited owners lose access, but nothing asked for that.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "invite-email-checks",
+      "slice": "2",
+      "area": "Step 2",
+      "where": "Step 2, invite dialog",
+      "t": "The invite dialog refuses the applicant's own email and an address already invited for another owner",
+      "b": "Besides the format check, the invite dialog now stops two cases, on leaving the field and on Send invite. The applicant's own email (the business email from step 1, or the email on the owner marked as them) reads: That's your own email. Use Add myself as an owner instead. An address already invited for another owner reads: That address is already invited for another owner. Both checks ignore capital letters. Changing an invite's email to its own current address is allowed. A mistyped but well-formed address is not caught: Change email is the fix. Whether the address already belongs to an ODIN user at another business is not checked, because the prototype cannot know and the PRD does not say.",
+      "tradeoff": "Open question for the PRD owner and engineering: when the invited address already has an ODIN user, does the onboarding-only access attach to that user, is the invite refused, or is a second user created. Until that is answered the real product's behaviour is unknown. The own-email check can only see the addresses the applicant has typed in this application, not the address they signed in with, so a different address for the same person gets through.",
+      "by": "Ryan",
+      "when": "2026-10-21"
+    },
+    {
+      "id": "slices-option",
+      "area": "Flow",
+      "where": "Prototype options · Slice",
+      "t": "The prototype has two slices, chosen in Prototype options, and Slice 1 is the default",
+      "b": "A Slice option sits at the top of Prototype options (address ?slice=2 for the second; no parameter means Slice 1). Slice 1 is one person from start to finish, with no way to invite or hand over to anyone else, and it is what opens by default. Slice 2 is the build we already had, where an owner can be invited to fill in their own details, kept whole as a later release. It is one codebase, not two copies: anything that changes both slices is changed once, and anything that belongs to one slice only sits behind the slice check, so the other slice does not move. Decisions that only apply to one slice carry a Slice 1 only or Slice 2 only tag in the list of decisions (Read all). Changing the slice resets the prototype to its start.",
+      "tradeoff": "Because it is one codebase, a change to a shared screen reaches both slices whether or not it was meant to, so every edit has to be placed deliberately. Persona tests run against Slice 1 unless the address ends in ?slice=2.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "slice-1-single-user",
+      "slice": "1",
+      "area": "Flow",
+      "where": "Welcome, step 2, save dialog, confirmation, Prototype options",
+      "t": "In Slice 1 one person fills in everything: nobody can be invited and nothing is handed to someone else",
+      "b": "Slice 1 takes out every way of sending the application to another person. Gone: the Send invite button and the invite dialog, the owner card menu (replaced by a plain Remove button with a trash icon, since the menu would hold one item), the Invited, Signed in, Details received and Access removed states, the note about a person editing at the same time, the rail note about waiting on an owner, the Someone else handles our finances button on the welcome page, the hand-off link in the Finish later dialog (which keeps its first line about coming back with the link in the email, and gains a Close button), the Owner links controls in Prototype options, and the wording that offers to send an owner a link on the welcome page and step 2. The applicant types in every owner's details and uploads every owner's photo ID, as steps 6 and 7 already require. The confirmation always says nothing is waiting on anyone else, and when there is more than one owner it says the applicant added every owner's details and ID.",
+      "tradeoff": "The applicant has to have each owner's date of birth, home address, ID number and a photo of their ID to hand. Where an owner is not around, the applicant is stuck until they are, which is the cost of leaving invites for Slice 2. Left as they were because they are not about sending the application to another person: the approved page's Invite your team tile and wording (access to the account after approval).",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "slice-1-approved-card-only",
+      "slice": "1",
+      "area": "Flow",
+      "where": "Approved page",
+      "t": "In Slice 1 the approved page is the welcome card and nothing else",
+      "b": "Once the application is approved, Slice 1 shows only the main card: the approved tag, Welcome to Xplor Pay, a sentence that sends the applicant to the payments dashboard to get started, and two buttons. Open payments dashboard is the main one. Get help adding users is the quieter one and opens the same Talk to a person dialog as Get help. The Now that you're approved section, with its Invite your team and Order card readers tiles, is left out. Inviting more people happens inside ODIN after approval, so the onboarding flow does not offer it; the sentence says users can be added from the dashboard and the second button covers anyone who gets stuck. Slice 2 keeps the two tiles and its original sentence.",
+      "tradeoff": "Support becomes the fallback for adding users, so ops should expect those requests. The second button opens the general help dialog, not a dedicated users request.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "limits-from-entries",
+      "area": "Fields",
+      "where": "Step 3 · How you take payments, the limits tick",
+      "t": "The transaction limits come from the applicant's own answers, and the tick waits until they are filled in",
+      "b": "The limits under the tick on step 3 are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it.",
+      "tradeoff": "The limits simply repeat what the applicant estimated, so a low guess becomes a low limit and Xplor still has to decide the real limits. Someone who corrects a figure has to tick again; that is deliberate, since the tick is about specific numbers.",
+      "by": "Ryan",
+      "when": "2026-10-22"
     }
   ];
 
@@ -1480,6 +1648,9 @@
     delegateTarget: 0,
     delegateEmail: "",
     delegateErr: "",
+    menuOwner: 0,
+    confirm: null,
+    stepEdit: null,
     inviteStep: 0,
     inviteOwner: 0,
     returnTo: null,
@@ -1516,7 +1687,24 @@
     if (!state.saving) setState({ saving: true });
     savingTimer = setTimeout(() => setState({ saving: false }), 1000);
   }
-  const set = (id, v) => setState((s) => ({ a: Object.assign({}, s.a, { [id]: v }) }));
+  const set = (id, v) => setState((s) => {
+    const a = Object.assign({}, s.a, { [id]: v });
+    // The limits tick is about the numbers shown from these two answers, so it clears when either limit changes, or is emptied (decision limits-from-entries). Compared as numbers, so 40000 and 40,000 count as the same.
+    if (id === "monthlyVolume" || id === "maxTicket") {
+      const before = limitsFrom(s.a), after = limitsFrom(a);
+      if (!after.ready || before.perTx !== after.perTx || before.monthly !== after.monthly) a.velocityAck = false;
+    }
+    return { a: a };
+  });
+  // The transaction limits come from the step 3 answers: the biggest single sale is the per-transaction limit and the estimated monthly card volume is the monthly limit.
+  function limitsFrom(a) {
+    const num = (x) => parseFloat(String(x || "").replace(/,/g, ""));
+    const monthly = num(a.monthlyVolume), perTx = num(a.maxTicket);
+    const missing = [];
+    if (!(monthly > 0)) missing.push("your estimated monthly card volume");
+    if (!(perTx > 0)) missing.push("your maximum single transaction");
+    return { ready: missing.length === 0, missing: missing, monthly: monthly, perTx: perTx };
+  }
   const go = (screen, step) => setState({ screen, step: step || state.step, saveOpen: false });
 
   // "Check it's you" (decision 90). Nothing is emailed: any six digits open the link, except 000000, which is refused so the
@@ -1612,12 +1800,53 @@
   const nowTime = () => new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   const openDelegate = (target) => { const o = state.owners.filter((x) => x.id === target)[0]; setState({ delegateOpen: true, delegateTarget: target, delegateEmail: (o && o.inviteEmail) || "", delegateErr: "" }); };
   const closeDelegate = () => setState({ delegateOpen: false });
-  // Simulated email: nothing is sent. The real product emails a link scoped to this person's own details and this address.
+  // Simulated email: nothing is sent. The real product creates a sign-in for this person and emails a temporary password.
+  // What is wrong with an invite address, if anything (decision invite-email-checks). Whether the address already has an ODIN user is not something the prototype can know.
+  function inviteEmailProblem(raw) {
+    const email = raw.trim();
+    if (!email) return "";
+    if (!SAVE_EMAIL_OK.test(email)) return "Enter an email like name@example.com.";
+    const same = (x) => String(x || "").trim().toLowerCase() === email.toLowerCase();
+    if (state.owners.some((o) => o.self && same(ownerVal(o, "email"))) || same(state.a.email)) return "That's your own email. Use Add myself as an owner instead.";
+    if (state.owners.some((o) => o.id !== state.delegateTarget && o.status === "invited" && same(o.inviteEmail))) return "That address is already invited for another owner.";
+    return "";
+  }
   function sendDelegate() {
     const email = state.delegateEmail.trim();
-    if (!SAVE_EMAIL_OK.test(email)) { setState({ delegateErr: "Enter an email like name@example.com." }); return; }
-    setState({ delegateOpen: false, openOwner: state.openOwner === state.delegateTarget ? 0 : state.openOwner, owners: state.owners.map((x) => (x.id === state.delegateTarget ? Object.assign({}, x, { status: "invited", inviteEmail: email }) : x)) });
-    showToast("Link sent to " + email + ". You can carry on with the rest in the meantime.");
+    const problem = !email ? "Enter an email like name@example.com." : inviteEmailProblem(email);
+    if (problem) { setState({ delegateErr: problem }); return; }
+    const t = state.owners.filter((x) => x.id === state.delegateTarget)[0];
+    const changing = !!t && t.status === "invited";
+    setState({ delegateOpen: false, openOwner: state.openOwner === state.delegateTarget ? 0 : state.openOwner, owners: state.owners.map((x) => (x.id === state.delegateTarget ? Object.assign({}, x, { status: "invited", inviteEmail: email, signedIn: false, received: false, revoked: false }) : x)) });
+    showToast(changing ? "Invite sent to " + email + " instead. The old one no longer works." : "Invite sent to " + email + ". You can carry on with the rest in the meantime.");
+  }
+  // The card's actions menu (decision owner-actions-menu). Cancel invite before they have signed in, Remove access after, Remove owner at any time.
+  const closeMenu = () => setState({ menuOwner: 0 });
+  const ownerById = (id) => state.owners.filter((x) => x.id === id)[0];
+  function resendInvite(id) {
+    const o = ownerById(id);
+    setState({ menuOwner: 0 });
+    showToast("Invite sent again to " + (o && o.inviteEmail ? o.inviteEmail : "that address") + ".");
+  }
+  function cancelInvite(id) {
+    const o = ownerById(id);
+    setState({ menuOwner: 0, owners: state.owners.map((x) => (x.id === id ? Object.assign({}, x, { status: "pending", inviteEmail: "", signedIn: false, received: false, revoked: false }) : x)) });
+    showToast("Cancelled the invite to " + (o && o.inviteEmail ? o.inviteEmail : "them") + ".");
+  }
+  const askConfirm = (kind, id) => setState({ menuOwner: 0, confirm: { kind: kind, id: id } });
+  const closeConfirm = () => setState({ confirm: null });
+  // Removing access keeps the card and everything typed into it (PRD FR-07); the applicant can fill in the rest.
+  function revokeAccess() {
+    const id = state.confirm && state.confirm.id;
+    const o = ownerById(id);
+    if (!o) { closeConfirm(); return; }
+    setState({ confirm: null, owners: state.owners.map((x) => (x.id === id ? Object.assign({}, x, { status: "pending", revoked: true }) : x)) });
+    showToast("Removed access for " + (ownerInfo(o).name === "New owner" ? "them" : ownerInfo(o).name) + ". What they entered stays.");
+  }
+  // Someone who has signed in may have typed things, so removing them asks first (decision remove-access-vs-owner).
+  function removeOwnerClick(id) {
+    const o = ownerById(id);
+    if (o && o.signedIn) askConfirm("owner", id); else removeOwner(id);
   }
   // Deleting an owner also drops what was typed into their card and any ID file.
   function removeOwner(id) {
@@ -1627,13 +1856,21 @@
     const a = Object.assign({}, state.a);
     Object.keys(a).forEach((k) => { if (k.indexOf("o" + id + "_") === 0) delete a[k]; });
     const docs = Object.assign({}, state.docs); delete docs["id_" + id];
-    setState({ owners: state.owners.filter((x) => x.id !== id), a: a, docs: docs, openOwner: state.openOwner === id ? 0 : state.openOwner });
+    setState({ owners: state.owners.filter((x) => x.id !== id), a: a, docs: docs, openOwner: state.openOwner === id ? 0 : state.openOwner, menuOwner: 0, confirm: null });
     showToast("Removed " + name + ".");
   }
   // What the person who gets the link sees. Prototype only: the real page is the recipient's own session.
-  const previewInvitee = (id) => setState({ screen: "invitee", inviteStep: 0, inviteOwner: id, openOwner: id, returnTo: { screen: state.screen, step: state.step } });
+  // Prototype only: signing in as the invitee also marks them Signed in on the applicant's card.
+  const previewInvitee = (id) => setState({ screen: "invitee", inviteStep: 0, inviteOwner: id, openOwner: id, returnTo: { screen: state.screen, step: state.step }, owners: state.owners.map((x) => (x.id === id ? Object.assign({}, x, { signedIn: true }) : x)) });
+  // Simulated concurrent edit (prototype only): pretend the first invited person saved this step while the applicant was on it (decision concurrent-edit-notice).
+  function simulateEdit() {
+    const o = state.owners.filter((x) => x.status === "invited")[0];
+    if (!o || state.screen !== "flow" || (state.step !== 2 && state.step !== 6)) return;
+    const n = ownerInfo(o).name;
+    setState({ protoOpen: false, stepEdit: { step: state.step, by: n !== "New owner" ? n : o.inviteEmail, at: nowTime() } });
+  }
   const leaveInvitee = () => { const r = state.returnTo || { screen: "flow", step: 2 }; setState({ screen: r.screen, step: r.step, returnTo: null }); };
-  const finishInvitee = () => setState({ inviteStep: 2, owners: state.owners.map((x) => (x.id === state.inviteOwner ? Object.assign({}, x, { status: "received", receivedAt: nowTime() }) : x)) });
+  const finishInvitee = () => setState({ inviteStep: 2, owners: state.owners.map((x) => (x.id === state.inviteOwner ? Object.assign({}, x, { received: true, receivedAt: nowTime() }) : x)) });
   const closeSave = () => setState({ saveOpen: false });
   const toggleReveal = (id) => setState((s) => ({ revealed: Object.assign({}, s.revealed, { [id]: !s.revealed[id] }) }));
   function cardOpen(key, dflt) {
@@ -1757,7 +1994,7 @@
   // ---------------------------------------------------------------------------
 
   function fieldError(f) {
-    if (!f.required) return "";
+    if (!f.required || f.disabled) return "";
     const v = f.value;
     if (f.kind === "check") return v === true ? "" : "Tick this to continue.";
     if (f.kind === "yn") return v ? "" : "Choose yes or no.";
@@ -1810,6 +2047,8 @@
       else if (total <= 75 && !state.owners.some((o) => o.status === "invited")) errs.ownership = "The owners listed come to " + fmtPct(total) + "%. Add everyone who owns 25% or more.";
     }
     if (step === 6 || step === 7) {
+      // An invited owner is not asked for at step 2 (the applicant can carry on), but their details and ID are needed before step 6 and 7 can pass (decision invite-no-exemption).
+      state.owners.forEach((o) => { if (o.status === "invited") ownerFields(o).forEach(add); });
       docListFor(owners, isCa()).forEach((d) => {
         if (!d.skip && d.requirement === "Required" && doc(d.key).state !== "done") errs["doc_" + d.key] = "Add this file to continue.";
       });
@@ -1896,7 +2135,8 @@
     const raw = state.a[id];
     return {
       id, label, kind,
-      value: raw !== undefined ? raw : (o.dflt !== undefined ? o.dflt : ""),
+      value: o.disabled ? false : (raw !== undefined ? raw : (o.dflt !== undefined ? o.dflt : "")),
+      disabled: !!o.disabled,
       span: !!o.span,
       unsure: !!o.unsure,
       // No "Optional" tag: a field without the red asterisk is optional (decision 96).
@@ -2037,7 +2277,7 @@
           a.cpSplit !== "0" ? fld("posType", "POS / terminal type", "select", { conditional: true, placeholder: "Choose a terminal", options: ["Xplor Pay countertop terminal", "Xplor Pay mobile reader", "Third-party terminal", "None"] }) : null,
           // Only someone arriving from an existing Xplor account has a platform to show; a new applicant would be asked about a product they may not use.
           isSample() ? fld("platform", "Platform", "text", { optional: true, hint: "Already filled in from your Xplor account." }) : null,
-          fld("velocityAck", "I've read the daily and monthly transaction limits for my volume tier", "check", { span: true, hint: "$5,000 per transaction and $60,000 per month to start. Ask us any time to raise it." })
+          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "$" + fmtMoney(limitsFrom(a).perTx) + " per transaction and $" + fmtMoney(limitsFrom(a).monthly) + " per month, based on what you entered above. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " above to see your limits. You can tick this once you have." })
         ]),
         ca
           ? card("s3-ach", "Bank transfer volumes", "Only if you'll also take direct debits.", [
@@ -2123,14 +2363,14 @@
     const a = state.a;
     const idRows = owners.map((o) => ({
       key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Required",
-      hint: "Passport or driver's license. All four corners in shot and no glare.",
+      hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's license. All four corners in shot and no glare.",
       why: "To confirm you are who you say you are. It goes only to Trullio, our verification partner.",
       file: "id-" + o.id + "-license.jpg",
       read: "Read: " + o.name + " · " + (ownerVal(o, "idType") || "photo ID") + (digitsOf(ownerVal(o, "idExpiry")).length === 8 ? " · expires " + digitsOf(ownerVal(o, "idExpiry")).slice(-4) : "") + (o.name && ownerVal(o, "idType") ? " — matches step 2" : "")
     }));
     if (idOnly) return idRows;
-    // An owner who has been sent a link adds their own ID file there, so it is not asked of the applicant.
-    const list = idRows.filter((r, i) => owners[i].status !== "invited");
+    // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
+    const list = idRows.slice();
     if (!isSole()) list.push({ key: "reg", title: isNonprofit() ? "Proof of registration or non-profit status" : "Proof of business registration", requirement: state.einFound ? "Not needed" : "Required", hint: state.einFound ? "Skipped. The registry match in step 1 already confirmed your " + (isNonprofit() ? "organization" : "business") + " is registered." : "Articles of incorporation, certificate of formation or equivalent.", file: "articles-of-organization.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (a.incorporated ? " · formed " + a.incorporated : "") + " — matches step 1", skip: state.einFound });
     list.push({
       key: "bank", title: "Bank account verification", requirement: "Required",
@@ -2160,8 +2400,8 @@
     const pct = isStatus ? 100 : Math.round(((progStep - 1) / 7) * 100);
     const owners = st.owners.map((o) => Object.assign({}, o, ownerInfo(o)));
     const ownedPct = owners.reduce((x, o) => x + o.pct, 0);
-    // Only an owner who was sent a link and has not replied is still owed. Everyone else's ID is in by the time the applicant reaches step 7, because step 6 will not continue without it.
-    const invitedLeft = owners.filter((o) => o.status === "invited");
+    // Nobody is owed after submit: step 6 and 7 do not pass until every owner's details and ID are in, including invited owners (decision invite-no-exemption).
+    const invitedLeft = [];
     const settled = owners.length - invitedLeft.length;
     // One owner and nobody being chased: the applicant's own ID, or the only person they listed, is the only one to check.
     const solo = owners.length === 1 && (owners[0].self || owners[0].status !== "invited");
@@ -2181,7 +2421,14 @@
     if (errStep === 2) st.owners.forEach((o) => { const n = String(ownerInfo(o).name || "").trim(); ownerFields(o).forEach((f) => { labelOf[f.id] = (n && n !== "New owner" ? n : "Owner") + ": " + f.label; }); });
     docList.forEach((d) => { labelOf["doc_" + d.key] = "File: " + d.title; });
     const missing = [];
-    Object.keys(allErrs).forEach((k) => { const m = labelOf[k] || allErrs[k]; if (missing.indexOf(m) < 0) missing.push(m); });
+    Object.keys(allErrs).forEach((k) => {
+      let m = labelOf[k] || allErrs[k];
+      // An invited owner's gaps collapse to who is being waited on, so the note can point at the card.
+      const om = /^o(\d+)_/.exec(k) || /^doc_id_(\d+)$/.exec(k);
+      const inv = om && st.owners.filter((x) => String(x.id) === om[1] && x.status === "invited")[0];
+      if (inv && errStep !== 2) { const n = String(ownerInfo(inv).name || "").trim(); m = "Waiting on " + (n && n !== "New owner" ? n : "your invited owner") + ": " + (k.indexOf("doc_") === 0 ? "photo ID" : "their details"); }
+      if (missing.indexOf(m) < 0) missing.push(m);
+    });
     // Step 7 signatory follows the step 2 answer unless edited on step 7.
     const selfOwner = owners.filter((o) => o.self)[0];
     const defaultSigner = a.sigSame === "no" ? (a.sigName || "") : (ownerVal(st.owners[0] || {}, "name") || "");
@@ -2195,12 +2442,12 @@
       ca, isWelcome, isBizType, isEntry, isFlow, isStatus, cur, pct, owners, cards, docList,
       isInvitee: st.screen === "invitee",
       inviteDocs: docListFor(owners, ca, true).filter((d) => d.key === "id_" + st.inviteOwner),
-      invitedOwners: owners.filter((o) => o.status === "invited"),
+      invitedOwners: invitedLeft,
       showShell: false,
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
       needRegistration: ca ? "Step 1 starts with your CRA business number. If we find a record we'll fill in the rest, so there's less for you to type." : "Step 1 starts with your EIN. If we find a record we'll fill in the rest, so there's less for you to type.",
-      needIds: ca ? "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's licence or passport and a SIN. If it's easier, they can fill in their own bit." : "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's license or passport and an SSN. If it's easier, they can fill in their own bit.",
+      needIds: ca ? "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's licence or passport and a SIN." + (invitesOn() ? " If it's easier, they can fill in their own bit." : "") : "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's license or passport and an SSN." + (invitesOn() ? " If it's easier, they can fill in their own bit." : ""),
       needBank: ca ? "Your institution, transit and account numbers, plus a void cheque or a bank letter." : "Your routing and account numbers, plus a voided check or a bank letter.",
       shellRailNote: isStatus ? "Submitted — with Trullio" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
       remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
@@ -2213,7 +2460,7 @@
       }[st.step],
       stepSubtitle: {
         1: "",
-        2: isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here, or send them a link and let them do their own." : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here, or send them a link and let them do their own.",
+        2: isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : "."),
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: "Add the account your payouts should go to. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter for it in step 6.",
         5: "Every application includes these. Saying yes to one is never an automatic no — it just means someone reads your file.",
@@ -2242,15 +2489,15 @@
           : "All 100% accounted for.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
-      othersTitle: solo ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's finished their part" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
-      othersBody: solo ? (owners[0].self ? "You're the only owner listed, so nobody else needs to send their ID." : "Only one owner is listed and their ID is in, so nobody else needs to send anything.") : settled === owners.length ? "Everyone you invited has finished their part, so nothing is waiting on a person." : "We've nudged " + invitedLeft.map((o) => o.name).join(" and ") + " to finish. Your review carries on in the meantime.",
+      othersTitle: solo || !invitesOn() ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's finished their part" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
+      othersBody: !invitesOn() && owners.length > 1 ? "You've added every owner's details and ID, so nobody else needs to send anything." : solo ? (owners[0].self ? "You're the only owner listed, so nobody else needs to send their ID." : "Only one owner is listed and their ID is in, so nobody else needs to send anything.") : settled === owners.length ? "Everyone you invited has finished their part, so nothing is waiting on a person." : "We've nudged " + invitedLeft.map((o) => o.name).join(" and ") + " to finish. Your review carries on in the meantime.",
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
       checkNote: "Checking " + [st.einFound && "your " + orgWord() + " registration", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
       receivedNote: st.submittedAt ? "Sent to Trullio, our verification partner, at " + st.submittedAt : "Sent to Trullio, our verification partner",
       summary: [
         { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, ca ? (st.lookupId && "BN " + st.lookupId) : (st.einFound && "EIN ••••" + (digitsOf(st.lookupId).slice(-4) || "7208")), a.regAddress], step: 1 },
-        { label: isNonprofit() ? "Leaders & signatory" : "Owners & signatory", parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " sent a link", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
+        { label: isNonprofit() ? "Leaders & signatory" : "Owners & signatory", parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
         { label: "How you take payments", parts: [a.monthlyVolume && "$" + fmtMoney(a.monthlyVolume) + "/mo", a.avgTicket && "avg $" + fmtMoney(a.avgTicket), a.cpSplit && a.cpSplit + "% card present", a.goods && a.goods.toLowerCase()], step: 3 },
         { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase(), a.accountNumber && (doc("bank").state === "done" ? "bank document checked" : "bank document still to add")], step: 4 },
         { label: "Compliance declarations", parts: [declarationsSummary(a, ca), a.saq && "PCI " + a.saq, a.pci === "unsure" && "PCI: unsure", (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
@@ -2344,7 +2591,7 @@
       // Read-before-accept: the View button lives inside the grey container.
       // It is interactive content, so clicking it never toggles the checkbox.
       const view = f.viewKey && html`<button type="button" class="btn btn-outline btn-xs check-view" aria-label="View ${f.label.replace(/^I accept the /, "")}" data-click="${on(() => openDoc(f.viewKey))}">${icon("eye", 14)}View</button>`;
-      return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}><label class="check"><input type="checkbox" id="${id}"${attr("checked", f.value === true)} data-change="${on((e) => set(f.id, e.target.checked))}"><span><span class="check-label">${f.label}${f.required && REQ}</span>${f.hint && html`<span class="check-hint">${f.hint}</span>`}</span>${view}</label>${errView(f.id)}</div>`;
+      return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}><label class="check${f.disabled ? " is-disabled" : ""}"><input type="checkbox" id="${id}"${attr("checked", f.value === true)}${attr("disabled", f.disabled)}${f.disabled && f.hint ? html` aria-describedby="h-${f.id}"` : ""} data-change="${on((e) => set(f.id, e.target.checked))}"><span><span class="check-label">${f.label}${f.required && REQ}</span>${f.hint && html`<span class="check-hint" id="h-${f.id}">${f.hint}</span>`}</span>${view}</label>${errView(f.id)}</div>`;
     }
 
     if (f.kind === "heading") return html`<h3 class="fields-sub span-2" data-key="${f.id}">${f.label}</h3>`;
@@ -2467,7 +2714,7 @@
             <div class="notes-item-title">${it.d.t}</div>
             <p class="notes-item-body">${it.d.b}</p>
             ${it.d.tradeoff && html`<p class="notes-item-trade"><b>Trade-off</b> ${it.d.tradeoff}</p>`}
-            <div class="notes-item-meta"><span class="chip">${it.d.area}</span><span>Decided by ${it.d.by} · ${it.d.when}</span></div>
+            <div class="notes-item-meta"><span class="chip">${it.d.area}</span>${it.d.slice && html`<span class="chip chip--secure">${it.d.slice === "2" ? "Slice 2 only" : "Slice 1 only"}</span>`}<span>Decided by ${it.d.by} · ${it.d.when}</span></div>
           </div>
         </div>`)}
       </section>`)}
@@ -2525,8 +2772,8 @@
       ${need("card", "Your bank account and a few documents", v.needBank)}
       ${need("chart", "A rough idea of your card sales", "Your monthly total, your average sale, and whether you sell in person, online or both. A rough guess is fine.")}
     </div>
-    <div class="actions">
-      <button type="button" class="btn btn-outline btn-lg" data-click="${on(openSave)}">Someone else handles our finances</button>${pin("welcome-delegate")}
+    <div class="actions${invitesOn() ? "" : " actions--single"}">
+      ${invitesOn() && html`<button type="button" class="btn btn-outline btn-lg" data-click="${on(openSave)}">Someone else handles our finances</button>${pin("welcome-delegate")}`}
       <button type="button" class="btn btn-primary btn-lg" data-click="${on(() => go("bizType"))}">Let's get started${icon("arrow-r", 19)}</button>
     </div>
     <p class="welcome-help">${icon("help", 15, "i-accent")}<span><span class="welcome-help-q">Want to talk to someone first?</span> <span class="welcome-help-detail">Call <span class="mono">${SUPPORT_PHONE}</span>, ${SUPPORT_HOURS}.</span></span></p>
@@ -2693,7 +2940,8 @@
   }
 
   function railView(v) {
-    const waitingOn = state.owners.filter((o) => o.status === "invited").length;
+    const ownerWaiting = (o) => o.status === "invited" && (ownerFields(o).some((f) => fieldError(f)) || doc("id_" + o.id).state !== "done");
+    const waitingOn = state.owners.filter(ownerWaiting).length;
     const waitNote = waitingOn === 0 ? "" : waitingOn === 1 ? (isNonprofit() ? "Waiting on one person's details" : "Waiting on one owner's details") : "Waiting on " + waitingOn + (isNonprofit() ? " people's details" : " owners' details");
     const items = STEPS.map((s) => {
       if (s.n < state.step || (state.editing && s.n !== state.step && s.n < 7)) {
@@ -2741,21 +2989,38 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   function ownerView(o, recipient) {
     const isOpen = state.openOwner === o.id;
     const toggle = () => setState({ openOwner: state.openOwner === o.id ? 0 : o.id });
-    return html`<article class="person${isOpen ? " is-open" : ""}" data-key="owner-${o.id}">
+    const nm = ownerInfo(o).name;
+    const known = !!nm && nm !== "New owner";
+    const invited = o.status === "invited";
+    const menuOpen = state.menuOwner === o.id;
+    // Actions menu: what is on offer depends on whether the person has signed in yet (decisions owner-actions-menu, remove-access-vs-owner).
+    const items = [];
+    if (invited && !o.signedIn) {
+      items.push({ label: "Resend invite", ic: "mail", go: () => resendInvite(o.id) });
+      items.push({ label: "Change email", ic: "pen", go: () => { closeMenu(); openDelegate(o.id); } });
+      items.push({ label: "Cancel invite", ic: "x", go: () => cancelInvite(o.id) });
+    }
+    if (invited && o.signedIn) items.push({ label: "Remove access", ic: "x", go: () => askConfirm("access", o.id) });
+    if (items.length) items.push({ sep: true });
+    items.push({ label: "Remove owner", ic: "trash", danger: true, go: () => removeOwnerClick(o.id) });
+    return html`<article class="person${isOpen ? " is-open" : ""}${menuOpen ? " has-menu" : ""}" data-key="owner-${o.id}">
   <div class="person-head">
     <span class="avatar" aria-hidden="true">${o.initials}</span>
     <div class="grow">
       <h3 class="person-name">${o.name}</h3>
-      <div class="person-meta">${o.status === "invited" && !String(ownerVal(o, "name")).trim() ? "Waiting for their details" : (o.self ? "You · " : "") + (isSole() ? "Sole owner" : isNonprofit() ? o.role : fmtPct(o.pct) + "% · " + o.role)}</div>
+      <div class="person-meta">${invited && !String(ownerVal(o, "name")).trim() ? "Waiting for their details" : (o.self ? "You · " : "") + (isSole() ? "Sole owner" : isNonprofit() ? o.role : fmtPct(o.pct) + "% · " + o.role)}</div>
     </div>
-    ${Object.keys(ERR).some((k) => k.indexOf("o" + o.id + "_") === 0) && html`<span class="pill pill--danger">${icon("alert", 13)}Needs a look</span>`}
-    ${!recipient && o.status === "invited" && html`<span class="pill pill--warning">${icon("clock", 13)}Invited · ${o.inviteEmail || "filling in their own details"}</span>`}
-    ${!recipient && o.status === "received" && html`<span class="pill pill--positive">${icon("check", 13, "i-b")}Details received${o.receivedAt ? " · " + o.receivedAt : ""}</span>`}
-    ${!recipient && o.status === "pending" && !isSole() && !o.self && html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => openDelegate(o.id))}">${icon("mail", 14)}Send them a link</button>`}
-    ${!recipient && !isSole() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${o.name}" data-click="${on(() => removeOwner(o.id))}">${icon("trash", 14)}Remove</button>`}
+    ${!recipient && Object.keys(ERR).some((k) => k.indexOf("o" + o.id + "_") === 0) && html`<span class="pill pill--danger">${icon("alert", 13)}Needs a look</span>`}
+    ${!recipient && invited && !o.signedIn && html`<span class="pill pill--warning">${icon("clock", 13)}Invited · ${o.inviteEmail || "filling in their own details"}</span>`}
+    ${!recipient && invited && o.signedIn && !o.received && html`<span class="pill pill--neutral">${icon("user", 13)}Signed in · ${o.inviteEmail || "invited"}</span>`}
+    ${!recipient && invited && o.received && html`<span class="pill pill--positive">${icon("check", 13, "i-b")}Details received${o.receivedAt ? " · " + o.receivedAt : ""}</span>`}
+    ${!recipient && o.status === "pending" && o.revoked && html`<span class="pill pill--neutral">Access removed</span>`}
+    ${!recipient && invitesOn() && o.status === "pending" && !isSole() && !o.self && html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => openDelegate(o.id))}">${icon("mail", 14)}${o.revoked ? "Send a new invite" : "Send invite"}</button>`}
     <button type="button" class="btn btn-xs person-toggle" aria-expanded="${String(isOpen)}" data-click="${on(toggle)}">${isOpen ? "Collapse" : "Open"}${icon("chev-d", 14)}</button>
+    ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}Remove</button>`}
+    ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
   </div>
-  ${isOpen && html`<div class="person-body" data-key="body"><div class="fields">${ownerFields(o).map(fieldView)}</div></div>`}
+  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}<div class="fields">${ownerFields(o).map(fieldView)}</div></div>`}
 </article>`;
   }
 
@@ -2984,7 +3249,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     if (v.stepComplete || !v.missing.length) return btn;
     const shown = v.missing.slice(0, 6);
     const more = v.missing.length - shown.length;
-    return html`<span class="gate" data-key="gate" tabindex="0" data-mouseenter="${on(() => setState({ nextTip: true }))}" data-mouseleave="${on(() => setState({ nextTip: false }))}" data-focus="${on(() => setState({ nextTip: true }))}" data-blur="${on(() => setState({ nextTip: false }))}">${btn}${state.nextTip && html`<span class="gate-pop" data-key="gate-pop" role="note"><span class="gate-pop-body"><span class="gate-head">Still needed to continue</span><ul class="gate-list">${shown.map((m) => html`<li>${m}</li>`)}${more > 0 && html`<li>and ${more} more</li>`}</ul></span></span>`}</span>`;
+    return html`<span class="gate" data-key="gate" tabindex="0" data-mouseenter="${on(() => setState({ nextTip: true }))}" data-mouseleave="${on(() => setState({ nextTip: false }))}" data-focus="${on(() => setState({ nextTip: true }))}" data-blur="${on(() => setState({ nextTip: false }))}">${btn}${state.nextTip && html`<span class="gate-pop" data-key="gate-pop" role="note"><span class="gate-pop-body"><span class="gate-head">Still needed to continue</span><ul class="gate-list">${shown.map((m) => html`<li>${m}</li>`)}${more > 0 && html`<li>and ${more} more</li>`}</ul>${v.missing.some((m) => m.indexOf("Waiting on ") === 0) && html`<span class="gate-foot">Fill it in yourself on the Owners step, or remove their access.</span>`}</span></span>`}</span>`;
   }
 
   // The "why we ask" note for the step, shown as hoverable text at the end of the step's description (decision 73).
@@ -3007,6 +3272,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
         <h1 class="step-title">${v.stepTitle}${pin("no-field-count")}</h1>
         <p class="step-sub">${v.stepSubtitle}${v.stepSubtitle ? " " : ""}${whyView(v)}</p>
       </header>
+      ${state.stepEdit && state.stepEdit.step === step && html`<div class="callout edit-note" data-key="step-edit" role="status">${icon("info", 16)}<span>${state.stepEdit.by} updated their details at ${state.stepEdit.at}. You're seeing their latest answers.</span></div>`}
       ${step === 1 && step1View(v)}
       ${step === 2 && step2View(v)}
       ${step === 6 && step6View(v)}
@@ -3089,12 +3355,13 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     return html`<section class="approved" data-key="approved">
   <span class="approved-tag">${icon("check", 13, "i-b")}Riverside Pilates approved in 1 hour 12 minutes</span>
   <h1 class="approved-title">Welcome to Xplor Pay</h1>
-  <p class="approved-body">We've approved your application. Add a merchant to start taking transactions, then invite your team and order card readers.</p>
+  <p class="approved-body">${invitesOn() ? "We've approved your application. Add a merchant to start taking transactions, then invite your team and order card readers." : "We've approved your application. Open your payments dashboard to add a merchant and start taking transactions. You can add more users there too."}</p>
   <div class="btn-row">
     <button type="button" class="btn btn-light btn-lg">Open payments dashboard</button>
+    ${!invitesOn() && html`<button type="button" class="btn btn-light-outline btn-lg" data-click="${on(openHelp)}">Get help adding users</button>`}
   </div>
 </section>
-<section class="unlock" data-key="approved-unlock" aria-labelledby="unlock-h">
+${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-labelledby="unlock-h">
   <h2 class="unlock-title" id="unlock-h">Now that you're approved</h2>
   <p class="unlock-sub">These need a live account, so they're ready now.</p>
   <div class="unlock-grid">
@@ -3109,7 +3376,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
       <button type="button" class="btn btn-outline btn-tile">Order devices</button>
     </article>
   </div>
-</section>`;
+</section>`}`;
   }
 
   function statusView(v) {
@@ -3140,6 +3407,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeSave)}">${icon("x", 18)}</button>
     </div>
     <p class="dialog-body">Come back any time with the link in your email. We'll send you a code to open it.${pin("return-via-email-link")}</p>
+    ${invitesOn() && html`
     <p class="dialog-body">Send a link to whoever should pick it up, such as your bookkeeper for the bank details or a co-owner for their own ID. They'll land exactly where you left off and see only their part.</p>
     <form class="dialog-form" data-submit="${on(() => { if (!SAVE_EMAIL_OK.test(state.saveEmail.trim())) { setState({ saveEmailErr: "Enter an email like name@example.com." }); return; } closeSave(); })}"${state.saveEmailErr ? html` data-error="1"` : ""}>
       <label class="sr-only" for="save-email">Email address to send the link to</label>
@@ -3148,6 +3416,31 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     </form>
     ${state.saveEmailErr && html`<p class="field-error" role="alert">${state.saveEmailErr}</p>`}
     <p class="dialog-foot">${icon("lock", 14)}The link expires in 7 days and only works for that email address.${pin("save-link-scope")}</p>
+    `}
+    ${!invitesOn() && html`<div class="dialog-actions"><button type="button" class="btn btn-primary btn-md" data-click="${on(closeSave)}">Close</button></div>`}
+  </div>
+</div>`;
+  }
+
+  // Confirm for the two actions that cannot be undone from the card: removing someone's access and removing a person who has signed in.
+  function confirmView() {
+    const c = state.confirm;
+    const o = ownerById(c.id);
+    if (!o) return "";
+    const nm = ownerInfo(o).name;
+    const known = nm !== "New owner";
+    const access = c.kind === "access";
+    return html`<div class="backdrop" data-key="confirm">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+    <div class="dialog-head">
+      <div class="grow"><h2 class="dialog-title" id="confirm-title">${access ? "Remove " + (known ? nm + "'s" : "their") + " access?" : "Remove " + (known ? nm : "this owner") + " and everything they entered?"}</h2></div>
+      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeConfirm)}">${icon("x", 18)}</button>
+    </div>
+    <p class="dialog-body" id="confirm-body">${access ? "They won't be able to sign in. What they already entered stays, and you can fill in the rest yourself." : "This takes " + (known ? nm : "them") + " off your application, ends their access and deletes what they entered. You can't undo this."}</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-outline btn-md" id="confirm-cancel" data-click="${on(closeConfirm)}">Cancel</button>
+      <button type="button" class="btn btn-outline btn-md btn-critical" data-click="${on(() => (access ? revokeAccess() : removeOwner(c.id)))}">${access ? "Remove access" : "Remove " + (known ? nm : "owner")}</button>
+    </div>
   </div>
 </div>`;
   }
@@ -3155,12 +3448,13 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   function delegateView() {
     const target = state.owners.filter((o) => o.id === state.delegateTarget)[0];
     const who = target ? ownerInfo(target).name : "this person";
+    const changing = !!target && target.status === "invited";
     return html`<div class="backdrop" data-key="delegate">
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="delegate-title" aria-describedby="delegate-sub">
     <div class="dialog-head">
       <span class="icon-tile">${icon("mail", 18)}</span>
       <div class="grow">
-        <h2 class="dialog-title" id="delegate-title">Send ${who === "New owner" ? "them" : who} a link</h2>
+        <h2 class="dialog-title" id="delegate-title">${changing ? "Change the email for " + (who === "New owner" ? "this invite" : who) : "Send " + (who === "New owner" ? "them" : who) + " an invite"}</h2>
         <p class="dialog-sub" id="delegate-sub">They only see their own details and photo ID.</p>
       </div>
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDelegate)}">${icon("x", 18)}</button>
@@ -3168,8 +3462,8 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     <p class="dialog-body">Enter the email of the person who'll fill in these details. They won't see the rest of your application. Carry on in the meantime, and we'll show you here when they're done.</p>
     <form class="dialog-form" data-submit="${on(sendDelegate)}"${state.delegateErr ? html` data-error="1"` : ""}>
       <label class="sr-only" for="delegate-email">Email address to send the link to</label>
-      <input class="input" id="delegate-email" type="email" value="${state.delegateEmail}" placeholder="name@example.com" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ delegateEmail: e.target.value, delegateErr: "" }))}" data-blur="${on(() => setState({ delegateErr: state.delegateEmail.trim() && !SAVE_EMAIL_OK.test(state.delegateEmail.trim()) ? "Enter an email like name@example.com." : "" }))}">
-      <button type="submit" class="btn btn-primary btn-md">Send link</button>
+      <input class="input" id="delegate-email" type="email" value="${state.delegateEmail}" placeholder="name@example.com" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ delegateEmail: e.target.value, delegateErr: "" }))}" data-blur="${on(() => setState({ delegateErr: inviteEmailProblem(state.delegateEmail) }))}">
+      <button type="submit" class="btn btn-primary btn-md">${changing ? "Update and resend" : "Send invite"}</button>
     </form>
     ${state.delegateErr && html`<p class="field-error" role="alert">${state.delegateErr}</p>`}
     <p class="dialog-foot">${icon("lock", 14)}The link expires in 7 days and only works for that email address.</p>
@@ -3255,20 +3549,22 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
       const pick = (e) => {
         setCtx({ [key]: options.indexOf(e.target.value) > -1 ? e.target.value : options[0] });
         if (key === "start") setCtx({ data: ctx.start === START_SAMPLE ? "Sample business" : ctx.start === START_NEW ? "Empty" : ctx.data });
-        if (key === "data" || key === "link" || key === "start") { restored = false; resetData(); }
+        if (key === "data" || key === "link" || key === "start" || key === "slice") { restored = false; resetData(); }
       };
       return html`<label><span class="field-label field-label--block">${label}${pinId && pin(pinId)}</span><select class="input" data-input="${on(pick)}">${options.map((op) => html`<option${attr("selected", ctx[key] === op)}>${op}</option>`)}</select></label>`;
     };
     return html`<div class="proto" data-key="proto">
   ${state.protoOpen && html`<div class="proto-panel" id="proto-panel" data-key="panel" role="group" aria-label="Prototype options">
     <div class="proto-title">Prototype options</div>
+    ${select("Slice", "slice", "slices-option")}
     ${select("Flow starts as", "start", "start-as-option")}
     ${select("Region", "region")}
     ${select("Data", "data")}
     ${select("Link opened as", "link", "check-its-you")}
-    <hr class="proto-rule">
+    ${invitesOn() && html`<hr class="proto-rule">
     <div class="proto-sub">Owner links</div>
-    ${state.owners.some((o) => o.status === "invited") ? state.owners.filter((o) => o.status === "invited").map((o) => html`<button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => { setState({ protoOpen: false }); previewInvitee(o.id); })}">Preview what ${ownerInfo(o).name === "New owner" ? o.inviteEmail : ownerInfo(o).name} sees</button>`) : html`<p class="proto-note">Send an owner a link in step 2, then preview their side here.</p>`}
+    ${state.owners.some((o) => o.status === "invited") ? state.owners.filter((o) => o.status === "invited").map((o) => html`<button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => { setState({ protoOpen: false }); previewInvitee(o.id); })}">Sign in as ${ownerInfo(o).name === "New owner" ? o.inviteEmail : ownerInfo(o).name}</button>`) : html`<p class="proto-note">Send an owner an invite in step 2, then sign in as them here.</p>`}
+    ${state.screen === "flow" && (state.step === 2 || state.step === 6) && state.owners.some((o) => o.status === "invited") && html`<button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(simulateEdit)}">Simulate: ${ownerInfo(state.owners.filter((o) => o.status === "invited")[0]).name === "New owner" ? "your invited person" : ownerInfo(state.owners.filter((o) => o.status === "invited")[0]).name} edits their details</button>`}`}
     <hr class="proto-rule">
     <label class="proto-check"><input type="checkbox"${attr("checked", ctx.showNotes)} data-change="${on((e) => setCtx({ showNotes: e.target.checked }))}">Design decisions</label>
     <button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => setState({ notesListOpen: true }))}">${icon("pen", 13)}Read all ${DECISIONS.length}</button>
@@ -3297,6 +3593,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 ${state.toast && html`<div class="toast" data-key="toast-${state.toast.id}" role="status">${icon("check", 16, "i-b")}<span>${state.toast.text}</span></div>`}
 ${state.saveOpen && saveView(v)}
 ${state.delegateOpen && delegateView()}
+${state.confirm && confirmView()}
 ${state.helpOpen && helpView()}
 ${state.notesListOpen && notesListView()}
 ${state.viewDoc && docViewerView(v)}
@@ -3388,6 +3685,8 @@ ${protoView()}`;
     morphChildren(root, tpl.content);
     applyWidths();
 
+    // The "someone else updated this step" note goes once the applicant leaves the step.
+    if (state.stepEdit && (state.screen !== "flow" || state.step !== state.stepEdit.step)) state.stepEdit = null;
     if (state.screen !== last.screen || state.step !== last.step || state.inviteStep !== last.inviteStep || state.loginStage !== last.loginStage) {
       if (last.screen !== null) window.scrollTo(0, 0);
       const cur = STEPS[state.step - 1];
@@ -3415,6 +3714,13 @@ ${protoView()}`;
     } else if (!state.delegateOpen && last.delegateOpen && opener && document.contains(opener)) {
       opener.focus();
     }
+    if (state.confirm && !last.confirm) {
+      opener = document.activeElement;
+      const cancel = document.getElementById("confirm-cancel");
+      if (cancel) cancel.focus();
+    } else if (!state.confirm && last.confirm && opener && document.contains(opener)) {
+      opener.focus();
+    }
     if (state.helpOpen && !last.helpOpen) {
       opener = document.activeElement;
       const close = document.getElementById("help-close");
@@ -3433,7 +3739,7 @@ ${protoView()}`;
       const codeField = document.getElementById("entry-code");
       if (codeField) codeField.focus();
     }
-    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, entryMode: state.entryMode, loginStage: state.loginStage };
+    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, confirm: state.confirm, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, entryMode: state.entryMode, loginStage: state.loginStage };
     const hot = state.comboOpen && document.querySelector(".combo-opt.is-active");
     if (hot && hot.scrollIntoView) hot.scrollIntoView({ block: "nearest" });
     // Hand over to enhance.js (animation layer).
@@ -3474,9 +3780,15 @@ ${protoView()}`;
     }
     if (id && id.indexOf("f-") === 0 && !state.touched[id.slice(2)]) setState({ touched: Object.assign({}, state.touched, { [id.slice(2)]: true }) });
   });
+  // The owner actions menu closes on a click anywhere outside it.
+  document.addEventListener("click", (e) => {
+    if (state.menuOwner && !(e.target.closest && e.target.closest(".kebab-wrap"))) setState({ menuOwner: 0 });
+  });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    if (state.viewDoc) closeDoc();
+    if (state.confirm) closeConfirm();
+    else if (state.menuOwner) closeMenu();
+    else if (state.viewDoc) closeDoc();
     else if (state.helpOpen) closeHelp();
     else if (state.delegateOpen) closeDelegate();
     else if (state.saveOpen) setState({ saveOpen: false });
