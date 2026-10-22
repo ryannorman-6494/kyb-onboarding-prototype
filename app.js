@@ -81,6 +81,7 @@
   // (demoted to a Prototype option, not deleted) the one-time-code link or the sample business.
   const START_LOGIN = "Merchant: welcome email, then login";
   const START_NEW = "Merchant: one-time code (email link)";
+  const START_EXISTING = "Existing user: new business email, then choose business";
   const START_SAMPLE = "Merchant: sample business";
 
   // Only whitelisted values are read from the URL, so query-string input
@@ -90,7 +91,7 @@
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
       region: q.get("region") === "ca" ? "Canada" : "United States",
-      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : START_LOGIN,
+      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
       data: q.get("data") === "sample" || q.get("start") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW
@@ -101,6 +102,7 @@
     if (ctx.slice === SLICE_2) q.set("slice", "2");
     if (ctx.region === "Canada") q.set("region", "ca");
     if (ctx.start === START_NEW) q.set("start", "merchant");
+    if (ctx.start === START_EXISTING) q.set("start", "existing");
     if (ctx.start === START_SAMPLE) q.set("start", "sample");
     if (ctx.data === "Sample business" && ctx.start !== START_SAMPLE) q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
@@ -116,7 +118,7 @@
 
   const CONTEXT_OPTIONS = {
     slice: [SLICE_1, SLICE_2],
-    start: [START_LOGIN, START_NEW, START_SAMPLE],
+    start: [START_LOGIN, START_EXISTING, START_NEW, START_SAMPLE],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
     link: [LINK_NEW].concat(Object.keys(LINKS).map((k) => LINKS[k]))
@@ -1198,6 +1200,16 @@
       "when": "2026-10-19"
     },
     {
+      "id": "existing-user-new-business",
+      "area": "Flow",
+      "where": "Prototype options · Flow starts as; email and business picker",
+      "t": "An existing user onboarding a new business skips the password and picks a business",
+      "b": "A new Flow starts as option, Existing user: new business email, then choose business, covers someone who already has an account on the platform and is onboarding a separate business. They get the existing-user email (no temporary password, no forced password change), and pressing Sign in goes straight to a simple screen asking which business to sign in with. Riverside Pilates, marked New application, goes into the normal onboarding flow and follows the Link opened as option like any other entry; Harbor Yoga Studio, the one they already have, does nothing in the prototype. The address takes ?start=existing.",
+      "tradeoff": "Pressing Sign in on the email skips a sign-in screen entirely, on the basis that the real sign-in happens in ODIN outside the prototype; if the sign-in itself should be shown, it needs adding between the email and the picker. The business names are made up, and the existing business is not clickable, so nobody can test what happens when someone picks it. The email is the existing-user template in the email folder, drawn again in the prototype, so the two need updating together.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
       "id": "welcome-email-first",
       "area": "Flow",
       "where": "First screen, before sign-in",
@@ -1566,7 +1578,7 @@
   }
 
   // Every prototype starts at the "Check it's you" code screen, whatever state the link is in.
-  function startScreen() { return ctx.start === START_LOGIN ? "email" : "entry"; }
+  function startScreen() { return ctx.start === START_LOGIN || ctx.start === START_EXISTING ? "email" : "entry"; }
   function entryModeFor() { return ctx.link === LINKS.expired ? "expired" : ctx.link === LINKS.closed ? "closed" : "send"; }
 
   function freshState() {
@@ -2794,37 +2806,65 @@
     // The email the merchant gets before they ever see the prototype (decision welcome-email-first). It mirrors
     // email/welcome-email.html. The username and password are made-up demo values, never real credentials.
     function emailView() {
+      const existing = ctx.start === START_EXISTING;
       const step = (n, t, d) => html`<li class="em-step"><span class="em-step-num">${n}</span><span><strong>${t}</strong><br>${d}</span></li>`;
-      return html`<div class="mailview" data-key="email">
+      const subject = existing ? "Your Xplor Pay application is ready to start" : "Welcome to Xplor Pay: your sign-in details";
+      // An existing user has no temporary password and no forced password change: Sign in goes to the business picker.
+      const signIn = existing ? () => setState({ screen: "pickBusiness" }) : () => setState({ screen: "login", loginStage: "credentials", loginErr: "" });
+      return html`<div class="mailview" data-key="email${existing ? "-existing" : ""}">
   <div class="mail-bar">
-    <div class="mail-subject">Welcome to Xplor Pay: your sign-in details${pin("welcome-email-first")}</div>
+    <div class="mail-subject">${subject}${pin(existing ? "existing-user-new-business" : "welcome-email-first")}</div>
     <div class="mail-meta"><span class="mail-avatar" aria-hidden="true">X</span><span><strong>Xplor Pay</strong> &lt;no-reply@xplorpay.example&gt;<br><span class="mail-to">To: dana@riversidepilates.example</span></span></div>
   </div>
   <div class="em-wrap">
     <div class="em">
       <div class="em-logo"><img src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="150"></div>
-      <div class="em-hero"><h1>Welcome to Xplor Pay</h1><p>Your account is ready. Here are your sign-in details, so you can sign in and get started.</p></div>
+      <div class="em-hero">${existing ? html`<h1>Your application is ready to start</h1><p>We've started a new Xplor Pay application for Riverside Pilates. Sign in to your existing account to pick it up.</p>` : html`<h1>Welcome to Xplor Pay</h1><p>Your account is ready. Here are your sign-in details, so you can sign in and get started.</p>`}</div>
       <div class="em-body">
-        <h2>Your sign-in details</h2>
-        <p>Use these to sign in for the first time. Your temporary password works for 7 days, so sign in before then.</p>
+        <h2>${existing ? "Your application" : "Your sign-in details"}</h2>
+        <p>${existing ? "You already have an account, so there's nothing new to set up. Sign in with the same details you always use." : "Use these to sign in for the first time. Your temporary password works for 7 days, so sign in before then."}</p>
         <div class="em-creds">
-          <div class="em-label">Username</div><div class="em-val">dana@riversidepilates.example</div>
-          <div class="em-label">Temporary password</div><div class="em-val em-mono">Xp-7Kd2-demo</div>
+          ${existing ? html`<div class="em-label">Business</div><div class="em-val">Riverside Pilates</div><div class="em-label">Your username</div><div class="em-val">dana@riversidepilates.example</div>` : html`<div class="em-label">Username</div><div class="em-val">dana@riversidepilates.example</div>
+          <div class="em-label">Temporary password</div><div class="em-val em-mono">Xp-7Kd2-demo</div>`}
         </div>
-        <button type="button" class="em-btn" data-click="${on(() => setState({ screen: "login", loginStage: "credentials", loginErr: "" }))}">Sign in</button>
+        <button type="button" class="em-btn" data-click="${on(signIn)}">Sign in</button>
         <hr class="em-rule">
         <h2>What happens next</h2>
         <ol class="em-steps">
-          ${step(1, "Sign in", "Use the username and temporary password above.")}
+          ${existing ? html`${step(1, "Sign in", "Use your existing username and password.")}
+          ${step(2, "Open your application", "You'll see it waiting for you as soon as you're in.")}
+          ${step(3, "Tell us about your business", "Answer a few questions, and you'll be ready to take payments.")}` : html`${step(1, "Sign in", "Use the username and temporary password above.")}
           ${step(2, "Choose a new password", "We'll ask you to replace the temporary one straight away.")}
-          ${step(3, "Start your application", "Tell us about your business, and you'll be ready to take payments.")}
+          ${step(3, "Start your application", "Tell us about your business, and you'll be ready to take payments.")}`}
         </ol>
         <div class="em-note"><strong>Didn't expect this email?</strong> You can ignore it, and nothing will change. If you'd like to check, contact us at support@xplorpay.example.</div>
       </div>
     </div>
-    <p class="em-foot">This email was sent to dana@riversidepilates.example because an Xplor Pay account was set up for you.<br>&copy; Xplor Technologies. All rights reserved.</p>
+    <p class="em-foot">This email was sent to dana@riversidepilates.example because ${existing ? "a new application was started on your Xplor Pay account" : "an Xplor Pay account was set up for you"}.<br>&copy; Xplor Technologies. All rights reserved.</p>
   </div>
 </div>`;
+    }
+
+    // Existing user, new business (decision existing-user-new-business): after the email, one simple choice of which
+    // business to sign in with. The new one goes into the normal flow; the other does nothing in the prototype.
+    function pickBusinessView() {
+      return html`<div class="welcome" data-key="pick-business">
+    <div class="welcome-inner">
+      <span class="tag tag--purple">${icon("users", 13)}Your businesses</span>
+      <h1 class="welcome-title">Which business do you want to sign in with?${pin("existing-user-new-business")}</h1>
+      <p class="welcome-lede">You have more than one business on Xplor Pay. Pick the one you want to work on.</p>
+      <div class="biz-list" role="group" aria-label="Your businesses">
+        <button type="button" class="biz-card" data-click="${on(openLink)}">
+          <span class="biz-radio" aria-hidden="true"></span>
+          <span><span class="biz-label">Riverside Pilates <span class="chip chip--secure">New application</span></span><span class="biz-desc">Application ready to start</span></span>
+        </button>
+        <button type="button" class="biz-card">
+          <span class="biz-radio" aria-hidden="true"></span>
+          <span><span class="biz-label">Harbor Yoga Studio</span><span class="biz-desc">Active</span></span>
+        </button>
+      </div>
+    </div>
+  </div>`;
     }
 
     // The default front door (decision login-default-start): email and a temporary password, then a forced
@@ -3580,6 +3620,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${v.showShell && !v.isEntry && state.screen !== "login" && shellView(v)}
     <div class="content" data-key="content">
       ${state.screen === "email" && emailView()}
+      ${state.screen === "pickBusiness" && pickBusinessView()}
       ${state.screen === "login" && loginView()}
       ${v.isEntry && entryView()}
       ${v.isWelcome && welcomeView(v)}
@@ -3691,7 +3732,8 @@ ${protoView()}`;
       if (last.screen !== null) window.scrollTo(0, 0);
       const cur = STEPS[state.step - 1];
       document.title = (state.screen === "flow" ? "Step " + state.step + " of 7 · " + stepName(cur)
-        : state.screen === "email" ? "Welcome to Xplor Pay: your sign-in details"
+        : state.screen === "email" ? (ctx.start === START_EXISTING ? "Your Xplor Pay application is ready to start" : "Welcome to Xplor Pay: your sign-in details")
+        : state.screen === "pickBusiness" ? "Choose a business"
         : state.screen === "login" ? (state.loginStage === "change" ? "Change your password" : "Sign in")
         : state.screen === "entry" ? "Check it's you"
         : state.screen === "welcome" ? "Business verification"
