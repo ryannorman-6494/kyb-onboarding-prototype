@@ -150,12 +150,14 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .need-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-layout-group); margin-bottom: 12px; flex-wrap: wrap; }
 .need-head { margin: 0; font: var(--font-section-header); letter-spacing: var(--type-section-header-letter-spacing); color: var(--color-text-primary); }
 .need-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
-.need { display: flex; gap: 14px; align-items: flex-start; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); padding: 16px 18px; }
+.need { display: flex; gap: 14px; align-items: flex-start; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); padding: 20px 18px; }
 .need-title { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); margin-bottom: 2px; }
 .need-body { font-size: var(--type-body-small-size); line-height: 1.45; color: var(--color-text-subtle); }
 /* What you'll need: the items sit in one card, split by a light divider that stops at the card's inner margins (decision welcome-needs-one-card). */
 .need-list { gap: 0; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
 .need-list .need { position: relative; background: transparent; box-shadow: none; border-radius: 0; }
+.need-list .need .icon-tile { width: 20px; height: 20px; background: transparent; border-radius: 0; }
+.need-list .need .icon-tile svg { width: 20px; height: 20px; }
 .need-list .need + .need::before { content: ""; position: absolute; top: 0; left: 18px; right: 18px; height: 1px; background: var(--color-border-default); }
 .actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
 .actions { position: relative; }
@@ -340,7 +342,8 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .next-body { font: var(--font-body-small); color: var(--color-text-subtle); }
 
 /* ---------- Status screens ---------- */
-.status { flex: 1; display: flex; justify-content: center; padding: 52px 28px 96px; }
+/* Status screens sit at the optical centre of the window: a little above the middle, because a block at true centre looks like it sags. `safe` falls back to the top when the content is taller than the window. The bottom padding also keeps clear of the prototype's jump bar. (decision status-optical-centre) */
+.status { flex: 1; display: flex; justify-content: center; align-items: safe center; padding: 52px 28px max(96px, 12vh); }
 .status-inner { width: 100%; max-width: 820px; display: flex; flex-direction: column; gap: var(--space-layout-group); }
 .hero-card { background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); padding: 32px; }
 .hero-head { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }

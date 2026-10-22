@@ -912,7 +912,7 @@
       "area": "Status",
       "where": "Confirmation screen · the ID tile and the timeline note",
       "t": "The confirmation only says we're waiting on an ID when a link is outstanding",
-      "b": "The tile used to say “Still waiting on one ID” and “We've nudged” a person whenever an owner was not verified or received, which included owners the applicant had added and whose ID the applicant had uploaded in step 6. A persona saw “We've nudged Maya Chen to finish” while the timeline said her ID had arrived. Now only an owner who was sent a link and has not replied counts as owed, and only they are named as nudged; the title says “Still waiting on N IDs” when there are several. When there is one owner and nobody is being chased, the tile reads “Nothing waiting on anyone else” with “Your own ID is the only one to check”, or “The only ID is in and being checked” when that owner was added rather than marked as the applicant. The timeline note follows the same rule.",
+      "b": "The tile used to say “Still waiting on one ID” and “We've nudged” a person whenever an owner was not verified or received, which included owners the applicant had added and whose ID the applicant had uploaded in step 6. A persona saw “We've nudged Maya Chen to finish” while the timeline said her ID had arrived. Now only an owner who was sent a link and has not replied counts as owed, and only they are named as nudged; the title says “Still waiting on N IDs” when there are several. When there is one owner and nobody is being chased, the tile reads “Nothing waiting on anyone else” with “Your own ID is the only one to check”, or “The only ID is in and being checked” when that owner was added rather than marked as the applicant. The timeline note follows the same rule. Changed on 2026-10-22: the two cards under the confirmation, including this one, were removed (decision submitted-no-extra-cards).",
       "tradeoff": "A single owner added with the plain “Add an owner or director” button is read as the applicant's own ID in the timeline note (“Your ID arrived and is being checked”), which is wrong if the applicant is listing someone else as the only owner. That is rare, and step 6 will not continue until the file is in either way.",
       "by": "Ryan",
       "when": "2026-10-07"
@@ -1272,7 +1272,7 @@
       "area": "Status",
       "where": "Step 7, the under-review screen and the more-info page",
       "t": "Status screens: white What happens next, no ID-arrived line, devices to order, a page heading on more info",
-      "b": "The What happens next panel on step 7 is now white (the raised surface, same as cards) so it stands out from the page instead of sinking into it. On the under-review screen the checks line no longer ends with the owner ID status (Your ID arrived, or a name's ID arrived), because the owner cards below already say who the application is waiting on. The something-to-do-while-you-wait tile now suggests ordering payment devices rather than setting up prices. The more-info page used to open on a warning callout; it now opens with a heading, One thing to fix, and the reassurance that the applicant is not back at the start sits under it as the lede. The secondary button reads Email us instead of Have a chat about it.",
+      "b": "The What happens next panel on step 7 is now white (the raised surface, same as cards) so it stands out from the page instead of sinking into it. On the under-review screen the checks line no longer ends with the owner ID status (Your ID arrived, or a name's ID arrived), because the owner cards below already say who the application is waiting on. The something-to-do-while-you-wait tile now suggests ordering payment devices rather than setting up prices. The more-info page used to open on a warning callout; it now opens with a heading, One thing to fix, and the reassurance that the applicant is not back at the start sits under it as the lede. The secondary button reads Email us instead of Have a chat about it. Changed on 2026-10-22: the two cards under the confirmation, including this one, were removed (decision submitted-no-extra-cards).",
       "tradeoff": "The ID status is gone from the timeline, so the only place it shows is the owner cards for people still invited. The Order your payment devices button does nothing in the prototype, and Email us only shows a prototype toast. Losing the warning colour makes the page calmer, but it no longer signals that something needs action except through the heading and the upload button.",
       "by": "Ryan",
       "when": "2026-10-19"
@@ -1456,6 +1456,36 @@
       "t": "The four things to have ready sit in one card, split by light dividers",
       "b": "The four What you'll need items (registration and tax numbers, the people who own the organization, bank account and documents, and a rough idea of card sales) were four separate cards stacked with gaps. They are now one card with the four items inside it, separated by a thin light divider. The dividers stop at the card's inner margins, lining up with the text and icons, rather than running edge to edge. The change applies to both slices, and the page an invited owner sees in Slice 2 uses the same list, so it changes with it.",
       "tradeoff": "One card reads as a single checklist, which is lighter on the page, but the items are no longer separate objects, so a later change that makes one of them clickable or expandable would need them drawn as cards again.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "submitted-no-extra-cards",
+      "area": "Status",
+      "where": "Confirmation page (under review)",
+      "t": "The confirmation is the one card, with nothing to do while waiting",
+      "b": "The two cards under the main confirmation card are removed in both slices: Something to do while you wait (order your payment devices) and the card that said nothing was waiting on anyone else, with its ID line. Once an application is submitted there is nothing for the applicant to do, so the page is the status card alone: what has happened, what is running, when to expect a decision, and that there is nothing else to do right now.",
+      "tradeoff": "Applicants who would have ordered card readers while waiting are no longer prompted; the approved page and the dashboard are where that happens. In Slice 2 the page also no longer says nothing is waiting on an invited owner, though owners cannot be left outstanding at submit anyway (decision invite-no-exemption).",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "welcome-plain-icons",
+      "area": "Visual",
+      "where": "Welcome page · What you'll need",
+      "t": "The items to have ready use a plain purple icon beside the title, not a tinted tile",
+      "b": "Each of the four What you'll need items used a light purple square with an icon inside. It is now just the purple icon, 20px, with no background, on the same line as the title and with the description beneath lined up under the title, the way the steps in the confirmation card are laid out. The icons are the same ones as before. The page an invited owner sees in Slice 2 shares the list, so it changes with it.",
+      "tradeoff": "Without the tile the icons are lighter and less like buttons, which is the intent; they carry a little less visual weight against the page, so the list leans more on the titles.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "status-optical-centre",
+      "area": "Visual",
+      "where": "Under review, More info needed and Approved pages; Welcome",
+      "t": "The short status screens sit at the optical centre of the window; the welcome page stays at the top",
+      "b": "The Under review, More info needed and Approved pages hold one card, so at the top of a tall window they left most of the page empty and felt high. They are now centred vertically, slightly above the true middle (roughly 45% down), because a block at the exact centre looks like it has sagged. If the content is taller than the window, the page falls back to starting at the top, so nothing is cut off. The welcome page and the seven steps stay anchored to the top: their height changes with business type and region, and centring them would move the title and the Let's get started button between variants. This follows common practice of centring short, single-purpose screens and top-anchoring long or variable ones.",
+      "tradeoff": "The status pages now move with the window height, so they look different on a short laptop screen than on a tall monitor. The welcome page can still look a little high in a very tall window.",
       "by": "Ryan",
       "when": "2026-10-22"
     }
@@ -3381,18 +3411,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     </div>
   </div>
 </section>`)}</div>` : ""}
-<div class="two-up" data-key="submitted-tiles">
-  <section class="card card--p20">
-    <h2 class="tile-title">Something to do while you wait</h2>
-    <p class="tile-body">Order your card readers now so they're on their way and ready when you're approved.</p>
-    <button type="button" class="btn btn-outline btn-tile">Order your payment devices</button>
-  </section>
-  <section class="card card--p20">
-    <h2 class="tile-title">${v.othersTitle}</h2>
-    <p class="tile-body">${v.othersBody}</p>
-    <span class="ok-line">${icon("check", 14, "i-b")}${v.ownersIdLabel}</span>
-  </section>
-</div>`;
+`;
   }
 
   function rfiView() {
