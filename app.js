@@ -11,7 +11,8 @@
  *   ?region=ca      Canada instead of the United States
  *   ?why=0          hide the "why we ask" panel
  *   ?slice=2        slice 2 (invite owners); no parameter means slice 1 (one person, no invites)
- *   ?start=         where the flow starts: (none) login | merchant (one-time code) | sample
+ *   ?start=         where the flow starts: (none) login | existing | merchant (one-time code)
+ *   ?data=sample    fill the form with the sample business
  *   ?link=          how the emailed link opens: returning | review | info | approved | expired | closed
  *
  * Security: nothing leaves the page. There are no network calls (the CSP in
@@ -78,11 +79,10 @@
   const SLICE_1 = "Slice 1: one person, no invites";
   const SLICE_2 = "Slice 2: invite owners";
   // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
-  // (demoted to a Prototype option, not deleted) the one-time-code link or the sample business.
+  // (demoted to a Prototype option, not deleted) the one-time-code link. The sample business is the Data option, not a start.
   const START_LOGIN = "Merchant: welcome email, then login";
   const START_NEW = "Merchant: one-time code (email link)";
   const START_EXISTING = "Existing user: new business email, then choose business";
-  const START_SAMPLE = "Merchant: sample business";
 
   // Only whitelisted values are read from the URL, so query-string input
   // never reaches the markup or the state.
@@ -91,8 +91,8 @@
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
       region: q.get("region") === "ca" ? "Canada" : "United States",
-      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "sample" ? START_SAMPLE : q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
-      data: q.get("data") === "sample" || q.get("start") === "sample" ? "Sample business" : "Empty",
+      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
+      data: q.get("data") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW
     };
@@ -103,8 +103,7 @@
     if (ctx.region === "Canada") q.set("region", "ca");
     if (ctx.start === START_NEW) q.set("start", "merchant");
     if (ctx.start === START_EXISTING) q.set("start", "existing");
-    if (ctx.start === START_SAMPLE) q.set("start", "sample");
-    if (ctx.data === "Sample business" && ctx.start !== START_SAMPLE) q.set("data", "sample");
+    if (ctx.data === "Sample business") q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
     Object.keys(LINKS).forEach((k) => { if (ctx.link === LINKS[k]) q.set("link", k); });
     const qs = q.toString();
@@ -118,7 +117,7 @@
 
   const CONTEXT_OPTIONS = {
     slice: [SLICE_1, SLICE_2],
-    start: [START_LOGIN, START_EXISTING, START_NEW, START_SAMPLE],
+    start: [START_LOGIN, START_EXISTING, START_NEW],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
     link: [LINK_NEW].concat(Object.keys(LINKS).map((k) => LINKS[k]))
@@ -164,11 +163,10 @@
     },
     {
       "id": "welcome-delegate",
-      "slice": "2",
       "area": "Flow",
       "where": "Welcome",
-      "t": "Give “someone else handles this” equal billing",
-      "b": "In a small business the person who signs up is very often not the person with the bank details or the incorporation papers. Handing off is a first-class path from the welcome screen, not something you discover when you get stuck on step 4.",
+      "t": "The welcome page no longer has a hand-off button",
+      "b": "This once gave “someone else handles this” equal billing, on the reasoning that the person who signs up is often not the one with the bank details or the incorporation papers. The button is gone in both slices: the secondary button is now Get help (decision welcome-help-and-info-in-header). Handing off is still possible in Slice 2 from Finish later and from an owner card.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -474,7 +472,7 @@
       "area": "Flow",
       "where": "Throughout",
       "t": "Nothing moves on until the step is complete, and every problem shows at once",
-      "b": "The first persona run got to “submitted” with an empty owner form, no signature and none of the agreements ticked, which made “Everything below has already passed our checks” untrue. Pressing “Save and continue” now checks the whole step, lists every problem in place with a short fix-it message, scrolls to the first one and says how many there are by the button. Nothing shows before the first attempt, so a fresh form is not covered in red, and each message clears the moment its field is put right. Step 7 also needs the typed signature to match the signatory's name.",
+      "b": "The first persona run got to “submitted” with an empty owner form, no signature and none of the agreements ticked, which made “Everything below has already passed our checks” untrue. Pressing “Save and continue” now checks the whole step, lists every problem in place with a short fix-it message, scrolls to the first one and says how many there are by the button. Nothing shows before the first attempt, so a fresh form is not covered in red, and each message clears the moment its field is put right. Step 7 also needs the typed signature to match the signatory's name. Changed on 2026-10-22: the privacy note moved into the description and the support line was replaced by a Get help button (decision welcome-help-and-info-in-header).",
       "tradeoff": "Formats are checked leniently (digit counts, not checksums) so a prototype never rejects a plausible real number.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -662,7 +660,7 @@
       "area": "Trust",
       "where": "Welcome",
       "t": "Put a phone number and the verification partner's name on the welcome page",
-      "b": "The baker in the persona tests looked for someone to call before she would give an SSN, and the welcome page offered only a small privacy link that never named who checks her identity. The page now carries a line stacked just above the privacy link, “Want to talk to someone first?”, with the support number and hours, and the privacy note says identity checks are done by Trullio, our verification partner. The number and hours are the same constants the Get help panel uses, so they change in one place.",
+      "b": "The baker in the persona tests looked for someone to call before she would give an SSN, and the welcome page offered only a small privacy link that never named who checks her identity. The page now carries a line stacked just above the privacy link, “Want to talk to someone first?”, with the support number and hours, and the privacy note says identity checks are done by Trullio, our verification partner. The number and hours are the same constants the Get help panel uses, so they change in one place. Changed on 2026-10-22: the privacy note moved into the description and the support line was replaced by a Get help button (decision welcome-help-and-info-in-header).",
       "tradeoff": "The number is a placeholder until ops supply the real one, and the security claims in the privacy note (tokenized, encrypted) are still unverified. A person has to read the page to reach the number; it is a line of text, not a button.",
       "by": "Claude",
       "when": "2026-10-06"
@@ -672,7 +670,7 @@
       "area": "Flow",
       "where": "Welcome",
       "t": "The privacy note shows on hover and goes when the pointer leaves",
-      "b": "The “What we do with your information” note opened on hover but a click on the same link toggled it shut, so the first click appeared to do nothing. Ryan wants it to behave as a hover note, so hover shows it and leaving hides it. A click or tap now only ever opens it, never closes it, which keeps it reachable on a touch screen where there is no hover. Escape closes it. The question-mark icon replaces the padlock so the link matches the support line below it.",
+      "b": "The “What we do with your information” note opened on hover but a click on the same link toggled it shut, so the first click appeared to do nothing. Ryan wants it to behave as a hover note, so hover shows it and leaving hides it. A click or tap now only ever opens it, never closes it, which keeps it reachable on a touch screen where there is no hover. Escape closes it. The question-mark icon replaces the padlock so the link matches the support line below it. Changed on 2026-10-22: the privacy note moved into the description and the support line was replaced by a Get help button (decision welcome-help-and-info-in-header).",
       "tradeoff": "A hover note is invisible to someone who never moves the pointer over it, and on touch it stays open until Escape or a tap elsewhere is handled. Keyboard users can open it with Enter but there is no focus-to-open.",
       "by": "Ryan",
       "when": "2026-10-06"
@@ -1405,7 +1403,7 @@
       "area": "Flow",
       "where": "Welcome, step 2, save dialog, confirmation, Prototype options",
       "t": "In Slice 1 one person fills in everything: nobody can be invited and nothing is handed to someone else",
-      "b": "Slice 1 takes out every way of sending the application to another person. Gone: the Send invite button and the invite dialog, the owner card menu (replaced by a plain Remove button with a trash icon, since the menu would hold one item), the Invited, Signed in, Details received and Access removed states, the note about a person editing at the same time, the rail note about waiting on an owner, the Someone else handles our finances button on the welcome page, the hand-off link in the Finish later dialog (which keeps its first line about coming back with the link in the email, and gains a Close button), the Owner links controls in Prototype options, and the wording that offers to send an owner a link on the welcome page and step 2. The applicant types in every owner's details and uploads every owner's photo ID, as steps 6 and 7 already require. The confirmation always says nothing is waiting on anyone else, and when there is more than one owner it says the applicant added every owner's details and ID.",
+      "b": "Slice 1 takes out every way of sending the application to another person. Gone: the Send invite button and the invite dialog, the owner card menu (replaced by a plain Remove button with a trash icon, since the menu would hold one item), the Invited, Signed in, Details received and Access removed states, the note about a person editing at the same time, the rail note about waiting on an owner, the hand-off link in the Finish later dialog (which keeps its first line about coming back with the link in the email, and gains a Close button), the Owner links controls in Prototype options, and the wording that offers to send an owner a link on the welcome page and step 2. The applicant types in every owner's details and uploads every owner's photo ID, as steps 6 and 7 already require. The confirmation always says nothing is waiting on anyone else, and when there is more than one owner it says the applicant added every owner's details and ID.",
       "tradeoff": "The applicant has to have each owner's date of birth, home address, ID number and a photo of their ID to hand. Where an owner is not around, the applicant is stuck until they are, which is the cost of leaving invites for Slice 2. Left as they were because they are not about sending the application to another person: the approved page's Invite your team tile and wording (access to the account after approval).",
       "by": "Ryan",
       "when": "2026-10-22"
@@ -1428,6 +1426,36 @@
       "t": "The transaction limits come from the applicant's own answers, and the tick waits until they are filled in",
       "b": "The limits under the tick on step 3 are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it.",
       "tradeoff": "The limits simply repeat what the applicant estimated, so a low guess becomes a low limit and Xplor still has to decide the real limits. Someone who corrects a figure has to tick again; that is deliberate, since the tick is about specific numbers.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "sample-not-a-start",
+      "area": "Flow",
+      "where": "Prototype options · Flow starts as and Data",
+      "t": "The sample business is no longer a place to start the flow, only a Data setting",
+      "b": "Flow starts as no longer lists Merchant: sample business. It offered a third way to open the prototype that also filled the form, which made it unclear whether the start or the data was being chosen. Where the prototype opens is now only a Flow starts as choice (the welcome email and login, the existing-user start, or the one-time-code link). Whether the form is filled in is only the Data option, Empty or Sample business, and works with any start, so the sample business can now be reached through the welcome email and login as well. The address ?data=sample still fills the form; an old ?start=sample address now opens the default start with an empty form.",
+      "tradeoff": "Choosing Sample business under Data restarts the flow, so it has to be set before walking in. Choosing the one-time-code start still switches Data back to Empty, as it did before.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "welcome-help-and-info-in-header",
+      "area": "Flow",
+      "where": "Welcome page",
+      "t": "The welcome page uses the same Get help button and the same hover note as a step",
+      "b": "The secondary button on the welcome page, left of Let's get started, is now Get help with the same question-mark icon as the Get help button in the step list, in both slices. It opens the same Talk to a person dialog, with the phone number, chat and email. That makes the line Want to talk to someone first? with the phone number at the bottom of the page redundant, so it is removed. What we do with your information moves up to the end of the description under the heading, as hoverable text with a question icon, the way Why are we asking? sits at the end of a step's description. It opens on hover, click or focus, closes when the pointer leaves, and Escape closes it. The Someone else handles our finances button is removed from Slice 2 too.",
+      "tradeoff": "The support number is no longer on the page itself; a person has to press Get help to see it. Slice 2 loses its one-click hand-off from the welcome page, though Finish later and the owner cards still offer it.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "welcome-needs-one-card",
+      "area": "Visual",
+      "where": "Welcome page · What you'll need",
+      "t": "The four things to have ready sit in one card, split by light dividers",
+      "b": "The four What you'll need items (registration and tax numbers, the people who own the organization, bank account and documents, and a rough idea of card sales) were four separate cards stacked with gaps. They are now one card with the four items inside it, separated by a thin light divider. The dividers stop at the card's inner margins, lining up with the text and icons, rather than running edge to edge. The change applies to both slices, and the page an invited owner sees in Slice 2 uses the same list, so it changes with it.",
+      "tradeoff": "One card reads as a single checklist, which is lighter on the page, but the items are no longer separate objects, so a later change that makes one of them clickable or expandable would need them drawn as cards again.",
       "by": "Ryan",
       "when": "2026-10-22"
     }
@@ -2770,11 +2798,14 @@
 
   function welcomeView(v) {
     const need = (ic, title, body) => html`<div class="need"><span class="icon-tile">${icon(ic, 18)}</span><div><div class="need-title">${title}</div><div class="need-body">${body}</div></div></div>`;
+    // "What we do with your information" sits at the end of the description, as hoverable text with a question icon, the same way "Why are we asking?" does on a step (decision welcome-help-and-info-in-header).
+    const openInfo = () => setState({ infoOpen: true });
+    const infoNote = html`<span class="why-wrap" data-mouseenter="${on(openInfo)}" data-mouseleave="${on(() => setState({ infoOpen: false }))}"><button type="button" class="why-trigger" aria-expanded="${String(state.infoOpen)}" data-click="${on(openInfo)}" data-blur="${on(() => setState({ infoOpen: false }))}">What we do with your information${icon("help", 15, "i-accent")}</button>${state.infoOpen && html`<span class="why-pop" data-key="info-pop" role="note"><span class="why-pop-body"><span class="why-points">${["We encrypt your information as it travels and while it's stored.", "We protect tax and national ID numbers, so Xplor staff can't read them.", "Trullio, our verification partner, runs the identity checks.", "We only use it to verify you, never for marketing.", "We save your progress after every field."].map((t) => html`<span class="why-point">${icon("check", 14, "i-b i-ok")}<span>${t}</span></span>`)}</span></span></span>`}</span>`;
     return html`<div class="welcome" data-key="welcome">
   <div class="welcome-inner">
     <span class="tag tag--purple">${icon("shield", 13)}Welcome to Xplor Pay</span><span class="tag tag--green">${icon("bolt", 13)}Faster approval</span>
     <h1 class="welcome-title">Let's get you set up to take payments${pin("step-count-7")}</h1>
-    <p class="welcome-lede">We'll walk you through seven short steps. It takes about 15 minutes, and you can stop and pick up right where you left off.${pin("welcome-length")}</p>
+    <p class="welcome-lede">We'll walk you through seven short steps. It takes about 15 minutes, and you can stop and pick up right where you left off.${pin("welcome-length")} ${infoNote}</p>
     <div class="need-bar">
       <h2 class="need-head">What you'll need</h2>
     </div>
@@ -2784,20 +2815,9 @@
       ${need("card", "Your bank account and a few documents", v.needBank)}
       ${need("chart", "A rough idea of your card sales", "Your monthly total, your average sale, and whether you sell in person, online or both. A rough guess is fine.")}
     </div>
-    <div class="actions${invitesOn() ? "" : " actions--single"}">
-      ${invitesOn() && html`<button type="button" class="btn btn-outline btn-lg" data-click="${on(openSave)}">Someone else handles our finances</button>${pin("welcome-delegate")}`}
+    <div class="actions">
+      <button type="button" class="btn btn-neutral btn-lg btn-help" data-click="${on(openHelp)}">${icon("help", 17)}Get help</button>
       <button type="button" class="btn btn-primary btn-lg" data-click="${on(() => go("bizType"))}">Let's get started${icon("arrow-r", 19)}</button>
-    </div>
-    <p class="welcome-help">${icon("help", 15, "i-accent")}<span><span class="welcome-help-q">Want to talk to someone first?</span> <span class="welcome-help-detail">Call <span class="mono">${SUPPORT_PHONE}</span>, ${SUPPORT_HOURS}.</span></span></p>
-    <div class="info info--below" data-mouseenter="${on(() => setState({ infoOpen: true }))}" data-mouseleave="${on(() => setState({ infoOpen: false }))}">
-      <button type="button" class="info-trigger" aria-expanded="${String(state.infoOpen)}" data-click="${on(() => setState({ infoOpen: true }))}">${icon("help", 15, "i-accent")}What we do with your information${icon("info", 14)}</button>
-      ${state.infoOpen && html`<div class="popover" data-key="info-pop"><div class="popover-body"><ul class="popover-list">
-        <li>We encrypt your information as it travels and while it's stored.</li>
-        <li>We protect tax and national ID numbers, so Xplor staff can't read them.</li>
-        <li>Trullio, our verification partner, runs the identity checks.</li>
-        <li>We only use it to verify you, never for marketing.</li>
-        <li>We save your progress after every field.</li>
-      </ul></div></div>`}
     </div>
   </div>
 </div>`;
@@ -3588,7 +3608,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       const options = CONTEXT_OPTIONS[key];
       const pick = (e) => {
         setCtx({ [key]: options.indexOf(e.target.value) > -1 ? e.target.value : options[0] });
-        if (key === "start") setCtx({ data: ctx.start === START_SAMPLE ? "Sample business" : ctx.start === START_NEW ? "Empty" : ctx.data });
+        if (key === "start") setCtx({ data: ctx.start === START_NEW ? "Empty" : ctx.data });
         if (key === "data" || key === "link" || key === "start" || key === "slice") { restored = false; resetData(); }
       };
       return html`<label><span class="field-label field-label--block">${label}${pinId && pin(pinId)}</span><select class="input" data-input="${on(pick)}">${options.map((op) => html`<option${attr("selected", ctx[key] === op)}>${op}</option>`)}</select></label>`;

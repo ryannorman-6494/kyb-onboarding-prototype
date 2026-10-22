@@ -153,10 +153,13 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .need { display: flex; gap: 14px; align-items: flex-start; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); padding: 16px 18px; }
 .need-title { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); margin-bottom: 2px; }
 .need-body { font-size: var(--type-body-small-size); line-height: 1.45; color: var(--color-text-subtle); }
+/* What you'll need: the items sit in one card, split by a light divider that stops at the card's inner margins (decision welcome-needs-one-card). */
+.need-list { gap: 0; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
+.need-list .need { position: relative; background: transparent; box-shadow: none; border-radius: 0; }
+.need-list .need + .need::before { content: ""; position: absolute; top: 0; left: 18px; right: 18px; height: 1px; background: var(--color-border-default); }
 .actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
 .actions { position: relative; }
 .actions .btn { width: 100%; white-space: normal; }
-.actions--single { grid-template-columns: minmax(0,1fr); }
 /* The design-decision pin floats on the join between the two buttons rather than taking a grid cell. */
 .actions > .note { position: absolute; top: -9px; left: calc(50% - 30px); margin: 0; }
 .info { position: relative; display: inline-block; }
@@ -609,6 +612,9 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .person-head .grow { min-width: 150px; }
 .step-sub { position: relative; }
 .why-wrap { display: inline; }
+.welcome-lede { position: relative; }
+.btn-neutral.btn-help { background: var(--color-background-surface-raised-1); }
+.btn-neutral.btn-help:hover { background: var(--color-background-hover); }
 .why-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: none; background: transparent; color: var(--color-text-secondary); font: inherit; font-weight: var(--type-control-default-weight); cursor: help; }
 .why-trigger:hover, .why-trigger:focus-visible { color: var(--color-text-brand); text-decoration: underline; text-underline-offset: 3px; }
 .why-pop { position: absolute; left: 0; top: 100%; margin-top: -6px; z-index: 20; padding-top: 14px; width: 380px; max-width: 100%; }
