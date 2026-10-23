@@ -902,7 +902,7 @@
       "area": "Flow",
       "where": "Step 5 · Card data security",
       "t": "The PCI follow-up questions are optional",
-      "b": "Answering Yes to the PCI question still reveals “Which security questionnaire do you fill in (SAQ type)?” and “When did you last complete it?”, but both now carry the Optional tag and say to skip them if you only use Xplor Pay, because the form is filled in for you. This removes the contradiction with the note under them (“we fill it in for you”) and the invented date that a persona typed to get past a required field. A date that is typed is still checked.",
+      "b": "Answering Yes to the PCI question still reveals “Which security questionnaire do you fill in (SAQ type)?” and “When did you last complete it?”, but both now carry the Optional tag. They first said to skip them if you only use Xplor Pay, because the form was filled in for you; that reason no longer holds (decision pci-merchant-completes), and they stay optional only so a business that has not completed the form yet can carry on. Making them optional also removed the invented date that a persona typed to get past a required field. A date that is typed is still checked.",
       "tradeoff": "Whether Xplor needs these answers at all is not known; this keeps the fields so nothing is lost if it does, but lets an applicant skip them. If ops confirms they are never needed, hiding them is the next step. The fields still appear after the click, so the layout still jumps (known, handover item 4).",
       "by": "Ryan",
       "when": "2026-10-07"
@@ -1488,6 +1488,26 @@
       "tradeoff": "The status pages now move with the window height, so they look different on a short laptop screen than on a tall monitor. The welcome page can still look a little high in a very tall window.",
       "by": "Ryan",
       "when": "2026-10-22"
+    },
+    {
+      "id": "pci-merchant-completes",
+      "area": "Copy",
+      "where": "Step 5 · Card data security",
+      "t": "The PCI form is the merchant's to complete, and step 5 no longer says Xplor Pay fills it in",
+      "b": "Xplor Pay does not fill in a merchant's PCI form for them; the merchant completes it themselves. Step 5 said the opposite in three places, so each is corrected. The hint under the PCI question was If you only take payments through Xplor Pay, the answer is yes. We look after the card data.; it now says You complete your PCI form yourself. We don't fill it in for you. The SAQ type hint no longer says to skip it because we fill the form in; it says it is the form you complete yourself, and keeps Not sure? Pick the first option. The date hint no longer says to skip it if you only use Xplor Pay; it says to leave it blank if you haven't completed it yet. The note under the card has the same fix: it still says card data never touches the merchant's systems and the yearly form is the short one, but ends You complete it yourself; we don't fill it in for you. The SAQ type and date stay optional, now so that a business that has not completed the form yet can carry on.",
+      "tradeoff": "That Xplor Pay does not fill it in is from Ryan, not from a document. The claims left in the note, that card data never touches the merchant's systems and that the form is the short one, were already unverified and are now doing more work, because they are the only reassurance left; ops or compliance should confirm them. The question still starts on Yes (decision yn-common-defaults), which pre-answers a declaration the merchant now has to back up themselves. Whether the merchant should be asked to complete the form before approval, at approval or later in ODIN is not decided.",
+      "by": "Ryan",
+      "when": "2026-10-22"
+    },
+    {
+      "id": "returning-login-only",
+      "area": "Flow",
+      "where": "Sign-in, when Link opened as is one of the Returning options",
+      "t": "A returning user just signs in: no welcome email and no forced password change",
+      "b": "When Link opened as is Returning, in progress, Returning, under review, Returning, more info needed or Returning, approved, the prototype opens on the sign-in screen, not the welcome email, because that email carries a temporary password for a first sign-in. The sign-in screen asks for the email and password, its button reads Sign in instead of Continue, its description says Sign in to pick up where you left off, and an empty password says Enter your password. Signing in goes straight to wherever the link lands (step 4, Under review, More info needed or Approved); the Change your password screen is skipped, because a returning user chose their own password the first time. A new applicant, the existing-user start and the one-time-code start are unchanged. The expired and closed links are not returning options and behave as before.",
+      "tradeoff": "Skipping the email for a returning user is an inference from the temporary password it contains: the prototype does not show how a returning user reaches the sign-in page (a bookmark, an email link or the ODIN address). Any email and password still sign in, as before.",
+      "by": "Ryan",
+      "when": "2026-10-23"
     }
   ];
 
@@ -1636,7 +1656,12 @@
   }
 
   // Every prototype starts at the "Check it's you" code screen, whatever state the link is in.
-  function startScreen() { return ctx.start === START_LOGIN || ctx.start === START_EXISTING ? "email" : "entry"; }
+  // Anyone opening the link as one of the Returning options has been in before: they have already set a password (decision returning-login-only).
+  const isReturning = () => [LINKS.returning, LINKS.review, LINKS.info, LINKS.approved].indexOf(ctx.link) > -1;
+  function startScreen() {
+    if (ctx.start === START_LOGIN && isReturning()) return "login";
+    return ctx.start === START_LOGIN || ctx.start === START_EXISTING ? "email" : "entry";
+  }
   function entryModeFor() { return ctx.link === LINKS.expired ? "expired" : ctx.link === LINKS.closed ? "closed" : "send"; }
 
   function freshState() {
@@ -1812,7 +1837,9 @@
   function submitLogin() {
     const email = state.loginEmail.trim();
     if (!EMAIL_OK.test(email)) { setState({ loginErr: "Enter an email like name@example.com." }); return; }
-    if (!state.loginPassword) { setState({ loginErr: "Enter your temporary password." }); return; }
+    if (!state.loginPassword) { setState({ loginErr: isReturning() ? "Enter your password." : "Enter your temporary password." }); return; }
+    // A returning user has already set their own password, so signing in goes straight in.
+    if (isReturning()) { openLink(); return; }
     setState({ loginStage: "change", loginErr: "" });
   }
   function submitNewPassword() {
@@ -2394,10 +2421,10 @@
           ca ? null : fld("msb", "Are you a money service business?", "yn", { span: true, hint: "Check cashing, money transfer, currency exchange or crypto. Most businesses aren't." })
         ], { pinId: "yes-is-not-no" }),
         card("s5-pci", "Card data security", "", [
-          fld("pci", "Do you follow the card industry's data security rules (PCI DSS)?", "yn", { span: true, unsure: true, hint: "If you only take payments through Xplor Pay, the answer is yes. We look after the card data." }),
-          a.pci === "yes" ? fld("saq", "Which security questionnaire do you fill in (SAQ type)?", "select", { conditional: true, optional: true, hint: "If you only use Xplor Pay, skip this: we fill the form in for you. Not sure? Pick the first option.", placeholder: "Choose an SAQ type", options: ["SAQ A (payments fully outsourced)", "SAQ A-EP", "SAQ B", "SAQ B-IP", "SAQ C", "SAQ D"] }) : null,
-          a.pci === "yes" ? fld("pciDate", "When did you last complete it?", "mono", { conditional: true, optional: true, hint: "Skip this if you only use Xplor Pay.", placeholder: datePh() }) : null
-        ], { pinId: "assurance-callouts", assurance: "Card data never touches your systems, so your yearly PCI form is the short one, and we fill it in for you." }),
+          fld("pci", "Do you follow the card industry's data security rules (PCI DSS)?", "yn", { span: true, unsure: true, hint: "You complete your PCI form yourself. We don't fill it in for you." }),
+          a.pci === "yes" ? fld("saq", "Which security questionnaire do you fill in (SAQ type)?", "select", { conditional: true, optional: true, hint: "The form you complete yourself. Not sure? Pick the first option.", placeholder: "Choose an SAQ type", options: ["SAQ A (payments fully outsourced)", "SAQ A-EP", "SAQ B", "SAQ B-IP", "SAQ C", "SAQ D"] }) : null,
+          a.pci === "yes" ? fld("pciDate", "When did you last complete it?", "mono", { conditional: true, optional: true, hint: "Leave this blank if you haven't completed it yet.", placeholder: datePh() }) : null
+        ], { pinId: "assurance-callouts", assurance: "Card data never touches your systems, so your yearly PCI form is the short one. You complete it yourself; we don't fill it in for you." }),
         card("s5-consent", "Two consents we have to collect", "", [
           fld("matchConsent", "I agree to a check of the card networks' list of closed merchant accounts", "check", { span: true, hint: "Also called a MATCH or TMF check. Mastercard requires it for every merchant account." }),
           ca ? null : fld("ofacAck", "I understand we'll check your name against the US government sanctions list", "check", { span: true, hint: "Known as OFAC screening. Every US merchant goes through it." })
@@ -2945,7 +2972,7 @@
     <div class="welcome-inner">
       <span class="tag tag--purple">${icon("lock", 13)}Secure sign-in</span>
       <h1 class="welcome-title">Sign in with your email and password${pin("login-default-start")}</h1>
-      <p class="welcome-lede">Use the temporary password we sent you to get started.</p>
+      <p class="welcome-lede">${isReturning() ? "Sign in to pick up where you left off." : "Use the temporary password we sent you to get started."}</p>
       <form class="card entry-card" data-submit="${on(submitLogin)}"${state.loginErr ? html` data-error="1"` : ""}>
         <div class="stack">
           <div><label class="field-label field-label--block" for="login-email">Email</label>
@@ -2957,7 +2984,7 @@
         <div class="entry-actions">
           <div class="footer-end">
             <button type="button" class="btn btn-ghost btn-md" data-click="${on(() => showToast("Prototype: password reset isn't simulated."))}">Send me another password</button>
-            <button type="submit" class="btn btn-primary btn-lg">Continue${icon("arrow-r", 19)}</button>
+            <button type="submit" class="btn btn-primary btn-lg">${isReturning() ? "Sign in" : "Continue"}${icon("arrow-r", 19)}</button>
           </div>
         </div>
       </form>
