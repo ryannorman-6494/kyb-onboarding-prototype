@@ -1202,8 +1202,8 @@
       "area": "Flow",
       "where": "Prototype options · Flow starts as; email and business picker",
       "t": "An existing user onboarding a new business skips the password and picks a business",
-      "b": "A new Flow starts as option, Existing user: new business email, then choose business, covers someone who already has an account on the platform and is onboarding a separate business. They get the existing-user email (no temporary password, no forced password change), and pressing Sign in goes straight to a simple screen asking which business to sign in with. Riverside Pilates, marked New application, goes into the normal onboarding flow and follows the Link opened as option like any other entry; Harbor Yoga Studio, the one they already have, does nothing in the prototype. The address takes ?start=existing.",
-      "tradeoff": "Pressing Sign in on the email skips a sign-in screen entirely, on the basis that the real sign-in happens in ODIN outside the prototype; if the sign-in itself should be shown, it needs adding between the email and the picker. The business names are made up, and the existing business is not clickable, so nobody can test what happens when someone picks it. The email is the existing-user template in the email folder, drawn again in the prototype, so the two need updating together.",
+      "b": "A new Flow starts as option, Existing user: new business email, then choose business, covers someone who already has an account on the platform and is onboarding a separate business. They get the existing-user email (no temporary password, no forced password change), and pressing Sign in goes straight to a simple screen asking which business to sign in with. Choosing a business only selects it (a radio card, nothing is chosen at first); a Sign in button, disabled until a business is selected, confirms the choice, so a stray click never signs anyone in. Riverside Pilates, marked New application, goes into the normal onboarding flow and follows the Link opened as option like any other entry; Harbor Yoga Studio, the one they already have, shows a prototype-only toast saying its dashboard is not part of the prototype. The address takes ?start=existing.",
+      "tradeoff": "Pressing Sign in on the email skips a sign-in screen entirely, on the basis that the real sign-in happens in ODIN outside the prototype; if the sign-in itself should be shown, it needs adding between the email and the picker. The business names are made up, and the existing business only shows a toast, so nobody can test what happens when someone signs in to it. The extra Sign in click adds one step for the common case of one business needing work (2026-10-23, Ryan: confirm the selection instead of signing in on click). The email is the existing-user template in the email folder, drawn again in the prototype, so the two need updating together.",
       "by": "Ryan",
       "when": "2026-10-22"
     },
@@ -1508,10 +1508,30 @@
       "tradeoff": "Skipping the email for a returning user is an inference from the temporary password it contains: the prototype does not show how a returning user reaches the sign-in page (a bookmark, an email link or the ODIN address). Any email and password still sign in, as before.",
       "by": "Ryan",
       "when": "2026-10-23"
-    }
-  ];
+    },
+    {
+      "id": "rail-quiet-step-markers",
+      "area": "Visual",
+      "where": "Left progress rail, step list",
+      "t": "The progress rail marks steps quietly: a soft green tick for done, a white purple-ringed number for the current step",
+      "b": "The current step keeps its light purple row but has no border around it. Its number sits in a white circle with a purple ring and a purple number, not a solid purple disc. A finished step shows a small green check mark (12px) on a pale green circle with the same light grey ring as the numbered circles, the same 22px size as the numbered circles of the steps still to do, instead of a solid dark green disc with a white tick. The current step's soft pulse ring stays. The Your progress bar and its percentage are green, not purple.",
+      "tradeoff": "The done and current markers now stand out less against the grey step numbers, so someone scanning the rail leans on the row tint and bold label to find where they are. The pale green circle has low contrast against the white rail; the green tick carries the meaning.",
+      "by": "Ryan",
+      "when": "2026-10-23"
+    },
+    {
+    "id": "step-header-fixed",
+    "area": "Visual",
+    "where": "Every step, title block",
+    "t": "The step counter, title and description stay fixed at the top while the cards scroll behind them",
+    "b": "On each of the seven steps the block with the step counter and time, the title and the description is pinned to the top of the window. The forms and cards below scroll underneath it and disappear behind it, so the applicant always sees which step they are on and what it asks. The block has a solid background so nothing shows through, and it reaches down to where the first card rests, so a card starts to disappear as soon as the page scrolls. The left rail already stays in view, so now both stay put.",
+    "tradeoff": "The pinned block takes about 150 to 200 pixels of height all the time, which matters on short laptop screens and on phones, where a long description leaves little room for the form. If testers complain about cramped screens, pin only the counter and title, or unpin it on narrow widths.",
+    "by": "Ryan",
+    "when": "2026-10-23"
+  }
+];
 
-  /* DECISIONS:END */
+/* DECISIONS:END */
 
   const decisionIndex = (id) => {
     for (let i = 0; i < DECISIONS.length; i++) if (DECISIONS[i].id === id) return i;
@@ -1679,6 +1699,8 @@
       loginEmail: "",
       loginPassword: "",
       loginErr: "",
+      // The existing-user business picker (decision existing-user-new-business): "new", "existing" or "" before a choice.
+      pickedBiz: "",
       newPassword: "",
       confirmPassword: "",
       changeErr: "",
@@ -2887,7 +2909,7 @@
       const step = (n, t, d) => html`<li class="em-step"><span class="em-step-num">${n}</span><span><strong>${t}</strong><br>${d}</span></li>`;
       const subject = existing ? "Your Xplor Pay application is ready to start" : "Welcome to Xplor Pay: your sign-in details";
       // An existing user has no temporary password and no forced password change: Sign in goes to the business picker.
-      const signIn = existing ? () => setState({ screen: "pickBusiness" }) : () => setState({ screen: "login", loginStage: "credentials", loginErr: "" });
+      const signIn = existing ? () => setState({ screen: "pickBusiness", pickedBiz: "" }) : () => setState({ screen: "login", loginStage: "credentials", loginErr: "" });
       return html`<div class="mailview" data-key="email${existing ? "-existing" : ""}">
   <div class="mail-bar">
     <div class="mail-subject">${subject}${pin(existing ? "existing-user-new-business" : "welcome-email-first")}</div>
@@ -2924,21 +2946,30 @@
 
     // Existing user, new business (decision existing-user-new-business): after the email, one simple choice of which
     // business to sign in with. The new one goes into the normal flow; the other does nothing in the prototype.
+    // Sign in confirms the choice; picking a card only selects it (decision existing-user-new-business).
+    function signInToBiz() {
+      if (state.pickedBiz === "new") openLink();
+      else if (state.pickedBiz === "existing") showToast("Prototype only: Harbor Yoga Studio's dashboard isn't part of this prototype.");
+    }
+
     function pickBusinessView() {
       return html`<div class="welcome" data-key="pick-business">
     <div class="welcome-inner">
       <span class="tag tag--purple">${icon("users", 13)}Your businesses</span>
       <h1 class="welcome-title">Which business do you want to sign in with?${pin("existing-user-new-business")}</h1>
       <p class="welcome-lede">You have more than one business on Xplor Pay. Pick the one you want to work on.</p>
-      <div class="biz-list" role="group" aria-label="Your businesses">
-        <button type="button" class="biz-card" data-click="${on(openLink)}">
+      <div class="biz-list" role="radiogroup" aria-label="Your businesses">
+        <button type="button" class="biz-card${state.pickedBiz === "new" ? " is-selected" : ""}" role="radio" aria-checked="${String(state.pickedBiz === "new")}" data-key="pick-new" data-click="${on(() => setState({ pickedBiz: "new" }))}">
           <span class="biz-radio" aria-hidden="true"></span>
           <span><span class="biz-label">Riverside Pilates <span class="chip chip--secure">New application</span></span><span class="biz-desc">Application ready to start</span></span>
         </button>
-        <button type="button" class="biz-card">
+        <button type="button" class="biz-card${state.pickedBiz === "existing" ? " is-selected" : ""}" role="radio" aria-checked="${String(state.pickedBiz === "existing")}" data-key="pick-existing" data-click="${on(() => setState({ pickedBiz: "existing" }))}">
           <span class="biz-radio" aria-hidden="true"></span>
           <span><span class="biz-label">Harbor Yoga Studio</span><span class="biz-desc">Active</span></span>
         </button>
+      </div>
+      <div class="entry-actions">
+        <div class="footer-end"><button type="button" class="btn btn-primary btn-lg"${state.pickedBiz ? "" : " disabled"} data-click="${on(signInToBiz)}">Sign in${icon("arrow-r", 19)}</button></div>
       </div>
     </div>
   </div>`;
@@ -3062,7 +3093,7 @@
     const waitNote = waitingOn === 0 ? "" : waitingOn === 1 ? (isNonprofit() ? "Waiting on one person's details" : "Waiting on one owner's details") : "Waiting on " + waitingOn + (isNonprofit() ? " people's details" : " owners' details");
     const items = STEPS.map((s) => {
       if (s.n < state.step || (state.editing && s.n !== state.step && s.n < 7)) {
-        return html`<li><button type="button" class="step is-done" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${icon("check", 13, "i-b")}</span><span class="step-label">${stepName(s)}${s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`}</span><span class="step-meta">Done</span></button></li>`;
+        return html`<li><button type="button" class="step is-done" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${icon("check", 12, "i-b")}</span><span class="step-label">${stepName(s)}${s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`}</span><span class="step-meta">Done</span></button></li>`;
       }
       if (s.n === state.step) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
@@ -3381,7 +3412,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   <div class="flow-grid">
     ${railView(v)}
     <main class="main" data-key="main">
-      <header data-key="head">
+      <header class="step-head" data-key="head">
         <div class="step-meta-row">
           <span class="eyebrow">${v.stepCounter}</span>
           <span class="meta">${icon("clock", 13)}${v.cur.time}</span>

@@ -174,7 +174,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .popover-list { padding-left: 18px; list-style: disc; font-size: var(--type-body-small-size); line-height: 1.6; color: var(--color-text-subtle); }
 
 /* ---------- Flow layout ---------- */
-.flow { flex: 1; display: flex; justify-content: center; padding: 40px 32px 80px; }
+.flow { --flow-top: 40px; flex: 1; display: flex; justify-content: center; padding: var(--flow-top) 32px 80px; }
 .flow-grid { width: 100%; max-width: 1220px; display: grid; grid-template-columns: 268px minmax(0,1fr); gap: 64px; align-items: start; }
 
 /* rail */
@@ -183,9 +183,9 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .brand-logo { display: block; height: 26px; width: auto; }
 .progress-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
 .progress-title { font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
-.progress-pct { font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-brand); }
+.progress-pct { font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-success); }
 .meter { height: 5px; border-radius: var(--radius-full); background: var(--color-background-neutral-default); margin-bottom: 6px; }
-.meter-fill { display: block; height: 5px; border-radius: var(--radius-full); background: var(--color-background-brand-default); transition: width 240ms ease; }
+.meter-fill { display: block; height: 5px; border-radius: var(--radius-full); background: var(--color-background-success-default); transition: width 240ms ease; }
 .progress-note { display: flex; align-items: center; gap: 6px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); margin-bottom: 16px; }
 .save-tell { display: inline-flex; align-items: center; gap: 3px; font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-success); }
 .save-tell.is-saving { color: var(--color-text-subtle); }
@@ -194,10 +194,10 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .step { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 9px 8px; border: none; border-radius: var(--radius-default); background: transparent; }
 button.step { cursor: pointer; }
 button.step:hover { background: var(--color-background-hover); }
-.step.is-current { background: var(--color-background-brand-subtle); box-shadow: inset 0 0 0 1px var(--color-border-brand); }
+.step.is-current { background: var(--color-background-brand-subtle); }
 .step-dot { width: 22px; height: 22px; flex: none; border-radius: var(--radius-full); box-shadow: inset 0 0 0 1px var(--color-border-default); color: var(--color-text-subtle); display: flex; align-items: center; justify-content: center; font-size: var(--type-caption-default-size); font-weight: var(--type-control-default-weight); }
-.is-done .step-dot { background: var(--color-background-success-default); color: var(--color-icon-on-brand); box-shadow: none; }
-.is-current .step-dot { background: var(--color-background-brand-default); color: var(--color-icon-on-brand); box-shadow: none; font-weight: var(--type-control-bold-weight); animation: xpulse 2.4s ease-out infinite; }
+.is-done .step-dot { background: var(--color-background-success-subtle); color: var(--color-icon-success); box-shadow: inset 0 0 0 1px var(--color-border-default); }
+.is-current .step-dot { background: var(--color-background-surface-raised-1); color: var(--color-text-brand); border: 1px solid var(--color-border-brand); box-shadow: none; font-weight: var(--type-control-bold-weight); animation: xpulse 2.4s ease-out infinite; }
 .step-label { flex: 1; min-width: 0; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 .is-current .step-label { font-weight: var(--type-control-bold-weight); color: var(--color-text-link-hover); }
 .step-meta { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
@@ -209,6 +209,8 @@ button.step:hover { background: var(--color-background-hover); }
 
 /* main column */
 .main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
+/* The step header stays put while the cards scroll behind it (decision step-header-fixed). The negative top margin and matching padding stretch its solid background up to the top of the window, so nothing shows above it. The bottom padding is cancelled by a matching negative margin, so the gap to the first card is unchanged but cards disappear right where they rest, the moment the page scrolls. */
+.step-head { position: sticky; top: 0; z-index: 10; margin: calc(var(--flow-top) * -1) 0 -20px; padding: var(--flow-top) 0 20px; background: var(--color-background-shell); }
 .step-meta-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .eyebrow { font: var(--font-label-default); letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-brand); }
 .meta { display: inline-flex; align-items: center; gap: 5px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
@@ -413,7 +415,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
   .flow-grid { grid-template-columns: 268px minmax(0,1fr); gap: 48px; }
 }
 @container content (max-width: 759px) {
-  .flow { padding: 28px 20px 64px; }
+  .flow { --flow-top: 28px; padding: var(--flow-top) 20px 64px; }
   .flow-grid { grid-template-columns: minmax(0,1fr); gap: 28px; }
   .rail { position: static; max-height: none; }
   .fields, .choice-grid, .two-up, .next-grid { grid-template-columns: minmax(0,1fr); }
