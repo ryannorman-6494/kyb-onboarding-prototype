@@ -231,8 +231,8 @@
       "id": "ownership-bar",
       "area": "Visual",
       "where": "Step 2 · Owners & signatory",
-      "t": "Show the ownership arithmetic rather than explain the 25% rule",
-      "b": "A live bar totalling the percentages entered, with a sentence about what the unaccounted remainder means. The 25% beneficial-owner threshold is the hardest idea in KYB to explain in prose, and it stops being confusing the moment you can see it add up.",
+      "t": "Show whether everyone with 25% or more is listed, not a percentage total",
+      "b": "The step 2 ownership card used to be a bar totalling the percentages entered (2026-09-23). Since only owners with 25% or more are listed, the total no longer tells the applicant what is left to do, so on 2026-10-26 Ryan replaced it. The card now reads Owners with 25% or more, with a small tag showing how many are listed so far, then All listed (green) once everyone is accounted for. See ownership-question for how that is decided.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -278,10 +278,11 @@
       "id": "bank-no-debit",
       "area": "Trust",
       "where": "Step 4 · Payout account",
-      "t": "Say out loud that Xplor cannot debit the account",
-      "b": "Typing in account details is a sensitive moment. The card says the account can receive payouts and that Xplor has no authority to take anything out.",
-      "by": "Claude",
-      "when": "2026-09-23"
+      "t": "Say plainly that Xplor may debit the payout account for fees, chargebacks and refunds",
+      "b": "Step 4 used to promise that Xplor could pay into the account but could not take anything out. Ryan decided on 2026-10-26 that this is not true: the merchant agreement lets Xplor Pay collect fees and recover chargebacks, refunds and returns by debit, so the promise is removed. The Settlement account card now says the account is where sales are paid and that Xplor may also take fees, chargebacks and refunds from it, as the agreement at step 7 sets out. The why-we-ask note says the same.",
+      "tradeoff": "The comfort that was the card's main reassurance is gone, so step 4 now asks for a sensitive account with a less comforting note, and the full terms are only read at step 7. The agreement wording is a sample drafted from the debit and recovery points in a ClubReady sub-merchant form Ryan shared. Legal or compliance has not checked it, and Canadian pre-authorized debit rules need their own check.",
+      "by": "Ryan",
+      "when": "2026-10-26"
     },
     {
       "id": "yes-is-not-no",
@@ -1520,18 +1521,118 @@
       "when": "2026-10-23"
     },
     {
-    "id": "step-header-fixed",
-    "area": "Visual",
-    "where": "Every step, title block",
-    "t": "The step counter, title and description stay fixed at the top while the cards scroll behind them",
-    "b": "On each of the seven steps the block with the step counter and time, the title and the description is pinned to the top of the window. The forms and cards below scroll underneath it and disappear behind it, so the applicant always sees which step they are on and what it asks. The block has a solid background so nothing shows through, and it reaches down to where the first card rests, so a card starts to disappear as soon as the page scrolls. The left rail already stays in view, so now both stay put.",
-    "tradeoff": "The pinned block takes about 150 to 200 pixels of height all the time, which matters on short laptop screens and on phones, where a long description leaves little room for the form. If testers complain about cramped screens, pin only the counter and title, or unpin it on narrow widths.",
-    "by": "Ryan",
-    "when": "2026-10-23"
-  }
-];
+      "id": "step-header-fixed",
+      "area": "Visual",
+      "where": "Every step, title block",
+      "t": "The step counter, title and description stay fixed at the top while the cards scroll behind them",
+      "b": "On each of the seven steps the block with the step counter and time, the title and the description is pinned to the top of the window. The forms and cards below scroll underneath it and disappear behind it, so the applicant always sees which step they are on and what it asks. The block has a solid background so nothing shows through, and it reaches down to where the first card rests, so a card starts to disappear as soon as the page scrolls. The left rail already stays in view, so now both stay put.",
+      "tradeoff": "The pinned block takes about 150 to 200 pixels of height all the time, which matters on short laptop screens and on phones, where a long description leaves little room for the form. If testers complain about cramped screens, pin only the counter and title, or unpin it on narrow widths.",
+      "by": "Ryan",
+      "when": "2026-10-23"
+    },
+    {
+      "id": "terms-one-document",
+      "area": "Trust",
+      "where": "Step 7 · What you're agreeing to",
+      "t": "The acknowledgements and authorizations are written into the one merchant agreement the applicant reads at step 7",
+      "b": "A sub-merchant form Ryan shared has six acknowledgement points and ten authorization points. They are terms and conditions, so they sit inside the merchant services agreement that the first tick at step 7 opens, not as extra ticks. The privacy policy and terms of service stay a separate document and tick. They are being added in three groups: (1) debit and recovery rights, done on 2026-10-26: collecting fees, recovering chargebacks, refunds and returns, a reserve, withholding funds under a lawful order, and moving billed amounts to settle; (2) authority and data, done on 2026-10-26: opening the merchant account with a processor, using your information and cardholder data to provide the service, signing and acting for you, reaching your payout account, and the power of attorney statement; (3) truth and binding terms, done on 2026-10-26: the application can be rejected in underwriting but binds once accepted, the referenced documents are part of the agreement, and the service depends on paying fees and following the terms and privacy policy. The statement that the information is true is not in the agreement but sits under the typed signature (see truth-tick).",
+      "tradeoff": "A long agreement behind one tick is easy to accept without reading. The wording is a sample drafted from the form's points, not legal text, and needs legal or compliance to replace it. Three clauses are marked for legal review: acting for the merchant in any other action it reasonably considers necessary, the irrevocable power of attorney (both give Xplor wide, hard-to-undo authority), and as they may be revised from time to time in section 8, which lets the terms change without a new acceptance. It is not known whether this agreement is the sub-merchant agreement itself or who the named facilitator is.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "terms-download",
+      "area": "Trust",
+      "where": "Step 7 · document viewer",
+      "t": "The agreement and privacy documents can be downloaded from the viewer",
+      "b": "The document viewer has a Download button beside Close, so the applicant can send the terms to a legal team before signing. In the prototype it saves the sample text as a plain text file. The real product would give the same versioned PDF the viewer shows.",
+      "tradeoff": "Nothing records that the applicant downloaded it, and the real PDF has to match the version they go on to accept.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "clubready-lease-by-division",
+      "area": "Flow",
+      "where": "Step 6 · Documents (not built)",
+      "t": "A lease, business licence or utility bill is asked for only for the ClubReady division",
+      "b": "ClubReady's request list asks for the club's signed lease, or a business licence or a utility bill in the business name until the lease exists. Ryan says this belongs to ClubReady only, which is a division: the Xplor Pay employee picks the division before the merchant sees this form, and that choice decides whether step 6 asks for the document. Ryan also said it would not apply when Non-profit is chosen on the second screen, because ClubReady is not a non-profit. Not built: the prototype has no division setting and no such document row.",
+      "tradeoff": "Needs a division setting and a conditional Required row in the step 6 list that also skips non-profits.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "owners-25-sign-tbd",
+      "area": "Step 2",
+      "where": "Step 7 · signing (undecided)",
+      "t": "Whether every owner with 25% or more must sign is undecided",
+      "b": "ClubReady's request says each owner with 25% or more must sign the sub-merchant application. The prototype has only the business contact sign at step 7 (decision invitee-own-card-only, and Slice 1 has no invites). Ryan is waiting on an answer, so nothing changes yet. One more thing to check: the 75% rule lists owners until three quarters is accounted for, which may miss a 25% owner.",
+      "tradeoff": "If every 25% owner must sign, Slice 1 (one person, no invites) cannot do it, and step 7 needs a signature per owner, which the invite-era decisions ruled out.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "owner-share-minimum",
+      "area": "Step 2",
+      "where": "Step 2 · Ownership percentage",
+      "t": "Every owner with 25% or more is listed, and nobody under 25% can be",
+      "b": "An ownership percentage below 25 now shows an error (Enter 25 or more. We only need owners with 25% or more.), because owners under 25% are not asked about. A new owner, including from Add myself, starts at the share still unaccounted for, and never below 25. Ryan's reason: every owner at 25% or more must be accounted for (see owners-25-sign-tbd), and anyone below that is of no interest. See ownership-question for how the step knows everyone has been listed.",
+      "tradeoff": "Starting at the share left can put a number in that is wrong for the person, so a glance at it is still needed. When 25 is the floor and the share left is lower, the new owner starts at 25 and the total goes over 100%, which then shows an error.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "ownership-question",
+      "area": "Step 2",
+      "where": "Step 2 · Owners with 25% or more",
+      "t": "The ownership card asks Does anyone else own 25% or more?, and shows All listed once the answer is no or the shares pass 75%",
+      "b": "The percentage total and bar are gone. While the shares listed come to 75% or less, the card asks Does anyone else own 25% or more? with Yes and No, unanswered at first. Yes keeps Save and continue blocked with Add the other owners who hold 25% or more. No marks the card complete. Once the shares pass 75%, nobody else can hold 25% or more, so the card is complete without a question. Complete reads All listed in green; before that the card shows how many people are listed so far. Adding or removing a person clears the answer so it is asked again. Company only. Option 1 of three, picked by Ryan on 2026-10-26.",
+      "tradeoff": "A person can answer No when a 25% owner exists, and nothing in the form catches it. The wording and the signature rules that follow (see owners-25-sign-tbd) matter more than the arithmetic did. The question has no starting answer, unlike the other Yes / No questions, because a default of No would let the card pass untouched.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "id-types-accepted",
+      "area": "Step 2",
+      "where": "Step 2 · Government ID type",
+      "t": "Driver's licence, passport and national ID card all stay acceptable",
+      "b": "ClubReady's request list asks for each owner's driver's licence. Ryan confirmed on 2026-10-26 that other ID types are acceptable too, so the Government ID type choice stays Driver's license, Passport and National ID card, and step 6 takes a photo of whichever the owner chose.",
+      "tradeoff": "If a downstream check only reads driver's licences, a passport would fail later rather than here.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "approval-time-confirmed",
+      "area": "Status",
+      "where": "Step 7 · What happens next; the under review page",
+      "t": "Usually under 2 hours stays as the approval time",
+      "b": "ClubReady's request list says an account can take up to 5 business days to be approved once the agreement is signed. Ryan confirmed on 2026-10-26 that usually under 2 hours is correct for this flow, so the copy on step 7, the confirmation and the under review page stays. This settles the claim the tone-of-voice pass flagged.",
+      "tradeoff": "The two figures describe different things (usually and up to), so a slower case is not covered by the copy.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "descriptor-phone-tbd",
+      "area": "Step 3",
+      "where": "Step 3 · Billing descriptor (undecided)",
+      "t": "Whether to collect a billing descriptor phone number is TBD",
+      "b": "ClubReady's request list asks for a billing descriptor phone number, the contact number shown on a customer's bank or card statement. Step 3 asks for the descriptor name only, and the step 1 phone number is for account notices. Ryan said on 2026-10-26 to leave it for now and keep it as TBD, so nothing changes.",
+      "tradeoff": "If it is needed later it is one more field on step 3, and the statement preview would show it.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "truth-tick",
+      "area": "Trust",
+      "where": "Step 7 · Sign it off",
+      "t": "The statement that the information is true sits under the typed signature, not in a tick",
+      "b": "From the sub-merchant form's acknowledgements, the statement that all the information given is true and accurate to the best of the signer's knowledge sits in the Sign it off card, under the Type your full legal name box: By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5. Typing the name is the act that confirms it. It was first built as its own fifth tick on step 7 (2026-10-26); Ryan folded it into the signature line the same day, because five ticks was a lot and it echoed the step 5 declarations. The other acknowledgement points are agreement section 8.",
+      "tradeoff": "It is easier to skip than a tick: the text is a small note, and the form's action is typing a name rather than agreeing to the sentence. The note must sit next to the box so it is read at the moment of signing. Whether Xplor wants the confirmation recorded as its own timestamped event is not decided.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    }
+  ];
 
-/* DECISIONS:END */
+  /* DECISIONS:END */
 
   const decisionIndex = (id) => {
     for (let i = 0; i < DECISIONS.length; i++) if (DECISIONS[i].id === id) return i;
@@ -1723,6 +1824,8 @@
       einFound: sample,
       lookupId: sample ? "93-4417208" : "",
       openOwner: 1,
+      // Step 2, company only (decision ownership-question): the answer to "Does anyone else own 25% or more?" ("yes", "no" or "" before an answer).
+      moreOwners: "",
       openCards: {},
       revealed: {},
       owners: freshOwners(),
@@ -1975,7 +2078,7 @@
     const a = Object.assign({}, state.a);
     Object.keys(a).forEach((k) => { if (k.indexOf("o" + id + "_") === 0) delete a[k]; });
     const docs = Object.assign({}, state.docs); delete docs["id_" + id];
-    setState({ owners: state.owners.filter((x) => x.id !== id), a: a, docs: docs, openOwner: state.openOwner === id ? 0 : state.openOwner, menuOwner: 0, confirm: null });
+    setState({ owners: state.owners.filter((x) => x.id !== id), a: a, docs: docs, openOwner: state.openOwner === id ? 0 : state.openOwner, menuOwner: 0, confirm: null, moreOwners: "" });
     showToast("Removed " + name + ".");
   }
   // What the person who gets the link sees. Prototype only: the real page is the recipient's own session.
@@ -2135,6 +2238,8 @@
     if (key === "pct" || key === "cpSplit") {
       const n = parseFloat(v);
       if (!isFinite(n) || n < 0 || n > 100) return "Enter a number from 0 to 100.";
+      // Only owners with 25% or more are listed (decision owner-share-minimum).
+      if (key === "pct" && n < 25) return "Enter 25 or more. We only need owners with 25% or more.";
     }
     if (f.kind === "currency" && !(parseFloat(String(v).replace(/,/g, "")) > 0)) return "Enter an amount greater than zero.";
     // The biggest single sale cannot be smaller than the average one. Only checked once both amounts are in.
@@ -2163,7 +2268,7 @@
       if (!owners.length) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " before you continue.";
       else if (!isCompany()) { /* ownership percentages only apply to companies */ }
       else if (total > 100) errs.ownership = "Ownership comes to more than 100%. Check each owner's percentage.";
-      else if (total <= 75 && !state.owners.some((o) => o.status === "invited")) errs.ownership = "The owners listed come to " + fmtPct(total) + "%. Add everyone who owns 25% or more.";
+      else if (total <= 75 && state.moreOwners !== "no" && !state.owners.some((o) => o.status === "invited")) errs.ownership = state.moreOwners === "yes" ? "Add the other owners who hold 25% or more." : "Tell us whether anyone else owns 25% or more.";
     }
     if (step === 6 || step === 7) {
       // An invited owner is not asked for at step 2 (the applicant can carry on), but their details and ID are needed before step 6 and 7 can pass (decision invite-no-exemption).
@@ -2303,7 +2408,7 @@
       sub("about", "About them"),
       f("name", "Full legal name", "text", { span: true, placeholder: "As printed on their ID", hint: "Exactly as it appears on the ID you'll upload." }),
       isSole() ? null : f("role", "Title / role", "select", { placeholder: "Choose a role", options: isNonprofit() ? ["Director", "Trustee", "Executive director", "Officer"] : ["Owner / CEO", "Director", "Managing partner", "Company secretary", "Officer"] }),
-      isCompany() ? f("pct", "Ownership percentage", "mono", { placeholder: "e.g. 60" }) : null,
+      isCompany() ? f("pct", "Ownership percentage", "mono", { placeholder: "e.g. 60", hint: "We only need owners with 25% or more." }) : null,
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: COUNTRIES }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: COUNTRIES }),
@@ -2427,7 +2532,7 @@
       return [
         card("s4-manual", "Settlement account", "", bankFields, {
           pinId: "bank-no-debit",
-          assurance: "Payouts in only. Xplor can pay into this account but can't take anything out. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter at step 6."
+          assurance: "We pay your sales into this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter at step 6."
         })
       ];
     }
@@ -2471,7 +2576,7 @@
       1: { t: "Why are we asking?", b: "Your bank needs to see that the " + orgWord() + " really exists and that its name, number and address all line up. Matching the registry for you speeds up the review.", p: ["Checked against " + (ca ? "CRA and provincial registries" : "IRS and Secretary of State records"), "A match is one less document to dig out", "Your description sets your merchant category for you"] },
       2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(ca ? "SIN" : "SSN") + " and ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
       3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
-      4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. We check it against the bank letter you add at step 6, so your payouts only ever go where they should.", p: ["Payouts in only. Xplor gets no authority to debit", "You can change this account later"] },
+      4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. We check it against the bank letter you add at step 6, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later"] },
       5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal. It means a person reviews your file instead of it going straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
       6: { t: "Why do you need files?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Checking them as they upload means a blurry scan gets caught now, not after a three-day wait.", p: ["Scanned for malware, stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Most decisions come back in under 2 hours", "Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
@@ -2597,15 +2702,19 @@
       lookupNote: isSole() ? "If you have one, we'll use it to fill in what we can. If you don't, you can carry on without it." : ca ? "We'll match it against CRA and provincial registry records and fill in the rest for you." : "We'll match it against IRS and state registry records and fill in the rest for you.",
       lookupAssurance: (ca ? "Your BN" : "Your EIN") + " is protected the moment you submit it. We use it once to verify the " + orgWord() + " and Xplor staff never see it.",
       lookupResult: lookupResultText(st),
-      ownershipTotal: fmtPct(ownedPct) + "% of 100%",
-      ownedWidth: Math.max(0, Math.min(100, ownedPct)),
+      // The ownership card says whether everyone with 25% or more is listed (decision ownership-question), with no percentage total.
+      ownersOver100: ownedPct > 100,
+      ownersAllListed: ownedPct <= 100 && owners.length > 0 && (ownedPct > 75 || st.moreOwners === "no"),
+      ownersAskMore: ownedPct <= 75 && owners.length > 0,
       ownershipNote: ownedPct > 100
-        ? "That comes to more than 100%. Have another look at each owner's percentage."
-        : ownedPct <= 75
-          ? "Add everyone who owns 25% or more. " + fmtPct(100 - ownedPct) + "% is still unaccounted for."
-        : ownedPct < 100
-          ? "Every owner at 25% or more is listed. The remaining " + fmtPct(100 - ownedPct) + "% sits with smaller holders, who don't need identifying."
-          : "All 100% accounted for.",
+        ? "The shares come to more than 100%. Have another look at each owner's percentage."
+        : ownedPct > 75
+          ? "Everyone who owns 25% or more is listed. Anyone else owns less than 25%, so we don't need them."
+          : st.moreOwners === "no"
+            ? "Everyone who owns 25% or more is listed."
+            : st.moreOwners === "yes"
+              ? "Add the other owners below."
+              : "Add everyone who owns 25% or more.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
       othersTitle: solo || !invitesOn() ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's finished their part" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
@@ -3173,20 +3282,23 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   }
 
   function step2View(v) {
+    // A new owner starts at the share still unaccounted for, but never below 25 (decision owner-share-minimum). Adding or removing anyone clears the "anyone else?" answer so it is asked again.
+    const shareLeft = () => Math.max(25, 100 - v.owners.reduce((x, o) => x + o.pct, 0));
     const addOwner = () => { const id = Date.now(); setState({
-      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: 10, role: "Director", status: "pending", self: false, added: true }]),
-      openOwner: id
+      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isCompany() ? shareLeft() : 10, role: "Director", status: "pending", self: false, added: true }]),
+      openOwner: id, moreOwners: ""
     }); };
-    // "Add myself": the applicant is often the owner too. It fills in what step 1 already gave (email, phone), a sensible title, and whatever share is still unaccounted for. Nothing else is guessed, and every field stays editable.
-    const addSelf = () => { const id = Date.now(); const left = Math.max(0, 100 - v.owners.reduce((x, o) => x + o.pct, 0)); setState({
-      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isNonprofit() ? 10 : (left || 10), role: isNonprofit() ? "Director" : "Owner / CEO", status: "pending", self: true, added: true, me: true }]),
-      openOwner: id
+    // "Add myself": the applicant is often the owner too. It fills in what step 1 already gave (email, phone), a sensible title, and the share still unaccounted for (never below 25). Nothing else is guessed, and every field stays editable.
+    const addSelf = () => { const id = Date.now(); setState({
+      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isNonprofit() ? 10 : shareLeft(), role: isNonprofit() ? "Director" : "Owner / CEO", status: "pending", self: true, added: true, me: true }]),
+      openOwner: id, moreOwners: ""
     }); };
     const addLabel = isNonprofit() ? (v.owners.length ? "Add another director or trustee" : "Add a director or trustee") : (v.owners.length ? "Add another owner or director" : "Add an owner or director");
     return html`${isCompany() && html`<section class="card" data-key="s2-total">
-  <div class="own-head"><h2 class="card-title" id="own-label">Ownership accounted for${pin("ownership-bar")}</h2><span class="own-total">${v.ownershipTotal}</span></div>
-  <div class="bar" role="progressbar" aria-labelledby="own-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v.ownedWidth}"><span class="bar-fill" data-width="${v.ownedWidth}"></span></div>
+  <div class="own-head"><h2 class="card-title" id="own-label">Owners with 25% or more${pin("ownership-bar")}${pin("ownership-question")}</h2>${v.ownersAllListed ? html`<span class="chip chip--secure" role="status">${icon("check", 12, "i-b")}All listed</span>` : html`<span class="chip" role="status">${v.owners.length} listed so far</span>`}</div>
   <p class="small-note">${v.ownershipNote}</p>
+  ${v.ownersAskMore && html`<div class="own-ask" data-key="own-ask"><label class="field-label field-label--block" id="own-more-q">Does anyone else own 25% or more?</label>
+    <div class="yn" role="group" aria-labelledby="own-more-q"><button type="button" class="yn-btn" aria-pressed="${String(state.moreOwners === "yes")}" data-click="${on(() => setState({ moreOwners: "yes" }))}">Yes</button><button type="button" class="yn-btn" aria-pressed="${String(state.moreOwners === "no")}" data-click="${on(() => setState({ moreOwners: "no" }))}">No</button></div></div>`}
   <div${ERR.ownership ? html` data-error="1"` : ""}>${errView("ownership")}</div>
 </section>`}
 <div class="stack" data-key="s2-owners">
@@ -3239,7 +3351,30 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
         ["1. What we provide", "Xplor Pay processes card payments for your business and pays the proceeds out to your bank account."],
         ["2. Fees", "You pay the rates in your fee schedule and nothing else. There is no monthly fee and no setup fee."],
         ["3. Term and ending the agreement", "There is no minimum term. You can close your account at any time and there is no exit fee."],
-        ["4. Disputes and chargebacks", "If a cardholder disputes a payment, we will tell you what evidence is needed and by when, and you keep control of the response."]
+        ["4. Disputes and chargebacks", "If a cardholder disputes a payment, we will tell you what evidence is needed and by when, and you keep control of the response."],
+        ["5. Getting paid, and money we may need back", [
+          "By accepting this agreement you authorize Xplor Pay to take the actions below. Your payout account is the account you gave us at step 4 of your application.",
+          "(a) Collect fees and charges. We may collect the fees and any other amounts you owe us, or owe our affiliates or subsidiaries, by electronic debit from your payout account (ACH in the United States, EFT in Canada).",
+          "(b) Recover chargebacks, refunds and returns. We may recoup, retrieve or collect funds for chargebacks, refunds and returns by electronic debit from your payout account, or from any other account of yours that has an available balance.",
+          "(c) Hold a reserve. Where we reasonably consider it necessary to protect our interests, we may set up a reserve account and hold funds in it.",
+          "(d) Withhold funds when the law requires it. We may withhold funds in line with any lawful order, garnishment or tax levy.",
+          "(e) Move funds to settle transactions. We may transfer billed amounts to an account we hold, so that the transactions run at your place or places of business can be settled."
+        ]],
+        ["6. Setting up and running your account", [
+          "By accepting this agreement you also authorize Xplor Pay to take the actions below.",
+          "(a) Open your merchant account. We may set up a primary merchant account for you with a payment processor of our choosing.",
+          "(b) Use your information to provide the service. We may access your information, including cardholder data, for the purpose of providing the payment services in this agreement.",
+          "(c) Sign and act for you. We may sign documents on your behalf, or take any other action we reasonably consider necessary and consistent with the terms of this agreement.",
+          "(d) Reach your payout account. We may access the account or accounts you have designated for receiving and accepting payments on settled transactions, together with any adjustments made on your behalf."
+        ]],
+        ["7. The authority you give us", [
+          "The authority you give us in this agreement is a power of attorney. It is irrevocable and coupled with an interest."
+        ]],
+        ["8. What you confirm", [
+          "(a) Underwriting. Your application may be rejected in underwriting. Once we accept it, this agreement is a legally binding agreement between you and Xplor Pay.",
+          "(b) Documents that are part of this agreement. The terms and conditions, and any other documents this agreement refers to, are part of the agreement.",
+          "(c) Fees and compliance. We provide the payment services on condition that you pay all fees and other charges, and that you follow our terms of service and privacy policy, as they may be revised from time to time."
+        ]]
       ]
     },
     rates: {
@@ -3264,6 +3399,24 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     setState((s) => ({ viewDoc: key, viewed: Object.assign({}, s.viewed, { [key]: true }) }));
   }
   const closeDoc = () => setState({ viewDoc: "", w9Err: "" });
+
+  // Download (decision terms-download): saves the sample text as a plain text file so it can go to a legal team. The real
+  // product would hand over the same versioned PDF the viewer shows.
+  function downloadDoc(key) {
+    const d = AGREEMENTS[key];
+    if (!d) return;
+    const body = d.sections.map((sec) => sec[0] + "\n" + [].concat(sec[1]).join("\n\n")).join("\n\n");
+    const text = d.title + "\n" + d.meta + "\nPrototype sample text, not the real document.\n\n" + body + "\n";
+    const url = URL.createObjectURL(new Blob([text], { type: "text/plain" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = d.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".txt";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast("Downloaded " + d.title);
+  }
 
   // What the W-9 shows comes from the applicant's own answers; nothing is invented.
   function w9Info() {
@@ -3348,11 +3501,14 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDoc)}">${icon("x", 18)}</button>
     </div>
     <div class="docv-paper" tabindex="0" role="document" aria-label="${title}">
-      ${a.sections.map((sec) => html`<div><h3 class="docv-h">${sec[0]}</h3><p class="docv-p">${sec[1]}</p></div>`)}
+      ${a.sections.map((sec) => html`<div><h3 class="docv-h">${sec[0]}</h3>${[].concat(sec[1]).map((p) => html`<p class="docv-p">${p}</p>`)}</div>`)}
     </div>
     <div class="docv-foot">
       <span class="small-note">Prototype preview: sample text, not the real document.</span>
-      <button type="button" class="btn btn-primary btn-md" id="docv-close" data-click="${on(closeDoc)}">Close</button>
+      <span class="docv-actions">
+        <button type="button" class="btn btn-outline btn-md" data-click="${on(() => downloadDoc(key))}">${icon("download", 17)}Download</button>
+        <button type="button" class="btn btn-primary btn-md" id="docv-close" data-click="${on(closeDoc)}">Close</button>
+      </span>
     </div>
   </div>
 </div>`;
@@ -3376,7 +3532,8 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     <div${ERR.signatoryTitle ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryTitle">Title${REQ}</label><input class="input" id="f-signatoryTitle" value="${v.signatoryTitle}" placeholder="e.g. Owner / CEO" data-input="${on((e) => set("signatoryTitle", e.target.value))}">${errView("signatoryTitle")}</div>
   </div>
   <div${ERR.sign ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-sign">Type your full legal name to sign${REQ}</label>
-  <input class="input sign-input" id="f-sign" value="${state.sign}" placeholder="${v.signatoryName || "Your full legal name"}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ sign: e.target.value }))}">${errView("sign")}</div>
+  <input class="input sign-input" id="f-sign" value="${state.sign}" placeholder="${v.signatoryName || "Your full legal name"}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ sign: e.target.value }))}">${errView("sign")}
+  <p class="small-note sign-truth">By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5.</p></div>
   <div class="sign-meta">
     <span>Signed on ${new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })} · the date and time are recorded when you submit</span>
     <span class="sign-ok">${icon("shield", 13)}ESIGN Act compliant · we'll email you a signed copy</span>

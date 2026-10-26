@@ -287,6 +287,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 
 /* ---------- Step 2: owners ---------- */
 .own-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-layout-group); margin-bottom: 6px; }
+.own-ask { margin-top: 14px; }
 .own-total { font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .bar { height: 6px; border-radius: var(--radius-full); background: var(--color-background-neutral-default); margin-bottom: 8px; overflow: hidden; }
 .bar-fill { display: block; height: 6px; background: var(--color-background-brand-default); transition: width 240ms ease; }
@@ -324,6 +325,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .summary-value { font-size: var(--type-body-small-size); color: var(--color-text-subtle); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sign-title { margin-bottom: 16px; }
 .sign-input { max-width: 420px; height: 52px; padding: 0 16px; font-size: 22px; font-style: italic; color: var(--color-text-primary); }
+.sign-truth { margin-top: 8px; }
 .sign-meta { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .sign-ok { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-success); }
 .next-panel { margin-top: var(--space-layout-related); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 1px var(--color-border-default); border-radius: var(--radius-large); padding: var(--space-padding-default) var(--space-padding-large); color: var(--color-text-primary); }
@@ -526,6 +528,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .docv-paper { margin-top: 14px; overflow-y: auto; padding: 28px 32px; border-radius: var(--radius-default); background: var(--color-background-shell); box-shadow: inset 0 0 0 1px var(--color-border-default); display: flex; flex-direction: column; gap: var(--space-layout-group); }
 .docv-h { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); margin-bottom: 4px; }
 .docv-p { font-size: var(--type-body-small-size); line-height: 1.6; color: var(--color-text-secondary); }
+.docv-p + .docv-p { margin-top: 8px; }
+.docv-actions { display: flex; align-items: center; gap: 8px; }
 .docv-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; flex-wrap: wrap; }
 
 /* ---------- Approved: what the approval unlocks ---------- */
