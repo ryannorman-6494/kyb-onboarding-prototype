@@ -61,6 +61,221 @@
   function on(fn) { handlers.push(fn); return handlers.length - 1; }
 
   // ---------------------------------------------------------------------------
+  // Pend reasons (decision pend-reasons-as-requests)
+  // ---------------------------------------------------------------------------
+
+  // What the underwriting team can ask an applicant for. An Ops user picks one or more; each becomes a request card on the
+  // More info needed screen, and the same text goes in the email. The reasons and what resolves each one come from the Xplor
+  // Underwriting Guide (Pend Reasons and Documentation Requirements); the plain-language wording is a draft for ops and
+  // compliance to confirm. The guide is written for the United States.
+  //   title    short heading for the request
+  //   why      why we need it, in plain language
+  //   lead     the line above the list of what we accept
+  //   accept   the documents or answers that resolve it
+  //   note     an optional extra line under the list
+  //   person   true when the request is about one owner; {name} and {first} in the text become that person
+  //   respond  how the business answers: "upload", "fields" (write an answer), "confirm", "cosigner" or "none"
+  //   cta      the button label (upload, confirm, cosigner)
+  //   file     the made-up file name an upload shows
+  //   fields   for "fields": { key, label, ph, area, req, from }; from pre-fills from a step 3 answer
+  const PEND_REASONS = [
+    {
+      id: "banking", name: "Banking Verification", icon: "file", respond: "upload", cta: "Choose file", file: "bank-verification.pdf",
+      title: "Confirm your bank account",
+      why: "We need to check that the payout account you gave us belongs to your business, so we pay the right place.",
+      lead: "Either of these works",
+      accept: [
+        "A voided check with your business name and account details printed on it. We can't take starter checks.",
+        "A letter on your bank's letterhead. It shows your full account number, your routing number, and your legal or DBA name, along with your contact details. A bank representative signs it and adds their phone number and email."
+      ]
+    },
+    {
+      id: "ownership", name: "Business Ownership Verification", icon: "file", respond: "upload", cta: "Choose file", file: "ownership-document.pdf",
+      title: "Show how you're linked to the business",
+      why: "We need a document that connects you to the business, so we know who owns it and who can sign for it.",
+      lead: "Any one of these works. It needs to show the business's legal name and your name.",
+      accept: [
+        "A certificate of organization",
+        "Articles of incorporation",
+        "IRS Form SS-4",
+        "A partnership agreement",
+        "A government-issued business license"
+      ]
+    },
+    {
+      id: "financial", name: "Financial Exposure Risk", icon: "file", respond: "upload", cta: "Choose file", file: "financial-records.pdf",
+      title: "Share your financial records",
+      why: "We need to see how your business is doing financially before we can approve it.",
+      lead: "Send at least one of these",
+      accept: [
+        "Your last 2 years of audited financial statements: profit and loss, balance sheet, cash flow, and the audit cover letter signed by your audit firm",
+        "All pages of your last 2 years of business tax returns",
+        "All pages of your processing statements for the last 6 to 12 months in a row"
+      ],
+      note: "No audited statements, or fewer than 6 months of processing? Tell us. We can accept those in some cases."
+    },
+    {
+      id: "delivery", name: "Future Delivery Risk", icon: "pen", respond: "fields",
+      title: "Tell us when customers get what they pay for",
+      why: "When customers pay before they receive your product or service, we need to know how long that gap lasts.",
+      lead: "Tell us two things",
+      accept: ["How far in advance you take deposits", "How long it takes from the first payment to delivery"],
+      fields: [
+        { key: "advance", label: "How far in advance do customers pay a deposit?", ph: "For example, 2 weeks before the event", req: true },
+        { key: "timeline", label: "How long from the first payment to delivery?", ph: "For example, 3 to 4 weeks", req: true }
+      ]
+    },
+    {
+      id: "kyb", name: "KYB Verification", icon: "file", respond: "upload", cta: "Choose file", file: "business-registration.pdf",
+      title: "Prove your business is registered",
+      why: "We need an official document that shows your business is registered under the name you gave us.",
+      lead: "Any one of these works. It needs to show your legal business name.",
+      accept: ["A government-issued business license", "Your filed articles of incorporation", "Your partnership agreement"],
+      note: "Other documents are accepted only in some cases, such as a utility bill with the owner's name at the business address, a bill of sale or purchase agreement, or other state or federal filings. If you don't have one of the documents above, tell us."
+    },
+    {
+      id: "shipping", name: "Shipping & Product Validation", icon: "file", respond: "upload", cta: "Choose file", file: "product-evidence.pdf",
+      title: "Show how you get products to customers",
+      why: "We need to see that you have the products you sell and a way to deliver them.",
+      lead: "Send at least one of these",
+      accept: [
+        "Supplier agreements",
+        "Fulfillment house agreements",
+        "Photos of your inventory at your business address",
+        "Marketing material that shows the products you sell, such as your website, catalogs, brochures or flyers"
+      ]
+    },
+    {
+      id: "kyc", person: true, name: "KYC Verification", icon: "file", respond: "upload", cta: "Choose file", file: "photo-id.pdf",
+      title: "Confirm {first}'s identity",
+      why: "We need to check who {name} is before we can approve the application.",
+      lead: "Any one of these works. The copy needs to be clear and easy to read.",
+      accept: ["Their current driver's license or government-issued ID", "Their current, unexpired U.S. passport", "Their Social Security card"]
+    },
+    {
+      id: "freeze", person: true, name: "Credit Freeze", icon: "user", respond: "confirm", cta: "I've removed the freeze",
+      title: "Remove the freeze on {first}'s credit report",
+      why: "A security freeze blocks the credit check we need to run on {name} before we can approve the application.",
+      lead: "What to do",
+      accept: ["Remove the security freeze on {first}'s credit report at Experian, TransUnion and Equifax", "Then tell us here, and we'll carry on with the check"]
+    },
+    {
+      id: "alert", person: true, name: "Credit Security Alert", icon: "clock", respond: "none",
+      title: "A quick chat with our underwriting team",
+      why: "A security alert on {name}'s credit report means we need to talk with them before we can go on.",
+      lead: "What happens next",
+      accept: ["There's nothing for you to send", "Our underwriting team will get in touch with {first}"]
+    },
+    {
+      id: "cosigner", person: true, name: "Insufficient Credit", icon: "user", respond: "cosigner", cta: "Add a co-signer",
+      title: "Add a co-signer",
+      why: "The credit history we found for {name} isn't enough for us to approve the application, so we need a co-signer.",
+      lead: "What we need for your co-signer",
+      accept: ["Their full legal name, address, date of birth and phone number", "Their Social Security number", "Their signature on the merchant agreement"]
+    },
+    {
+      id: "product", name: "Product/Services Description", icon: "pen", respond: "fields",
+      title: "Tell us more about what you sell",
+      why: "We need more detail about your products or services to understand your business.",
+      lead: "Tell us",
+      accept: ["The types of products you sell or the services you offer, in more detail than you gave us"],
+      fields: [{ key: "detail", label: "What do you sell?", ph: "For example, group Pilates classes, private sessions, and mats and clothing at the front desk", area: true, req: true }]
+    },
+    {
+      id: "duplicate", name: "Duplicate Account", icon: "pen", respond: "fields",
+      title: "Tell us why you need another account",
+      why: "We found an open processing account linked to you or your business.",
+      lead: "Tell us",
+      accept: ["Why your business needs an additional account"],
+      fields: [{ key: "reason", label: "Why do you need another account?", ph: "For example, this account is for our second location", area: true, req: true }]
+    },
+    {
+      id: "tin", name: "TIN Verification", icon: "file", respond: "upload", cta: "Choose file", file: "tax-id-document.pdf",
+      title: "Confirm your tax ID",
+      why: "We need one more document to confirm your tax ID number.",
+      lead: "Either of these works",
+      accept: ["Your IRS Form SS-4 filing", "A 1099-K from your previous processor"]
+    },
+    {
+      id: "firearms", name: "Firearms Due Diligence", icon: "file", respond: "upload", cta: "Choose file", file: "firearms-documents.pdf",
+      title: "Send your firearms documents",
+      why: "Selling firearms means extra checks, and some documents our sporting goods policy asks for are missing or incomplete.",
+      lead: "Documents we often find missing",
+      accept: [
+        "Your Federal Firearms License (FFL)",
+        "The sporting goods addendum",
+        "Confirmation of your inventory",
+        "Your SOT permits",
+        "Your website disclaimers, such as shipping and state laws"
+      ],
+      note: "These are examples. Our sporting goods policy has the full list."
+    },
+    {
+      id: "cbd", name: "CBD Due Diligence", icon: "file", respond: "upload", cta: "Choose file", file: "cbd-documents.pdf",
+      title: "Send your CBD documents",
+      why: "Selling CBD means extra checks, and some documents our CBD policy asks for are missing or incomplete.",
+      lead: "Documents we often find missing",
+      accept: [
+        "A certificate of analysis (COA) for each product you sell",
+        "Your inventory list",
+        "Proof that you've removed any non-compliant products from your site",
+        "Proof that you've added CBD content to your site"
+      ],
+      note: "These are examples. Our CBD policy has the full list."
+    },
+    {
+      id: "volume", name: "Avg Ticket/Volume Thresholds", icon: "pen", respond: "fields",
+      title: "Check your sales numbers",
+      why: "Your average sale, highest sale and monthly volume don't match up, so we need you to confirm them.",
+      lead: "Confirm or correct your numbers, and tell us how you worked them out",
+      accept: ["Your average transaction amount, your maximum single transaction and your monthly card volume", "A short note on why those numbers are right"],
+      fields: [
+        { key: "avg", label: "Average transaction amount", ph: "38", from: "avgTicket", req: true },
+        { key: "max", label: "Maximum single transaction", ph: "1,200", from: "maxTicket", req: true },
+        { key: "monthly", label: "Estimated monthly card volume", ph: "40,000", from: "monthlyVolume", req: true },
+        { key: "why", label: "How did you work these out?", ph: "For example, our busiest month last year, plus the new location", area: true, req: true }
+      ]
+    },
+    {
+      id: "url", name: "Missing URL (website)", icon: "pen", respond: "fields",
+      title: "Add your website address",
+      why: "We need to see your website to check what you sell.",
+      lead: "Tell us",
+      accept: ["The address of your website"],
+      fields: [{ key: "url", label: "Website address", ph: "https://", req: true }]
+    },
+    {
+      id: "website", name: "Incomplete Website", icon: "pen", respond: "confirm", cta: "I've updated my website",
+      title: "Update your website",
+      why: "We looked at your website and found things to fix before we can approve it.",
+      lead: "Things to check",
+      accept: [
+        "Your privacy, shipping and return policies are all complete",
+        "Your terms and conditions are complete",
+        "Age checks are in place for age-restricted products",
+        "Your checkout is secure and works",
+        "Your products are listed with full pricing"
+      ]
+    },
+    {
+      id: "nonprofit", name: "Non-Profit Documents", icon: "file", respond: "upload", cta: "Choose file", file: "nonprofit-status.pdf",
+      title: "Send your nonprofit paperwork",
+      why: "We need proof of your nonprofit status.",
+      lead: "What we need",
+      accept: ["Your most recently filed 501(c)(3)"]
+    }
+  ];
+  const PEND_IDS = PEND_REASONS.map((r) => r.id);
+  // What the prototype shows when no reason is picked: one request, so the screen reads as a single thing to fix.
+  const PEND_DEFAULT = ["banking"];
+
+  // Reads the ?pend= list from the address, keeping only known reason ids, in catalogue order.
+  function pendFromUrl(raw) {
+    const ids = String(raw || "").split(",").filter((x) => PEND_IDS.indexOf(x) > -1);
+    return ids.length ? PEND_IDS.filter((id) => ids.indexOf(id) > -1) : PEND_DEFAULT.slice();
+  }
+
+  // ---------------------------------------------------------------------------
   // Prototype context (design props)
   // ---------------------------------------------------------------------------
 
@@ -94,7 +309,8 @@
       start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
       data: q.get("data") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
-      link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW
+      link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW,
+      pend: pendFromUrl(q.get("pend"))
     };
   }
   function writeContext() {
@@ -106,6 +322,7 @@
     if (ctx.data === "Sample business") q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
     Object.keys(LINKS).forEach((k) => { if (ctx.link === LINKS[k]) q.set("link", k); });
+    if (ctx.pend.join() !== PEND_DEFAULT.join()) q.set("pend", ctx.pend.join(","));
     const qs = q.toString();
     try { history.replaceState(null, "", qs ? "?" + qs : location.pathname); } catch (e) { /* file:// can refuse; the context still applies */ }
   }
@@ -1555,8 +1772,8 @@
       "area": "Flow",
       "where": "Step 6 · Documents (not built)",
       "t": "A lease, business licence or utility bill is asked for only for the ClubReady division",
-      "b": "ClubReady's request list asks for the club's signed lease, or a business licence or a utility bill in the business name until the lease exists. Ryan says this belongs to ClubReady only, which is a division: the Xplor Pay employee picks the division before the merchant sees this form, and that choice decides whether step 6 asks for the document. Ryan also said it would not apply when Non-profit is chosen on the second screen, because ClubReady is not a non-profit. Not built: the prototype has no division setting and no such document row.",
-      "tradeoff": "Needs a division setting and a conditional Required row in the step 6 list that also skips non-profits.",
+      "b": "ClubReady's request list asks for the club's signed lease, or a business licence or a utility bill in the business name until the lease exists. Ryan says this belongs to ClubReady only, which is a division, and it is not asked of a non-profit. The division is not chosen in this prototype. An Xplor Pay ops user sets it in the admin portal, outside the prototype, while entering the details of the person who will fill in the form. Saving that starts the flow by sending that person the welcome email the prototype opens on (decision welcome-email-first), so the division is already known when the form opens and decides whether step 6 shows the document row. Not built: the prototype has no division setting and no such row.",
+      "tradeoff": "To show it, the prototype needs a stand-in for the admin portal, for example a Division option in Prototype options (Standard or ClubReady) that adds a conditional Required row to the step 6 list and skips it for non-profits. Ryan has not asked for that yet. The admin portal itself, and what else the division changes (fees, agreement text, descriptor), are not known.",
       "by": "Ryan",
       "when": "2026-10-26"
     },
@@ -1627,6 +1844,36 @@
       "t": "The statement that the information is true sits under the typed signature, not in a tick",
       "b": "From the sub-merchant form's acknowledgements, the statement that all the information given is true and accurate to the best of the signer's knowledge sits in the Sign it off card, under the Type your full legal name box: By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5. Typing the name is the act that confirms it. It was first built as its own fifth tick on step 7 (2026-10-26); Ryan folded it into the signature line the same day, because five ticks was a lot and it echoed the step 5 declarations. The other acknowledgement points are agreement section 8.",
       "tradeoff": "It is easier to skip than a tick: the text is a small note, and the form's action is typing a name rather than agreeing to the sentence. The note must sit next to the box so it is read at the moment of signing. Whether Xplor wants the confirmation recorded as its own timestamped event is not decided.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "pend-reasons-as-requests",
+      "area": "Flow",
+      "where": "More info needed",
+      "t": "Each reason Ops picks becomes one request card",
+      "b": "An Ops user picks one or more pend reasons from the underwriting guide. The More info needed screen shows one card per reason, and the email to the applicant says the same thing. Every card has the same four parts: a short title, a plain-language line on why we need it, the documents or answers we will accept, and how to respond. The response is one of four things: upload a document, write an answer (one or more fields), tell us it is done (remove a credit freeze, fix the website), or add a co-signer. Every upload card also has an optional Add a note for our team box, so the applicant can explain a missing document or say what a file shows; it is never required and does not count towards Done. Its label says (optional) outright, an exception to no-optional-tag, because on a card full of required requests an unmarked box does not read as optional. A card for a reason with nothing to send (a credit security alert, where underwriting calls the applicant) says so. The heading counts the cards (One thing to fix, Two things to fix). The reassurance that the applicant is not back at the start stays as the lede (decision rfi-not-restart). The reasons, their order of detail and what resolves each one come from the Xplor Underwriting Guide, Pend Reasons and Documentation Requirements; all 19 reasons are in the prototype and Ops picks them in Prototype options. The guide says at least one resolution document or response is needed for each reason, so a list of accepted documents reads as Any one of these works unless it says otherwise.",
+      "tradeoff": "The plain-language wording is my draft from the guide, not approved copy; ops and compliance should confirm it, especially Credit Freeze, Credit Security Alert and Insufficient Credit. The guide is marked Xplor Technologies - Restricted, and this wording sits in the prototype that is published on GitHub Pages: check with Xplor before the next deploy. Ryan confirmed the guide applies to the United States and Canada alike, so the cards read the same in both regions, including the US document names (Social Security card, SS-4, 1099-K, 501(c)(3)) and routing number. The old hard-coded request (a bank letter address that did not match the registered address) is gone.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "pend-send-once",
+      "area": "Flow",
+      "where": "More info needed",
+      "t": "One Send to our team button, on once every request is answered",
+      "b": "Each card marks itself Done as soon as it has what it needs: a file that finished uploading, every required field filled in, or a tap on its button. The page ends with two buttons on the right: Email us, then the primary Send to our team furthest right, which stays off until every card is done, with a short line under it saying why. Sending takes the applicant back to the under-review screen. One send means Ops gets one resubmission and the applicant sends one email, however many reasons were picked. A page with only a nothing-to-send reason has no Send button. Email us stays as the secondary button for a request the applicant cannot meet. There is no closing line under the buttons.",
+      "tradeoff": "An applicant who can answer two of three cannot send those two now and the third later. If that matters, each card could send on its own.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "pend-reasons-open",
+      "area": "Flow",
+      "where": "More info needed (undecided)",
+      "t": "Questions left open on the pend reasons",
+      "b": "Recorded, not built. (1) Ryan has settled one point: only one of the accepted documents is required, and the lead lines (Any one of these works, Either of these works, Send at least one of these) all mean that. (2) Person-level requests (know your customer, credit freeze, credit security alert, insufficient credit) now name the person. The prototype lets Ops choose which owner in Prototype options; the real admin portal would need the same choice. Credit Security Alert is still shown to the applicant; Ryan said to leave it. (3) Settled: the underwriting guide is the same for the United States and Canada, so no Canadian variants are needed. Needs looking at: the Banking Verification card says routing number, but the Canadian step 4 asks for an institution number and a transit number, so a Canadian applicant sees two different words for the same thing. (4) What Add a co-signer does in the product: the prototype only says a form would open. (5) The email Ops picking reasons would send: TBD, not built, and no sensitive data can go in it (merchant communications FR-06).",
+      "tradeoff": "Until these are answered the screen shows a plausible version, not a settled one.",
       "by": "Ryan",
       "when": "2026-10-26"
     }
@@ -1830,6 +2077,10 @@
       revealed: {},
       owners: freshOwners(),
       docs: {},
+      // What the applicant has answered on the More info needed screen, keyed by pend reason id (decision pend-reasons-as-requests).
+      rfi: {},
+      // The owner a person-level request is about, picked by Ops in Prototype options (0 = the applicant).
+      pendFor: 0,
       // Steps where "Save and continue" has been pressed, so errors only appear after an attempt.
       tried: {},
       // Fields the applicant has been in and left. Their problems show straight away; the rest wait for a press of Save and continue.
@@ -3629,20 +3880,121 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 `;
   }
 
-  function rfiView() {
-    return html`<header data-key="rfi-head">
-  <h1 class="step-title">One thing to fix${pin("rfi-not-restart")}</h1>
-  <p class="step-sub">You're not back at the start. Fix this one item and the checks carry on exactly where they left off, usually within the hour.</p>
-</header>
-<section class="card" data-key="rfi-card">
-  <h2 class="rfi-title">The address on your bank verification doesn't match your registered address</h2>
-  <p class="rfi-body">Your bank letter shows <span class="mono">1140 SW Alder St</span>, but Riverside Pilates LLC is registered at <span class="mono">418 SE Water Ave</span>. Send us either a letter showing the registered address, or a utility bill for the Alder St site.</p>
-  <div class="btn-row">
-    <button type="button" class="btn btn-primary btn-md" data-click="${on(() => setState({ screen: "submitted" }))}">${icon("upload", 17)}Upload a replacement</button>
-    <button type="button" class="btn btn-neutral btn-md btn-tight" data-click="${on(() => showToast("Prototype: email isn't simulated."))}">Email us</button>
+  // ---------------------------------------------------------------------------
+  // More info needed (decision pend-reasons-as-requests)
+  // ---------------------------------------------------------------------------
+
+  // The reasons Ops picked, in catalogue order. What the applicant has answered lives in state.rfi, keyed by reason id:
+  // { files: [{ name, busy }], vals: { fieldKey: text }, done: boolean }.
+  const pendReasons = () => PEND_REASONS.filter((r) => ctx.pend.indexOf(r.id) > -1);
+  const rfiOf = (id) => state.rfi[id] || { files: [], vals: {}, done: false };
+  const setRfi = (id, patch) => setState((s) => ({ rfi: Object.assign({}, s.rfi, { [id]: Object.assign({ files: [], vals: {}, done: false }, s.rfi[id], patch) }) }));
+  // A field shows what was typed; before that, the step 3 answer it checks (the sales numbers), or nothing.
+  const pendVal = (r, f) => { const v = rfiOf(r.id).vals[f.key]; return v === undefined ? (f.from ? state.a[f.from] || "" : "") : v; };
+  // A request is answered when it has what it asks for: a file that finished uploading, every required field, or a tap on the button.
+  function pendDone(r) {
+    const c = rfiOf(r.id);
+    if (r.respond === "upload") return c.files.length > 0 && c.files.every((f) => !f.busy);
+    if (r.respond === "fields") return r.fields.every((f) => !f.req || String(pendVal(r, f)).trim() !== "");
+    if (r.respond === "confirm" || r.respond === "cosigner") return c.done;
+    return true;
+  }
+  // Who a person-level request is about (a reason with person: true): the owner Ops picked in Prototype options, else the
+  // applicant, else the first named owner. With no owner named yet (an empty run) it falls back to the sample applicant.
+  function pendPerson() {
+    const named = state.owners.map((o) => ({ o: o, name: ownerInfo(o).name })).filter((x) => x.name && x.name !== "New owner");
+    const pick = named.find((x) => x.o.id === state.pendFor) || named.find((x) => x.o.self) || named[0];
+    const name = pick ? pick.name : OWNER_SEED.self.name;
+    return { id: pick ? pick.o.id : 0, name: name, first: name.split(" ")[0] };
+  }
+  const pendText = (r, t) => { if (!r.person) return t; const p = pendPerson(); return t.split("{name}").join(p.name).split("{first}").join(p.first); };
+  const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
+  function pendTitle() { const n = pendReasons().length; return n === 1 ? "One thing to fix" : (NUMBER_WORDS[n] || String(n)) + " things to fix"; }
+  const PEND_HOW = { upload: "Upload a document", fields: "Write an answer", confirm: "Tell us when it's done", cosigner: "Add a co-signer", none: "Nothing to send" };
+
+  // Ops picks the reasons in Prototype options. At least one stays picked.
+  function togglePend(id, checked) {
+    const next = PEND_IDS.filter((x) => (x === id ? checked : ctx.pend.indexOf(x) > -1));
+    setCtx({ pend: next.length ? next : ctx.pend });
+  }
+
+  // Simulated upload: no picker opens and nothing is read. The file shows as uploading for a moment, then ready.
+  function pendAddFile(r) {
+    const have = rfiOf(r.id).files.map((f) => f.name);
+    let i = 1, name = r.file;
+    while (have.indexOf(name) > -1) { i++; name = r.file.replace(/\.pdf$/, "-" + i + ".pdf"); }
+    setRfi(r.id, { files: rfiOf(r.id).files.concat([{ name: name, busy: true }]) });
+    setTimeout(() => setState((s) => {
+      const c = s.rfi[r.id];
+      return c ? { rfi: Object.assign({}, s.rfi, { [r.id]: Object.assign({}, c, { files: c.files.map((f) => (f.name === name ? { name: name, busy: false } : f)) }) }) } : {};
+    }), 1400);
+  }
+  function sendPend() {
+    setState({ screen: "submitted" });
+    showToast("Thanks. We've got it and the checks are running again.");
+  }
+
+  function pendRespondView(r) {
+    const c = rfiOf(r.id);
+    if (r.respond === "upload") {
+      return html`<div class="pend-respond" data-key="resp-${r.id}">
+  ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
+  <button type="button" class="btn btn-outline btn-sm" data-click="${on(() => pendAddFile(r))}">${icon("upload", 15)}${c.files.length ? "Add another file" : r.cta}</button>
+  <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">Add a note for our team<span class="pend-opt"> (optional)</span></label><textarea class="input" id="pend-${r.id}-note" rows="3" placeholder="For example, why a document is missing, or what a file shows" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
+</div>`;
+    }
+    if (r.respond === "fields") {
+      return html`<div class="pend-respond" data-key="resp-${r.id}">${r.fields.map((f) => {
+        const id = "pend-" + r.id + "-" + f.key;
+        const val = pendVal(r, f);
+        const typed = on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { [f.key]: e.target.value }) }));
+        return html`<div class="pend-field" data-key="fld-${id}"><label class="field-label field-label--block" for="${id}">${f.label}${f.req && REQ}</label>${f.area ? html`<textarea class="input" id="${id}" rows="3" placeholder="${f.ph}" data-input="${typed}">${val}</textarea>` : html`<input class="input" id="${id}" value="${val}" placeholder="${f.ph}" autocomplete="off" data-input="${typed}">`}</div>`;
+      })}</div>`;
+    }
+    if (r.respond === "confirm" || r.respond === "cosigner") {
+      return c.done
+        ? html`<div class="pend-respond" data-key="resp-${r.id}"><div class="pend-done">${icon("check", 15, "i-ok")}<span>${r.respond === "cosigner" ? "Co-signer added" : "Marked as done"}</span><button type="button" class="btn-link" data-click="${on(() => setRfi(r.id, { done: false }))}">Undo</button></div></div>`
+        : html`<div class="pend-respond" data-key="resp-${r.id}"><button type="button" class="btn btn-outline btn-sm" data-click="${on(() => { setRfi(r.id, { done: true }); if (r.respond === "cosigner") showToast("Prototype: this would open a form for your co-signer's details."); })}">${icon(r.respond === "cosigner" ? "plus" : "check", 15)}${r.cta}</button></div>`;
+    }
+    return "";
+  }
+
+  // One request: a short title, why we need it, what we'll accept, and how to answer (decision pend-reasons-as-requests).
+  function pendCardView(r) {
+    const done = pendDone(r) && r.respond !== "none";
+    return html`<section class="card card--p20 pend${done ? " is-done" : ""}" data-key="pend-${r.id}">
+  <div class="doc-row">
+    <span class="icon-tile icon-tile--neutral">${icon(r.icon, 17)}</span>
+    <div class="grow">
+      <div class="doc-titlebar"><h2 class="rfi-title">${pendText(r, r.title)}</h2>${done ? html`<span class="state-pill state-pill--done">${icon("check", 14, "i-b")}Done</span>` : html`<span class="req">${PEND_HOW[r.respond]}</span>`}</div>
+      <p class="rfi-body">${pendText(r, r.why)}</p>
+      <div class="pend-accept">
+        <h3 class="pend-h">${r.lead}</h3>
+        <ul class="pend-list">${r.accept.map((t) => html`<li>${pendText(r, t)}</li>`)}</ul>
+        ${r.note && html`<p class="pend-note">${r.note}</p>`}
+      </div>
+      ${pendRespondView(r)}
+    </div>
   </div>
-  <p class="rfi-foot">${icon("check", 14, "i-ok")}Identity, ownership, tax, processing and signature checks are all complete and stay complete.</p>
 </section>`;
+  }
+
+  function rfiView() {
+    const list = pendReasons();
+    const needsSend = list.some((r) => r.respond !== "none");
+    const ready = list.every((r) => pendDone(r));
+    return html`<header data-key="rfi-head">
+  <h1 class="step-title">${pendTitle()}${pin("rfi-not-restart")}</h1>
+  <p class="step-sub">${list.length === 1 ? "You're not back at the start. Fix this item and the checks carry on exactly where they left off, usually within the hour." : "You're not back at the start. Fix these and the checks carry on exactly where they left off, usually within the hour."}</p>
+</header>
+<div class="stack" data-key="rfi-cards">${list.map((r) => pendCardView(r))}</div>
+<div class="rfi-actions" data-key="rfi-actions">
+  <div class="btn-row">
+    <button type="button" class="btn btn-neutral btn-md btn-tight" data-click="${on(() => showToast("Prototype: email isn't simulated."))}">Email us</button>
+    ${needsSend && html`<button type="button" class="btn btn-primary btn-md"${attr("disabled", !ready)} data-click="${on(sendPend)}">Send to our team</button>`}
+  </div>
+  ${needsSend && !ready && html`<p class="pend-hint">Finish each request above to send.</p>`}
+</div>`;
   }
 
   function approvedView(v) {
@@ -3855,6 +4207,10 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Region", "region")}
     ${select("Data", "data")}
     ${select("Link opened as", "link", "check-its-you")}
+    ${(state.screen === "rfi" || ctx.link === LINKS.info) && html`<hr class="proto-rule">
+    <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
+    <div class="proto-pend" data-key="pend-list">${PEND_REASONS.map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
+    ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<label data-key="pend-for"><span class="field-label field-label--block">Request is about</span><select class="input" data-input="${on((e) => setState({ pendFor: Number(e.target.value) }))}">${state.owners.map((o) => html`<option value="${o.id}"${attr("selected", pendPerson().id === o.id)}>${ownerInfo(o).name}</option>`)}</select></label>`}`}
     ${invitesOn() && html`<hr class="proto-rule">
     <div class="proto-sub">Owner links</div>
     ${state.owners.some((o) => o.status === "invited") ? state.owners.filter((o) => o.status === "invited").map((o) => html`<button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => { setState({ protoOpen: false }); previewInvitee(o.id); })}">Sign in as ${ownerInfo(o).name === "New owner" ? o.inviteEmail : ownerInfo(o).name}</button>`) : html`<p class="proto-note">Send an owner an invite in step 2, then sign in as them here.</p>`}
@@ -3993,7 +4349,7 @@ ${protoView()}`;
         : state.screen === "welcome" ? "Business verification"
         : state.screen === "bizType" ? "Your business type"
         : state.screen === "invitee" ? "Owner details"
-        : state.screen === "approved" ? "Approved" : state.screen === "rfi" ? "One thing to fix" : "Under review") + " · Xplor Pay";
+        : state.screen === "approved" ? "Approved" : state.screen === "rfi" ? pendTitle() : "Under review") + " · Xplor Pay";
     }
     // Move focus into the dialog when it opens and back to the opener when it closes.
     if (state.saveOpen && !last.saveOpen) {
