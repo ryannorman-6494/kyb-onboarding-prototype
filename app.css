@@ -287,7 +287,6 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 
 /* ---------- Step 2: owners ---------- */
 .own-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-layout-group); margin-bottom: 6px; }
-.own-ask { margin-top: 14px; }
 .own-total { font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .bar { height: 6px; border-radius: var(--radius-full); background: var(--color-background-neutral-default); margin-bottom: 8px; overflow: hidden; }
 .bar-fill { display: block; height: 6px; background: var(--color-background-brand-default); transition: width 240ms ease; }

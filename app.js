@@ -468,7 +468,7 @@
       "area": "Visual",
       "where": "Step 2 · Owners & signatory",
       "t": "Show whether everyone with 25% or more is listed, not a percentage total",
-      "b": "The step 2 ownership card used to be a bar totalling the percentages entered (2026-09-23). Since only owners with 25% or more are listed, the total no longer tells the applicant what is left to do, so on 2026-10-26 Ryan replaced it. The card now reads Owners with 25% or more, with a small tag showing how many are listed so far, then All listed (green) once everyone is accounted for. See ownership-question for how that is decided.",
+      "b": "The step 2 ownership card used to be a bar totalling the percentages entered (2026-09-23). Since only owners with 25% or more are listed, the total no longer tells the applicant what is left to do, so on 2026-10-26 Ryan replaced it. The card now reads Owners with 25% or more, with a small tag showing how many are listed so far, then All listed (green) once everyone is accounted for. See ownership-no-question for when it shows.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -1769,7 +1769,7 @@
     {
       "id": "clubready-lease-by-division",
       "area": "Flow",
-      "where": "Step 6 · Documents (not built)",
+      "where": "Step 6 · Documents (Division option)",
       "t": "A lease, business licence or utility bill is asked for only for the ClubReady division",
       "b": "ClubReady's request list asks for the club's signed lease, or a business licence or a utility bill in the business name until the lease exists. Ryan says this belongs to ClubReady only, which is a division, and it is not asked of a non-profit. The division is not chosen in this prototype. An Xplor Pay ops user sets it in the admin portal, outside the prototype, while entering the details of the person who will fill in the form. Saving that starts the flow by sending that person the welcome email the prototype opens on (decision welcome-email-first), so the division is already known when the form opens and decides whether step 6 shows the document row. Shown in the prototype only through the Division option in Prototype options (decision division-option): choosing ClubReady opens step 6 with this Required row added, outlined and tagged. The row is left out when the business type is a non-profit, though the sample business is a company, so that case is not visible there.",
       "tradeoff": "The admin portal itself, and what else the division changes (fees, agreement text, descriptor), are not known. The row wording is a draft, not approved copy.",
@@ -1777,7 +1777,7 @@
       "when": "2026-10-26"
     },
     {
-      "id": "owners-25-sign-tbd",
+      "id": "one-owner-signs",
       "area": "Step 2",
       "where": "Step 7 · signing",
       "t": "One owner signs for the business; the other 25% owners do not sign",
@@ -1791,20 +1791,20 @@
       "area": "Step 2",
       "where": "Step 2 · Ownership percentage",
       "t": "Every owner with 25% or more is listed, and nobody under 25% can be",
-      "b": "An ownership percentage below 25 now shows an error (Enter 25 or more. We only need owners with 25% or more.), because owners under 25% are not asked about. A new owner, including from Add myself, starts at the share still unaccounted for, and never below 25. Ryan's reason: every owner at 25% or more must be accounted for (see owners-25-sign-tbd), and anyone below that is of no interest. See ownership-question for how the step knows everyone has been listed.",
+      "b": "An ownership percentage below 25 now shows an error (Enter 25 or more. We only need owners with 25% or more.), because owners under 25% are not asked about. A new owner, including from Add myself, starts at the share still unaccounted for, and never below 25. Ryan's reason: every owner at 25% or more must be accounted for (see one-owner-signs), and anyone below that is of no interest. See ownership-no-question: the step does not ask whether everyone has been listed.",
       "tradeoff": "Starting at the share left can put a number in that is wrong for the person, so a glance at it is still needed. When 25 is the floor and the share left is lower, the new owner starts at 25 and the total goes over 100%, which then shows an error.",
       "by": "Ryan",
       "when": "2026-10-26"
     },
     {
-      "id": "ownership-question",
+      "id": "ownership-no-question",
       "area": "Step 2",
       "where": "Step 2 · Owners with 25% or more",
-      "t": "The ownership card asks Does anyone else own 25% or more?, and shows All listed once the answer is no or the shares pass 75%",
-      "b": "The percentage total and bar are gone. While the shares listed come to 75% or less, the card asks Does anyone else own 25% or more? with Yes and No, unanswered at first. Yes keeps Save and continue blocked with Add the other owners who hold 25% or more. No marks the card complete. Once the shares pass 75%, nobody else can hold 25% or more, so the card is complete without a question. Complete reads All listed in green; before that the card shows how many people are listed so far. Adding or removing a person clears the answer so it is asked again. Company only. Option 1 of three, picked by Ryan on 2026-10-26.",
-      "tradeoff": "A person can answer No when a 25% owner exists, and nothing in the form catches it. The wording and the signature rules that follow (see owners-25-sign-tbd) matter more than the arithmetic did. The question has no starting answer, unlike the other Yes / No questions, because a default of No would let the card pass untouched.",
+      "t": "No question about whether everyone is listed; Save and continue turns on once one owner is added",
+      "b": "The question Does anyone else own 25% or more? is removed (it was added on 2026-10-26 and moved under the owner cards earlier on 2026-10-27). Ryan's reason: the applicant has to add every owner with 25% or more anyway, so asking them to confirm they did adds nothing. Save and continue turns on once at least one owner is added and complete. Every owner must hold 25% or more (decision owner-share-minimum), so one owner added is one owner with 25% or more. The Owners with 25% or more card stays at the top with its N listed so far tag and the note Add everyone who owns 25% or more. It shows All listed only when the shares pass 75%, because then nobody else can hold 25% or more. A total over 100% still errors. Company only.",
+      "tradeoff": "Nothing asks whether a 25% owner is missing, so an applicant can stop at one owner when two exist. The question would not have caught that either, since a No can be untrue, and the signature at step 7 says the information is true. Compliance should confirm the form may rely on the applicant listing every 25% owner.",
       "by": "Ryan",
-      "when": "2026-10-26"
+      "when": "2026-10-27"
     },
     {
       "id": "id-types-accepted",
@@ -1869,9 +1869,9 @@
     {
       "id": "pend-reasons-open",
       "area": "Flow",
-      "where": "More info needed (undecided)",
-      "t": "Questions left open on the pend reasons",
-      "b": "Recorded, not built. (1) Ryan has settled one point: only one of the accepted documents is required, and the lead lines (Any one of these works, Either of these works, Send at least one of these) all mean that. (2) Person-level requests (know your customer, credit freeze, credit security alert, insufficient credit) now name the person. The prototype lets Ops choose which owner in Prototype options; the real admin portal would need the same choice. Credit Security Alert is still shown to the applicant; Ryan said to leave it. (3) Settled: the underwriting guide is the same for the United States and Canada, so no Canadian variants are needed. Needs looking at: the Banking Verification card says routing number, but the Canadian step 4 asks for an institution number and a transit number, so a Canadian applicant sees two different words for the same thing. (4) What Add a co-signer does in the product: the prototype only says a form would open. (5) The email Ops picking reasons would send: TBD, not built, and no sensitive data can go in it (merchant communications FR-06).",
+      "where": "More info needed (open questions)",
+      "t": "Questions still open on the More info needed screen",
+      "b": "Three things are not settled. (1) The email Ops sends when picking reasons is TBD and not built. The screen no longer says what is needed or why, so the email must carry the title, why and what we need for each request, with no sensitive data in it (merchant communications FR-06). (2) What Add a co-signer does in the product: the prototype only says a form would open, and it is Slice 2 only (decision pend-cosigner-slice-2). (3) The Banking Verification card says routing number, but the Canadian step 4 asks for an institution number and a transit number, so a Canadian applicant sees two words for the same thing. Settled and no longer open: only one accepted document is required per reason; the underwriting guide is the same for the United States and Canada, so there are no Canadian variants; Credit Security Alert stays shown to the applicant; person-level requests name the person.",
       "tradeoff": "Until these are answered the screen shows a plausible version, not a settled one.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1890,7 +1890,7 @@
     {
       "id": "club-essentials-financial-history",
       "area": "Flow",
-      "where": "Step 6 · Documents (not built)",
+      "where": "Step 6 · Documents (Division option)",
       "t": "Club Essentials needs two years of financial history uploaded from every applicant",
       "b": "Requirement noted. Club Essentials (CE), another Xplor division alongside ClubReady, needs two years of financial history uploaded as part of onboarding, from anyone applying through that division. Like ClubReady, the division is set by an Xplor Pay ops user in the admin portal before the form opens (decision clubready-lease-by-division), so the form could show the document row from the start. Shown in the prototype only through the Division option in Prototype options (decision division-option): choosing Club Essentials opens step 6 with a Required row, Two years of financial history, outlined and tagged. It is treated as required before submit like every other Required file, and is not skipped for non-profits; both are assumptions.",
       "tradeoff": "Not yet known: which documents count as financial history (statements, tax returns, accounts), whether a start-up with less than two years has another route, whether it applies to non-profits, and whether it is required before submit. The row wording is a draft, not approved copy.",
@@ -2139,8 +2139,6 @@
       einFound: sample,
       lookupId: sample ? "93-4417208" : "",
       openOwner: 1,
-      // Step 2, company only (decision ownership-question): the answer to "Does anyone else own 25% or more?" ("yes", "no" or "" before an answer).
-      moreOwners: "",
       openCards: {},
       revealed: {},
       owners: freshOwners(),
@@ -2399,7 +2397,7 @@
     const a = Object.assign({}, state.a);
     Object.keys(a).forEach((k) => { if (k.indexOf("o" + id + "_") === 0) delete a[k]; });
     const docs = Object.assign({}, state.docs); delete docs["id_" + id];
-    setState({ owners: state.owners.filter((x) => x.id !== id), a: a, docs: docs, openOwner: state.openOwner === id ? 0 : state.openOwner, menuOwner: 0, confirm: null, moreOwners: "" });
+    setState({ owners: state.owners.filter((x) => x.id !== id), a: a, docs: docs, openOwner: state.openOwner === id ? 0 : state.openOwner, menuOwner: 0, confirm: null });
     showToast("Removed " + name + ".");
   }
   // What the person who gets the link sees. Prototype only: the real page is the recipient's own session.
@@ -2589,7 +2587,6 @@
       if (!owners.length) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " before you continue.";
       else if (!isCompany()) { /* ownership percentages only apply to companies */ }
       else if (total > 100) errs.ownership = "Ownership comes to more than 100%. Check each owner's percentage.";
-      else if (total <= 75 && state.moreOwners !== "no" && !state.owners.some((o) => o.status === "invited")) errs.ownership = state.moreOwners === "yes" ? "Add the other owners who hold 25% or more." : "Tell us whether anyone else owns 25% or more.";
     }
     if (step === 6 || step === 7) {
       // An invited owner is not asked for at step 2 (the applicant can carry on), but their details and ID are needed before step 6 and 7 can pass (decision invite-no-exemption).
@@ -3021,19 +3018,14 @@
       lookupNote: isSole() ? "If you have one, we'll use it to fill in what we can. If you don't, you can carry on without it." : ca ? "We'll match it against CRA and provincial registry records and fill in the rest for you." : "We'll match it against IRS and state registry records and fill in the rest for you.",
       lookupAssurance: (ca ? "Your BN" : "Your EIN") + " is protected the moment you submit it. We use it once to verify the " + orgWord() + " and Xplor staff never see it.",
       lookupResult: lookupResultText(st),
-      // The ownership card says whether everyone with 25% or more is listed (decision ownership-question), with no percentage total.
+      // The ownership card shows how many owners are listed, and All listed only once the shares pass 75% (decision ownership-no-question). Nothing asks whether anyone is missing.
       ownersOver100: ownedPct > 100,
-      ownersAllListed: ownedPct <= 100 && owners.length > 0 && (ownedPct > 75 || st.moreOwners === "no"),
-      ownersAskMore: ownedPct <= 75 && owners.length > 0,
+      ownersAllListed: ownedPct > 75 && ownedPct <= 100 && owners.length > 0,
       ownershipNote: ownedPct > 100
         ? "The shares come to more than 100%. Have another look at each owner's percentage."
         : ownedPct > 75
           ? "Everyone who owns 25% or more is listed. Anyone else owns less than 25%, so we don't need them."
-          : st.moreOwners === "no"
-            ? "Everyone who owns 25% or more is listed."
-            : st.moreOwners === "yes"
-              ? "Add the other owners below."
-              : "Add everyone who owns 25% or more.",
+          : "Add everyone who owns 25% or more.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
@@ -3584,24 +3576,22 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   }
 
   function step2View(v) {
-    // A new owner starts at the share still unaccounted for, but never below 25 (decision owner-share-minimum). Adding or removing anyone clears the "anyone else?" answer so it is asked again.
+    // A new owner starts at the share still unaccounted for, but never below 25 (decision owner-share-minimum).
     const shareLeft = () => Math.max(25, 100 - v.owners.reduce((x, o) => x + o.pct, 0));
     const addOwner = () => { const id = Date.now(); setState({
       owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isCompany() ? shareLeft() : 10, role: "Director", status: "pending", self: false, added: true }]),
-      openOwner: id, moreOwners: ""
+      openOwner: id
     }); };
     // "Add myself": the applicant is often the owner too. It fills in what step 1 already gave (email, phone), a sensible title, and the share still unaccounted for (never below 25). Nothing else is guessed, and every field stays editable.
     const addSelf = () => { const id = Date.now(); setState({
       owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isNonprofit() ? 10 : shareLeft(), role: isNonprofit() ? "Director" : "Owner / CEO", status: "pending", self: true, added: true, me: true }]),
-      openOwner: id, moreOwners: ""
+      openOwner: id
     }); };
     const addLabel = isNonprofit() ? (v.owners.length ? "Add another director or trustee" : "Add a director or trustee") : (v.owners.length ? "Add another owner or director" : "Add an owner or director");
     return html`${isCompany() && html`<section class="card" data-key="s2-total">
-  <div class="own-head"><h2 class="card-title" id="own-label">Owners with 25% or more${pin("ownership-bar")}${pin("ownership-question")}</h2>${v.ownersAllListed ? html`<span class="chip chip--secure" role="status">${icon("check", 12, "i-b")}All listed</span>` : html`<span class="chip" role="status">${v.owners.length} listed so far</span>`}</div>
+  <div class="own-head"><h2 class="card-title" id="own-label">Owners with 25% or more${pin("ownership-bar")}</h2>${v.ownersAllListed ? html`<span class="chip chip--secure" role="status">${icon("check", 12, "i-b")}All listed</span>` : html`<span class="chip" role="status">${v.owners.length} listed so far</span>`}</div>
   <p class="small-note">${v.ownershipNote}</p>
-  ${v.ownersAskMore && html`<div class="own-ask" data-key="own-ask"><label class="field-label field-label--block" id="own-more-q">Does anyone else own 25% or more?</label>
-    <div class="yn" role="group" aria-labelledby="own-more-q"><button type="button" class="yn-btn" aria-pressed="${String(state.moreOwners === "yes")}" data-click="${on(() => setState({ moreOwners: "yes" }))}">Yes</button><button type="button" class="yn-btn" aria-pressed="${String(state.moreOwners === "no")}" data-click="${on(() => setState({ moreOwners: "no" }))}">No</button></div></div>`}
-  <div${ERR.ownership ? html` data-error="1"` : ""}>${errView("ownership")}</div>
+  ${v.ownersOver100 && html`<div${ERR.ownership ? html` data-error="1"` : ""}>${errView("ownership")}</div>`}
 </section>`}
 <div class="stack" data-key="s2-owners">
   ${v.owners.map((o) => ownerView(o))}
