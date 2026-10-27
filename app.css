@@ -738,3 +738,11 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 /* Prototype only: marks a document row that exists only for one division (Prototype options > Division). */
 .doc.is-division { outline: 2px dashed #e8590c; outline-offset: 3px; }
 .division-tag { font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: #b4440a; background: #fff1e6; border-radius: var(--radius-default); padding: 2px 8px; }
+
+/* SIMPLE TRIAL: a simple More info card stacks its top row (message box and trash icon) and file row with 20px between them. */
+.simple-doc { display: flex; flex-direction: column; align-items: flex-start; gap: 20px; }
+.simple-doc .pend-field { align-self: stretch; }
+.simple-top { display: flex; align-items: flex-start; gap: 12px; align-self: stretch; }
+.simple-top .pend-field { flex: 1; min-width: 0; }
+.simple-top .icon-btn { padding: 8px; }
+.simple-doc .doc-file { margin-top: 0; }

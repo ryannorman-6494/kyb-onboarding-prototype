@@ -299,6 +299,10 @@
   const DIV_STANDARD = "Standard";
   const DIV_CLUBREADY = "ClubReady";
   const DIV_CE = "Club Essentials";
+  // SIMPLE TRIAL (decision moreinfo-simple-trial): a bare More info needed screen, only uploads and notes. To undo: delete every
+  // line marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END, and the SIMPLE TRIAL rule in app.css. Nothing else depends on it.
+  const MOREINFO_CARDS = "A card for each request"; // SIMPLE TRIAL
+  const MOREINFO_SIMPLE = "Just uploads and notes"; // SIMPLE TRIAL
   // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
   // (demoted to a Prototype option, not deleted) the one-time-code link. The sample business is the Data option, not a start.
   const START_LOGIN = "Merchant: welcome email, then login";
@@ -311,6 +315,7 @@
     const q = new URLSearchParams(location.search);
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
+      moreInfo: q.get("moreinfo") === "cards" ? MOREINFO_CARDS : MOREINFO_SIMPLE, // SIMPLE TRIAL
       division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
@@ -323,6 +328,7 @@
   function writeContext() {
     const q = new URLSearchParams();
     if (ctx.slice === SLICE_2) q.set("slice", "2");
+    if (ctx.moreInfo === MOREINFO_CARDS) q.set("moreinfo", "cards"); // SIMPLE TRIAL
     if (ctx.division === DIV_CLUBREADY) q.set("division", "clubready");
     if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
@@ -346,6 +352,7 @@
   const CONTEXT_OPTIONS = {
     slice: [SLICE_1, SLICE_2],
     division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
+    moreInfo: [MOREINFO_SIMPLE, MOREINFO_CARDS], // SIMPLE TRIAL
     start: [START_LOGIN, START_EXISTING, START_NEW],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
@@ -1949,6 +1956,16 @@
       "tradeoff": "A person who has no document for a document request still cannot finish that card, because only the written-answer cards finish without a file. Ryan has not said whether any upload card should accept a note alone.",
       "by": "Ryan",
       "when": "2026-10-27"
+    },
+    {
+      "id": "moreinfo-simple-trial",
+      "area": "Flow",
+      "where": "More info needed (trial)",
+      "t": "More info needed is only a place to send documents and notes",
+      "b": "The simplest build, now the default (Ryan, after trying it). Prototype options (on the More info needed screen) has a More info needed screen select: Just uploads and notes (the default) or A card for each request (the earlier build, kept for now as a prototype option; address ?moreinfo=cards). The simple screen drops every title, reason and list of what is needed, because the email the applicant receives says what is needed and why. It shows a short heading and sentence, then a card with a Message for our team box (not marked optional, because an applicant may send only a message) above a Choose file button, so an applicant can send a message, a file, or both. An Add a document button below adds another card of the same kind, for as many documents as they have; in the real product it opens the file picker, so in the prototype the new card arrives with its file already uploaded. A card can be removed once there is more than one, with a trash icon in the top right corner of the card on the same line as the message box, which takes the rest of the width. Send to our team is on once any card has a file or a message and nothing is still uploading. The reasons Ops picks are not used. An engineer needs one component: a repeating row of a file and a note. The add button has a plus symbol, and there is no Email us button, so Send to our team is the only action.",
+      "tradeoff": "Nothing on the screen tells the applicant what to send or why, so it depends on the email being clear and to hand. A message alone is enough to send, so an applicant who has nothing to upload (for example a request to update their website, or to remove a credit freeze) can just explain. Nothing checks that the right documents were sent. The earlier card layout stays in the code for now. To remove this screen and go back to the cards, delete the lines marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END in app.js, the SIMPLE TRIAL rule in app.css, and this decision.",
+      "by": "Ryan",
+      "when": "2026-10-27"
     }
   ];
 
@@ -2172,6 +2189,8 @@
       saveEmailErr: "",
       saveEmail: sample ? "finance@riversidepilates.com" : "",
 
+      // SIMPLE TRIAL: the cards on the simple More info screen, { id, name (the file, "" for none), busy, note }. Starts with one empty card.
+      rfiDocs: [{ id: 1, name: "", busy: false, note: "" }],
       a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS)
     };
   }
@@ -4047,7 +4066,53 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 </section>`;
   }
 
+  /* SIMPLE TRIAL:START */
+  // The whole request (what we need and why) is in the email, so this screen is only a place to send files and messages.
+  // Each card has an optional file and an optional message. At least one card needs a file or a message before it can be sent.
+  const simpleUpdate = (id, patch) => setState((s) => ({ rfiDocs: s.rfiDocs.map((d) => (d.id === id ? Object.assign({}, d, patch) : d)) }));
+  // Simulated upload: no picker opens and nothing is read. The file shows as uploading for a moment, then ready.
+  function simpleChooseFile(id) {
+    simpleUpdate(id, { name: "document-" + id + ".pdf", busy: true });
+    setTimeout(() => simpleUpdate(id, { busy: false }), 1400);
+  }
+  // Add a document stands in for choosing a file: the new card arrives with its file already uploading, since the real button
+  // would open the file picker.
+  function simpleAddCard() {
+    const id = state.rfiDocs.reduce((m, d) => Math.max(m, d.id), 0) + 1;
+    setState({ rfiDocs: state.rfiDocs.concat([{ id: id, name: "", busy: false, note: "" }]) });
+    simpleChooseFile(id);
+  }
+  const simpleRemoveCard = (id) => setState((s) => ({ rfiDocs: s.rfiDocs.filter((d) => d.id !== id) }));
+  function rfiSimpleView() {
+    const docs = state.rfiDocs;
+    const ready = docs.every((d) => !d.busy) && docs.some((d) => d.name || d.note.trim());
+    return html`<header data-key="rfi-head">
+  <h1 class="step-title">Send us what we asked for</h1>
+  <p class="step-sub">The email we sent you lists everything we need. Add a file, write a message, or both. If you have more than one document, add another below.</p>
+</header>
+<div class="stack" data-key="rfi-simple-docs">
+  ${docs.map((d) => html`<section class="card card--p20 pend simple-doc${d.name && !d.busy ? " is-done" : ""}" data-key="simple-doc-${d.id}">
+    <div class="simple-top">
+    <div class="pend-field" data-key="simple-note-${d.id}"><label class="field-label field-label--block" for="simple-note-${d.id}">Message for our team</label><textarea class="input" id="simple-note-${d.id}" rows="3" data-input="${on((e) => simpleUpdate(d.id, { note: e.target.value }))}">${d.note}</textarea></div>
+    ${docs.length > 1 && html`<button type="button" class="icon-btn" aria-label="Remove this document" data-click="${on(() => simpleRemoveCard(d.id))}">${icon("trash", 18)}</button>`}
+    </div>
+    <div class="pend-field" data-key="simple-file-${d.id}">${d.name
+      ? html`<div class="doc-file"><span class="doc-file-name">${d.name}</span>${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleUpdate(d.id, { name: "", busy: false }))}">Remove file</button>`}</div>`
+      : html`<button type="button" class="btn btn-outline btn-sm" data-click="${on(() => simpleChooseFile(d.id))}">${icon("upload", 15)}Choose file</button>`}</div>
+  </section>`)}
+  <div><button type="button" class="btn btn-outline btn-sm" data-click="${on(simpleAddCard)}">${icon("plus", 15)}Add a document</button></div>
+</div>
+<div class="rfi-actions" data-key="rfi-actions">
+  <div class="btn-row">
+    <button type="button" class="btn btn-primary btn-md"${attr("disabled", !ready)} data-click="${on(sendPend)}">Send to our team</button>
+  </div>
+  ${!ready && html`<p class="pend-hint">Add a file or write a message to send.</p>`}
+</div>`;
+  }
+  /* SIMPLE TRIAL:END */
+
   function rfiView() {
+    if (ctx.moreInfo === MOREINFO_SIMPLE) return rfiSimpleView(); // SIMPLE TRIAL
     const list = pendReasons();
     const needsSend = list.some((r) => r.respond !== "none");
     const ready = list.every((r) => pendDone(r));
@@ -4278,7 +4343,9 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
     ${select("Link opened as", "link", "check-its-you")}
     ${(state.screen === "rfi" || ctx.link === LINKS.info) && html`<hr class="proto-rule">
+    ${select("More info needed screen", "moreInfo", "moreinfo-simple-trial")}
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
+    ${ctx.moreInfo === MOREINFO_SIMPLE && html`<p class="proto-note">The simple screen ignores Ops picks. Pick the other layout to use them.</p>`}
     <div class="proto-pend" data-key="pend-list">${pendAvailable().map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
     ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<label data-key="pend-for"><span class="field-label field-label--block">Request is about</span><select class="input" data-input="${on((e) => setState({ pendFor: Number(e.target.value) }))}">${state.owners.map((o) => html`<option value="${o.id}"${attr("selected", pendPerson().id === o.id)}>${ownerInfo(o).name}</option>`)}</select></label>`}`}
     ${invitesOn() && html`<hr class="proto-rule">
@@ -4418,7 +4485,7 @@ ${protoView()}`;
         : state.screen === "welcome" ? "Business verification"
         : state.screen === "bizType" ? "Your business type"
         : state.screen === "invitee" ? "Owner details"
-        : state.screen === "approved" ? "Approved" : state.screen === "rfi" ? pendTitle() : "Under review") + " · Xplor Pay";
+        : state.screen === "approved" ? "Approved" : state.screen === "rfi" ? (ctx.moreInfo === MOREINFO_SIMPLE ? "Send us what we asked for" : pendTitle()) : "Under review") + " · Xplor Pay";
     }
     // Move focus into the dialog when it opens and back to the opener when it closes.
     if (state.saveOpen && !last.saveOpen) {
