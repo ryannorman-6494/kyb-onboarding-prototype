@@ -73,6 +73,7 @@
   //   lead     the line above the list of what we accept
   //   accept   the documents or answers that resolve it
   //   note     an optional extra line under the list
+  //   slice    "2" when only the invite build offers the reason (Slice 1 cannot collect a second person's details; decision pend-cosigner-slice-2)
   //   person   true when the request is about one owner; {name} and {first} in the text become that person
   //   respond  how the business answers: "upload", "fields" (write an answer), "confirm", "cosigner" or "none"
   //   cta      the button label (upload, confirm, cosigner)
@@ -167,7 +168,7 @@
       accept: ["There's nothing for you to send", "Our underwriting team will get in touch with {first}"]
     },
     {
-      id: "cosigner", person: true, name: "Insufficient Credit", icon: "user", respond: "cosigner", cta: "Add a co-signer",
+      id: "cosigner", slice: "2", person: true, name: "Insufficient Credit", icon: "user", respond: "cosigner", cta: "Add a co-signer",
       title: "Add a co-signer",
       why: "The credit history we found for {name} isn't enough for us to approve the application, so we need a co-signer.",
       lead: "What we need for your co-signer",
@@ -293,6 +294,11 @@
   // nobody can be invited. Slice 2 is the fuller build, where an owner can be invited to fill in their own details.
   const SLICE_1 = "Slice 1: one person, no invites";
   const SLICE_2 = "Slice 2: invite owners";
+  // Which Xplor division the applicant is onboarding with (decisions division-option, clubready-lease-by-division,
+  // club-essentials-financial-history). In the real product Ops sets it in the admin portal before the form opens.
+  const DIV_STANDARD = "Standard";
+  const DIV_CLUBREADY = "ClubReady";
+  const DIV_CE = "Club Essentials";
   // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
   // (demoted to a Prototype option, not deleted) the one-time-code link. The sample business is the Data option, not a start.
   const START_LOGIN = "Merchant: welcome email, then login";
@@ -305,6 +311,7 @@
     const q = new URLSearchParams(location.search);
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
+      division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
       data: q.get("data") === "sample" ? "Sample business" : "Empty",
@@ -316,6 +323,8 @@
   function writeContext() {
     const q = new URLSearchParams();
     if (ctx.slice === SLICE_2) q.set("slice", "2");
+    if (ctx.division === DIV_CLUBREADY) q.set("division", "clubready");
+    if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
     if (ctx.start === START_NEW) q.set("start", "merchant");
     if (ctx.start === START_EXISTING) q.set("start", "existing");
@@ -331,9 +340,12 @@
   const isCa = () => ctx.region === "Canada";
   // Invites, owner links and hand-offs to someone else exist in slice 2 only.
   const invitesOn = () => ctx.slice === SLICE_2;
+  // A division other than Standard opens the prototype on the one step it changes (step 6) with the sample business filled in.
+  const divisionOn = () => ctx.division !== DIV_STANDARD;
 
   const CONTEXT_OPTIONS = {
     slice: [SLICE_1, SLICE_2],
+    division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
     start: [START_LOGIN, START_EXISTING, START_NEW],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
@@ -1772,8 +1784,8 @@
       "area": "Flow",
       "where": "Step 6 · Documents (not built)",
       "t": "A lease, business licence or utility bill is asked for only for the ClubReady division",
-      "b": "ClubReady's request list asks for the club's signed lease, or a business licence or a utility bill in the business name until the lease exists. Ryan says this belongs to ClubReady only, which is a division, and it is not asked of a non-profit. The division is not chosen in this prototype. An Xplor Pay ops user sets it in the admin portal, outside the prototype, while entering the details of the person who will fill in the form. Saving that starts the flow by sending that person the welcome email the prototype opens on (decision welcome-email-first), so the division is already known when the form opens and decides whether step 6 shows the document row. Not built: the prototype has no division setting and no such row.",
-      "tradeoff": "To show it, the prototype needs a stand-in for the admin portal, for example a Division option in Prototype options (Standard or ClubReady) that adds a conditional Required row to the step 6 list and skips it for non-profits. Ryan has not asked for that yet. The admin portal itself, and what else the division changes (fees, agreement text, descriptor), are not known.",
+      "b": "ClubReady's request list asks for the club's signed lease, or a business licence or a utility bill in the business name until the lease exists. Ryan says this belongs to ClubReady only, which is a division, and it is not asked of a non-profit. The division is not chosen in this prototype. An Xplor Pay ops user sets it in the admin portal, outside the prototype, while entering the details of the person who will fill in the form. Saving that starts the flow by sending that person the welcome email the prototype opens on (decision welcome-email-first), so the division is already known when the form opens and decides whether step 6 shows the document row. Shown in the prototype only through the Division option in Prototype options (decision division-option): choosing ClubReady opens step 6 with this Required row added, outlined and tagged. The row is left out when the business type is a non-profit, though the sample business is a company, so that case is not visible there.",
+      "tradeoff": "The admin portal itself, and what else the division changes (fees, agreement text, descriptor), are not known. The row wording is a draft, not approved copy.",
       "by": "Ryan",
       "when": "2026-10-26"
     },
@@ -1876,6 +1888,57 @@
       "tradeoff": "Until these are answered the screen shows a plausible version, not a settled one.",
       "by": "Ryan",
       "when": "2026-10-26"
+    },
+    {
+      "id": "pend-cosigner-slice-2",
+      "area": "Flow",
+      "where": "More info needed",
+      "slice": "1",
+      "t": "Add a co-signer is Slice 2 only; Slice 1 does not offer Insufficient Credit",
+      "b": "The Insufficient Credit reason asks for a co-signer: a second person whose full legal name, address, date of birth, phone number and Social Security number are collected, and who signs the merchant agreement. Slice 1 is one person with no way to add or invite anyone else, and Ryan does not think Slice 1 can collect another person's details. So the Add a co-signer request belongs to Slice 2 (`?slice=2`). In Slice 1 the reason is not in the Ops picks list in Prototype options, and if Ops had picked only that reason the screen shows the default request instead. In Slice 2 it works as before: the card button only marks the request done and shows a toast that a form would open (fake pend-cosigner).",
+      "tradeoff": "In Slice 1 an applicant whose credit is not enough has no way to resolve it on this screen. Risk ops need to be told this is not in Slice 1 and say what happens instead (for example underwriting contacts the applicant, or the application is declined). The co-signer flow itself (a form here or an invite to the co-signer) is still undecided for Slice 2.",
+      "by": "Ryan",
+      "when": "2026-10-26"
+    },
+    {
+      "id": "club-essentials-financial-history",
+      "area": "Flow",
+      "where": "Step 6 · Documents (not built)",
+      "t": "Club Essentials needs two years of financial history uploaded from every applicant",
+      "b": "Requirement noted. Club Essentials (CE), another Xplor division alongside ClubReady, needs two years of financial history uploaded as part of onboarding, from anyone applying through that division. Like ClubReady, the division is set by an Xplor Pay ops user in the admin portal before the form opens (decision clubready-lease-by-division), so the form could show the document row from the start. Shown in the prototype only through the Division option in Prototype options (decision division-option): choosing Club Essentials opens step 6 with a Required row, Two years of financial history, outlined and tagged. It is treated as required before submit like every other Required file, and is not skipped for non-profits; both are assumptions.",
+      "tradeoff": "Not yet known: which documents count as financial history (statements, tax returns, accounts), whether a start-up with less than two years has another route, whether it applies to non-profits, and whether it is required before submit. The row wording is a draft, not approved copy.",
+      "by": "Ryan",
+      "when": "2026-10-27"
+    },
+    {
+      "id": "nonprofit-includes-government",
+      "area": "Business type",
+      "where": "What type of business are you?",
+      "t": "The third business type covers non-profits and government bodies",
+      "b": "The third option on the business type page is for non-profits and for government bodies. Its description now reads Charitable organizations, foundations, non-governmental organizations and government bodies, so a government body knows it belongs there. The option's label is still Non-profit organization, and the steps still say organization, leaders and supporters, which fit both.",
+      "tradeoff": "A government body may not see itself in the label Non-profit organization, and wording such as Donations and Trustees was written with non-profits in mind. Renaming the label (for example Non-profit or government) and checking the step wording are not done.",
+      "by": "Ryan",
+      "when": "2026-10-27"
+    },
+    {
+      "id": "nonprofit-no-national-id",
+      "area": "Step 2",
+      "where": "Step 2 · Leaders & signatory (non-profit and government route)",
+      "t": "Non-profit and government applicants are not asked for anyone's SSN or SIN",
+      "b": "On the non-profit and government route, the leader cards at step 2 no longer ask for a Social Security Number (Social Insurance Number in Canada). It is not required for these organizations, so the field is gone and nothing waits on it. Company and sole proprietor owners are still asked for it. The Government ID number, ID type, expiry and country, and the photo ID at step 6, are still asked for everyone. On the More info needed screen, the Know your customer card does not offer a Social Security card as an accepted document on this route. The welcome page says in its list of what to have ready that a non-profit or government body does not need the SSN or SIN, and the Why do you need owners note no longer mentions it for this route.",
+      "tradeoff": "The rule is Ryan's; no source document was checked. The Know your customer request on the More info needed screen no longer lists a Social Security card as an accepted document on this route (Ryan, 2026-10-27); the same card still lists it for companies and sole proprietors. Whether the identity check can work without the number is for Trullio and compliance to confirm.",
+      "by": "Ryan",
+      "when": "2026-10-27"
+    },
+    {
+      "id": "division-option",
+      "area": "Flow",
+      "where": "Prototype options · Division",
+      "t": "A Division option shows what changes for ClubReady and Club Essentials",
+      "b": "Prototype options has a Division select: Standard, ClubReady or Club Essentials (address ?division=clubready or ?division=ce). It stands in for the Xplor Pay admin portal, where an Ops user sets the division before the form opens. Choosing a division other than Standard opens step 6 directly, with the sample business filled in, and shows only that step. The row that exists only for that division has a dashed orange outline and a tag (ClubReady only, Club Essentials only). ClubReady adds a Signed lease, business licence or utility bill row; Club Essentials adds a Two years of financial history row. The rest of the flow is not shown and is the same as Standard.",
+      "tradeoff": "It is a stand-in, not the product: the real flow would show the whole form with the division's rows in place, and what else a division changes (fees, agreement text, descriptor) is unknown. The outline and tag are prototype-only marks and would not ship.",
+      "by": "Ryan",
+      "when": "2026-10-27"
     }
   ];
 
@@ -2005,7 +2068,7 @@
 
   // A returning visitor to the emailed link gets a saved business back, so that visit borrows the sample one.
   let restored = false;
-  const isSample = () => ctx.data === "Sample business" || restored;
+  const isSample = () => ctx.data === "Sample business" || restored || divisionOn();
   const isSole = () => state.bizType === "individual";
   const isNonprofit = () => state.bizType === "non-profit";
   // "organization" for a non-profit, "business" for everyone else, for copy that names what is applying.
@@ -2035,8 +2098,8 @@
   function freshState() {
     const sample = isSample();
     return {
-      screen: startScreen(),
-      step: 1,
+      screen: divisionOn() ? "flow" : startScreen(),
+      step: divisionOn() ? 6 : 1,
       // The "Check it's you" screen: which state it is in, the code typed, any message, and wrong tries so far.
       entryMode: entryModeFor(),
       entryCode: "",
@@ -2251,7 +2314,7 @@
   const BIZ_TYPES = [
     { id: "company", label: "Company", desc: "A registered business, such as an LLC, corporation or partnership." },
     { id: "individual", label: "Individual / Sole proprietor", desc: "You are the sole owner of an unincorporated business." },
-    { id: "non-profit", label: "Non-profit organization", desc: "Charitable organizations, foundations and non-governmental organizations." }
+    { id: "non-profit", label: "Non-profit organization", desc: "Charitable organizations, foundations, non-governmental organizations and government bodies." }
   ];
   // Changing your mind wipes what was entered for the old type, so nothing that
   // doesn't apply to the new one is left behind.
@@ -2671,7 +2734,8 @@
       f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "As shown on the document", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: COUNTRIES }),
-      f("natId", ca ? "Social Insurance Number (SIN)" : "Social Security Number (SSN)", "masked", {
+      // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
+      isNonprofit() ? null : f("natId", ca ? "Social Insurance Number (SIN)" : "Social Security Number (SSN)", "masked", {
         sensitive: true,
         placeholder: ca ? "000 000 000" : "000-00-0000",
         why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
@@ -2825,7 +2889,7 @@
   function whyFor(step, ca) {
     return {
       1: { t: "Why are we asking?", b: "Your bank needs to see that the " + orgWord() + " really exists and that its name, number and address all line up. Matching the registry for you speeds up the review.", p: ["Checked against " + (ca ? "CRA and provincial registries" : "IRS and Secretary of State records"), "A match is one less document to dig out", "Your description sets your merchant category for you"] },
-      2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(ca ? "SIN" : "SSN") + " and ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
+      2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
       3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. We check it against the bank letter you add at step 6, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later"] },
       5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal. It means a person reviews your file instead of it going straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
@@ -2857,6 +2921,9 @@
       list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Review it and sign here, or upload your own signed copy.", file: "w9-uploaded.pdf", read: "Read: a W-9 for " + (w9Info().name || "your " + orgWord()) + (w9Info().hasEin ? " · EIN ending " + w9Info().last4 + " — matches step 1" : "") });
     }
     if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf", read: "Read: 3 months, 0.2% chargeback ratio — within limits" });
+    // Division rows (decisions clubready-lease-by-division, club-essentials-financial-history). Wording is a draft, not approved copy.
+    if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business licence or utility bill", requirement: "Required", hint: "Your club's signed lease. If you don't have one yet, a business licence or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf", read: "Read: lease for " + (a.legalName || "your " + orgWord()) });
+    if (ctx.division === DIV_CE) list.push({ key: "finhist", division: DIV_CE, title: "Two years of financial history", requirement: "Required", hint: "Financial history for your " + orgWord() + " covering the last two years.", file: "financial-history.pdf", read: "Read: two years of financial history for " + (a.legalName || "your " + orgWord()) });
     return list;
   }
 
@@ -2922,7 +2989,7 @@
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
       needRegistration: ca ? "Step 1 starts with your CRA business number. If we find a record we'll fill in the rest, so there's less for you to type." : "Step 1 starts with your EIN. If we find a record we'll fill in the rest, so there's less for you to type.",
-      needIds: ca ? "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's licence or passport and a SIN." + (invitesOn() ? " If it's easier, they can fill in their own bit." : "") : "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's license or passport and an SSN." + (invitesOn() ? " If it's easier, they can fill in their own bit." : ""),
+      needIds: ca ? "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's licence or passport and a SIN (a non-profit or government body doesn't need the SIN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : "") : "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's license or passport and an SSN (a non-profit or government body doesn't need the SSN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : ""),
       needBank: ca ? "Your institution, transit and account numbers, plus a void cheque or a bank letter." : "Your routing and account numbers, plus a voided check or a bank letter.",
       shellRailNote: isStatus ? "Submitted — with Trullio" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
       remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
@@ -3570,11 +3637,11 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     else if (s === "done") action = html`<span class="state-pill state-pill--done">${icon("check", 14, "i-b")}Checked</span>`;
     else if (s === "skipped") action = html`<span class="state-pill state-pill--muted">Not needed</span>`;
     else action = html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>${s === "uploading" ? "Uploading" : "Reading it"}</span>`;
-    return html`<article class="card card--p20 doc${cls}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
+    return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3><span class="req">${d.requirement}</span></div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3><span class="req">${d.requirement}</span>${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
       ${d.why && fieldWhyView({ id: "doc_" + d.key, why: d.why })}
       ${errView("doc_" + d.key)}
@@ -3886,7 +3953,12 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 
   // The reasons Ops picked, in catalogue order. What the applicant has answered lives in state.rfi, keyed by reason id:
   // { files: [{ name, busy }], vals: { fieldKey: text }, done: boolean }.
-  const pendReasons = () => PEND_REASONS.filter((r) => ctx.pend.indexOf(r.id) > -1);
+  // Slice 1 does not offer the reasons marked slice "2". If Ops had only picked those, the screen falls back to the default request.
+  const pendAvailable = () => PEND_REASONS.filter((r) => r.slice !== "2" || invitesOn());
+  const pendReasons = () => {
+    const picked = pendAvailable().filter((r) => ctx.pend.indexOf(r.id) > -1);
+    return picked.length ? picked : PEND_REASONS.filter((r) => PEND_DEFAULT.indexOf(r.id) > -1);
+  };
   const rfiOf = (id) => state.rfi[id] || { files: [], vals: {}, done: false };
   const setRfi = (id, patch) => setState((s) => ({ rfi: Object.assign({}, s.rfi, { [id]: Object.assign({ files: [], vals: {}, done: false }, s.rfi[id], patch) }) }));
   // A field shows what was typed; before that, the step 3 answer it checks (the sales numbers), or nothing.
@@ -3970,7 +4042,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
       <p class="rfi-body">${pendText(r, r.why)}</p>
       <div class="pend-accept">
         <h3 class="pend-h">${r.lead}</h3>
-        <ul class="pend-list">${r.accept.map((t) => html`<li>${pendText(r, t)}</li>`)}</ul>
+        <ul class="pend-list">${r.accept.filter((t) => !(r.id === "kyc" && isNonprofit() && /Social Security/.test(t))).map((t) => html`<li>${pendText(r, t)}</li>`)}</ul>
         ${r.note && html`<p class="pend-note">${r.note}</p>`}
       </div>
       ${pendRespondView(r)}
@@ -4195,7 +4267,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       const pick = (e) => {
         setCtx({ [key]: options.indexOf(e.target.value) > -1 ? e.target.value : options[0] });
         if (key === "start") setCtx({ data: ctx.start === START_NEW ? "Empty" : ctx.data });
-        if (key === "data" || key === "link" || key === "start" || key === "slice") { restored = false; resetData(); }
+        if (key === "data" || key === "link" || key === "start" || key === "slice" || key === "division") { restored = false; resetData(); }
       };
       return html`<label><span class="field-label field-label--block">${label}${pinId && pin(pinId)}</span><select class="input" data-input="${on(pick)}">${options.map((op) => html`<option${attr("selected", ctx[key] === op)}>${op}</option>`)}</select></label>`;
     };
@@ -4206,10 +4278,12 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Flow starts as", "start", "start-as-option")}
     ${select("Region", "region")}
     ${select("Data", "data")}
+    ${select("Division", "division", "division-option")}
+    ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
     ${select("Link opened as", "link", "check-its-you")}
     ${(state.screen === "rfi" || ctx.link === LINKS.info) && html`<hr class="proto-rule">
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
-    <div class="proto-pend" data-key="pend-list">${PEND_REASONS.map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
+    <div class="proto-pend" data-key="pend-list">${pendAvailable().map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
     ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<label data-key="pend-for"><span class="field-label field-label--block">Request is about</span><select class="input" data-input="${on((e) => setState({ pendFor: Number(e.target.value) }))}">${state.owners.map((o) => html`<option value="${o.id}"${attr("selected", pendPerson().id === o.id)}>${ownerInfo(o).name}</option>`)}</select></label>`}`}
     ${invitesOn() && html`<hr class="proto-rule">
     <div class="proto-sub">Owner links</div>

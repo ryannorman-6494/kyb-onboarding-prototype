@@ -734,3 +734,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-layout-related); flex-wrap: wrap; }
 .gate-foot { display: block; margin-top: 8px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .invite-note { margin: 12px 0 4px; }
+
+/* Prototype only: marks a document row that exists only for one division (Prototype options > Division). */
+.doc.is-division { outline: 2px dashed #e8590c; outline-offset: 3px; }
+.division-tag { font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: #b4440a; background: #fff1e6; border-radius: var(--radius-default); padding: 2px 8px; }
