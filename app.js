@@ -986,10 +986,10 @@
     {
       "id": "step-6-and-pci-tidy",
       "area": "Flow",
-      "where": "Step 5 PCI question, step 6",
-      "t": "PCI can be answered Unsure, and step 6 loses four pieces of noise",
-      "b": "The “Do you follow the card industry's data security rules (PCI DSS)?” question now has a third answer, Unsure, and the applicant can continue on it; the SAQ type and date fields only appear for Yes, and the review row says “PCI: unsure”. On step 6: the “3 to go” banner at the top is gone (the cards already show what is outstanding); the W-9 card no longer says “We've filled it in from your answers”; a document card keeps its default border once a file has been read, since the Checked badge already says so; and “I'll add this later” is gone, because step 6 is second to last and there is no later. “Text me a link to add it from my phone” stays. The phone note now says the number is the one from step 1, since step 2 no longer asks for the applicant's own number.",
-      "tradeoff": "Unsure is a real answer that underwriting will see, so someone has to decide what follows from it (a call, an assisted questionnaire, a limit on card-not-present volume): ops question 21. With “later” gone, a merchant without a file has only the phone link, which is a simulated stub, or has to stop.",
+      "where": "Step 6",
+      "t": "Step 6 loses four pieces of noise",
+      "b": "On step 6: the “3 to go” banner at the top is gone (the cards already show what is outstanding); the W-9 card no longer says “We've filled it in from your answers”; a document card keeps its default border once a file has been read, since the Checked badge already says so; and “I'll add this later” is gone, because step 6 is second to last and there is no later. “Text me a link to add it from my phone” stays. The phone note now says the number is the one from step 1, since step 2 no longer asks for the applicant's own number.",
+      "tradeoff": "With “later” gone, a merchant without a file has only the phone link, which is a simulated stub, or has to stop.",
       "by": "Ryan",
       "when": "2026-10-06"
     },
@@ -1135,16 +1135,6 @@
       "when": "2026-10-07"
     },
     {
-      "id": "pci-followups-optional",
-      "area": "Flow",
-      "where": "Step 5 · Card data security",
-      "t": "The PCI follow-up questions are optional",
-      "b": "Answering Yes to the PCI question still reveals “Which security questionnaire do you fill in (SAQ type)?” and “When did you last complete it?”, but both now carry the Optional tag. They first said to skip them if you only use Xplor Pay, because the form was filled in for you; that reason no longer holds (decision pci-merchant-completes), and they stay optional only so a business that has not completed the form yet can carry on. Making them optional also removed the invented date that a persona typed to get past a required field. A date that is typed is still checked.",
-      "tradeoff": "Whether Xplor needs these answers at all is not known; this keeps the fields so nothing is lost if it does, but lets an applicant skip them. If ops confirms they are never needed, hiding them is the next step. The fields still appear after the click, so the layout still jumps (known, handover item 4).",
-      "by": "Ryan",
-      "when": "2026-10-07"
-    },
-    {
       "id": "confirmation-id-status",
       "area": "Status",
       "where": "Confirmation screen · the ID tile and the timeline note",
@@ -1211,16 +1201,6 @@
       "t": "The approved page says the application is approved, not that payments are live",
       "b": "The heading and the line under it now say the application has been approved and point to what can be set up next: inviting the team and ordering card readers. They no longer say the account is live or that a card payment can be taken right now, because that is not strictly true yet.",
       "tradeoff": "The Take a test payment and Open payments dashboard buttons, the “First payout: next business day” figure and the line “These need a live account” still imply the account works. They are left until it is decided what is true at the moment of approval.",
-      "by": "Ryan",
-      "when": "2026-10-07"
-    },
-    {
-      "id": "pci-hints-trimmed",
-      "area": "Step 5",
-      "where": "Step 5 · Card data security",
-      "t": "Two lines of PCI helper text removed",
-      "b": "The PCI question’s hint no longer ends “Not sure? Choose Unsure and carry on.”, and the SAQ hint no longer opens “Only needed if you also take cards outside Xplor Pay.” The Unsure option stays on the question and the SAQ fields stay optional.",
-      "tradeoff": "An applicant who is not sure has to notice the Unsure choice for themselves, and the SAQ hint now only says what to do if you use Xplor Pay alone, not who the fields are for.",
       "by": "Ryan",
       "when": "2026-10-07"
     },
@@ -1459,8 +1439,8 @@
       "area": "Fields",
       "where": "Every Yes / No control; step 6 uploaded files",
       "t": "Every Yes / No starts on the most common answer, Yes first, and uploads lose the green read-back",
-      "b": "Every Yes / No control now has Yes on the left and starts on the most common answer, so most applicants only change one when it does not apply. Step 3: recurring billing or subscriptions Yes; free trial or deferred billing No; payments on behalf of other businesses No; selling outside the country No; accepted card payments before No. Step 5: legal proceedings No, a terminated merchant account No, tax liens or judgments No, money service business No, and the card industry security rules (PCI DSS) Yes, since the hint says that is the answer for anyone using only Xplor Pay. Earlier calls stay: operate at the same address Yes, signing it yourself Yes, politically exposed person No. The green read-back line that appeared under an uploaded file on step 6 (Read: name, matches step 2) is removed; the file name and Replace stay.",
-      "tradeoff": "Pre-answered compliance declarations (legal proceedings, terminations, tax liens, money service business) can be passed over without being read, and a wrong No is a false declaration. Ops or compliance should decide whether those four should start blank. The recurring billing Yes and the prior-card No fit the clubs and studios Xplor sells to but not every merchant, and Yes on PCI shows the optional questionnaire fields straight away. Without the read-back the applicant no longer sees what the system took from the file, so a wrong read goes unnoticed.",
+      "b": "Every Yes / No control now has Yes on the left and starts on the most common answer, so most applicants only change one when it does not apply. Step 3: recurring billing or subscriptions Yes; free trial or deferred billing No; payments on behalf of other businesses No; selling outside the country No; accepted card payments before No. Step 5: legal proceedings No, a terminated merchant account No, tax liens or judgments No, and money service business No. Earlier calls stay: operate at the same address Yes, signing it yourself Yes, politically exposed person No. The green read-back line that appeared under an uploaded file on step 6 (Read: name, matches step 2) is removed; the file name and Replace stay.",
+      "tradeoff": "Pre-answered compliance declarations (legal proceedings, terminations, tax liens, money service business) can be passed over without being read, and a wrong No is a false declaration. Ops or compliance should decide whether those four should start blank. The recurring billing Yes and the prior-card No fit the clubs and studios Xplor sells to but not every merchant. Without the read-back the applicant no longer sees what the system took from the file, so a wrong read goes unnoticed.",
       "by": "Ryan",
       "when": "2026-10-21"
     },
@@ -1727,14 +1707,14 @@
       "when": "2026-10-22"
     },
     {
-      "id": "pci-merchant-completes",
-      "area": "Copy",
-      "where": "Step 5 · Card data security",
-      "t": "The PCI form is the merchant's to complete, and step 5 no longer says Xplor Pay fills it in",
-      "b": "Xplor Pay does not fill in a merchant's PCI form for them; the merchant completes it themselves. Step 5 said the opposite in three places, so each is corrected. The hint under the PCI question was If you only take payments through Xplor Pay, the answer is yes. We look after the card data.; it now says You complete your PCI form yourself. We don't fill it in for you. The SAQ type hint no longer says to skip it because we fill the form in; it says it is the form you complete yourself, and keeps Not sure? Pick the first option. The date hint no longer says to skip it if you only use Xplor Pay; it says to leave it blank if you haven't completed it yet. The note under the card has the same fix: it still says card data never touches the merchant's systems and the yearly form is the short one, but ends You complete it yourself; we don't fill it in for you. The SAQ type and date stay optional, now so that a business that has not completed the form yet can carry on.",
-      "tradeoff": "That Xplor Pay does not fill it in is from Ryan, not from a document. The claims left in the note, that card data never touches the merchant's systems and that the form is the short one, were already unverified and are now doing more work, because they are the only reassurance left; ops or compliance should confirm them. The question still starts on Yes (decision yn-common-defaults), which pre-answers a declaration the merchant now has to back up themselves. Whether the merchant should be asked to complete the form before approval, at approval or later in ODIN is not decided.",
+      "id": "pci-outside-onboarding",
+      "area": "Step 5",
+      "where": "Step 5 · Card data security (removed)",
+      "t": "PCI is not part of onboarding: the Card data security section is removed",
+      "b": "Step 5 no longer has the Card data security card. It asked whether the business follows the card industry's data security rules (PCI DSS), then for the SAQ type and the date it last completed the form. None of that is needed to onboard: PCI validation is not mandatory to get approved, and Xplor Pay sends each merchant a separate link, outside onboarding, to register their PCI details themselves (the 90-day deadline was Ryan's first answer; the separate link is from Stacey). Many merchants are not PCI compliant yet and the section risked becoming a blocker. The questions, the Unsure answer, the SAQ and date fields, the note under the card and the PCI line on the review screen are gone, and step 5 now ends with the two consents. The merchant is never told in this flow that PCI exists.",
+      "tradeoff": "The applicant hears nothing about PCI until the separate link arrives, so that email carries the whole explanation, including the deadline if there is one. The 90 days after onboarding comes from Ryan, not a document, and Stacey's confirmation of the separate link is relayed, not sourced; compliance should confirm both before launch. Underwriting no longer sees whether a business says it is compliant. The earlier decisions about PCI wording, optional fields and the Unsure answer were removed with the section.",
       "by": "Ryan",
-      "when": "2026-10-22"
+      "when": "2026-10-27"
     },
     {
       "id": "returning-login-only",
@@ -1799,12 +1779,12 @@
     {
       "id": "owners-25-sign-tbd",
       "area": "Step 2",
-      "where": "Step 7 · signing (undecided)",
-      "t": "Whether every owner with 25% or more must sign is undecided",
-      "b": "ClubReady's request says each owner with 25% or more must sign the sub-merchant application. The prototype has only the business contact sign at step 7 (decision invitee-own-card-only, and Slice 1 has no invites). Ryan is waiting on an answer, so nothing changes yet. One more thing to check: the 75% rule lists owners until three quarters is accounted for, which may miss a 25% owner.",
-      "tradeoff": "If every 25% owner must sign, Slice 1 (one person, no invites) cannot do it, and step 7 needs a signature per owner, which the invite-era decisions ruled out.",
+      "where": "Step 7 · signing",
+      "t": "One owner signs for the business; the other 25% owners do not sign",
+      "b": "ClubReady's request says each owner with 25% or more must sign the sub-merchant application. Ryan has decided that only one owner needs to sign, so the prototype keeps what it already does: the person filling in the form signs once at step 7 (decision invitee-own-card-only, and Slice 1 has no invites). No change to the flow. The 75% rule still lists owners until three quarters is accounted for, which may miss a 25% owner; that is about who is listed, not who signs.",
+      "tradeoff": "Xplor Pay takes one signature where ClubReady's own request asks for one from every 25% owner. If compliance or the ClubReady division later says otherwise, Slice 1 (one person, no invites) cannot collect more, and step 7 would need a signature per owner, which the invite-era decisions ruled out. The answer is Ryan's; no source document.",
       "by": "Ryan",
-      "when": "2026-10-26"
+      "when": "2026-10-27"
     },
     {
       "id": "owner-share-minimum",
@@ -2010,7 +1990,6 @@
     institution: "", transit: "",
     legalProceedings: "no", legalProceedingsWhy: "", priorTermination: "no", priorTerminationWhy: "",
     taxLiens: "no", taxLiensWhy: "", msb: "no",
-    pci: "yes", saq: "", pciDate: "",
     matchConsent: false, ofacAck: false,
     acceptAgreement: false, acceptPrivacy: false, acceptEsign: false,
     signAuthority: false
@@ -2041,7 +2020,6 @@
     accountType: "Business checking", routing: "323075880",
     accountNumber: "1234 5678 4417", institution: "003", transit: "00172",
     legalProceedings: "no", priorTermination: "no", taxLiens: "no", msb: "no",
-    pci: "yes", saq: "SAQ A (payments fully outsourced)", pciDate: "02 / 03 / 2026",
     matchConsent: true, ofacAck: true
   });
 
@@ -2472,7 +2450,7 @@
 
   // Dates are typed as digits and laid out as they go in, in the region's order, so the slashes are never the applicant's job.
   // "3/5/1990" is read as 03 / 05 / 1990 rather than as digits 351990.
-  const DATE_KEYS = ["dob", "idExpiry", "incorporated", "pciDate"];
+  const DATE_KEYS = ["dob", "idExpiry", "incorporated"];
   const isDateKey = (id) => DATE_KEYS.indexOf(String(id).replace(/^o\d+_/, "")) > -1;
   function formatDateInput(raw) {
     let t = String(raw);
@@ -2891,11 +2869,6 @@
           a.taxLiens === "yes" ? fld("taxLiensWhy", "Amount and current status", "long", { span: true, conditional: true, placeholder: "How much, and where it stands now." }) : null,
           ca ? null : fld("msb", "Are you a money service business?", "yn", { span: true, hint: "Check cashing, money transfer, currency exchange or crypto. Most businesses aren't." })
         ], { pinId: "yes-is-not-no" }),
-        card("s5-pci", "Card data security", "", [
-          fld("pci", "Do you follow the card industry's data security rules (PCI DSS)?", "yn", { span: true, unsure: true, hint: "You complete your PCI form yourself. We don't fill it in for you." }),
-          a.pci === "yes" ? fld("saq", "Which security questionnaire do you fill in (SAQ type)?", "select", { conditional: true, optional: true, hint: "The form you complete yourself. Not sure? Pick the first option.", placeholder: "Choose an SAQ type", options: ["SAQ A (payments fully outsourced)", "SAQ A-EP", "SAQ B", "SAQ B-IP", "SAQ C", "SAQ D"] }) : null,
-          a.pci === "yes" ? fld("pciDate", "When did you last complete it?", "mono", { conditional: true, optional: true, hint: "Leave this blank if you haven't completed it yet.", placeholder: datePh() }) : null
-        ], { pinId: "assurance-callouts", assurance: "Card data never touches your systems, so your yearly PCI form is the short one. You complete it yourself; we don't fill it in for you." }),
         card("s5-consent", "Two consents we have to collect", "", [
           fld("matchConsent", "I agree to a check of the card networks' list of closed merchant accounts", "check", { span: true, hint: "Also called a MATCH or TMF check. Mastercard requires it for every merchant account." }),
           ca ? null : fld("ofacAck", "I understand we'll check your name against the US government sanctions list", "check", { span: true, hint: "Known as OFAC screening. Every US merchant goes through it." })
@@ -3072,7 +3045,7 @@
         { label: isNonprofit() ? "Leaders & signatory" : "Owners & signatory", parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
         { label: "How you take payments", parts: [a.monthlyVolume && "$" + fmtMoney(a.monthlyVolume) + "/mo", a.avgTicket && "avg $" + fmtMoney(a.avgTicket), a.cpSplit && a.cpSplit + "% card present", a.goods && a.goods.toLowerCase()], step: 3 },
         { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase(), a.accountNumber && (doc("bank").state === "done" ? "bank document checked" : "bank document still to add")], step: 4 },
-        { label: "Compliance declarations", parts: [declarationsSummary(a, ca), a.saq && "PCI " + a.saq, a.pci === "unsure" && "PCI: unsure", (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
+        { label: "Compliance declarations", parts: [declarationsSummary(a, ca), (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
         { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " checked"]; })(), step: 6 }
       ].map((r) => {
         const done = r.parts.filter(Boolean);
