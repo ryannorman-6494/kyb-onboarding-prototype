@@ -664,9 +664,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 /* ---------- Check it's you ---------- */
 .entry-card { max-width: 480px; }
-.entry-code { max-width: 220px; height: 48px; font-family: var(--font-mono); font-size: var(--type-section-header-size); letter-spacing: 0.3em; }
 .entry-actions { display: flex; align-items: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
-.entry-proto { margin-top: 14px; }
 
 /* Back sits on a white fill, like Get help. */
 .btn-neutral.back-btn { background: var(--color-background-surface-raised-1); }

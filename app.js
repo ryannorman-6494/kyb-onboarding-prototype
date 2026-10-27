@@ -11,9 +11,9 @@
  *   ?region=ca      Canada instead of the United States
  *   ?why=0          hide the "why we ask" panel
  *   ?slice=2        slice 2 (invite owners); no parameter means slice 1 (one person, no invites)
- *   ?start=         where the flow starts: (none) login | existing | merchant (one-time code)
+ *   ?start=         where the flow starts: (none) new Odin user | existing (existing Odin user, new business)
  *   ?data=sample    fill the form with the sample business
- *   ?link=          how the emailed link opens: returning | review | info | approved | expired | closed
+ *   ?link=          how the emailed link opens: returning | review | info | approved
  *
  * Security: nothing leaves the page. There are no network calls (the CSP in
  * index.html blocks them as well), nothing is written to storage or cookies,
@@ -285,9 +285,7 @@
     returning: "Returning, in progress",
     review: "Returning, under review",
     info: "Returning, more info needed",
-    approved: "Returning, approved",
-    expired: "Expired link",
-    closed: "Closed link"
+    approved: "Returning, approved"
   };
   const LINK_NEW = "New applicant";
   // Which slice of the product is shown (decision slices-option). Slice 1 is the default: one person fills in everything and
@@ -303,11 +301,10 @@
   // line marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END, and the SIMPLE TRIAL rule in app.css. Nothing else depends on it.
   const MOREINFO_CARDS = "A card for each request"; // SIMPLE TRIAL
   const MOREINFO_SIMPLE = "Just uploads and notes"; // SIMPLE TRIAL
-  // Where the whole prototype starts (decision login-default-start): the merchant's password login by default, or
-  // (demoted to a Prototype option, not deleted) the one-time-code link. The sample business is the Data option, not a start.
-  const START_LOGIN = "Merchant: welcome email, then login";
-  const START_NEW = "Merchant: one-time code (email link)";
-  const START_EXISTING = "Existing user: new business email, then choose business";
+  // Where the whole prototype starts (decision login-default-start): the welcome email and login for a new Odin user by default,
+  // or the existing-user email and business picker. The sample business is the Fields start as option, not a start.
+  const START_LOGIN = "New Odin User";
+  const START_EXISTING = "Existing Odin user: New business";
 
   // Only whitelisted values are read from the URL, so query-string input
   // never reaches the markup or the state.
@@ -318,7 +315,7 @@
       moreInfo: q.get("moreinfo") === "cards" ? MOREINFO_CARDS : MOREINFO_SIMPLE, // SIMPLE TRIAL
       division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
-      start: q.get("start") === "merchant" ? START_NEW : q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
+      start: q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
       data: q.get("data") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW,
@@ -332,7 +329,6 @@
     if (ctx.division === DIV_CLUBREADY) q.set("division", "clubready");
     if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
-    if (ctx.start === START_NEW) q.set("start", "merchant");
     if (ctx.start === START_EXISTING) q.set("start", "existing");
     if (ctx.data === "Sample business") q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
@@ -353,7 +349,7 @@
     slice: [SLICE_1, SLICE_2],
     division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
     moreInfo: [MOREINFO_SIMPLE, MOREINFO_CARDS], // SIMPLE TRIAL
-    start: [START_LOGIN, START_EXISTING, START_NEW],
+    start: [START_LOGIN, START_EXISTING],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
     link: [LINK_NEW].concat(Object.keys(LINKS).map((k) => LINKS[k]))
@@ -1155,16 +1151,6 @@
       "when": "2026-10-07"
     },
     {
-      "id": "check-its-you",
-      "area": "Trust",
-      "where": "Before the welcome page",
-      "t": "Ask for a one-time code before anything is shown",
-      "b": "The emailed link alone does not open the application. The first screen shows a masked email address and a Send code button, then a box for the 6-digit code, with a way to send a new one, a message for a wrong code, and a pause after three wrong tries. An expired link and a closed link each get a plain page that says who to call. The country is already known when the page opens, so nobody is asked for it.",
-      "tradeoff": "The code length, the lack of a wait before a new code, the number of tries and who to call on an expired link are guesses, not facts from the spike. A person sent to the wrong address by a typo can only see the masked email and call us.",
-      "by": "Ryan",
-      "when": "2026-10-07"
-    },
-    {
       "id": "reopen-lands-on-status",
       "area": "Status",
       "where": "Reopened link",
@@ -1721,7 +1707,7 @@
       "area": "Flow",
       "where": "Sign-in, when Link opened as is one of the Returning options",
       "t": "A returning user just signs in: no welcome email and no forced password change",
-      "b": "When Link opened as is Returning, in progress, Returning, under review, Returning, more info needed or Returning, approved, the prototype opens on the sign-in screen, not the welcome email, because that email carries a temporary password for a first sign-in. The sign-in screen asks for the email and password, its button reads Sign in instead of Continue, its description says Sign in to pick up where you left off, and an empty password says Enter your password. Signing in goes straight to wherever the link lands (step 4, Under review, More info needed or Approved); the Change your password screen is skipped, because a returning user chose their own password the first time. A new applicant, the existing-user start and the one-time-code start are unchanged. The expired and closed links are not returning options and behave as before.",
+      "b": "When Link opened as is Returning, in progress, Returning, under review, Returning, more info needed or Returning, approved, the prototype opens on the sign-in screen, not the welcome email, because that email carries a temporary password for a first sign-in. The sign-in screen asks for the email and password, its button reads Sign in instead of Continue, its description says Sign in to pick up where you left off, and an empty password says Enter your password. Signing in goes straight to wherever the link lands (step 4, Under review, More info needed or Approved); the Change your password screen is skipped, because a returning user chose their own password the first time. A new applicant and the existing-user start are unchanged.",
       "tradeoff": "Skipping the email for a returning user is an inference from the temporary password it contains: the prototype does not show how a returning user reaches the sign-in page (a bookmark, an email link or the ODIN address). Any email and password still sign in, as before.",
       "by": "Ryan",
       "when": "2026-10-23"
@@ -2091,25 +2077,18 @@
       : [];
   }
 
-  // Every prototype starts at the "Check it's you" code screen, whatever state the link is in.
   // Anyone opening the link as one of the Returning options has been in before: they have already set a password (decision returning-login-only).
   const isReturning = () => [LINKS.returning, LINKS.review, LINKS.info, LINKS.approved].indexOf(ctx.link) > -1;
   function startScreen() {
     if (ctx.start === START_LOGIN && isReturning()) return "login";
-    return ctx.start === START_LOGIN || ctx.start === START_EXISTING ? "email" : "entry";
+    return "email";
   }
-  function entryModeFor() { return ctx.link === LINKS.expired ? "expired" : ctx.link === LINKS.closed ? "closed" : "send"; }
 
   function freshState() {
     const sample = isSample();
     return {
       screen: divisionOn() ? "flow" : startScreen(),
       step: divisionOn() ? 6 : 1,
-      // The "Check it's you" screen: which state it is in, the code typed, any message, and wrong tries so far.
-      entryMode: entryModeFor(),
-      entryCode: "",
-      entryErr: "",
-      entryTries: 0,
       // The login screen (decision login-default-start): which stage ("credentials" or "change"), the typed values, and any error.
       loginStage: "credentials",
       loginEmail: "",
@@ -2246,21 +2225,7 @@
   }
   const go = (screen, step) => setState({ screen, step: step || state.step, saveOpen: false });
 
-  // "Check it's you" (decision 90). Nothing is emailed: any six digits open the link, except 000000, which is refused so the
-  // wrong-code and too-many-tries states can be seen. Three wrong codes pause the link.
-  const maskedEmail = () => { return "d•••@riversidepilates.example"; };
-  const sendCode = (again) => { setState({ entryMode: "code", entryCode: "", entryErr: "", entryTries: 0 }); showToast(again ? "New code sent" : "Code sent"); };
-  function submitCode() {
-    const digits = state.entryCode.replace(/\D/g, "");
-    if (digits.length !== 6) { setState({ entryErr: "Enter the 6-digit code from the email." }); return; }
-    if (digits === "000000") {
-      const tries = state.entryTries + 1;
-      setState(tries >= 3 ? { entryMode: "locked", entryTries: tries, entryErr: "" } : { entryTries: tries, entryErr: "That code didn't work. Check the email and try again." });
-      return;
-    }
-    openLink();
-  }
-  // Where the link lands once the code is right (decision 91): the welcome page for someone new, otherwise wherever the
+  // Where the link lands once the applicant has signed in (decision 91): the welcome page for someone new, otherwise wherever the
   // application has got to. A returning visit loads the saved sample business.
   function openLink() {
     if (ctx.link === LINK_NEW) { setState({ screen: "welcome" }); return; }
@@ -2934,8 +2899,7 @@
     const isFlow = st.screen === "flow";
     const isWelcome = st.screen === "welcome";
     const isBizType = st.screen === "bizType";
-    const isEntry = st.screen === "entry";
-    const isStatus = ["submitted", "rfi", "approved"].indexOf(st.screen) > -1;
+      const isStatus = ["submitted", "rfi", "approved"].indexOf(st.screen) > -1;
     const cur = STEPS[st.step - 1];
     const progStep = st.editing ? 7 : st.step;
     const pct = isStatus ? 100 : Math.round(((progStep - 1) / 7) * 100);
@@ -2980,7 +2944,7 @@
     const signedNow = !!signatoryName.trim() && sigNorm(st.sign) === sigNorm(signatoryName);
 
     return {
-      ca, isWelcome, isBizType, isEntry, isFlow, isStatus, cur, pct, owners, cards, docList,
+      ca, isWelcome, isBizType, isFlow, isStatus, cur, pct, owners, cards, docList,
       isInvitee: st.screen === "invitee",
       inviteDocs: docListFor(owners, ca, true).filter((d) => d.key === "id_" + st.inviteOwner),
       invitedOwners: invitedLeft,
@@ -3422,49 +3386,6 @@
           </div>
         </div>
       </form>
-    </div>
-  </div>`;
-    }
-
-    // Before the welcome page: the emailed link alone does not open the application (decisions 89 to 91).
-    function entryView() {
-      const mode = state.entryMode;
-      const helpLine = (q) => html`<p class="welcome-help">${icon("help", 15, "i-accent")}<span><span class="welcome-help-q">${q}</span> <span class="welcome-help-detail">Call <span class="mono">${SUPPORT_PHONE}</span>, ${SUPPORT_HOURS}.</span></span></p>`;
-      const contact = html`<ul class="help-list">
-        <li><span class="help-label">Call us</span><span class="help-value mono">${SUPPORT_PHONE}</span><span class="help-note">${SUPPORT_HOURS}</span></li>
-        <li><span class="help-label">Email</span><span class="help-value">support@xplorpay.example</span><span class="help-note">We reply within one business day</span></li>
-      </ul>`;
-      const dead = (ic, tagText, title, lede) => html`<div class="welcome" data-key="entry-${mode}">
-    <div class="welcome-inner">
-      <span class="tag tag--purple">${icon(ic, 13)}${tagText}</span>
-      <h1 class="welcome-title">${title}${pin("check-its-you")}</h1>
-      <p class="welcome-lede">${lede}</p>
-      <section class="card entry-card">${contact}</section>
-    </div>
-  </div>`;
-      if (mode === "expired") return dead("clock", "Link expired", "This link has expired", "Links stop working after a while, so only the right person can open your application. Your answers are still saved. Call us and we'll send a fresh link.");
-      if (mode === "closed") return dead("lock", "Link closed", "This link has been closed", "If you weren't expecting that, call us and we'll help.");
-      if (mode === "locked") return dead("lock", "Paused", "Too many tries", "We've paused this link to keep your application safe. Call us and we'll get you back in.");
-      const sent = mode === "code";
-      return html`<div class="welcome" data-key="entry-${mode}">
-    <div class="welcome-inner">
-      <span class="tag tag--purple">${icon("lock", 13)}Secure link</span>
-      <h1 class="welcome-title">Let's check it's you${pin("check-its-you")}</h1>
-      <p class="welcome-lede">${sent ? "We've sent a one-time code to " + maskedEmail() + ". It can take a minute to arrive." : "We'll send a one-time code to the email this link came to. It means anyone else who gets hold of the link can't open your application."}</p>
-      ${sent ? html`<form class="card entry-card" data-submit="${on(submitCode)}"${state.entryErr ? html` data-error="1"` : ""}>
-        <label class="field-label field-label--block" for="entry-code">Enter the 6-digit code</label>
-        <input class="input entry-code" id="entry-code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" spellcheck="false" value="${state.entryCode}" data-input="${on((e) => setState({ entryCode: e.target.value.replace(/\D/g, "").slice(0, 6), entryErr: "" }))}">
-        ${state.entryErr && html`<p class="field-error" role="alert">${state.entryErr}</p>`}
-        <div class="entry-actions">
-          <button type="submit" class="btn btn-primary btn-lg">Continue${icon("arrow-r", 19)}</button>
-          <button type="button" class="btn btn-ghost btn-md" data-click="${on(() => sendCode(true))}">Send a new code</button>
-        </div>
-        <p class="small-note entry-proto">Prototype: any 6 digits work. 000000 is refused.</p>
-      </form>` : html`<section class="card entry-card">
-        <div class="card-head card-head--flush"><span class="icon-tile">${icon("mail", 18)}</span><div class="grow"><div class="card-title">We'll send a code to</div><div class="card-note mono">${maskedEmail()}</div></div></div>
-        <div class="entry-actions"><button type="button" class="btn btn-primary btn-lg" data-click="${on(() => sendCode(false))}">Send code${icon("arrow-r", 19)}</button></div>
-      </section>`}
-      ${helpLine(sent ? "Not getting the code?" : "Not your email address?")}
     </div>
   </div>`;
     }
@@ -4290,7 +4211,6 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       const options = CONTEXT_OPTIONS[key];
       const pick = (e) => {
         setCtx({ [key]: options.indexOf(e.target.value) > -1 ? e.target.value : options[0] });
-        if (key === "start") setCtx({ data: ctx.start === START_NEW ? "Empty" : ctx.data });
         if (key === "data" || key === "link" || key === "start" || key === "slice" || key === "division") { restored = false; resetData(); }
       };
       return html`<label><span class="field-label field-label--block">${label}${pinId && pin(pinId)}</span><select class="input" data-input="${on(pick)}">${options.map((op) => html`<option${attr("selected", ctx[key] === op)}>${op}</option>`)}</select></label>`;
@@ -4301,10 +4221,10 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Slice", "slice", "slices-option")}
     ${select("Flow starts as", "start", "start-as-option")}
     ${select("Region", "region")}
-    ${select("Data", "data")}
+    ${select("Fields start as", "data")}
     ${select("Division", "division", "division-option")}
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
-    ${select("Link opened as", "link", "check-its-you")}
+    ${select("Link opened as", "link")}
     ${(state.screen === "rfi" || ctx.link === LINKS.info) && html`<hr class="proto-rule">
     ${select("More info needed screen", "moreInfo", "moreinfo-simple-trial")}
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
@@ -4331,7 +4251,6 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       ${state.screen === "email" && emailView()}
       ${state.screen === "pickBusiness" && pickBusinessView()}
       ${state.screen === "login" && loginView()}
-      ${v.isEntry && entryView()}
       ${v.isWelcome && welcomeView(v)}
       ${v.isBizType && bizTypeView()}
       ${v.isFlow && flowView(v)}
@@ -4444,7 +4363,6 @@ ${protoView()}`;
         : state.screen === "email" ? (ctx.start === START_EXISTING ? "Your Xplor Pay application is ready to start" : "Welcome to Xplor Pay: your sign-in details")
         : state.screen === "pickBusiness" ? "Choose a business"
         : state.screen === "login" ? (state.loginStage === "change" ? "Change your password" : "Sign in")
-        : state.screen === "entry" ? "Check it's you"
         : state.screen === "welcome" ? "Business verification"
         : state.screen === "bizType" ? "Your business type"
         : state.screen === "invitee" ? "Owner details"
@@ -4486,11 +4404,7 @@ ${protoView()}`;
     } else if (!state.viewDoc && last.viewDoc && opener && document.contains(opener)) {
       opener.focus();
     }
-    if (state.screen === "entry" && state.entryMode === "code" && last.entryMode !== "code") {
-      const codeField = document.getElementById("entry-code");
-      if (codeField) codeField.focus();
-    }
-    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, confirm: state.confirm, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, entryMode: state.entryMode, loginStage: state.loginStage };
+    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, confirm: state.confirm, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, loginStage: state.loginStage };
     const hot = state.comboOpen && document.querySelector(".combo-opt.is-active");
     if (hot && hot.scrollIntoView) hot.scrollIntoView({ block: "nearest" });
     // Hand over to enhance.js (animation layer).
