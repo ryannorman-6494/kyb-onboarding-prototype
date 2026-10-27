@@ -81,7 +81,7 @@
   //   fields   for "fields": { key, label, ph, area, req, from }; from pre-fills from a step 3 answer
   const PEND_REASONS = [
     {
-      id: "banking", name: "Banking Verification", icon: "file", respond: "upload", cta: "Choose file", file: "bank-verification.pdf",
+      id: "banking", name: "Banking Verification", respond: "upload", cta: "Choose file", file: "bank-verification.pdf",
       title: "Confirm your bank account",
       why: "We need to check that the payout account you gave us belongs to your business, so we pay the right place.",
       lead: "Either of these works",
@@ -91,7 +91,7 @@
       ]
     },
     {
-      id: "ownership", name: "Business Ownership Verification", icon: "file", respond: "upload", cta: "Choose file", file: "ownership-document.pdf",
+      id: "ownership", name: "Business Ownership Verification", respond: "upload", cta: "Choose file", file: "ownership-document.pdf",
       title: "Show how you're linked to the business",
       why: "We need a document that connects you to the business, so we know who owns it and who can sign for it.",
       lead: "Any one of these works. It needs to show the business's legal name and your name.",
@@ -104,7 +104,7 @@
       ]
     },
     {
-      id: "financial", name: "Financial Exposure Risk", icon: "file", respond: "upload", cta: "Choose file", file: "financial-records.pdf",
+      id: "financial", name: "Financial Exposure Risk", respond: "upload", cta: "Choose file", file: "financial-records.pdf",
       title: "Share your financial records",
       why: "We need to see how your business is doing financially before we can approve it.",
       lead: "Send at least one of these",
@@ -116,7 +116,7 @@
       note: "No audited statements, or fewer than 6 months of processing? Tell us. We can accept those in some cases."
     },
     {
-      id: "delivery", name: "Future Delivery Risk", icon: "pen", respond: "fields",
+      id: "delivery", name: "Future Delivery Risk", respond: "fields",
       title: "Tell us when customers get what they pay for",
       why: "When customers pay before they receive your product or service, we need to know how long that gap lasts.",
       lead: "Tell us two things",
@@ -127,7 +127,7 @@
       ]
     },
     {
-      id: "kyb", name: "KYB Verification", icon: "file", respond: "upload", cta: "Choose file", file: "business-registration.pdf",
+      id: "kyb", name: "KYB Verification", respond: "upload", cta: "Choose file", file: "business-registration.pdf",
       title: "Prove your business is registered",
       why: "We need an official document that shows your business is registered under the name you gave us.",
       lead: "Any one of these works. It needs to show your legal business name.",
@@ -135,7 +135,7 @@
       note: "Other documents are accepted only in some cases, such as a utility bill with the owner's name at the business address, a bill of sale or purchase agreement, or other state or federal filings. If you don't have one of the documents above, tell us."
     },
     {
-      id: "shipping", name: "Shipping & Product Validation", icon: "file", respond: "upload", cta: "Choose file", file: "product-evidence.pdf",
+      id: "shipping", name: "Shipping & Product Validation", respond: "upload", cta: "Choose file", file: "product-evidence.pdf",
       title: "Show how you get products to customers",
       why: "We need to see that you have the products you sell and a way to deliver them.",
       lead: "Send at least one of these",
@@ -147,35 +147,35 @@
       ]
     },
     {
-      id: "kyc", person: true, name: "KYC Verification", icon: "file", respond: "upload", cta: "Choose file", file: "photo-id.pdf",
+      id: "kyc", person: true, name: "KYC Verification", respond: "upload", cta: "Choose file", file: "photo-id.pdf",
       title: "Confirm {first}'s identity",
       why: "We need to check who {name} is before we can approve the application.",
       lead: "Any one of these works. The copy needs to be clear and easy to read.",
       accept: ["Their current driver's license or government-issued ID", "Their current, unexpired U.S. passport", "Their Social Security card"]
     },
     {
-      id: "freeze", person: true, name: "Credit Freeze", icon: "user", respond: "confirm", cta: "I've removed the freeze",
+      id: "freeze", person: true, name: "Credit Freeze", respond: "confirm", cta: "I've removed the freeze",
       title: "Remove the freeze on {first}'s credit report",
       why: "A security freeze blocks the credit check we need to run on {name} before we can approve the application.",
       lead: "What to do",
       accept: ["Remove the security freeze on {first}'s credit report at Experian, TransUnion and Equifax", "Then tell us here, and we'll carry on with the check"]
     },
     {
-      id: "alert", person: true, name: "Credit Security Alert", icon: "clock", respond: "none",
+      id: "alert", person: true, name: "Credit Security Alert", respond: "none",
       title: "A quick chat with our underwriting team",
       why: "A security alert on {name}'s credit report means we need to talk with them before we can go on.",
       lead: "What happens next",
       accept: ["There's nothing for you to send", "Our underwriting team will get in touch with {first}"]
     },
     {
-      id: "cosigner", slice: "2", person: true, name: "Insufficient Credit", icon: "user", respond: "cosigner", cta: "Add a co-signer",
+      id: "cosigner", slice: "2", person: true, name: "Insufficient Credit", respond: "cosigner", cta: "Add a co-signer",
       title: "Add a co-signer",
       why: "The credit history we found for {name} isn't enough for us to approve the application, so we need a co-signer.",
       lead: "What we need for your co-signer",
       accept: ["Their full legal name, address, date of birth and phone number", "Their Social Security number", "Their signature on the merchant agreement"]
     },
     {
-      id: "product", name: "Product/Services Description", icon: "pen", respond: "fields",
+      id: "product", name: "Product/Services Description", respond: "fields",
       title: "Tell us more about what you sell",
       why: "We need more detail about your products or services to understand your business.",
       lead: "Tell us",
@@ -183,7 +183,7 @@
       fields: [{ key: "detail", label: "What do you sell?", ph: "For example, group Pilates classes, private sessions, and mats and clothing at the front desk", area: true, req: true }]
     },
     {
-      id: "duplicate", name: "Duplicate Account", icon: "pen", respond: "fields",
+      id: "duplicate", name: "Duplicate Account", respond: "fields",
       title: "Tell us why you need another account",
       why: "We found an open processing account linked to you or your business.",
       lead: "Tell us",
@@ -191,14 +191,14 @@
       fields: [{ key: "reason", label: "Why do you need another account?", ph: "For example, this account is for our second location", area: true, req: true }]
     },
     {
-      id: "tin", name: "TIN Verification", icon: "file", respond: "upload", cta: "Choose file", file: "tax-id-document.pdf",
+      id: "tin", name: "TIN Verification", respond: "upload", cta: "Choose file", file: "tax-id-document.pdf",
       title: "Confirm your tax ID",
       why: "We need one more document to confirm your tax ID number.",
       lead: "Either of these works",
       accept: ["Your IRS Form SS-4 filing", "A 1099-K from your previous processor"]
     },
     {
-      id: "firearms", name: "Firearms Due Diligence", icon: "file", respond: "upload", cta: "Choose file", file: "firearms-documents.pdf",
+      id: "firearms", name: "Firearms Due Diligence", respond: "upload", cta: "Choose file", file: "firearms-documents.pdf",
       title: "Send your firearms documents",
       why: "Selling firearms means extra checks, and some documents our sporting goods policy asks for are missing or incomplete.",
       lead: "Documents we often find missing",
@@ -212,7 +212,7 @@
       note: "These are examples. Our sporting goods policy has the full list."
     },
     {
-      id: "cbd", name: "CBD Due Diligence", icon: "file", respond: "upload", cta: "Choose file", file: "cbd-documents.pdf",
+      id: "cbd", name: "CBD Due Diligence", respond: "upload", cta: "Choose file", file: "cbd-documents.pdf",
       title: "Send your CBD documents",
       why: "Selling CBD means extra checks, and some documents our CBD policy asks for are missing or incomplete.",
       lead: "Documents we often find missing",
@@ -225,7 +225,7 @@
       note: "These are examples. Our CBD policy has the full list."
     },
     {
-      id: "volume", name: "Avg Ticket/Volume Thresholds", icon: "pen", respond: "fields",
+      id: "volume", name: "Avg Ticket/Volume Thresholds", respond: "fields",
       title: "Check your sales numbers",
       why: "Your average sale, highest sale and monthly volume don't match up, so we need you to confirm them.",
       lead: "Confirm or correct your numbers, and tell us how you worked them out",
@@ -238,7 +238,7 @@
       ]
     },
     {
-      id: "url", name: "Missing URL (website)", icon: "pen", respond: "fields",
+      id: "url", name: "Missing URL (website)", respond: "fields",
       title: "Add your website address",
       why: "We need to see your website to check what you sell.",
       lead: "Tell us",
@@ -246,7 +246,7 @@
       fields: [{ key: "url", label: "Website address", ph: "https://", req: true }]
     },
     {
-      id: "website", name: "Incomplete Website", icon: "pen", respond: "confirm", cta: "I've updated my website",
+      id: "website", name: "Incomplete Website", respond: "confirm", cta: "I've updated my website",
       title: "Update your website",
       why: "We looked at your website and found things to fix before we can approve it.",
       lead: "Things to check",
@@ -259,7 +259,7 @@
       ]
     },
     {
-      id: "nonprofit", name: "Non-Profit Documents", icon: "file", respond: "upload", cta: "Choose file", file: "nonprofit-status.pdf",
+      id: "nonprofit", name: "Non-Profit Documents", respond: "upload", cta: "Choose file", file: "nonprofit-status.pdf",
       title: "Send your nonprofit paperwork",
       why: "We need proof of your nonprofit status.",
       lead: "What we need",
@@ -1939,6 +1939,16 @@
       "tradeoff": "It is a stand-in, not the product: the real flow would show the whole form with the division's rows in place, and what else a division changes (fees, agreement text, descriptor) is unknown. The outline and tag are prototype-only marks and would not ship.",
       "by": "Ryan",
       "when": "2026-10-27"
+    },
+    {
+      "id": "pend-note-cards-optional-upload",
+      "area": "Flow",
+      "where": "More info needed",
+      "t": "Cards that ask for a written answer also offer an optional document upload",
+      "b": "Five requests are answered by writing (Future Delivery Risk, Product/Services Description, Duplicate Account, Avg Ticket/Volume Thresholds, Missing URL). They stay written answers: they are Done when the written fields are filled in, and nothing else is needed. Each now also has an Add a document (optional) button, so a person can attach something that backs up what they wrote. An attached file never counts towards Done, and can be removed. This settles the open question about whether some requests should finish with a note and no file: those are exactly these cards. Requests that ask for a document (for example the bank letter or a tax document) still need the file to be Done, with the optional note.",
+      "tradeoff": "A person who has no document for a document request still cannot finish that card, because only the written-answer cards finish without a file. Ryan has not said whether any upload card should accept a note alone.",
+      "by": "Ryan",
+      "when": "2026-10-27"
     }
   ];
 
@@ -2985,7 +2995,6 @@
       isInvitee: st.screen === "invitee",
       inviteDocs: docListFor(owners, ca, true).filter((d) => d.key === "id_" + st.inviteOwner),
       invitedOwners: invitedLeft,
-      showShell: false,
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
       needRegistration: ca ? "Step 1 starts with your CRA business number. If we find a record we'll fill in the rest, so there's less for you to type." : "Step 1 starts with your EIN. If we find a record we'll fill in the rest, so there's less for you to type.",
@@ -3035,8 +3044,6 @@
               : "Add everyone who owns 25% or more.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
-      othersTitle: solo || !invitesOn() ? "Nothing waiting on anyone else" : settled === owners.length ? "Everyone's finished their part" : invitedLeft.length === 1 ? "Still waiting on one ID" : "Still waiting on " + invitedLeft.length + " IDs",
-      othersBody: !invitesOn() && owners.length > 1 ? "You've added every owner's details and ID, so nobody else needs to send anything." : solo ? (owners[0].self ? "You're the only owner listed, so nobody else needs to send their ID." : "Only one owner is listed and their ID is in, so nobody else needs to send anything.") : settled === owners.length ? "Everyone you invited has finished their part, so nothing is waiting on a person." : "We've nudged " + invitedLeft.map((o) => o.name).join(" and ") + " to finish. Your review carries on in the meantime.",
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
       checkNote: "Checking " + [st.einFound && "your " + orgWord() + " registration", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
@@ -3285,21 +3292,6 @@
   ${c.isOpen && html`<div class="fields">${c.fields.map(fieldView)}</div>`}
   ${c.assurance && callout(c.assurance, "callout--card")}
 </section>`;
-  }
-
-  function shellView(v) {
-    const link = (ic, label, active, badge) => html`<div class="shell-link${active ? " is-active" : ""}"${active ? html` aria-current="page"` : ""}>${icon(ic, 18)}${label}${badge && html`<span class="shell-badge">${badge}</span>`}</div>`;
-    return html`<aside class="shell" data-key="shell" aria-label="Riverside Pilates">
-  <div class="shell-brand">${mark(22)}<span class="shell-brand-name">Riverside Pilates</span></div>
-  <nav class="shell-nav" aria-label="App">
-    ${link("grid", "Dashboard")}${link("users", "Members")}${link("chart", "Reports")}${link("dollar", "Payments", true, "Setup")}${link("settings", "Settings")}
-  </nav>
-  <div class="shell-setup">
-    <div class="shell-setup-title">Payments setup</div>
-    <div class="shell-setup-note">${v.shellRailNote}</div>
-    <div class="shell-meter"><span class="shell-meter-fill" data-width="${v.pct}"></span></div>
-  </div>
-</aside>`;
   }
 
   function welcomeView(v) {
@@ -3993,8 +3985,10 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   // Simulated upload: no picker opens and nothing is read. The file shows as uploading for a moment, then ready.
   function pendAddFile(r) {
     const have = rfiOf(r.id).files.map((f) => f.name);
-    let i = 1, name = r.file;
-    while (have.indexOf(name) > -1) { i++; name = r.file.replace(/\.pdf$/, "-" + i + ".pdf"); }
+    // A write-an-answer card has no file of its own; its optional document gets a generic name.
+    const base = r.file || "supporting-document.pdf";
+    let i = 1, name = base;
+    while (have.indexOf(name) > -1) { i++; name = base.replace(/\.pdf$/, "-" + i + ".pdf"); }
     setRfi(r.id, { files: rfiOf(r.id).files.concat([{ name: name, busy: true }]) });
     setTimeout(() => setState((s) => {
       const c = s.rfi[r.id];
@@ -4021,7 +4015,10 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
         const val = pendVal(r, f);
         const typed = on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { [f.key]: e.target.value }) }));
         return html`<div class="pend-field" data-key="fld-${id}"><label class="field-label field-label--block" for="${id}">${f.label}${f.req && REQ}</label>${f.area ? html`<textarea class="input" id="${id}" rows="3" placeholder="${f.ph}" data-input="${typed}">${val}</textarea>` : html`<input class="input" id="${id}" value="${val}" placeholder="${f.ph}" autocomplete="off" data-input="${typed}">`}</div>`;
-      })}</div>`;
+      })}
+  ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
+  <div class="pend-field" data-key="optdoc-${r.id}"><button type="button" class="btn btn-outline btn-sm" data-click="${on(() => pendAddFile(r))}">${icon("upload", 15)}${c.files.length ? "Add another document" : "Add a document (optional)"}</button></div>
+</div>`;
     }
     if (r.respond === "confirm" || r.respond === "cosigner") {
       return c.done
@@ -4036,7 +4033,6 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const done = pendDone(r) && r.respond !== "none";
     return html`<section class="card card--p20 pend${done ? " is-done" : ""}" data-key="pend-${r.id}">
   <div class="doc-row">
-    <span class="icon-tile icon-tile--neutral">${icon(r.icon, 17)}</span>
     <div class="grow">
       <div class="doc-titlebar"><h2 class="rfi-title">${pendText(r, r.title)}</h2>${done ? html`<span class="state-pill state-pill--done">${icon("check", 14, "i-b")}Done</span>` : html`<span class="req">${PEND_HOW[r.respond]}</span>`}</div>
       <p class="rfi-body">${pendText(r, r.why)}</p>
@@ -4301,7 +4297,6 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     const v = vals();
     return html`<div class="page" data-key="page">
   <div class="frame">
-    ${v.showShell && !v.isEntry && state.screen !== "login" && shellView(v)}
     <div class="content" data-key="content">
       ${state.screen === "email" && emailView()}
       ${state.screen === "pickBusiness" && pickBusinessView()}
