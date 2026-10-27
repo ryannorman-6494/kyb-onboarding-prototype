@@ -212,7 +212,7 @@ button.step:hover { background: var(--color-background-hover); }
 /* The step header stays put while the cards scroll behind it (decision step-header-fixed). The negative top margin and matching padding stretch its solid background up to the top of the window, so nothing shows above it. The bottom padding is cancelled by a matching negative margin, so the gap to the first card is unchanged but cards disappear right where they rest, the moment the page scrolls. */
 .step-head { position: sticky; top: 0; z-index: 10; margin: calc(var(--flow-top) * -1) 0 -20px; padding: var(--flow-top) 0 20px; background: var(--color-background-shell); }
 .step-meta-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-.eyebrow { font: var(--font-label-default); letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-brand); }
+.eyebrow { font: var(--font-label-default); letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-subtle); }
 .meta { display: inline-flex; align-items: center; gap: 5px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .step-title { margin: 0 0 10px; font: var(--font-page-title); letter-spacing: var(--type-page-title-letter-spacing); color: var(--color-text-primary); }
 .step-sub { font: var(--font-body-large); color: var(--color-text-subtle); text-wrap: pretty; }

@@ -1932,6 +1932,16 @@
       "tradeoff": "Nothing on the screen tells the applicant what to send or why, so it depends on the email being clear and to hand. A message alone is enough to send, so an applicant who has nothing to upload (for example a request to update their website, or to remove a credit freeze) can just explain. Nothing checks that the right documents were sent. The earlier card layout stays in the code for now. To remove this screen and go back to the cards, delete the lines marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END in app.js, the SIMPLE TRIAL rule in app.css, and this decision.",
       "by": "Ryan",
       "when": "2026-10-27"
+    },
+    {
+      "id": "step-eyebrow-subtle",
+      "area": "Visual",
+      "where": "Every step",
+      "t": "The Step N of 7 label above the step title is grey, not brand purple",
+      "b": "The small all-caps label above each step title (Step 1 of 7 and so on) uses the subtle text colour (#6a6b76) instead of the brand colour. Brand purple is the same value as the link colour, so purple text read as something to click, and the label is only a position marker. It keeps its size, all caps and letter-spacing, and uses the same grey as the card notes and the progress note.",
+      "tradeoff": "The darker secondary text colour (#40404c) was the alternative, if the grey is too faint on the pinned header. The label no longer ties the header to the brand colour, so the current step in the left rail is now the main purple marker on the page.",
+      "by": "Ryan",
+      "when": "2026-10-27"
     }
   ];
 
