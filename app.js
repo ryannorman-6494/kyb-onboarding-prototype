@@ -1141,12 +1141,12 @@
       "when": "2026-10-07"
     },
     {
-      "id": "return-via-email-link",
+      "id": "return-by-login",
       "area": "Trust",
       "where": "Save and finish later",
-      "t": "Tell people how to come back: the link in their email, and a code",
-      "b": "Answers save as people go, and the same emailed link reopens the last saved state after a one-time code. The save dialog says that in one line at the top, then offers the separate hand-off to someone else. The two links are different things: the applicant's own link is the one in the original email, and the hand-off link is the one this dialog sends.",
-      "tradeoff": "The 7 days on the hand-off link is our own assumption. The magic link spike proposes about 30 days for the applicant's own link, still to be confirmed, and does not cover hand-off links at all, so whether they exist and how they work is a question for the team.",
+      "t": "Tell people how to come back: log in again and carry on where they left off",
+      "b": "Answers save as people go, and signing in again reopens the last saved state. The Finish later dialog says that in one line at the top (Log back in any time and you'll carry on where you left off), with no link and no code. In Slice 1 it then just has a Close button; Slice 2 also offers the separate hand-off to someone else. Rewritten 2026-10-28 (Ryan) because the one-time-code screen is gone and the Invitations PRD uses ODIN sign-in; before that the line said to come back with the link in the email and a code.",
+      "tradeoff": "The line does not say how to log in (bookmark, the welcome email, an ODIN address), so a returning applicant has to know that already; see the open item on how a returning user reaches the page. The 7 days on the Slice 2 hand-off link is our own assumption; the magic link spike does not cover hand-off links at all, so whether they exist and how they work is a question for the team.",
       "by": "Ryan",
       "when": "2026-10-07"
     },
@@ -1424,19 +1424,19 @@
       "id": "yn-common-defaults",
       "area": "Fields",
       "where": "Every Yes / No control; step 6 uploaded files",
-      "t": "Every Yes / No starts on the most common answer, Yes first, and uploads lose the green read-back",
-      "b": "Every Yes / No control now has Yes on the left and starts on the most common answer, so most applicants only change one when it does not apply. Step 3: recurring billing or subscriptions Yes; free trial or deferred billing No; payments on behalf of other businesses No; selling outside the country No; accepted card payments before No. Step 5: legal proceedings No, a terminated merchant account No, tax liens or judgments No, and money service business No. Earlier calls stay: operate at the same address Yes, signing it yourself Yes, politically exposed person No. The green read-back line that appeared under an uploaded file on step 6 (Read: name, matches step 2) is removed; the file name and Replace stay.",
-      "tradeoff": "Pre-answered compliance declarations (legal proceedings, terminations, tax liens, money service business) can be passed over without being read, and a wrong No is a false declaration. Ops or compliance should decide whether those four should start blank. The recurring billing Yes and the prior-card No fit the clubs and studios Xplor sells to but not every merchant. Without the read-back the applicant no longer sees what the system took from the file, so a wrong read goes unnoticed.",
+      "t": "No Yes / No question starts answered, and uploads lose the green read-back",
+      "b": "Every Yes / No control starts with neither pill chosen, so the applicant has to pick Yes or No on each one on purpose. This covers: is the trading address the same (step 1), will you sign yourself and is each owner a politically exposed person (step 2), recurring billing, free trial, payments on behalf of others, selling outside the country and accepted card payments before (step 3), and legal proceedings, a terminated merchant account, tax liens or judgments and money service business (step 5). Until each is answered, Save and continue stays off and the question shows Choose yes or no. once the applicant has left it. The sample business (Fields start as: Sample business) still arrives with all of them answered. The green read-back line that appeared under an uploaded file on step 6 (Read: name, matches step 2) is removed; the file name and Replace stay. History: on 2026-10-21 every question started on its most common answer; Ryan reversed that on 2026-10-28.",
+      "tradeoff": "About a dozen more clicks on a first run (more with extra owners), and a person can no longer sail through on defaults. That is the point: a compliance answer such as legal proceedings, a terminated account, tax liens or money service business can no longer be passed over unread, and a wrong No is something the applicant chose. Without the read-back the applicant no longer sees what the system took from the file, so a wrong read goes unnoticed.",
       "by": "Ryan",
-      "when": "2026-10-21"
+      "when": "2026-10-28"
     },
     {
       "id": "yes-first-defaults",
       "area": "Fields",
-      "where": "Step 1 trading address, step 2 signatory and politically exposed person, encrypted fields",
-      "t": "Three Yes / No questions start answered with Yes first, and encrypted fields lose the purple border",
-      "b": "Three Yes / No questions now put Yes on the left and start with an answer chosen: Is that also where you operate? and Will you be signing it yourself? default to Yes, and Is this person a politically exposed person? defaults to No. Each is the answer most applicants would give, so most people have nothing to do and only change it when it does not apply. The other Yes / No questions are unchanged: No on the left and nothing chosen, because there is no safe guess for them. The purple border that marked the encrypted fields (ID number, SSN or SIN, account numbers) is gone; they now have the same grey border as every other field, and the lock icon and Encrypted tag still mark them.",
-      "tradeoff": "Yes first on three questions and No first on the rest means the order is no longer the same everywhere on the form; if that bothers testers, flip the rest to Yes first too. A pre-chosen answer can be missed, so someone who is a politically exposed person could leave it on No without reading it, which matters for a compliance question. Without the purple border an encrypted field looks like any other field until the lock and tag are noticed.",
+      "where": "Every Yes / No control; encrypted fields",
+      "t": "Every Yes / No puts Yes on the left, and encrypted fields lose the purple border",
+      "b": "Every Yes / No question puts Yes on the left and No on the right. (On 2026-10-21 three of them also started answered; that is superseded, see yn-common-defaults: none starts answered now.) The purple border that marked the encrypted fields (ID number, SSN or SIN, account numbers) is gone; they now have the same grey border as every other field, and the lock icon and Encrypted tag still mark them.",
+      "tradeoff": "Without the purple border an encrypted field looks like any other field until the lock and tag are noticed.",
       "by": "Ryan",
       "when": "2026-10-21"
     },
@@ -1970,13 +1970,13 @@
   // walked the way a new applicant meets it; "Sample business" in the prototype
   // options swaps in a finished Riverside Pilates for demoing the later screens.
   const EMPTY_ANSWERS = {
-    sigSame: "yes", structure: "", incorporated: "", legalName: "", dba: "", stateInc: "",
+    sigSame: "", structure: "", incorporated: "", legalName: "", dba: "", stateInc: "",
     website: "", phone: "", email: "", description: "", regAddress: "",
-    tradingSame: "yes", tradingAddress: "",
+    tradingSame: "", tradingAddress: "",
     monthlyVolume: "", avgTicket: "", maxTicket: "", cpSplit: "",
-    channel: "", goods: "", recurring: "yes", trial: "no", marketplace: "no",
-    international: "no", countries: "", refundPolicy: "",
-    prior: "no", priorName: "", priorCbRatio: "",
+    channel: "", goods: "", recurring: "", trial: "", marketplace: "",
+    international: "", countries: "", refundPolicy: "",
+    prior: "", priorName: "", priorCbRatio: "",
     achVolume: "", descriptor: "", posType: "",
     // Comes from the Xplor account rather than being typed, so it's filled in
     // even on an empty run — the hint on the field says as much.
@@ -1984,8 +1984,8 @@
     velocityAck: false,
     bankName: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
     institution: "", transit: "",
-    legalProceedings: "no", legalProceedingsWhy: "", priorTermination: "no", priorTerminationWhy: "",
-    taxLiens: "no", taxLiensWhy: "", msb: "no",
+    legalProceedings: "", legalProceedingsWhy: "", priorTermination: "", priorTerminationWhy: "",
+    taxLiens: "", taxLiensWhy: "", msb: "",
     matchConsent: false, ofacAck: false,
     acceptAgreement: false, acceptPrivacy: false, acceptEsign: false,
     signAuthority: false
@@ -2600,7 +2600,7 @@
         name: isSole() && o.self ? (state.a.legalName || "") : "", dob: "",
         home: me && isSole() ? (state.a.regAddress || "") : "",
         email: me && (isSole() || o.me) ? (state.a.email || "") : "", phone: me && (isSole() || o.me) ? (state.a.phone || "") : "",
-        idNumber: "", idExpiry: "", pep: "no", natId: "",
+        idNumber: "", idExpiry: "", pep: "", natId: "",
         residence: me ? country : "", idCountry: me ? country : ""
       });
     }
@@ -4079,7 +4079,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       </div>
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeSave)}">${icon("x", 18)}</button>
     </div>
-    <p class="dialog-body">Come back any time with the link in your email. We'll send you a code to open it.${pin("return-via-email-link")}</p>
+    <p class="dialog-body">Log back in any time and you'll carry on where you left off.${pin("return-by-login")}</p>
     ${invitesOn() && html`
     <p class="dialog-body">Send a link to whoever should pick it up, such as your bookkeeper for the bank details or a co-owner for their own ID. They'll land exactly where you left off and see only their part.</p>
     <form class="dialog-form" data-submit="${on(() => { if (!SAVE_EMAIL_OK.test(state.saveEmail.trim())) { setState({ saveEmailErr: "Enter an email like name@example.com." }); return; } closeSave(); })}"${state.saveEmailErr ? html` data-error="1"` : ""}>
