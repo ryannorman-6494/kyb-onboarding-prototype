@@ -1405,8 +1405,8 @@
       "area": "Flow",
       "where": "Prototype options · Flow starts as; email and business picker",
       "t": "An existing user onboarding a new business skips the password and picks a business",
-      "b": "A new Flow starts as option, Existing user: new business email, then choose business, covers someone who already has an account on the platform and is onboarding a separate business. They get the existing-user email (no temporary password, no forced password change), and pressing Sign in goes straight to a simple screen asking which business to sign in with. Choosing a business only selects it (a radio card, nothing is chosen at first); a Sign in button, disabled until a business is selected, confirms the choice, so a stray click never signs anyone in. Riverside Pilates, marked New application, goes into the normal onboarding flow and follows the Link opened as option like any other entry; Harbor Yoga Studio, the one they already have, shows a prototype-only toast saying its dashboard is not part of the prototype. The address takes ?start=existing.",
-      "tradeoff": "Pressing Sign in on the email skips a sign-in screen entirely, on the basis that the real sign-in happens in ODIN outside the prototype; if the sign-in itself should be shown, it needs adding between the email and the picker. The business names are made up, and the existing business only shows a toast, so nobody can test what happens when someone signs in to it. The extra Sign in click adds one step for the common case of one business needing work (2026-10-23, Ryan: confirm the selection instead of signing in on click). The email is the existing-user template in the email folder, drawn again in the prototype, so the two need updating together.",
+      "b": "A new Flow starts as option, Existing user: new business email, then choose business, covers someone who already has an account on the platform and is onboarding a separate business. They get the existing-user email (no temporary password, no forced password change), and pressing Sign in goes straight to a simple screen asking which business to sign in with. Choosing a business only selects it (a radio card, nothing is chosen at first); a Continue button, disabled until a business is selected, confirms the choice, so a stray click never signs anyone in. Riverside Pilates, marked with a green New application badge, goes into the normal onboarding flow and follows the Link opened as option like any other entry; Harbor Yoga Studio, the one they already have, shows a prototype-only toast saying its dashboard is not part of the prototype. The address takes ?start=existing.",
+      "tradeoff": "Pressing Sign in on the email skips a sign-in screen entirely, on the basis that the real sign-in happens in ODIN outside the prototype; if the sign-in itself should be shown, it needs adding between the email and the picker. The business names are made up, and the existing business only shows a toast, so nobody can test what happens when someone signs in to it. The extra Continue click adds one step for the common case of one business needing work (2026-10-23, Ryan: confirm the selection instead of signing in on click; 2026-10-28, Ryan: the button reads Continue, not Sign in, and the New application badge is green). The email is the existing-user template in the email folder, drawn again in the prototype, so the two need updating together.",
       "by": "Ryan",
       "when": "2026-10-22"
     },
@@ -3338,7 +3338,7 @@
       <div class="biz-list" role="radiogroup" aria-label="Your businesses">
         <button type="button" class="biz-card${state.pickedBiz === "new" ? " is-selected" : ""}" role="radio" aria-checked="${String(state.pickedBiz === "new")}" data-key="pick-new" data-click="${on(() => setState({ pickedBiz: "new" }))}">
           <span class="biz-radio" aria-hidden="true"></span>
-          <span><span class="biz-label">Riverside Pilates <span class="chip chip--secure">New application</span></span><span class="biz-desc">Application ready to start</span></span>
+          <span><span class="biz-label">Riverside Pilates <span class="chip chip--success">New application</span></span><span class="biz-desc">Application ready to start</span></span>
         </button>
         <button type="button" class="biz-card${state.pickedBiz === "existing" ? " is-selected" : ""}" role="radio" aria-checked="${String(state.pickedBiz === "existing")}" data-key="pick-existing" data-click="${on(() => setState({ pickedBiz: "existing" }))}">
           <span class="biz-radio" aria-hidden="true"></span>
@@ -3346,7 +3346,7 @@
         </button>
       </div>
       <div class="entry-actions">
-        <div class="footer-end"><button type="button" class="btn btn-primary btn-lg"${state.pickedBiz ? "" : " disabled"} data-click="${on(signInToBiz)}">Sign in${icon("arrow-r", 19)}</button></div>
+        <div class="footer-end"><button type="button" class="btn btn-primary btn-lg"${state.pickedBiz ? "" : " disabled"} data-click="${on(signInToBiz)}">Continue${icon("arrow-r", 19)}</button></div>
       </div>
     </div>
   </div>`;

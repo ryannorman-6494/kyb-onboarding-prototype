@@ -236,6 +236,7 @@ button.step:hover { background: var(--color-background-hover); }
 .field-label--block { margin-bottom: 6px; }
 .chip { display: inline-flex; align-items: center; height: var(--size-control-small); font: var(--font-label-default); padding: 0 var(--space-padding-small); border-radius: var(--radius-small); background: var(--color-background-neutral-default); color: var(--color-text-primary); }
 .chip--secure { gap: var(--space-layout-pair); background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
+.chip--success { background: var(--color-background-success-subtle); color: var(--color-text-success); }
 .field-hint { font: var(--font-caption-default); color: var(--component-input-helper-color-default); margin-top: var(--space-layout-related); }
 
 /* Atlas Text field: height Large (40) because onboarding forms are roomy, radius default, border and glow focus (no ring: the box already has a border). */
