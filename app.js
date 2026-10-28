@@ -1321,14 +1321,14 @@
       "when": "2026-10-13"
     },
     {
-      "id": "segmented-track-fill",
+      "id": "yn-pills",
       "area": "Flow",
       "where": "Yes / No answers",
-      "t": "The Yes / No track uses Atlas's own segmented-control fill, one step darker than before",
-      "b": "The track behind a Yes / No pair was the sunken surface colour (nearly the same as the page). Atlas 0049 gave the Segmented control its own track fill (neutral/100, #F4F4F7), so the prototype now reads `--component-segmented-control-background`, and the track is easier to tell from the page and from the raised, selected segment. Nothing else about the control changes.",
-      "tradeoff": "The track is still only about 1.1:1 against the page, so the control is identified by its shape and the raised selected segment, not by the track alone. Atlas accepts this and says so in 0049.",
+      "t": "Yes / No answers are two separate selectable pills, not a segmented control",
+      "b": "Every Yes / No question shows two round pills side by side, Yes on the left, each with a thin light border. The chosen pill gets a 2px brand-purple ring; the other stays plain. There is no shared track behind them any more. This returns to the earlier pill look and replaces the Atlas Segmented control (and its track fill, `segmented-track-fill`), which Ryan wanted gone. Which answer each question starts on is unchanged (`yn-common-defaults`). An unanswered required question outlines the pills in the error colour.",
+      "tradeoff": "The pills are a prototype pattern, not an Atlas component, so this departs from the Atlas Segmented control and its tokens. The selected state is carried by the ring alone (no fill), so it relies on the purple against a thin grey border for contrast.",
       "by": "Ryan",
-      "when": "2026-10-13"
+      "when": "2026-10-28"
     },
     {
       "id": "tone-of-voice-pass",

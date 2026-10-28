@@ -257,11 +257,11 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .affix--secure input { letter-spacing: 0.06em; }
 .affix--secure input[readonly] { cursor: default; }
 
-/* Yes / No as an Atlas Segmented control (0042, 0049): a track with its own fill, the selected segment lifts onto a raised surface. */
-.yn { display: inline-flex; gap: var(--space-layout-pair); padding: 0; border-radius: var(--radius-default); background: var(--component-segmented-control-background); }
-.yn-btn { height: var(--component-button-height-large); min-width: 76px; padding: 0 var(--component-button-padding-x-large); border: var(--component-button-border-width) solid transparent; border-radius: var(--radius-default); background: transparent; font: var(--font-control-default); letter-spacing: var(--type-control-default-letter-spacing); color: var(--color-text-subtle); cursor: pointer; }
-.yn-btn:hover { color: var(--color-text-primary); }
-.yn-btn[aria-pressed="true"] { background: var(--color-background-surface-raised-1); border-color: var(--color-border-default); box-shadow: var(--shadow-xs); color: var(--color-text-primary); }
+/* Yes / No as two separate selectable pills (the original look; replaces the Segmented control). The chosen pill keeps a 2px brand ring. */
+.yn { display: inline-flex; gap: var(--space-layout-related); }
+.yn-btn { height: var(--component-button-height-large); min-width: 76px; padding: 0 var(--component-button-padding-x-large); border: none; border-radius: var(--radius-full); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 1px var(--color-border-input); font: var(--font-control-default); letter-spacing: var(--type-control-default-letter-spacing); color: var(--color-text-primary); cursor: pointer; }
+.yn-btn:hover { box-shadow: inset 0 0 0 1px var(--color-border-hover); }
+.yn-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--color-border-brand); }
 .yn-btn:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: var(--border-focus-offset); }
 
 /* Atlas Checkbox: a 16px box inside a 24px touch target, 2px focus ring offset by 2px. */
@@ -559,7 +559,9 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 /* ---------- Validation: shown only after "Save and continue" has been pressed ---------- */
 .field-error { margin: 6px 0 0; font-size: var(--type-caption-default-size); line-height: 1.4; font-weight: var(--type-control-default-weight); color: var(--color-text-error); }
-[data-error] > .input, [data-error] .input, [data-error] .affix, [data-error] .yn { box-shadow: inset 0 0 0 1px var(--color-border-error); border-color: var(--color-border-error); }
+[data-error] > .input, [data-error] .input, [data-error] .affix { box-shadow: inset 0 0 0 1px var(--color-border-error); border-color: var(--color-border-error); }
+[data-error] .yn-btn { box-shadow: inset 0 0 0 1px var(--color-border-error); }
+[data-error] .yn-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--color-border-brand); }
 [data-error] .check { box-shadow: inset 0 0 0 1px var(--color-border-error); }
 .doc[data-error] { box-shadow: inset 0 0 0 1px var(--color-border-error), var(--lift-static); }
 .footer-error { display: flex; align-items: center; gap: var(--space-layout-related); margin: 0; padding-top: 16px; font-size: var(--type-body-small-size); font-weight: var(--type-control-default-weight); color: var(--color-text-error); }
