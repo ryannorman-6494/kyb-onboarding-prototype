@@ -1942,6 +1942,26 @@
       "tradeoff": "The darker secondary text colour (#40404c) was the alternative, if the grey is too faint on the pinned header. The label no longer ties the header to the brand colour, so the current step in the left rail is now the main purple marker on the page.",
       "by": "Ryan",
       "when": "2026-10-27"
+    },
+    {
+      "id": "email-logo-above-card",
+      "area": "Visual",
+      "where": "Emails · Welcome, existing-user and every new email",
+      "t": "The logo sits centred above the email card, and the card starts with the purple hero",
+      "b": "In every Xplor Pay email the logo is centred on the page background above the white card, and the card itself starts with the purple gradient hero (its top corners rounded). Before, the logo sat inside the card on a white strip above the hero, left-aligned. The prototype's email screen draws the same layout. The shared shell (logo, hero, body, security note, footer) is the same in all four templates, so a design change is made once and copied.",
+      "tradeoff": "Outlook desktop ignores rounded corners, so the hero shows square corners there; everything else holds. The logo image still points at the GitHub Pages URL and must move to an Xplor domain before sending.",
+      "by": "Ryan",
+      "when": "2026-10-28"
+    },
+    {
+      "id": "emails-more-info-and-ops-monitoring",
+      "area": "Flow",
+      "where": "Emails · More info needed, Ongoing monitoring",
+      "t": "Two more emails: More info needed for the applicant, and Ongoing monitoring for Ops",
+      "b": "More info needed (to the applicant) lists each request as a card: a number, the request title, why we ask and what to send, then one button to the secure page. It carries no sensitive data, and tells people not to reply with documents. Ongoing monitoring (to Ops) shows the business, merchant ID, division and detected time, then one card per change with the old and new value, who changed it and when, and a button to the Ops portal. The data points that trigger it are drafted in email/OPS-MONITORING-TRIGGERS.md (about 40 rows, my draft, unconfirmed by Risk Ops). Both templates use merge fields and repeat a marked block once per request or change; neither is wired to anything. Personal data stays out of the Ops email (Ryan, 2026-10-28): every change about a person (owner added or removed, share, signatory, PEP, screening hit, owner address, residence, ID expiry) shows Changed for both the old and new value, with no names; bank accounts and registration numbers are masked.",
+      "tradeoff": "The trigger list is a guess and Ryan will get the real one confirmed. Because person-level changes show only Changed, Ops must open the Ops portal to see who, which adds a click. Who receives the email, and whether it is one email per change or a daily digest, are open (the template handles several changes in one email). The More info needed email must match what Ops picks on the More info screen; the 19 PEND_REASONS draft text is the source for its wording and nothing connects the two yet.",
+      "by": "Ryan",
+      "when": "2026-10-28"
     }
   ];
 
@@ -3293,8 +3313,8 @@
     <div class="mail-meta"><span class="mail-avatar" aria-hidden="true">X</span><span><strong>Xplor Pay</strong> &lt;no-reply@xplorpay.example&gt;<br><span class="mail-to">To: dana@riversidepilates.example</span></span></div>
   </div>
   <div class="em-wrap">
+    <div class="em-logo"><img src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="150"></div>
     <div class="em">
-      <div class="em-logo"><img src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="150"></div>
       <div class="em-hero">${existing ? html`<h1>Your application is ready to start</h1><p>We've started a new Xplor Pay application for Riverside Pilates. Sign in to your existing account to pick it up.</p>` : html`<h1>Welcome to Xplor Pay</h1><p>Your account is ready. Here are your sign-in details, so you can sign in and get started.</p>`}</div>
       <div class="em-body">
         <h2>${existing ? "Your application" : "Your sign-in details"}</h2>

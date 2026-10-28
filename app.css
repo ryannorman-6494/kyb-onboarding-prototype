@@ -694,8 +694,9 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .mail-avatar { width: 36px; height: 36px; flex: none; border-radius: var(--radius-full); background: var(--color-purple-600); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 .em-wrap { background: #F1F6FA; padding: 24px 16px 20px; border-radius: 0 0 var(--radius-large) var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default); border-top: 0; }
 .em { max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; color: #545D63; font-family: "Roboto", Arial, sans-serif; font-size: 16px; line-height: 24px; }
-.em-logo { padding: 28px 40px 24px; }
-.em-logo img { display: block; height: auto; }
+/* The logo sits above the email card, centred, on the page background. */
+.em-logo { max-width: 600px; margin: 0 auto; padding: 8px 0 24px; }
+.em-logo img { display: block; height: auto; margin: 0 auto; }
 .em-hero { padding: 44px 40px; background: linear-gradient(135deg, #401F9F 0%, #6923F4 100%); color: #fff; }
 .em-hero h1 { margin: 0 0 12px; font-size: 34px; line-height: 41px; font-weight: 700; letter-spacing: -0.01em; color: #fff; }
 .em-hero p { margin: 0; color: #EAF0F4; }
@@ -718,7 +719,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .em-note { background: #F1F6FA; border-left: 4px solid #3ACBCA; border-radius: 4px; padding: 16px 20px; font-size: 14px; line-height: 21px; }
 .em-note strong { color: #282F35; }
 .em-foot { max-width: 600px; margin: 20px auto 0; text-align: center; font-size: 12px; line-height: 18px; color: #8C969F; }
-@media (max-width: 620px) { .em-logo, .em-hero, .em-body { padding-left: 20px; padding-right: 20px; } .em-hero h1 { font-size: 28px; line-height: 34px; } .mailview { padding: 12px 8px 40px; } }
+@media (max-width: 620px) { .em-hero, .em-body { padding-left: 20px; padding-right: 20px; } .em-hero h1 { font-size: 28px; line-height: 34px; } .mailview { padding: 12px 8px 40px; } }
 
 /* Owner card actions menu (decision owner-actions-menu). The card clips its contents, so it stops clipping while the menu is open. */
 .person.has-menu { overflow: visible; }
