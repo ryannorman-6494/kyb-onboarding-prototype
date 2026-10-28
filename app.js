@@ -1962,6 +1962,16 @@
       "tradeoff": "The trigger list is a guess and Ryan will get the real one confirmed. Because person-level changes show only Changed, Ops must open the Ops portal to see who, which adds a click. Who receives the email, and whether it is one email per change or a daily digest, are open (the template handles several changes in one email). The More info needed email must match what Ops picks on the More info screen; the 19 PEND_REASONS draft text is the source for its wording and nothing connects the two yet.",
       "by": "Ryan",
       "when": "2026-10-28"
+    },
+    {
+      "id": "ca-no-llc-structure",
+      "area": "Business",
+      "where": "Step 1 · Business type / legal structure (Canada)",
+      "t": "Canada does not offer LLC as a legal structure",
+      "b": "In Canada the legal structure list is Partnership and Corporation, and the registry lookup and sample business fill in Corporation. The US list keeps Limited liability company (LLC). The made-up Canadian business is named Riverside Pilates Inc. so its name matches its structure. Also reworded: the legal proceedings question no longer says on the go, and the step 7 review line for all-No declarations reads All answers No, not Nothing to declare, to follow the tone of voice rule on idioms.",
+      "tradeoff": "Two options is my draft. Canadian structures such as an unlimited liability company or a co-operative are not listed; compliance should say which Xplor accepts. The registry lookup still returns the same made-up Portland business for every region.",
+      "by": "Ryan",
+      "when": "2026-10-28"
     }
   ];
 
@@ -2010,6 +2020,9 @@
     acceptAgreement: false, acceptPrivacy: false, acceptEsign: false,
     signAuthority: false
   };
+
+  // Canada's made-up business is a corporation, so its name ends Inc. rather than LLC (decision ca-no-llc-structure).
+  const CA_NAME = "Riverside Pilates Inc.";
 
   const SAMPLE_ANSWERS = Object.assign({}, EMPTY_ANSWERS, {
     sigSame: "yes",
@@ -2121,7 +2134,7 @@
       step: divisionOn() ? 6 : 1,
       // The login screen (decision login-default-start): which stage ("credentials" or "change"), the typed values, and any error.
       loginStage: "credentials",
-      loginEmail: "",
+      loginEmail: "dana@riversidepilates.example", // the username the welcome email shows, so a tester need not retype it
       loginPassword: "",
       loginErr: "",
       // The existing-user business picker (decision existing-user-new-business): "new", "existing" or "" before a choice.
@@ -2176,7 +2189,7 @@
 
       // SIMPLE TRIAL: the cards on the simple More info screen, { id, name (the file, "" for none), busy, note }. Starts with one empty card.
       rfiDocs: [{ id: 1, name: "", busy: false, note: "" }],
-      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS)
+      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample && isCa() ? { structure: "Corporation", legalName: CA_NAME, accountHolder: CA_NAME } : {})
     };
   }
 
@@ -2490,7 +2503,7 @@
     const problem = lookupProblem(state.lookupId);
     if (problem) { setState({ lookupErr: problem }); return; }
     // A sole trader's number confirms the EIN only; there is no registry record of a company to fill in.
-    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: "Non-profit" }) : REGISTRY_RESULT;
+    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: "Non-profit" }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Corporation", legalName: CA_NAME }) : REGISTRY_RESULT;
     setState((s) => ({ lookupErr: "", noEin: false, einFound: true, lookupConfirmed: isSole(), lookupRejected: false, manualBiz: false, a: Object.assign({}, s.a, filled) }));
     showToast(lookupResultText(state));
   }
@@ -2520,7 +2533,7 @@
   // The rest of step 1 stays out of sight until there is something to put in it.
   const step1Open = () => state.manualBiz || (isSole() && state.noEin) || state.einFound;
   // True while the registry-filled details are exactly as the lookup returned them.
-  const registryUntouched = () => state.a.legalName === REGISTRY_RESULT.legalName && state.a.regAddress === REGISTRY_RESULT.regAddress && (isCa() || state.a.stateInc === REGISTRY_RESULT.stateInc);
+  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === REGISTRY_RESULT.regAddress && (isCa() || state.a.stateInc === REGISTRY_RESULT.stateInc);
 
   // ---------------------------------------------------------------------------
   // Validation. Pure reads of state: returns { fieldId: message } for a step.
@@ -2660,7 +2673,7 @@
   function declarationsSummary(a, ca) {
     const asked = [a.legalProceedings, a.priorTermination, a.taxLiens].concat(ca ? [] : [a.msb]);
     if (asked.some((v) => !v)) return "";
-    return asked.every((v) => v === "no") ? "Nothing to declare" : "Declarations made";
+    return asked.every((v) => v === "no") ? "All answers No" : "Declarations made";
   }
 
   // ---------------------------------------------------------------------------
@@ -2756,7 +2769,7 @@
         (state.einFound || state.manualBiz || (isSole() && state.noEin)) && card("s1-reg", isSole() ? "Your details" : "Registered details", isSole() ? "Check these and change anything that isn't right." : (state.einFound ? "Straight from the registry. Change anything that isn't right." : "Enter these as they appear on your registration."), [
           fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: true, placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
           fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
-          isCompany() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: ["Partnership", "Limited liability company (LLC)", "Corporation"] }) : null,
+          isCompany() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: ca ? ["Partnership", "Corporation"] : ["Partnership", "Limited liability company (LLC)", "Corporation"] }) : null,
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ], { assurance: isSole() || !state.einFound || !state.lookupConfirmed ? "" : registryUntouched() ? "Matched against " + (ca ? "CRA and provincial registry records" : "IRS and Oregon Secretary of State records") : "You've changed some of the registry details, so we'll check your documents against what you've entered." }),
@@ -2853,7 +2866,7 @@
     if (step === 5) {
       return [
         card("s5-dec", "Declarations", "Saying yes to any of these won't stop your application — it just means someone reads it alongside the automated checks.", [
-          fld("legalProceedings", "Any legal proceedings on the go?", "yn", { span: true }),
+          fld("legalProceedings", "Are there any legal proceedings involving the business right now?", "yn", { span: true }),
           a.legalProceedings === "yes" ? fld("legalProceedingsWhy", "Tell us a bit about it", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
           fld("priorTermination", "Has a merchant account of yours been terminated?", "yn", { span: true }),
           a.priorTermination === "yes" ? fld("priorTerminationWhy", "Processor, date and reason", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
