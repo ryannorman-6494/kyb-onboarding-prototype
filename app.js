@@ -1972,6 +1972,16 @@
       "tradeoff": "Two options is my draft. Canadian structures such as an unlimited liability company or a co-operative are not listed; compliance should say which Xplor accepts. The registry lookup still returns the same made-up Portland business for every region.",
       "by": "Ryan",
       "when": "2026-10-28"
+    },
+    {
+      "id": "ops-removal-by-deleting",
+      "area": "Flow",
+      "where": "Ops · Deleting an application or removing someone's access",
+      "t": "To delete an application or remove someone's access, Ops deletes the user or disables the business",
+      "b": "There is no separate remove or delete application feature for Ops. If an Ops user wants an application gone, or wants to take a person's access away, they delete that user from the system. If they want to stop a whole business, they disable the business. The prototype has no Ops screens, so nothing is built for this, and the applicant-facing flow does not change.",
+      "tradeoff": "Ops needs no new screens or states, and the applicant never sees a half-removed application. What happens to the data an applicant already entered, and whether a deleted user can be restored or re-invited, is not decided here; engineering and Ops should say.",
+      "by": "Ryan",
+      "when": "2026-10-29"
     }
   ];
 
