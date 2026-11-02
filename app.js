@@ -501,8 +501,8 @@
       "area": "Flow",
       "where": "Step 4 · Payout account",
       "t": "The payout account is typed in, with no bank connection",
-      "b": "Step 4 asks for the account details directly: bank name, account holder, account type, and the routing and account numbers (institution, transit and account numbers in Canada). The earlier choice between connecting a bank and typing the details in is gone, along with the “30 seconds” and “+1 document” labels, the simulated bank login, and the lines on the welcome page and in step 4 that promised a faster route. Nothing proves the account on the spot any more, so the bank letter or voided check is always asked for in step 6.",
-      "tradeoff": "Typing numbers is slower and easier to get wrong than a bank connection, and a mistyped digit would send money to the wrong place; the bank letter in step 6 is the check. A connection could come back later as a second route, but it is not designed here.",
+      "b": "Step 4 asks for the account details directly: bank name, account holder, account type, and the routing and account numbers (institution, transit and account numbers in Canada). The earlier choice between connecting a bank and typing the details in is gone, along with the “30 seconds” and “+1 document” labels, the simulated bank login, and the lines on the welcome page and in step 4 that promised a faster route. Nothing proves the account on the spot any more, so the account is checked by Trullio after submit (decision bank-verified-by-trullio); an earlier version asked for a bank letter or voided check in step 6.",
+      "tradeoff": "Typing numbers is slower and easier to get wrong than a bank connection, and a mistyped digit would send money to the wrong place; the check is Trullio's, after submit. A connection could come back later as a second route, but it is not designed here.",
       "by": "Ryan",
       "when": "2026-10-07"
     },
@@ -843,7 +843,7 @@
       "area": "Copy",
       "where": "Welcome page",
       "t": "The “What you'll need” list is four cards, with bank and documents combined",
-      "b": "Getting paid and the documents that back it up are one preparation job, so they share a card: bank numbers, and the bank letter or voided check. The line about a photo ID going up at step 6 was removed because it was unclear; the second card is titled “Details of the people who own your organization”. The page also sits closer to the top, as do all the steps.",
+      "b": "Getting paid and the documents that back it up are one preparation job, so they share a card: bank numbers, and the documents that back it up (the bank letter was removed later, decision bank-verified-by-trullio). The line about a photo ID going up at step 6 was removed because it was unclear; the second card is titled “Details of the people who own your organization”. The page also sits closer to the top, as do all the steps.",
       "tradeoff": "The combined card is longer than the others.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -1050,14 +1050,14 @@
       "when": "2026-10-06"
     },
     {
-      "id": "bank-letter-always",
+      "id": "bank-verified-by-trullio",
       "area": "Flow",
-      "where": "Step 6 · Bank account verification",
-      "t": "The bank letter is always required",
-      "b": "With no bank connection to prove the account, the bank account verification row in step 6 is always Required: a voided check or void cheque, a bank letter, or a recent statement showing the name and account. It never shows as skipped, and the review summary says “bank document still to add” until it is checked.",
-      "tradeoff": "This is one more file for everyone, which the bank connection used to remove. Whether these documents are enough to prove the account, and what an applicant sees when the letter does not match step 4, is for ops and the verification partner to say. The “One thing to fix” page still shows a mismatch between the letter and the registered address.",
+      "where": "Step 6 · Documents, and step 4 · Payout account",
+      "t": "Step 6 no longer asks for proof of the bank account",
+      "b": "The Bank account verification row (a voided check or void cheque, a bank letter, or a recent statement) is gone from step 6, in both regions and for every business type. Ryan says Trullio, our verification partner, verifies bank accounts for us, so the applicant only types the account in step 4. The step 4 description, the line under the fields and the Why do you need my account details? note, the welcome page's bank line and the step 7 review row no longer mention a document, and the review row shows only the bank name and account type. The Banking Verification card on the More info needed screen is unchanged: it is what Ops can still ask for after submit. Earlier versions made the bank letter always required (decision bank-letter-always, 2026-10-07).",
+      "tradeoff": "That Trullio verifies bank accounts is relayed by Ryan, not from a document; Trullio or compliance should confirm it covers US and Canadian accounts and what happens when an account cannot be verified (the Banking Verification request is the likely route). A mistyped number is now caught only after submit, not by a document at step 6. Step 6 has one less file to find, which was the most common place people got stuck without the paper in hand.",
       "by": "Ryan",
-      "when": "2026-10-07"
+      "when": "2026-11-02"
     },
     {
       "id": "welcome-registry-promise-softened",
@@ -2869,7 +2869,7 @@
       return [
         card("s4-manual", "Settlement account", "", bankFields, {
           pinId: "bank-no-debit",
-          assurance: "We pay your sales into this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter at step 6."
+          assurance: "We pay your sales into this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains."
         })
       ];
     }
@@ -2908,7 +2908,7 @@
       1: { t: "Why are we asking?", b: "Your bank needs to see that the " + orgWord() + " really exists and that its name, number and address all line up. Matching the registry for you speeds up the review.", p: ["Checked against " + (ca ? "CRA and provincial registries" : "IRS and Secretary of State records"), "A match is one less document to dig out", "Your description sets your merchant category for you"] },
       2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
       3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
-      4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. We check it against the bank letter you add at step 6, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later"] },
+      4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. Trullio, our verification partner, checks it after you submit, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later"] },
       5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal. It means a person reviews your file instead of it going straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
       6: { t: "Why do you need files?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Checking them as they upload means a blurry scan gets caught now, not after a three-day wait.", p: ["Scanned for malware, stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Most decisions come back in under 2 hours", "Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
@@ -2928,11 +2928,6 @@
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
     if (!isSole()) list.push({ key: "reg", title: isNonprofit() ? "Proof of registration or non-profit status" : "Proof of business registration", requirement: state.einFound ? "Not needed" : "Required", hint: state.einFound ? "Skipped. The registry match in step 1 already confirmed your " + (isNonprofit() ? "organization" : "business") + " is registered." : "Articles of incorporation, certificate of formation or equivalent.", file: "articles-of-organization.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (a.incorporated ? " · formed " + a.incorporated : "") + " — matches step 1", skip: state.einFound });
-    list.push({
-      key: "bank", title: "Bank account verification", requirement: "Required",
-      hint: (ca ? "Void cheque" : "Voided check") + ", bank letter or a recent statement showing the " + (isNonprofit() ? "organization" : "business") + " name and account.",
-      file: "bank-letter.pdf", read: "Read: " + (a.accountHolder || a.legalName || "your " + orgWord()) + (digitsOf(a.accountNumber) ? " · account ending " + digitsOf(a.accountNumber).slice(-4) + " — matches step 4" : "")
-    });
     if (!ca) {
       if (!(isSole() && !state.einFound)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: state.einFound ? "Not needed" : "Required", hint: state.einFound ? "Skipped. The IRS match in step 1 already confirmed your EIN." : "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (digitsOf(state.lookupId) ? " · EIN ending " + digitsOf(state.lookupId).slice(-4) + " — matches step 1" : ""), skip: state.einFound });
       list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Review it and sign here, or upload your own signed copy.", file: "w9-uploaded.pdf", read: "Read: a W-9 for " + (w9Info().name || "your " + orgWord()) + (w9Info().hasEin ? " · EIN ending " + w9Info().last4 + " — matches step 1" : "") });
@@ -3005,7 +3000,7 @@
       signatoryName, signatoryTitle,
       needRegistration: ca ? "Step 1 starts with your CRA business number. If we find a record we'll fill in the rest, so there's less for you to type." : "Step 1 starts with your EIN. If we find a record we'll fill in the rest, so there's less for you to type.",
       needIds: ca ? "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's licence or passport and a SIN (a non-profit or government body doesn't need the SIN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : "") : "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's license or passport and an SSN (a non-profit or government body doesn't need the SSN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : ""),
-      needBank: ca ? "Your institution, transit and account numbers, plus a void cheque or a bank letter." : "Your routing and account numbers, plus a voided check or a bank letter.",
+      needBank: ca ? "Your institution, transit and account numbers." : "Your routing and account numbers.",
       shellRailNote: isStatus ? "Submitted — with Trullio" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
       remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
       stepCounter: "Step " + st.step + " of 7",
@@ -3019,7 +3014,7 @@
         1: "",
         2: isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : "."),
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
-        4: "Add the account your payouts should go to. You'll add a " + (ca ? "void cheque" : "voided check") + " or bank letter for it in step 6.",
+        4: "Add the account your payouts should go to.",
         5: "Every application includes these. Saying yes to one is never an automatic no — it just means someone reads your file.",
         6: "We check each file as it uploads, so you'll know straight away if something doesn't work.",
         7: "Check everything you've told us. When you sign, we send it all in one go."
@@ -3053,7 +3048,7 @@
         { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, ca ? (st.lookupId && "BN " + st.lookupId) : (st.einFound && "EIN ••••" + (digitsOf(st.lookupId).slice(-4) || "7208")), a.regAddress], step: 1 },
         { label: isNonprofit() ? "Leaders & signatory" : "Owners & signatory", parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
         { label: "How you take payments", parts: [a.monthlyVolume && "$" + fmtMoney(a.monthlyVolume) + "/mo", a.avgTicket && "avg $" + fmtMoney(a.avgTicket), a.cpSplit && a.cpSplit + "% card present", a.goods && a.goods.toLowerCase()], step: 3 },
-        { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase(), a.accountNumber && (doc("bank").state === "done" ? "bank document checked" : "bank document still to add")], step: 4 },
+        { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase()], step: 4 },
         { label: "Compliance declarations", parts: [declarationsSummary(a, ca), (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
         { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " checked"]; })(), step: 6 }
       ].map((r) => {
