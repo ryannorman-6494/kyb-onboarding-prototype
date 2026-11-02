@@ -155,10 +155,12 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .need-body { font-size: var(--type-body-small-size); line-height: 1.45; color: var(--color-text-subtle); }
 /* What you'll need: the items sit in one card, split by a light divider that stops at the card's inner margins (decision welcome-needs-one-card). */
 .need-list { gap: 0; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
-.need-list .need { position: relative; background: transparent; box-shadow: none; border-radius: 0; }
+.need-list .need { position: relative; background: transparent; box-shadow: none; border-radius: 0; gap: 16px; padding: 28px 28px; }
+.need-list .need .need-title { margin-bottom: 6px; }
+.need-list .need .need-body { line-height: 1.55; }
 .need-list .need .icon-tile { width: 20px; height: 20px; background: transparent; border-radius: 0; }
 .need-list .need .icon-tile svg { width: 20px; height: 20px; }
-.need-list .need + .need::before { content: ""; position: absolute; top: 0; left: 18px; right: 18px; height: 1px; background: var(--color-border-default); }
+.need-list .need + .need::before { content: ""; position: absolute; top: 0; left: 28px; right: 28px; height: 1px; background: var(--color-border-default); }
 .actions { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
 .actions { position: relative; }
 .actions .btn { width: 100%; white-space: normal; }
