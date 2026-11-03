@@ -87,7 +87,7 @@
       lead: "Either of these works",
       accept: [
         "A voided check with your business name and account details printed on it. We can't take starter checks.",
-        "A letter on your bank's letterhead. It shows your full account number, your routing number, and your legal or DBA name, along with your contact details. A bank representative signs it and adds their phone number and email."
+        "A letter on your bank's letterhead. It shows your full account number, your bank's routing details, and your legal or DBA name, along with your contact details. A bank representative signs it and adds their phone number and email."
       ]
     },
     {
@@ -1888,8 +1888,8 @@
       "area": "Business type",
       "where": "What type of business are you?",
       "t": "The third business type covers non-profits and government bodies",
-      "b": "The third option on the business type page is for non-profits and for government bodies. Its description now reads Charitable organizations, foundations, non-governmental organizations and government bodies, so a government body knows it belongs there. The option's label is still Non-profit organization, and the steps still say organization, leaders and supporters, which fit both.",
-      "tradeoff": "A government body may not see itself in the label Non-profit organization, and wording such as Donations and Trustees was written with non-profits in mind. Renaming the label (for example Non-profit or government) and checking the step wording are not done.",
+      "b": "The third option on the business type page is for non-profits and for government bodies. Its description now reads Charitable organizations, foundations, non-governmental organizations and government bodies, so a government body knows it belongs there. The option's label reads Non-profit or government (renamed 2026-11-03), and the steps still say organization, leaders and supporters, which fit both.",
+      "tradeoff": "Wording such as Donations and Trustees was written with non-profits in mind and has not been checked for government bodies.",
       "by": "Ryan",
       "when": "2026-10-27"
     },
@@ -2357,7 +2357,7 @@
   const BIZ_TYPES = [
     { id: "company", label: "Company", desc: "A registered business, such as an LLC, corporation or partnership." },
     { id: "individual", label: "Individual / Sole proprietor", desc: "You are the sole owner of an unincorporated business." },
-    { id: "non-profit", label: "Non-profit organization", desc: "Charitable organizations, foundations, non-governmental organizations and government bodies." }
+    { id: "non-profit", label: "Non-profit or government", desc: "Charitable organizations, foundations, non-governmental organizations and government bodies." }
   ];
   // Changing your mind wipes what was entered for the old type, so nothing that
   // doesn't apply to the new one is left behind.
