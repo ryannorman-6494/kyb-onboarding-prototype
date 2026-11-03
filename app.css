@@ -749,3 +749,6 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .simple-top .pend-field { flex: 1; min-width: 0; }
 .simple-top .icon-btn { padding: 8px; }
 .simple-doc .doc-file { margin-top: 0; }
+
+/* Step 4: the optional extra bank account link sits quietly under the card, as text rather than a button. */
+.add-bank { display: inline-flex; align-items: center; gap: var(--space-layout-related); margin-top: var(--space-layout-related); font-size: var(--type-body-small-size); }
