@@ -1987,11 +1987,11 @@
       "id": "extra-bank-accounts",
       "area": "Flow",
       "where": "Step 4 · Payout account",
-      "t": "Extra bank accounts are optional, discreet, and one is the main account",
-      "b": "Step 4 still asks for one account, now called the Main account once a second is added. Under it sits a small text link, Add another bank account (optional), not a button or a card, so it does not compete with the required account. Each extra account has the same fields as the main one, its own Remove button, and a note that it is optional and that after approval the business can choose which account each merchant is paid into. The step description says the same in a sentence. A half-filled extra account blocks Next like any other field, so the applicant fills it in or removes it. The review row says how many more there are. The Umpqua line We recognize this one under the routing number is gone: nothing is checked as it is typed, because Trullio checks the accounts after submit (decision bank-verified-by-trullio).",
-      "tradeoff": "Assigning accounts to merchants is only described, not built: it happens after approval, in a place this prototype does not show. Extra accounts get no extra evidence, and both field spreadsheets are now out of date until rebuilt. Whether extra accounts may be held by a different legal entity than the business is not decided; the extra cards do not repeat the match-your-legal-name hint.",
+      "t": "Onboarding takes one bank account; more are added after approval",
+      "b": "Step 4 asks for one settlement account, the one that must match the legal name. Applicants cannot add further accounts here. The step description says that once approved they can add more accounts for their other merchants. A business such as a golf and country club can have a restaurant with its own bank account, but that is a separate merchant under the same business, set up after approval, not a second payout account on this application. A bank account held by a different legal entity is not an extra account: it needs its own application. Underwriting therefore reviews one legal entity and one verified bank account (decision bank-verified-by-trullio). This replaces the earlier optional Add another bank account link built on 2026-11-02.",
+      "tradeoff": "Adding accounts and merchants after approval is only described, not built. How underwriting treats a later account (extra check, new underwriting for a different trading name or merchant category) is not decided. A business with several accounts has to wait for approval before setting them up.",
       "by": "Ryan",
-      "when": "2026-11-02"
+      "when": "2026-11-03"
     },
     {
       "id": "sign-in-centred",
@@ -2219,7 +2219,6 @@
       // SIMPLE TRIAL: the cards on the simple More info screen, { id, name (the file, "" for none), busy, note }. Starts with one empty card.
       rfiDocs: [{ id: 1, name: "", busy: false, note: "" }],
       // Extra bank accounts on step 4: just their numbers (1, 2, ...). Each one's answers live in a as x<n>_bankName and so on.
-      extraBanks: [],
       a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample && isCa() ? { structure: "Corporation", legalName: CA_NAME, accountHolder: CA_NAME } : {})
     };
   }
@@ -2488,7 +2487,7 @@
   // Dates are typed as digits and laid out as they go in, in the region's order, so the slashes are never the applicant's job.
   // "3/5/1990" is read as 03 / 05 / 1990 rather than as digits 351990.
   const DATE_KEYS = ["dob", "idExpiry", "incorporated"];
-  const isDateKey = (id) => DATE_KEYS.indexOf(String(id).replace(/^(o|x)\d+_/, "")) > -1;
+  const isDateKey = (id) => DATE_KEYS.indexOf(String(id).replace(/^o\d+_/, "")) > -1;
   function formatDateInput(raw) {
     let t = String(raw);
     const m = t.match(/^(\d{1,2})\D+(?:(\d{1,2})\D+)?(\d{0,4})$/);
@@ -2582,7 +2581,7 @@
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
     if (!String(v).trim()) return "Fill this in to continue.";
-    const key = f.id.replace(/^(o|x)\d+_/, "");
+    const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
     if (key === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v).trim())) return "Enter an email like name@example.com.";
@@ -2873,7 +2872,6 @@
       ];
     }
     if (step === 4) {
-      // The same fields serve the main account (plain ids) and any extra one (ids prefixed x<n>_).
       const bankFields = (p, main) => ca
         ? [
             fld(p + "bankName", "Bank name", "text", { placeholder: "e.g. RBC Royal Bank" }),
@@ -2890,23 +2888,12 @@
             fld(p + "routing", "ABA routing number", "mono", { placeholder: "9 digits" }),
             fld(p + "accountNumber", "Account number (up to 17 digits)", "masked", { sensitive: true, placeholder: "Up to 17 digits" })
           ];
-      const addBank = () => setState((s) => ({ extraBanks: s.extraBanks.concat([Math.max(0, ...s.extraBanks) + 1]) }));
-      const removeBank = (n) => setState((s) => {
-        const a = Object.assign({}, s.a);
-        Object.keys(a).forEach((k) => { if (k.indexOf("x" + n + "_") === 0) delete a[k]; });
-        return { extraBanks: s.extraBanks.filter((x) => x !== n), a: a };
-      });
-      const foot = html`<button type="button" class="btn-link add-bank" data-key="add-bank" data-click="${on(addBank)}">${icon("plus", 14)}Add another bank account (optional)</button>`;
       return [
-        card("s4-manual", state.extraBanks.length ? "Main account" : "Settlement account", "", bankFields("", true), {
+        card("s4-manual", "Settlement account", "", bankFields("", true), {
           pinId: "bank-no-debit",
-          assurance: "We pay your sales into this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains.",
-          foot: state.extraBanks.length ? null : foot
+          assurance: "We pay your sales into this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains."
         })
-      ].concat(state.extraBanks.map((n, i) => card("s4-x" + n, "Additional account" + (state.extraBanks.length > 1 ? " " + (i + 1) : ""), "Optional. Once you're approved, you can choose which account each of your merchants is paid into.", bankFields("x" + n + "_", false), {
-        onRemove: () => removeBank(n),
-        foot: i === state.extraBanks.length - 1 ? foot : null
-      })));
+      ];
     }
     if (step === 5) {
       return [
@@ -3049,7 +3036,7 @@
         1: "",
         2: isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : "."),
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
-        4: "Add the main account your payouts should go to. If you need more than one, you can add others here too. It's optional, and once you're approved you can choose which account each of your merchants is paid into.",
+        4: "Add the account your payouts should go to. Once you're approved, you can add more accounts for your other merchants.",
         5: "Every application includes these. Saying yes to one is never an automatic no — it just means someone reads your file.",
         6: "We check each file as it uploads, so you'll know straight away if something doesn't work.",
         7: "Check everything you've told us. When you sign, we send it all in one go."
@@ -3083,7 +3070,7 @@
         { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, ca ? (st.lookupId && "BN " + st.lookupId) : (st.einFound && "EIN ••••" + (digitsOf(st.lookupId).slice(-4) || "7208")), a.regAddress], step: 1 },
         { label: isNonprofit() ? "Leaders & signatory" : "Owners & signatory", parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
         { label: "How you take payments", parts: [a.monthlyVolume && "$" + fmtMoney(a.monthlyVolume) + "/mo", a.avgTicket && "avg $" + fmtMoney(a.avgTicket), a.cpSplit && a.cpSplit + "% card present", a.goods && a.goods.toLowerCase()], step: 3 },
-        { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase(), st.extraBanks.length > 0 && "+" + st.extraBanks.length + " more"], step: 4 },
+        { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase()], step: 4 },
         { label: "Compliance declarations", parts: [declarationsSummary(a, ca), (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
         { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " checked"]; })(), step: 6 }
       ].map((r) => {
