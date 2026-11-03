@@ -1992,6 +1992,15 @@
       "tradeoff": "Assigning accounts to merchants is only described, not built: it happens after approval, in a place this prototype does not show. Extra accounts get no extra evidence, and both field spreadsheets are now out of date until rebuilt. Whether extra accounts may be held by a different legal entity than the business is not decided; the extra cards do not repeat the match-your-legal-name hint.",
       "by": "Ryan",
       "when": "2026-11-02"
+    },
+    {
+      "id": "sign-in-centred",
+      "area": "Layout",
+      "where": "Sign in and Change your password",
+      "t": "The sign-in screens are one narrow column, centred on the page",
+      "b": "The tag, title, description and card on both sign-in screens (Sign in, and Change your password) sit in one 480px column centred on the page, so the card no longer hangs to the left of a wider block. Every screen that shows the sign-in card uses it. The other front-door screens (Which business do you want to sign in with, and the welcome page) keep their wider layout.",
+      "by": "Ryan",
+      "when": "2026-11-03"
     }
   ];
 
@@ -3423,7 +3432,7 @@
     function loginView() {
       if (state.loginStage === "change") {
         return html`<div class="welcome" data-key="login-change">
-    <div class="welcome-inner">
+    <div class="welcome-inner welcome-inner--entry">
       <span class="tag tag--purple">${icon("lock", 13)}Secure sign-in</span>
       <h1 class="welcome-title">Change your password${pin("login-default-start")}</h1>
       <p class="welcome-lede">Your temporary password has to be changed before you continue.</p>
@@ -3443,7 +3452,7 @@
   </div>`;
       }
       return html`<div class="welcome" data-key="login">
-    <div class="welcome-inner">
+    <div class="welcome-inner welcome-inner--entry">
       <span class="tag tag--purple">${icon("lock", 13)}Secure sign-in</span>
       <h1 class="welcome-title">Sign in with your email and password${pin("login-default-start")}</h1>
       <p class="welcome-lede">${isReturning() ? "Sign in to pick up where you left off." : "Use the temporary password we sent you to get started."}</p>

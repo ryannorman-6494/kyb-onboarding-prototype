@@ -669,6 +669,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 /* ---------- Check it's you ---------- */
 .entry-card { max-width: 480px; }
+/* The sign-in column (tag, title, lede and card) is one 480px column centred on the page, on both sign-in screens. */
+.welcome-inner--entry { max-width: 480px; }
 .entry-actions { display: flex; align-items: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
 
 /* Back sits on a white fill, like Get help. */
