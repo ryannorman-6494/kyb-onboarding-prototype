@@ -3274,7 +3274,7 @@
         <h2 class="dialog-title" id="notes-title">Design decisions</h2>
         <p class="dialog-sub">${DECISIONS.length} recorded. Numbers match the markers on the screen.</p>
       </div>
-      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(() => setState({ notesListOpen: false }))}">${icon("x", 18)}</button>
+      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(() => setState({ notesListOpen: false }))}">${icon("x", 16)}</button>
     </div>
     <div class="notes-scroll">
       ${groups.map((g) => html`<section class="notes-group">
@@ -3741,7 +3741,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
         <h2 class="dialog-title" id="docv-title">Form W-9: tax certification</h2>
         <p class="dialog-sub">Filled in from your answers. Check it, then sign.</p>
       </div>
-      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDoc)}">${icon("x", 18)}</button>
+      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDoc)}">${icon("x", 16)}</button>
     </div>
     <div class="docv-paper" tabindex="0" role="document" aria-label="Form W-9">
       ${row("Name", w.name)}
@@ -3783,7 +3783,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
         <h2 class="dialog-title" id="docv-title">${title}</h2>
         <p class="dialog-sub">${meta}</p>
       </div>
-      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDoc)}">${icon("x", 18)}</button>
+      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDoc)}">${icon("x", 16)}</button>
     </div>
     <div class="docv-paper" tabindex="0" role="document" aria-label="${title}">
       ${a.sections.map((sec) => html`<div><h3 class="docv-h">${sec[0]}</h3>${[].concat(sec[1]).map((p) => html`<p class="docv-p">${p}</p>`)}</div>`)}
@@ -4050,7 +4050,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   ${docs.map((d) => html`<section class="card card--p20 pend simple-doc${d.name && !d.busy ? " is-done" : ""}" data-key="simple-doc-${d.id}">
     <div class="simple-top">
     <div class="pend-field" data-key="simple-note-${d.id}"><label class="field-label field-label--block" for="simple-note-${d.id}">Message for our team</label><textarea class="input" id="simple-note-${d.id}" rows="3" data-input="${on((e) => simpleUpdate(d.id, { note: e.target.value }))}">${d.note}</textarea></div>
-    ${docs.length > 1 && html`<button type="button" class="icon-btn" aria-label="Remove this document" data-click="${on(() => simpleRemoveCard(d.id))}">${icon("trash", 18)}</button>`}
+    ${docs.length > 1 && html`<button type="button" class="icon-btn" aria-label="Remove this document" data-click="${on(() => simpleRemoveCard(d.id))}">${icon("trash", 16)}</button>`}
     </div>
     <div class="pend-field" data-key="simple-file-${d.id}">${d.name
       ? html`<div class="doc-file"><span class="doc-file-name">${d.name}</span>${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleUpdate(d.id, { name: "", busy: false }))}">Remove file</button>`}</div>`
@@ -4139,7 +4139,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
         <h2 class="dialog-title" id="save-title">Your answers are saved</h2>
         <p class="dialog-sub" id="save-sub">${v.saveProgressNote}</p>
       </div>
-      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeSave)}">${icon("x", 18)}</button>
+      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeSave)}">${icon("x", 16)}</button>
     </div>
     <p class="dialog-body">Log back in any time and you'll carry on where you left off.${pin("return-by-login")}</p>
     ${invitesOn() && html`
@@ -4169,7 +4169,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-body">
     <div class="dialog-head">
       <div class="grow"><h2 class="dialog-title" id="confirm-title">${access ? "Remove " + (known ? nm + "'s" : "their") + " access?" : "Remove " + (known ? nm : "this owner") + " and everything they entered?"}</h2></div>
-      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeConfirm)}">${icon("x", 18)}</button>
+      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeConfirm)}">${icon("x", 16)}</button>
     </div>
     <p class="dialog-body" id="confirm-body">${access ? "They won't be able to sign in. What they already entered stays, and you can fill in the rest yourself." : "This takes " + (known ? nm : "them") + " off your application, ends their access and deletes what they entered. You can't undo this."}</p>
     <div class="dialog-actions">
@@ -4192,7 +4192,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
         <h2 class="dialog-title" id="delegate-title">${changing ? "Change the email for " + (who === "New owner" ? "this invite" : who) : "Send " + (who === "New owner" ? "them" : who) + " an invite"}</h2>
         <p class="dialog-sub" id="delegate-sub">They only see their own details and photo ID.</p>
       </div>
-      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDelegate)}">${icon("x", 18)}</button>
+      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDelegate)}">${icon("x", 16)}</button>
     </div>
     <p class="dialog-body">Enter the email of the person who'll fill in these details. They won't see the rest of your application. Carry on in the meantime, and we'll show you here when they're done.</p>
     <form class="dialog-form" data-submit="${on(sendDelegate)}"${state.delegateErr ? html` data-error="1"` : ""}>
@@ -4264,7 +4264,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
         <h2 class="dialog-title" id="help-title">Talk to a person</h2>
         <p class="dialog-sub">We can see where you are in the form, so you won't have to explain from the start.</p>
       </div>
-      <button type="button" class="icon-btn" id="help-close" aria-label="Close" data-click="${on(closeHelp)}">${icon("x", 18)}</button>
+      <button type="button" class="icon-btn" id="help-close" aria-label="Close" data-click="${on(closeHelp)}">${icon("x", 16)}</button>
     </div>
     <ul class="help-list">
       <li><span class="help-label">Call us</span><span class="help-value mono">${SUPPORT_PHONE}</span><span class="help-note">${SUPPORT_HOURS}</span></li>

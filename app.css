@@ -85,8 +85,11 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .btn-link { border: none; background: transparent; padding: 0; color: var(--color-text-brand); font-size: var(--type-caption-default-size); font-weight: var(--type-control-default-weight); cursor: pointer; }
 .btn-link:hover { color: var(--color-text-link-hover); }
 .btn-link--md { font-size: var(--type-body-small-size); }
-.icon-btn { display: inline-flex; border: none; background: transparent; color: var(--color-icon-subtle); cursor: pointer; padding: 2px; border-radius: var(--radius-small); }
-.icon-btn:hover { color: var(--color-text-secondary); }
+/* Atlas IconButton, text and secondary, medium: 32px square, 16px icon, grey fill on hover or press. */
+.icon-btn { display: inline-flex; align-items: center; justify-content: center; flex: none; width: var(--size-control-medium); height: var(--size-control-medium); padding: 0; border: none; background: transparent; color: var(--color-icon-secondary); cursor: pointer; border-radius: var(--radius-default); }
+.icon-btn:hover, .icon-btn:active { background: var(--color-background-hover); color: var(--color-icon-primary); }
+.icon-btn:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: var(--border-focus-offset); }
+.icon-btn:disabled { background: transparent; color: var(--color-icon-disabled); cursor: default; }
 
 /* ---------- Page frame + app shell ---------- */
 .page { display: flex; justify-content: safe center; min-height: 100vh; }
@@ -233,7 +236,9 @@ button.step:hover { background: var(--color-background-hover); }
 .input { width: 100%; height: var(--size-control-large); padding: 0 var(--component-input-padding-x-large); border: none; border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); font: var(--font-body-default); color: var(--color-text-primary); }
 .input:hover { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-hover); }
 .input:disabled { background: var(--color-background-disabled); color: var(--color-text-disabled); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default); }
-select.input { padding: 0 10px; }
+/* Atlas Select, closed field: the text field with a 16px chevron at the end (the open list stays the browser's own). */
+select.input { appearance: none; -webkit-appearance: none; padding: 0 36px 0 10px; background-image: url("assets/chevron-down.svg"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px 16px; }
+select.input:disabled { background-image: url("assets/chevron-down-disabled.svg"); }
 textarea.input { height: auto; padding: 10px var(--component-input-padding-x-large); line-height: 1.45; resize: vertical; }
 .input::placeholder, .affix input::placeholder { color: var(--color-text-subtle); }
 
@@ -284,7 +289,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .person { background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
 .person.is-open { box-shadow: inset 0 0 0 1px var(--color-border-brand), var(--lift-static); }
 .person-head { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
-.avatar { width: 38px; height: 38px; flex: none; border-radius: var(--radius-full); background: var(--color-background-brand-subtle); color: var(--color-text-link-hover); display: flex; align-items: center; justify-content: center; font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); }
+.avatar { width: 32px; height: 32px; flex: none; border-radius: var(--radius-full); background: var(--color-background-brand-subtle); color: var(--color-text-link-hover); display: flex; align-items: center; justify-content: center; font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); }
 .person-name { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .person-meta { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .person-body { padding: 4px 20px 20px; animation: xrise 200ms ease both; }
@@ -734,7 +739,6 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .simple-doc .pend-field { align-self: stretch; }
 .simple-top { display: flex; align-items: flex-start; gap: 12px; align-self: stretch; }
 .simple-top .pend-field { flex: 1; min-width: 0; }
-.simple-top .icon-btn { padding: 8px; }
 .simple-doc .doc-file { margin-top: 0; }
 
 /* Step 4: the optional extra bank account link sits quietly under the card, as text rather than a button. */
