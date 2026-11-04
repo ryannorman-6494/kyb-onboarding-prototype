@@ -255,6 +255,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 /* Yes / No as two separate selectable pills (the original look; replaces the Segmented control). The chosen pill keeps a 2px brand ring. */
 .yn { display: inline-flex; gap: var(--space-gap-related); }
 .yn-btn { height: var(--size-control-large); min-width: 76px; padding: 0 var(--component-button-padding-x-large); border: none; border-radius: var(--radius-full); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 1px var(--color-border-input); font: var(--font-control-default); letter-spacing: var(--type-control-default-letter-spacing); color: var(--color-text-primary); cursor: pointer; }
+.yn--pills { flex-wrap: wrap; }
 .yn-btn:hover { box-shadow: inset 0 0 0 1px var(--color-border-hover); }
 .yn-btn[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--color-border-brand); }
 .yn-btn:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: var(--border-focus-offset); }

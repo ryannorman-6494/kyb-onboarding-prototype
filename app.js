@@ -419,7 +419,7 @@
       "area": "Flow",
       "where": "Step 1 · Business & address",
       "t": "Ask for the registry number before anything else",
-      "b": "One EIN or business number fills in the legal name, structure, incorporation date and state. Correcting prefilled details is faster and far more accurate than composing them, and a registry match removes a document from step 6.",
+      "b": "One EIN or business number fills in the legal name, structure, incorporation date and address. Correcting prefilled details is faster and far more accurate than composing them, and a registry match removes a document from step 6.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -1970,7 +1970,7 @@
       "area": "Business",
       "where": "Step 1 · Business type / legal structure (Canada)",
       "t": "Canada does not offer LLC as a legal structure",
-      "b": "In Canada the legal structure list is Partnership and Corporation, and the registry lookup and sample business fill in Corporation. The US list keeps Limited liability company (LLC). The made-up Canadian business is named Riverside Pilates Inc. so its name matches its structure. Also reworded: the legal proceedings question no longer says on the go, and the step 7 review line for all-No declarations reads All answers No, not Nothing to declare, to follow the tone of voice rule on idioms.",
+      "b": "In Canada the legal structure list leaves out the LLC, and the registry lookup and sample business fill in Private corporation (the list was widened on 2026-11-04, see company-structure-nine-types). The US list keeps Limited liability company (LLC). The made-up Canadian business is named Riverside Pilates Inc. so its name matches its structure. Also reworded: the legal proceedings question no longer says on the go, and the step 7 review line for all-No declarations reads All answers No, not Nothing to declare, to follow the tone of voice rule on idioms.",
       "tradeoff": "Two options is my draft. Canadian structures such as an unlimited liability company or a co-operative are not listed; compliance should say which Xplor accepts. The registry lookup still returns the same made-up Portland business for every region.",
       "by": "Ryan",
       "when": "2026-10-28"
@@ -2153,6 +2153,36 @@
       "tradeoff": "An LLC owner who thinks of the LLC as \"just my business\" could still read the line as theirs, though \"registered as a company\" should stop them. Not re-tested with a persona.",
       "by": "Ryan",
       "when": "2026-11-04"
+    },
+    {
+      "id": "company-structure-nine-types",
+      "area": "Flow",
+      "where": "Step 1 · Company · Business type / legal structure",
+      "t": "The company structure dropdown covers the ODIN ownership types, with public and private spelled out",
+      "b": "For a company the structure dropdown lists Private corporation, Public corporation (publicly traded), Private partnership, Public partnership (publicly traded), Limited liability company (LLC, US only) and Limited liability partnership (LLP). Sole proprietor is the second business type card, and tax-exempt and government come from the non-profit pills, so together the three business types cover the nine ODIN ownership types: PRIVATE_CORPORATION, PUBLIC_CORPORATION, PRIVATE_PARTNERSHIP, PUBLIC_PARTNERSHIP, LLC, LIMITED_LIABILITY_PARTNERSHIP, SOLE_PROPRIETORSHIP, TAX_EXEMPT and GOVERNMENT. The cards stay the first choice because they decide which questions follow.",
+      "tradeoff": "Nothing in the prototype changes by structure yet: every company structure gets the same questions. Whether public companies or partnerships need different questions is for Ops to say. \"Public\" and \"private\" add jargon to the list, and most applicants are private. LLP in Canada is from general knowledge and should be confirmed.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "nonprofit-type-pills",
+      "area": "Flow",
+      "where": "Step 1 · Non-profit or government · Type of organization",
+      "t": "Non-profit or government asks for the type of organization with two round pills, not a dropdown",
+      "b": "The Non-profit or government route has a required Type of organization question with two round pills, the same control as Yes / No: Tax-exempt organization, and Government body. They map to TAX_EXEMPT and GOVERNMENT. Two choices are quicker to scan as pills than as a closed menu. The line under them says charities, foundations and other non-profits are tax-exempt organizations. The structure used to be filled in automatically as \"Non-profit\" and by the registry lookup; the applicant now chooses it and a lookup leaves the choice alone. Save and continue stays off until one is chosen.",
+      "tradeoff": "One more required answer on the non-profit route. Step wording written for non-profits (Donations, Trustees) is not yet different for a government body. The tax-exempt label is Ryan's reading of the ODIN type; whether a government body is also tax-exempt in ODIN is not known. On 2026-11-04 Ryan considered splitting Non-profit and Government into two cards (four in all) and decided to keep the pills, because both get the same questions; if Ops says they should differ, revisit the four cards.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "state-from-address",
+      "area": "Flow",
+      "where": "Step 1 · Registered details",
+      "t": "No separate state field; Doing business as sits beside the legal name",
+      "b": "The registered details card no longer asks for the state of incorporation (or, for a non-profit, the state registered in). The state is already part of the registered address, so asking again made the applicant answer the same thing twice and gave them two places to disagree. With it gone, a company's four short fields sit in a two by two grid: Legal business name beside Doing business as, then Business type / legal structure beside Date of incorporation. The Non-profit or government route moves Doing business as next to the legal name in the same way, with Type of organization below them across the full width. The sole proprietor card is unchanged. The registry lookup no longer fills a state, and the check that tells whether the registry details were edited now compares only the legal name and address.",
+      "tradeoff": "Nothing now holds the state as a separate answer, so anything that needs it must read it from the address text. If engineering needs the state of incorporation as its own value, it has to be pulled from the registry result or parsed from the address. On the non-profit route the Date registered field now sits alone on the last row. The Canada company card already had no state field, so it only gains the new order.",
+      "by": "Ryan",
+      "when": "2026-11-04"
     }
   ];
 
@@ -2181,7 +2211,7 @@
   // walked the way a new applicant meets it; "Sample business" in the prototype
   // options swaps in a finished Riverside Pilates for demoing the later screens.
   const EMPTY_ANSWERS = {
-    sigSame: "", structure: "", incorporated: "", legalName: "", dba: "", stateInc: "",
+    sigSame: "", structure: "", incorporated: "", legalName: "", dba: "",
     website: "", phone: "", email: "", description: "", regAddress: "",
     tradingSame: "", tradingAddress: "",
     monthlyVolume: "", avgTicket: "", maxTicket: "", cpSplit: "",
@@ -2218,7 +2248,6 @@
     incorporated: "03 / 12 / 2019",
     legalName: "Riverside Pilates LLC",
     dba: "Riverside Pilates",
-    stateInc: "Oregon",
     website: "riversidepilates.com",
     phone: "+1 (503) 555-0148",
     email: "hello@riversidepilates.com",
@@ -2248,7 +2277,6 @@
     dba: "Riverside Pilates",
     structure: "Limited liability company (LLC)",
     incorporated: "03 / 12 / 2019",
-    stateInc: "Oregon",
     regAddress: "418 SE Water Ave, Suite 210, Portland, OR 97214"
   };
 
@@ -2378,7 +2406,7 @@
       // SIMPLE TRIAL: the cards on the simple More info screen, { id, name (the file, "" for none), busy, note }. Starts with one empty card.
       rfiDocs: [{ id: 1, name: "", busy: false, note: "" }],
       // Extra bank accounts on step 4: just their numbers (1, 2, ...). Each one's answers live in a as x<n>_bankName and so on.
-      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample && isCa() ? Object.assign({ structure: "Corporation", legalName: CA_NAME, accountHolder: CA_NAME }, CA_SAMPLE_BUSINESS) : {})
+      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample && isCa() ? Object.assign({ structure: "Private corporation", legalName: CA_NAME, accountHolder: CA_NAME }, CA_SAMPLE_BUSINESS) : {})
     };
   }
 
@@ -2505,6 +2533,11 @@
   const saveEdit = () => attempt(() => setState({ step: 7, editing: false }));
   const back = () => (state.step <= 1 ? setState({ screen: "bizType" }) : setState({ step: state.step - 1 }));
 
+  // Legal structure choices (decision company-structure-nine-types). Each maps to one ODIN ownership type; sole proprietor, tax-exempt and government come from the card and the pills.
+  const NONPROFIT_TYPES = ["Tax-exempt organization", "Government body"];
+  const companyStructures = () => isCa()
+    ? ["Private corporation", "Public corporation (publicly traded)", "Private partnership", "Public partnership (publicly traded)", "Limited liability partnership (LLP)"]
+    : ["Private corporation", "Public corporation (publicly traded)", "Private partnership", "Public partnership (publicly traded)", "Limited liability company (LLC)", "Limited liability partnership (LLP)"];
   const BIZ_TYPES = [
     { id: "company", label: "Company", desc: "A registered business, such as an LLC, corporation or partnership." },
     { id: "individual", label: "Individual / Sole proprietor", desc: "You run the business yourself and haven't registered it as a company or corporation." },
@@ -2522,7 +2555,7 @@
       bizType: t,
       // Only a sole proprietor starts with a person listed (themselves). Everyone else adds the owners, since the applicant is often not one.
       owners: t === "individual" ? [{ id: 1, name: "You", initials: "?", pct: 100, role: "Owner", status: "pending", self: true }] : state.owners.map((o) => (t === "non-profit" && o.me && o.added ? Object.assign({}, o, { role: "Director", pct: 10 }) : o)),
-      a: Object.assign({}, state.a, t === "individual" ? { structure: "Sole proprietor" } : t === "non-profit" ? { structure: "Non-profit" } : {})
+      a: Object.assign({}, state.a, t === "individual" ? { structure: "Sole proprietor" } : t === "non-profit" ? { structure: "" } : {})
     });
   }
   const openHelp = () => setState({ helpOpen: true });
@@ -2631,7 +2664,6 @@
     self: { name: "Dana R. Whitfield", dob: "04 / 11 / 1986", home: "92 NE Bryce St, Portland, OR 97212", email: "dana@riversidepilates.com", phone: "+1 (503) 555-0148" },
     other: { name: "Marcus J. Lee", dob: "09 / 10 / 1979", home: "1408 SE Belmont St, Portland, OR 97214", email: "marcus@riversidepilates.com", phone: "+1 (503) 555-0192" }
   };
-  const US_STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
   // The applicant's own country comes first (decision country-list-own-first).
   const countries = () => (isCa() ? ["Canada", "United States", "United Kingdom", "Australia", "Other"] : ["United States", "Canada", "United Kingdom", "Australia", "Other"]);
   // Date order follows the region, so the placeholder is the instruction.
@@ -2693,7 +2725,7 @@
     // Keep only the 9-digit BN so the program account suffix never reaches the review row or the W-9.
     if (bnCore(state.lookupId) !== state.lookupId) setState({ lookupId: bnCore(state.lookupId) });
     // A sole trader's number confirms the EIN only; there is no registry record of a company to fill in.
-    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: "Non-profit" }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Corporation", legalName: CA_NAME, regAddress: CA_ADDRESS }) : REGISTRY_RESULT;
+    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: state.a.structure }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Private corporation", legalName: CA_NAME, regAddress: CA_ADDRESS }) : REGISTRY_RESULT;
     setState((s) => ({ lookupErr: "", noEin: false, einFound: true, lookupConfirmed: isSole(), lookupRejected: false, manualBiz: false, a: Object.assign({}, s.a, filled) }));
     showToast(lookupResultText(state));
   }
@@ -2705,7 +2737,7 @@
   function rejectLookup() {
     setState((s) => ({
       einFound: false, lookupConfirmed: false, lookupRejected: true, manualBiz: true, lookupErr: "",
-      a: Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() ? "Non-profit" : "" })
+      a: Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" })
     }));
     showToast("Thanks for telling us. We've cleared those details. Fill them in yourself, or look up a different number above. If you type them in, we'll ask for a registration document at step 6.");
   }
@@ -2715,7 +2747,7 @@
     setState(lookupProblem(state.lookupId) ? { lookupId: "", lookupErr: "", lookupBlurErr: "" } : { lookupBlurErr: "" });
     setState((s) => ({
       manualBiz: true, einFound: false, lookupConfirmed: false, lookupRejected: false, noEin: isSole(), lookupErr: "",
-      a: s.einFound ? Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() ? "Non-profit" : "" }) : s.a
+      a: s.einFound ? Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" }) : s.a
     }));
     // A sole proprietor with no number to look up gives their SSN/SIN at step 2 instead, so this is also the "I don't have one" route.
     showToast(isSole() ? "No problem. You'll give us your " + (isCa() ? "SIN" : "SSN") + " at step 2 instead, so there's no " + (isCa() ? "business number" : "EIN") + " letter to find." : "No problem. Fill in the details below. We'll ask for a registration document at step 6 so we can check them.");
@@ -2723,7 +2755,7 @@
   // The rest of step 1 stays out of sight until there is something to put in it.
   const step1Open = () => state.manualBiz || (isSole() && state.noEin) || state.einFound;
   // True while the registry-filled details are exactly as the lookup returned them.
-  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === (isCa() ? CA_ADDRESS : REGISTRY_RESULT.regAddress) && (isCa() || state.a.stateInc === REGISTRY_RESULT.stateInc);
+  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === (isCa() ? CA_ADDRESS : REGISTRY_RESULT.regAddress);
 
   // ---------------------------------------------------------------------------
   // Validation. Pure reads of state: returns { fieldId: message } for a step.
@@ -2737,6 +2769,7 @@
     const v = f.value;
     if (f.kind === "check") return v === true ? "" : "Tick this to continue.";
     if (f.kind === "yn") return v ? "" : "Choose yes or no.";
+    if (f.kind === "pills") return v ? "" : "Choose one.";
     if (f.kind === "select") return v ? "" : "Choose one.";
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
@@ -2959,11 +2992,11 @@
       if (!step1Open()) return [];
       return [
         (state.einFound || state.manualBiz || (isSole() && state.noEin)) && card("s1-reg", isSole() ? "Your details" : "Registered details", isSole() ? "Check these and change anything that isn't right." : (state.einFound ? "Straight from the registry. Change anything that isn't right." : "Enter these as they appear on your registration."), [
-          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: true, placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
+          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
           fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
-          isCompany() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: ca ? ["Partnership", "Corporation"] : ["Partnership", "Limited liability company (LLC)", "Corporation"] }) : null,
-          isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
-          ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
+          isCompany() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
+          isNonprofit() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES, hint: "Charities, foundations and other non-profits are tax-exempt organizations." }) : null,
+          isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() })
         ], { assurance: isSole() || !state.einFound || !state.lookupConfirmed ? "" : registryUntouched() ? "Matched against " + (ca ? "CRA and provincial registry records" : "IRS and Oregon Secretary of State records") : "You've changed some of the registry details, so we'll check your documents against what you've entered." }),
         card("s1-addr", "Addresses", "", [
           fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "text", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
@@ -3372,6 +3405,10 @@
       case "long":
         control = html`<textarea class="input" id="${id}" rows="3" placeholder="${f.placeholder}"${described} data-input="${onInput}">${f.value}</textarea>`;
         break;
+      case "pills":
+        // One round pill per option, the same control as Yes / No (decision nonprofit-type-pills).
+        control = html`<div class="yn yn--pills" role="group" aria-labelledby="l-${f.id}"${described}>${f.options.map((opt) => html`<button type="button" class="yn-btn" aria-pressed="${String(f.value === opt)}" data-click="${on(() => set(f.id, opt))}">${opt}</button>`)}</div>`;
+        break;
       case "yn":
         control = html`<div class="yn" role="group" aria-labelledby="l-${f.id}"${described}><button type="button" class="yn-btn" aria-pressed="${String(f.value === "yes")}" data-click="${on(() => set(f.id, "yes"))}">Yes</button><button type="button" class="yn-btn" aria-pressed="${String(f.value === "no")}" data-click="${on(() => set(f.id, "no"))}">No</button>${f.unsure && html`<button type="button" class="yn-btn" aria-pressed="${String(f.value === "unsure")}" data-click="${on(() => set(f.id, "unsure"))}">Unsure</button>`}</div>`;
         break;
@@ -3379,7 +3416,7 @@
         control = html`<input class="input" id="${id}" value="${f.value}" placeholder="${f.placeholder}"${described} data-input="${onInput}">`;
     }
 
-    const label = f.kind === "yn"
+    const label = f.kind === "yn" || f.kind === "pills"
       ? html`<span class="field-label" id="l-${f.id}">${f.label}${f.required && REQ}</span>`
       : html`<label class="field-label" for="${id}">${f.label}${f.required && REQ}</label>`;
     return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}>
