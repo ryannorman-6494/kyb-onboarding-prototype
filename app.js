@@ -1619,8 +1619,8 @@
       "area": "Flow",
       "where": "Approved page",
       "t": "In Slice 1 the approved page is the welcome card and nothing else",
-      "b": "Once the application is approved, Slice 1 shows only the main card: the approved tag, Welcome to Xplor Pay, a sentence that sends the applicant to the payments dashboard to get started, and two buttons. Open payments dashboard is the main one. Get help adding users is the quieter one and opens the same Talk to a person dialog as Get help. The Now that you're approved section, with its Invite your team and Order card readers tiles, is left out. Inviting more people happens inside ODIN after approval, so the onboarding flow does not offer it; the sentence says users can be added from the dashboard and the second button covers anyone who gets stuck. Slice 2 keeps the two tiles and its original sentence.",
-      "tradeoff": "Support becomes the fallback for adding users, so ops should expect those requests. The second button opens the general help dialog, not a dedicated users request.",
+      "b": "Once the application is approved, Slice 1 shows only the main card: the approved tag, Welcome to Xplor Pay, a sentence that sends the applicant to the payments dashboard to get started, and one button, Open payments dashboard. There used to be a quieter second button, Get help adding users, that opened the Talk to a person dialog; it was removed on 2026-11-04 (Ryan) because the dashboard is where users are added and the sentence already says so. The Now that you're approved section, with its Invite your team and Order card readers tiles, is left out. Inviting more people happens inside ODIN after approval, so the onboarding flow does not offer it; the sentence says users can be added from the dashboard. Slice 2 keeps the two tiles and its original sentence.",
+      "tradeoff": "Someone who cannot find where to add users has no button for it on this page. The general Get help button in the page header is still there.",
       "by": "Ryan",
       "when": "2026-10-22"
     },
@@ -2181,6 +2181,16 @@
       "t": "No separate state field; Doing business as sits beside the legal name",
       "b": "The registered details card no longer asks for the state of incorporation (or, for a non-profit, the state registered in). The state is already part of the registered address, so asking again made the applicant answer the same thing twice and gave them two places to disagree. With it gone, a company's four short fields sit in a two by two grid: Legal business name beside Doing business as, then Business type / legal structure beside Date of incorporation. The Non-profit or government route moves Doing business as next to the legal name in the same way, with Type of organization below them across the full width. The sole proprietor card is unchanged. The registry lookup no longer fills a state, and the check that tells whether the registry details were edited now compares only the legal name and address.",
       "tradeoff": "Nothing now holds the state as a separate answer, so anything that needs it must read it from the address text. If engineering needs the state of incorporation as its own value, it has to be pulled from the registry result or parsed from the address. On the non-profit route the Date registered field now sits alone on the last row. The Canada company card already had no state field, so it only gains the new order.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "review-screen-email-then-respond",
+      "area": "Flow",
+      "where": "Under review page",
+      "t": "The under review page says questions arrive by email and are answered on the page, and names no vendor",
+      "b": "The line at the bottom of the under review card now reads \"If we have a question, we'll send you an email and you'll respond to us here.\" It used to say the question would appear on the page as one clear request, which left out how the applicant would know there was one. The email is what brings them back, and the page is where they answer. The Application received line also stops naming Trullio and says it was sent to our verification partner, matching the rest of the prototype's wording for the identity check.",
+      "tradeoff": "It promises an email for every question, so the More info needed email has to be sent whenever Ops asks for something (the template exists; nothing connects Ops picks to it yet). Step 7's What happens next panel and the why-we-ask notes still name Trullio; only the under review page was changed.",
       "by": "Ryan",
       "when": "2026-11-04"
     }
@@ -3216,7 +3226,7 @@
       needRegistration: ca ? "Step 1 starts with your CRA business number. If we find a record we'll fill in the rest, so there's less for you to type." : "Step 1 starts with your EIN. If we find a record we'll fill in the rest, so there's less for you to type.",
       needIds: ca ? "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's licence or passport and a SIN (a non-profit or government body doesn't need the SIN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : "") : "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's license or passport and an SSN (a non-profit or government body doesn't need the SSN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : ""),
       needBank: ca ? "Your institution, transit and account numbers." : "Your routing and account numbers.",
-      shellRailNote: isStatus ? "Submitted — with Trullio" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
+      shellRailNote: isStatus ? "Submitted — with our verification partner" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
       remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
       stepCounter: "Step " + st.step + " of 7",
       stepTitle: {
@@ -3258,7 +3268,7 @@
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
       checkNote: "Checking " + [st.einFound && "your " + orgWord() + " registration", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
-      receivedNote: st.submittedAt ? "Sent to Trullio, our verification partner, at " + st.submittedAt : "Sent to Trullio, our verification partner",
+      receivedNote: st.submittedAt ? "Sent to our verification partner at " + st.submittedAt : "Sent to our verification partner",
       summary: [
         { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, ca ? (st.lookupId && "BN " + st.lookupId) : (st.einFound && "EIN ••••" + (digitsOf(st.lookupId).slice(-4) || "7208")), a.regAddress], step: 1 },
         { label: isNonprofit() ? "Leaders & signatory" : "Owners & signatory", parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
@@ -4083,7 +4093,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     <li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote}</div></div></li>
     <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">Usually within 2 hours${waits.length ? " of the last item arriving" : ""} · we'll email you</div></div></li>
   </ol>
-  ${waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, you'll see it here as one clear request.</p>`}
+  ${waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, we'll send you an email and you'll respond to us here.</p>`}
 </section>
 ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">${v.invitedOwners.map((o) => html`<section class="card card--p20 doc is-later" data-key="owner-wait-${o.id}">
   <div class="doc-row">
@@ -4276,7 +4286,6 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   <p class="approved-body">${invitesOn() ? "We've approved your application. Add a merchant to start taking transactions, then invite your team and order card readers." : "We've approved your application. Open your payments dashboard to add a merchant and start taking transactions. You can add more users there too."}</p>
   <div class="btn-row">
     <button type="button" class="btn btn-light btn-lg">Open payments dashboard</button>
-    ${!invitesOn() && html`<button type="button" class="btn btn-light-outline btn-lg" data-click="${on(openHelp)}">Get help adding users</button>`}
   </div>
 </section>
 ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-labelledby="unlock-h">
