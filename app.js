@@ -340,6 +340,8 @@
   let ctx = readContext();
   function setCtx(patch) { ctx = Object.assign({}, ctx, patch); writeContext(); schedule(); }
   const isCa = () => ctx.region === "Canada";
+  // Canadian English spells the noun "licence"; US English spells it "license" (decision region-spelling-licence).
+  const licWord = () => (isCa() ? "licence" : "license");
   // Invites, owner links and hand-offs to someone else exist in slice 2 only.
   const invitesOn = () => ctx.slice === SLICE_2;
   // A division other than Standard opens the prototype on the one step it changes (step 6) with the sample business filled in.
@@ -1145,8 +1147,8 @@
       "area": "Trust",
       "where": "Save and finish later",
       "t": "Tell people how to come back: log in again and carry on where they left off",
-      "b": "Answers save as people go, and signing in again reopens the last saved state. The Finish later dialog says that in one line at the top (Log back in any time and you'll carry on where you left off), with no link and no code. In Slice 1 it then just has a Close button; Slice 2 also offers the separate hand-off to someone else. Rewritten 2026-10-28 (Ryan) because the one-time-code screen is gone and the Invitations PRD uses ODIN sign-in; before that the line said to come back with the link in the email and a code.",
-      "tradeoff": "The line does not say how to log in (bookmark, the welcome email, an ODIN address), so a returning applicant has to know that already; see the open item on how a returning user reaches the page. The 7 days on the Slice 2 hand-off link is our own assumption; the magic link spike does not cover hand-off links at all, so whether they exist and how they work is a question for the team.",
+      "b": "Answers save as people go, and signing in again reopens the last saved state. The Finish later dialog says that in one line at the top (Log back in any time with the link in your welcome email, and you'll carry on where you left off), with no link of its own and no code. In Slice 1 it then just has a Close button; Slice 2 also offers the separate hand-off to someone else. Rewritten 2026-10-28 (Ryan) because the one-time-code screen is gone and the Invitations PRD uses ODIN sign-in; before that the line said to come back with the link in the email and a code.",
+      "tradeoff": "The line points to the link in the welcome email, which Ryan chose on 2026-11-04 although nobody has confirmed it is how returning users sign in (a bookmark or an ODIN address may be the real route). An applicant who deleted the email has no other pointer. The 7 days on the Slice 2 hand-off link is our own assumption; the magic link spike does not cover hand-off links at all, so whether they exist and how they work is a question for the team.",
       "by": "Ryan",
       "when": "2026-10-07"
     },
@@ -1281,14 +1283,14 @@
       "when": "2026-10-08"
     },
     {
-      "id": "jumpbar-fixed-bottom",
+      "id": "no-jump-bar",
       "area": "Status",
       "where": "Submitted · Under review · Approved",
-      "t": "The \"Prototype · jump to\" bar is pinned to the bottom of the window, not sat in the page content",
-      "b": "It was a card in the normal content flow, same as the real status cards above it, which blurred the line between the applicant's page and the tool for jumping between demo states. It's now a full-width bar fixed to the bottom of the viewport, separated from the content with a top border and shadow, so it reads as scaffolding around the prototype rather than part of it.",
-      "tradeoff": "It now overlaps the page on short viewports instead of pushing content up; the status screens' bottom padding was increased to keep the last card clear of it, but a very small window could still see overlap.",
+      "t": "The status screens have no jump bar; the Prototype options menu is the only way to move between them",
+      "b": "The \"Prototype · jump to\" bar that sat at the bottom of the under review, More info needed and approved screens is gone (it was first built in the page content, then pinned to the bottom of the window). These screens now show only the product. To reach a status screen, use Link opened as in the Prototype options menu; changing any option there restarts the flow.",
+      "tradeoff": "Moving between statuses takes a trip into Prototype options and the flow restarts each time, which is slower for a demo than one click. The bar's Restart flow button is gone too; any change in Prototype options restarts the flow instead.",
       "by": "Ryan",
-      "when": "2026-10-08"
+      "when": "2026-11-04"
     },
     {
       "id": "secondary-button-no-bevel",
@@ -1325,7 +1327,7 @@
       "area": "Flow",
       "where": "Yes / No answers",
       "t": "Yes / No answers are two separate selectable pills, not a segmented control",
-      "b": "Every Yes / No question shows two round pills side by side, Yes on the left, each with a thin light border. The chosen pill gets a 2px brand-purple ring; the other stays plain. There is no shared track behind them any more. This returns to the earlier pill look and replaces the Atlas Segmented control (and its track fill, `segmented-track-fill`), which Ryan wanted gone. Which answer each question starts on is unchanged (`yn-common-defaults`). An unanswered required question outlines the pills in the error colour.",
+      "b": "Every Yes / No question shows two round pills side by side, Yes on the left, each with a thin light border. The chosen pill gets a 2px brand-purple ring; the other stays plain. There is no shared track behind them any more. This returns to the earlier pill look and replaces the Atlas Segmented control (and its track fill, `segmented-track-fill`), which Ryan wanted gone. Which answer each question starts on is unchanged (`yn-common-defaults`). An unanswered required question shows no error on the pills (they can never be reached in an error state, since Save and continue stays off until every question is answered); the button's hover note lists what is missing.",
       "tradeoff": "The pills are a prototype pattern, not an Atlas component, so this departs from the Atlas Segmented control and its tokens. The selected state is carried by the ring alone (no fill), so it relies on the purple against a thin grey border for contrast.",
       "by": "Ryan",
       "when": "2026-10-28"
@@ -1998,9 +2000,159 @@
       "area": "Layout",
       "where": "Sign in and Change your password",
       "t": "The sign-in screens are one narrow column, centred on the page",
-      "b": "The tag, title, description and card on both sign-in screens (Sign in, and Change your password) sit in one 480px column centred on the page, so the card no longer hangs to the left of a wider block. Every screen that shows the sign-in card uses it. The other front-door screens (Which business do you want to sign in with, and the welcome page) keep their wider layout.",
+      "b": "The tag, title, description and card on both sign-in screens (Sign in, and Change your password) sit in one 560px column centred on the page, so the card no longer hangs to the left of a wider block. Every screen that shows the sign-in card uses it. The other front-door screens (Which business do you want to sign in with, and the welcome page) keep their wider layout.",
       "by": "Ryan",
       "when": "2026-11-03"
+    },
+    {
+      "id": "region-spelling-licence",
+      "area": "Copy",
+      "where": "ID type, photo ID hints, ClubReady lease row, More info needed lists",
+      "t": "Licence is spelled by region: license in the US, licence in Canada",
+      "b": "Applicant-facing text that names a licence now uses the US spelling \"license\" in the US and the Canadian spelling \"licence\" in Canada, through one helper, licWord(). This covers the Government ID type option, the photo ID hints on the welcome page and step 6, the ClubReady lease row and the More info needed accepted-document lists. The sample owner's ID type follows the region. Proper names such as Federal Firearms License stay as written.",
+      "tradeoff": "A value chosen in one region would not match the other region's option label, which is safe today because changing region resets the prototype. The register and legal wording were not changed.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "ca-tax-debt-wording",
+      "area": "Copy",
+      "where": "Step 5, Declarations",
+      "t": "Canada asks about tax debts owed to the CRA, or court judgments",
+      "b": "The tax question on step 5 reads \"Any outstanding tax liens or judgments?\" in the US and \"Any outstanding tax debts owed to the CRA, or court judgments?\" in Canada, because \"tax liens\" is US wording. The answer, the Amount and current status follow-up and the check that every declaration is answered are the same in both regions.",
+      "tradeoff": "The Canadian wording is my draft and has not been reviewed by Risk Ops or compliance. It may be narrower than the US question (it names only the CRA, not provincial tax authorities), so Risk Ops should confirm what the question has to catch.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "fees-point-to-contract",
+      "area": "Copy",
+      "where": "Step 7, merchant services agreement",
+      "t": "The agreement points to the contract's fee schedule and states no fees of its own",
+      "b": "Rates are agreed and signed in a contract before this form, so the application states none. Section 2 of the sample agreement now reads \"You pay the rates in your fee schedule.\" The line \"and nothing else. There is no monthly fee and no setup fee.\" is gone because the contract may set fees the prototype cannot know. The unused Rates and fee schedule document (with an invented 2.6% + 30¢ rate) is deleted; nothing opened it since the tick for it was removed.",
+      "tradeoff": "The agreement no longer tells the applicant there are no monthly or setup fees, so they rely on their contract for that. The agreement text is still sample wording, not legal text, and compliance should confirm how the form refers to the contract.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "esign-claim-removed",
+      "area": "Copy",
+      "where": "Step 7, under the typed signature",
+      "t": "The signature line makes no legal compliance claim",
+      "b": "The line under the typed signature reads \"Signed electronically · we'll email you a signed copy\" in both regions. It used to say \"ESIGN Act compliant\", which is a US federal law and does not apply in Canada, and \"compliant\" is a claim the prototype cannot prove. The consent tick \"I agree to sign electronically\" is unchanged.",
+      "tradeoff": "The applicant gets no reassurance that the e-signature is legally valid. Compliance should say whether the form needs a statement of that kind, and which laws apply in the US and Canada.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "ca-company-card-no-llc",
+      "area": "Copy",
+      "where": "Business type page, Company card",
+      "t": "In Canada the Company card does not mention an LLC",
+      "b": "The Company card on the business type page reads \"A registered business, such as an LLC, corporation or partnership.\" in the US and \"A registered business, such as a corporation or partnership.\" in Canada, because an LLC is not a Canadian structure. This matches step 1, where Canada lists only Partnership and Corporation.",
+      "tradeoff": "The Canadian wording is my draft. Other Canadian structures (for example a cooperative) are not named; the card says \"such as\", so it is a cue, not a full list.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "country-list-own-first",
+      "area": "Flow",
+      "where": "Step 2, owner cards · Nationality, Country of residence, ID issuing country",
+      "t": "The applicant's own country is first in the country lists",
+      "b": "The three country selects on an owner card list the applicant's region first: Canada, United States, United Kingdom, Australia, Other in Canada, and United States, Canada, United Kingdom, Australia, Other in the US. The sample owner's nationality, residence and ID country follow the region too, so the Canada sample no longer shows a US passport country.",
+      "tradeoff": "Only five countries are listed, as before, so an owner from anywhere else must choose Other. An owner card for someone else still starts with no country chosen; only the applicant's own card is prefilled.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "consent-count-follows-region",
+      "area": "Copy",
+      "where": "Step 5, consents card",
+      "t": "The consents card heading and note match the number of boxes shown",
+      "b": "In the US the card shows two consents (closed merchant accounts list and OFAC screening) under \"Two consents we have to collect\". Canada shows only the first, so its heading reads \"A consent we have to collect\" and its note says \"This is a consent, not a credit check. It doesn't touch your personal credit score.\"",
+      "tradeoff": "The wording is branched by region, so a third consent added later needs both versions edited. That Canada is not asked for the sanctions consent is an earlier call that no compliance document backs; if Canada gets it later, both pieces of copy go back to the US wording.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "ca-bn-program-account",
+      "area": "Flow",
+      "where": "Step 1, Canada · Business Number field",
+      "t": "The Business Number field accepts a number with its program account and keeps the first 9 digits",
+      "b": "A Canadian business number is often printed with a program account, such as 123456789RT0001 or 123456789RC0001. In Canada the field now accepts nine digits followed by two letters and four digits, keeps only the first nine when the applicant leaves the box or looks it up, and the note under the field says \"Just the first 9 digits. Leave off RT0001 or similar.\" Any other entry still has to be exactly nine digits. The US EIN field is unchanged.",
+      "tradeoff": "The rule comes from general knowledge of the CRA format, not an Xplor document, so it should be confirmed. The program account is dropped, so Ops will not see which program the applicant typed. A mistyped suffix is accepted without a check.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "ca-sample-data-canadian",
+      "area": "Flow",
+      "where": "Canada path · sample business, registry lookup, sample owners",
+      "t": "The Canada path uses invented Canadian addresses, phones, bank and ID number",
+      "b": "With the region set to Canada, the registry lookup, the sample business and both sample owners use made-up Vancouver, BC details: the registered address (418 Water St, Suite 210, V6B 1A1), the 604 phone numbers, the owners' home addresses with V postal codes, a Canadian bank name and an ID number with no Oregon prefix. The US path is unchanged (Portland, OR). The registry still returns the same business for every number typed, and the Canadian one is a corporation.",
+      "tradeoff": "All values are invented and the addresses are not checked against real streets. The sample bank's routing, institution and transit numbers were left as they were. The registry result is still a fixed stand-in, not a real lookup, whatever number the applicant types.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "descriptor-placeholder-example",
+      "area": "Copy",
+      "where": "Step 3, Billing descriptor",
+      "t": "The billing descriptor placeholder starts with \"e.g.\" so it does not read as a typed value",
+      "b": "The empty billing descriptor box suggests the business name in capitals. It now reads \"e.g. RIVERSIDE PILATES\" instead of the bare name, because the placeholder grey is dark enough that the bare name looked like something the applicant had already typed. The grey is unchanged: Atlas has no placeholder token and a lighter colour would fail contrast.",
+      "tradeoff": "The \"e.g.\" adds four characters before the suggestion, which shortens how much of a long name shows in the box before it is cut off.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "ca-statement-neighbours-vancouver",
+      "area": "Flow",
+      "where": "Step 3, Canada · statement preview",
+      "t": "The Canada statement preview shows Vancouver transactions beside the descriptor",
+      "b": "The two sample transactions above and below the billing descriptor in the statement preview are Save-On-Foods and a Compass Card top-up in Vancouver, BC when the region is Canada, because the Canada sample business is in Vancouver (decision ca-sample-data-canadian). They were Toronto shops. The US keeps Portland, OR.",
+      "tradeoff": "The names are real chains used only as scenery; swap them for invented names if real brand names should not appear in the prototype.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "descriptor-count-warning-token",
+      "area": "Flow",
+      "where": "Step 3, Billing descriptor character count",
+      "t": "The descriptor character count uses the Atlas warning text colour",
+      "b": "The count under the statement preview turns to the warning text colour from 19 characters, and stays that colour, bolder, past 22, when the card network cuts the rest. It used the raw orange-700 palette colour before; the semantic token has the same value, so nothing looks different. Going over cuts the text but does not block Save and continue, so it is a warning and not an error.",
+      "tradeoff": "Near and over share one colour, so the only signal that text is now being cut is the heavier weight and the struck-through characters in the preview.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "layout-shift-accepted",
+      "area": "Flow",
+      "where": "Step 3, POS terminal choice · Step 6, photo ID upload",
+      "t": "Content that appears or goes away moves what is below it, and the page does not reserve space",
+      "b": "Choosing \"None\" for the point-of-sale terminal removes the follow-up that was under it, and uploading a photo ID replaces the upload button with a received row, so the fields below move up or down. Space is not held back to stop that. This repeats an earlier call: after the Maya test round, reserving space on steps 5 and 6 was rejected and reverted on purpose (the handover does not record why). Ryan closed these two cases the same way on 2026-11-04.",
+      "tradeoff": "Someone looking at the lower part of the screen sees it shift. If a tester loses their place after a choice or an upload, revisit this.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "email-only-notifications",
+      "area": "Status",
+      "where": "Under review screen · What happens next, and the timeline",
+      "t": "Xplor sends the applicant email only, never a text",
+      "b": "The under review screen and its timeline say \"we'll email you\" when a decision is ready. They used to say \"we'll email and text you\". Ryan confirmed on 2026-11-04 that Xplor will not text the applicant during onboarding, only email. Because no text is promised, the screens do not need a line about what a text will or will not ask for.",
+      "tradeoff": "An applicant who does not check email gets no second prompt. The Get help dialog still says Xplor never asks for a full SSN, password or bank login over chat, phone or text, which stays true and is general fraud advice.",
+      "by": "Ryan",
+      "when": "2026-11-04"
+    },
+    {
+      "id": "sole-proprietor-card-wording",
+      "area": "Copy",
+      "where": "Business type page, Individual / Sole proprietor card",
+      "t": "The sole proprietor card says what to check, not that you are the only owner",
+      "b": "The card reads \"You run the business yourself and haven't registered it as a company or corporation.\" It used to read \"You are the sole owner of an unincorporated business.\" In the first persona test, Maya paused because \"sole owner\" also describes someone who owns an LLC alone, and \"unincorporated\" is the word least likely to be known. The new line names what to check, whether the business has been registered as a company, and it works in both the US and Canada.",
+      "tradeoff": "An LLC owner who thinks of the LLC as \"just my business\" could still read the line as theirs, though \"registered as a company\" should stop them. Not re-tested with a persona.",
+      "by": "Ryan",
+      "when": "2026-11-04"
     }
   ];
 
@@ -2052,6 +2204,13 @@
 
   // Canada's made-up business is a corporation, so its name ends Inc. rather than LLC (decision ca-no-llc-structure).
   const CA_NAME = "Riverside Pilates Inc.";
+  // Invented Canadian values, so the Canada path carries no Oregon address, phone, bank or ID number (decision ca-sample-data-canadian).
+  const CA_ADDRESS = "418 Water St, Suite 210, Vancouver, BC V6B 1A1";
+  const CA_SAMPLE_BUSINESS = { regAddress: CA_ADDRESS, phone: "+1 (604) 555-0148", bankName: "Pacific Coast Credit Union" };
+  const CA_OWNER_SEED = {
+    self: { home: "92 Bryce St, Vancouver, BC V5T 2A1", phone: "+1 (604) 555-0148" },
+    other: { home: "1408 Belmont Ave, Vancouver, BC V6J 3B5", phone: "+1 (604) 555-0192" }
+  };
 
   const SAMPLE_ANSWERS = Object.assign({}, EMPTY_ANSWERS, {
     sigSame: "yes",
@@ -2219,7 +2378,7 @@
       // SIMPLE TRIAL: the cards on the simple More info screen, { id, name (the file, "" for none), busy, note }. Starts with one empty card.
       rfiDocs: [{ id: 1, name: "", busy: false, note: "" }],
       // Extra bank accounts on step 4: just their numbers (1, 2, ...). Each one's answers live in a as x<n>_bankName and so on.
-      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample && isCa() ? { structure: "Corporation", legalName: CA_NAME, accountHolder: CA_NAME } : {})
+      a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample && isCa() ? Object.assign({ structure: "Corporation", legalName: CA_NAME, accountHolder: CA_NAME }, CA_SAMPLE_BUSINESS) : {})
     };
   }
 
@@ -2340,14 +2499,6 @@
       tried: Object.assign({}, state.tried, { [state.step]: true }),
       openOwner: owners.length ? owners[0].id : state.openOwner
     });
-    // Wait for the render, then bring the first problem into view.
-    setTimeout(() => {
-      const first = document.querySelector("[data-error]");
-      if (!first) return;
-      first.scrollIntoView({ block: "center", behavior: "smooth" });
-      const ctl = first.querySelector("input:not([type=hidden]), select, textarea, button.yn-btn");
-      if (ctl) ctl.focus({ preventScroll: true });
-    }, 60);
   }
   const next = () => attempt(() => (state.step >= 7 ? setState({ screen: "submitted", submittedAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) }) : setState({ step: state.step + 1 })));
   const editFromReview = (step) => setState({ step, editing: true, saveOpen: false });
@@ -2356,9 +2507,11 @@
 
   const BIZ_TYPES = [
     { id: "company", label: "Company", desc: "A registered business, such as an LLC, corporation or partnership." },
-    { id: "individual", label: "Individual / Sole proprietor", desc: "You are the sole owner of an unincorporated business." },
+    { id: "individual", label: "Individual / Sole proprietor", desc: "You run the business yourself and haven't registered it as a company or corporation." },
     { id: "non-profit", label: "Non-profit or government", desc: "Charitable organizations, foundations, non-governmental organizations and government bodies." }
   ];
+  // An LLC does not exist in Canada, so the Company card leaves it out there (decision ca-company-card-no-llc).
+  const bizDesc = (t) => (t.id === "company" && isCa() ? "A registered business, such as a corporation or partnership." : t.desc);
   // Changing your mind wipes what was entered for the old type, so nothing that
   // doesn't apply to the new one is left behind.
   function chooseBizType(t) {
@@ -2479,7 +2632,8 @@
     other: { name: "Marcus J. Lee", dob: "09 / 10 / 1979", home: "1408 SE Belmont St, Portland, OR 97214", email: "marcus@riversidepilates.com", phone: "+1 (503) 555-0192" }
   };
   const US_STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
-  const COUNTRIES = ["United States", "Canada", "United Kingdom", "Australia", "Other"];
+  // The applicant's own country comes first (decision country-list-own-first).
+  const countries = () => (isCa() ? ["Canada", "United States", "United Kingdom", "Australia", "Other"] : ["United States", "Canada", "United Kingdom", "Australia", "Other"]);
   // Date order follows the region, so the placeholder is the instruction.
   const datePh = () => (isCa() ? "DD / MM / YYYY" : "MM / DD / YYYY");
   const addressPh = () => (isCa() ? "Street, city, province, postal code" : "Street, city, state, ZIP");
@@ -2519,7 +2673,11 @@
   const digitsOf = (s) => String(s == null ? "" : s).replace(/\D/g, "");
 
   // What is wrong with a registry number, or "" if it is fine. Shared by the Look up button and by leaving the box.
-  function lookupProblem(value) {
+  // A Canadian BN is often printed with a program account, such as 123456789RT0001. Only the first 9 digits are the BN, so the
+  // two letters and four digits are dropped (decision ca-bn-program-account). Anything else is returned unchanged for the digit check.
+  const bnCore = (value) => { const m = isCa() && /^\s*(\d{9})\s*[A-Za-z]{2}\s*\d{4}\s*$/.exec(String(value)); return m ? m[1] : value; };
+  function lookupProblem(raw) {
+    const value = bnCore(raw);
     // A registry number is nine digits, so a short or long one is caught here rather than "matching" something else.
     if (/^\s*\d{3}[- ]\d{2}[- ]\d{4}\s*$/.test(value)) {
       return "That looks like a Social Security number, which we don't need here. " + (isCa() ? "A business number" : "An EIN") + " looks like " + (isCa() ? "123456789" : "12-3456789") + ". Not sure whether you have one? Use Get help and we'll talk it through.";
@@ -2532,8 +2690,10 @@
   function runLookup() {
     const problem = lookupProblem(state.lookupId);
     if (problem) { setState({ lookupErr: problem }); return; }
+    // Keep only the 9-digit BN so the program account suffix never reaches the review row or the W-9.
+    if (bnCore(state.lookupId) !== state.lookupId) setState({ lookupId: bnCore(state.lookupId) });
     // A sole trader's number confirms the EIN only; there is no registry record of a company to fill in.
-    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: "Non-profit" }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Corporation", legalName: CA_NAME }) : REGISTRY_RESULT;
+    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: "Non-profit" }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Corporation", legalName: CA_NAME, regAddress: CA_ADDRESS }) : REGISTRY_RESULT;
     setState((s) => ({ lookupErr: "", noEin: false, einFound: true, lookupConfirmed: isSole(), lookupRejected: false, manualBiz: false, a: Object.assign({}, s.a, filled) }));
     showToast(lookupResultText(state));
   }
@@ -2563,7 +2723,7 @@
   // The rest of step 1 stays out of sight until there is something to put in it.
   const step1Open = () => state.manualBiz || (isSole() && state.noEin) || state.einFound;
   // True while the registry-filled details are exactly as the lookup returned them.
-  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === REGISTRY_RESULT.regAddress && (isCa() || state.a.stateInc === REGISTRY_RESULT.stateInc);
+  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === (isCa() ? CA_ADDRESS : REGISTRY_RESULT.regAddress) && (isCa() || state.a.stateInc === REGISTRY_RESULT.stateInc);
 
   // ---------------------------------------------------------------------------
   // Validation. Pure reads of state: returns { fieldId: message } for a step.
@@ -2667,12 +2827,12 @@
         residence: me ? country : "", idCountry: me ? country : ""
       });
     }
-    const p = o.self ? OWNER_SEED.self : OWNER_SEED.other;
+    const p = Object.assign({}, o.self ? OWNER_SEED.self : OWNER_SEED.other, isCa() ? (o.self ? CA_OWNER_SEED.self : CA_OWNER_SEED.other) : {});
     return Object.assign(base, {
-      nationality: "United States", residence: "United States",
-      idType: "Driver's license", idCountry: "United States",
+      nationality: country, residence: country,
+      idType: "Driver's " + licWord(), idCountry: country,
       name: p.name, dob: p.dob, home: p.home, email: p.email, phone: p.phone,
-      idNumber: "OR4471208", idExpiry: "04 / 11 / 2029", pep: "no",
+      idNumber: isCa() ? "4471208" : "OR4471208", idExpiry: "04 / 11 / 2029", pep: "no",
       natId: isCa() ? "••• ••• 418" : "412-88-7193"
     });
   }
@@ -2768,16 +2928,16 @@
       isSole() ? null : f("role", "Title / role", "select", { placeholder: "Choose a role", options: isNonprofit() ? ["Director", "Trustee", "Executive director", "Officer"] : ["Owner / CEO", "Director", "Managing partner", "Company secretary", "Officer"] }),
       isCompany() ? f("pct", "Ownership percentage", "mono", { placeholder: "e.g. 60", hint: "We only need owners with 25% or more." }) : null,
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
-      f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: COUNTRIES }),
-      f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: COUNTRIES }),
+      f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
+      f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
       f("home", "Home address", "text", { span: true, placeholder: addressPh() }),
       f("email", "Email address", "text", { placeholder: "name@example.com" }),
       f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
       sub("id", "Their ID"),
-      f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's license", "Passport", "National ID card"] }),
+      f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
       f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "As shown on the document", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
-      f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: COUNTRIES }),
+      f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: countries() }),
       // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
       isNonprofit() ? null : f("natId", ca ? "Social Insurance Number (SIN)" : "Social Security Number (SSN)", "masked", {
         sensitive: true,
@@ -2902,14 +3062,14 @@
           a.legalProceedings === "yes" ? fld("legalProceedingsWhy", "Tell us a bit about it", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
           fld("priorTermination", "Has a merchant account of yours been terminated?", "yn", { span: true }),
           a.priorTermination === "yes" ? fld("priorTerminationWhy", "Processor, date and reason", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
-          fld("taxLiens", "Any outstanding tax liens or judgments?", "yn", { span: true }),
+          fld("taxLiens", ca ? "Any outstanding tax debts owed to the CRA, or court judgments?" : "Any outstanding tax liens or judgments?", "yn", { span: true }),
           a.taxLiens === "yes" ? fld("taxLiensWhy", "Amount and current status", "long", { span: true, conditional: true, placeholder: "How much, and where it stands now." }) : null,
           ca ? null : fld("msb", "Are you a money service business?", "yn", { span: true, hint: "Check cashing, money transfer, currency exchange or crypto. Most businesses aren't." })
         ], { pinId: "yes-is-not-no" }),
-        card("s5-consent", "Two consents we have to collect", "", [
+        card("s5-consent", ca ? "A consent we have to collect" : "Two consents we have to collect", "", [
           fld("matchConsent", "I agree to a check of the card networks' list of closed merchant accounts", "check", { span: true, hint: "Also called a MATCH or TMF check. Mastercard requires it for every merchant account." }),
           ca ? null : fld("ofacAck", "I understand we'll check your name against the US government sanctions list", "check", { span: true, hint: "Known as OFAC screening. Every US merchant goes through it." })
-        ], { assurance: "These are consents, not credit checks. Neither one touches your personal credit score." })
+        ], { assurance: ca ? "This is a consent, not a credit check. It doesn't touch your personal credit score." : "These are consents, not credit checks. Neither one touches your personal credit score." })
       ];
     }
     if (step === 7) {
@@ -2941,7 +3101,7 @@
     const a = state.a;
     const idRows = owners.map((o) => ({
       key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Required",
-      hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's license. All four corners in shot and no glare.",
+      hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's " + licWord() + ". All four corners in shot and no glare.",
       why: "To confirm you are who you say you are. It goes only to Trullio, our verification partner.",
       file: "id-" + o.id + "-license.jpg",
       read: "Read: " + o.name + " · " + (ownerVal(o, "idType") || "photo ID") + (digitsOf(ownerVal(o, "idExpiry")).length === 8 ? " · expires " + digitsOf(ownerVal(o, "idExpiry")).slice(-4) : "") + (o.name && ownerVal(o, "idType") ? " — matches step 2" : "")
@@ -2956,7 +3116,7 @@
     }
     if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf", read: "Read: 3 months, 0.2% chargeback ratio — within limits" });
     // Division rows (decisions clubready-lease-by-division, club-essentials-financial-history). Wording is a draft, not approved copy.
-    if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business licence or utility bill", requirement: "Required", hint: "Your club's signed lease. If you don't have one yet, a business licence or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf", read: "Read: lease for " + (a.legalName || "your " + orgWord()) });
+    if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business " + licWord() + " or utility bill", requirement: "Required", hint: "Your club's signed lease. If you don't have one yet, a business " + licWord() + " or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf", read: "Read: lease for " + (a.legalName || "your " + orgWord()) });
     if (ctx.division === DIV_CE) list.push({ key: "finhist", division: DIV_CE, title: "Two years of financial history", requirement: "Required", hint: "Financial history for your " + orgWord() + " covering the last two years.", file: "financial-history.pdf", read: "Read: two years of financial history for " + (a.legalName || "your " + orgWord()) });
     return list;
   }
@@ -3049,7 +3209,7 @@
       lookupTitle: isSole() ? (ca ? "Do you have a business number?" : "Do you have an EIN?") : ca ? "Let's start with your " + (isNonprofit() ? "organization's " : "") + "business number" : "Let's start with your EIN",
       lookupLabel: ca ? "Business Number (BN)" : "Employer Identification Number (EIN)",
       lookupPlaceholder: ca ? "123456789" : "12-3456789",
-      lookupNote: isSole() ? "If you have one, we'll use it to fill in what we can. If you don't, you can carry on without it." : ca ? "We'll match it against CRA and provincial registry records and fill in the rest for you." : "We'll match it against IRS and state registry records and fill in the rest for you.",
+      lookupNote: isSole() ? "If you have one, we'll use it to fill in what we can. If you don't, you can carry on without it." : ca ? "We'll match it against CRA and provincial registry records and fill in the rest for you. Just the first 9 digits. Leave off RT0001 or similar." : "We'll match it against IRS and state registry records and fill in the rest for you.",
       lookupAssurance: (ca ? "Your BN" : "Your EIN") + " is protected the moment you submit it. We use it once to verify the " + orgWord() + " and Xplor staff never see it.",
       lookupResult: lookupResultText(st),
       // The ownership card shows how many owners are listed, and All listed only once the shares pass 75% (decision ownership-no-question). Nothing asks whether anyone is missing.
@@ -3076,13 +3236,7 @@
       ].map((r) => {
         const done = r.parts.filter(Boolean);
         return { label: r.label, step: r.step, value: done.length ? done.join(" · ") : "Nothing filled in yet", empty: !done.length };
-      }),
-      statusJumps: [
-        { label: "Under review", go: () => go("submitted") },
-        { label: "More info needed", go: () => go("rfi") },
-        { label: "Approved", go: () => go("approved") },
-        { label: "Restart flow", go: () => go("welcome", 1) }
-      ]
+      })
     };
   }
 
@@ -3110,7 +3264,7 @@
     const a = state.a;
     const ca = isCa();
     const neighbours = ca
-      ? [["LOBLAWS #2211 TORONTO ON", "$41.65"], ["TTC PRESTO TORONTO ON", "$3.35"]]
+      ? [["SAVE-ON-FOODS #0412 VANCOUVER BC", "$41.65"], ["COMPASS CARD VANCOUVER BC", "$3.35"]]
       : [["SAFEWAY #1423 PORTLAND OR", "$64.18"], ["TRIMET TICKET PORTLAND OR", "$2.80"]];
     const amount = "$" + (a.avgTicket || "38") + ".00";
     const countCls = typed.length > DESCRIPTOR_MAX ? " is-over" : typed.length > DESCRIPTOR_MAX - 4 ? " is-near" : "";
@@ -3122,7 +3276,7 @@
 
     return html`<div class="span-2" data-key="${f.id}">
   <div class="field-head"><label class="field-label" for="${id}">${f.label}${f.required && REQ}</label></div>
-  <input class="input mono" id="${id}" value="${f.value}" placeholder="${(a.dba || a.legalName || "Your trading name").toUpperCase()}" autocomplete="off" spellcheck="false" aria-describedby="h-${f.id}" data-input="${onInput}">
+  <input class="input mono" id="${id}" value="${f.value}" placeholder="e.g. ${(a.dba || a.legalName || "Your trading name").toUpperCase()}" autocomplete="off" spellcheck="false" aria-describedby="h-${f.id}" data-input="${onInput}">
   <p class="field-hint" id="h-${f.id}">${f.hint}</p>
   <figure class="stmt">
     <div class="stmt-sheet">
@@ -3472,7 +3626,7 @@
     <div class="biz-list" role="radiogroup" aria-label="Business type">
       ${BIZ_TYPES.map((t) => html`<button type="button" class="biz-card${state.bizType === t.id ? " is-selected" : ""}" role="radio" aria-checked="${String(state.bizType === t.id)}" data-key="biz-${t.id}" data-click="${on(() => chooseBizType(t.id))}">
         <span class="biz-radio" aria-hidden="true"></span>
-        <span><span class="biz-label">${t.label}</span><span class="biz-desc">${t.desc}</span></span>
+        <span><span class="biz-label">${t.label}</span><span class="biz-desc">${bizDesc(t)}</span></span>
       </button>`)}
     </div>
     <div class="actions">
@@ -3511,7 +3665,7 @@
   <h2 class="card-title lookup-title">${v.lookupTitle}${pin("lookup-first")}</h2>
   <p class="lookup-note">${v.lookupNote}</p>
   <form class="lookup-row" data-submit="${on(runLookup)}"${state.lookupBlurErr ? html` data-error="1"` : ""}>
-    <label class="lookup-field"><span class="field-label field-label--block">${v.lookupLabel}${isSole() ? html`<span class="chip">Optional</span>` : REQ}</span><input class="input mono" value="${state.lookupId}" placeholder="${v.lookupPlaceholder}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ lookupId: e.target.value, lookupErr: "", lookupBlurErr: "" }))}" data-blur="${on(() => setState({ lookupBlurErr: state.lookupId.trim() ? lookupProblem(state.lookupId) : "" }))}"></label>
+    <label class="lookup-field"><span class="field-label field-label--block">${v.lookupLabel}${isSole() ? html`<span class="chip">Optional</span>` : REQ}</span><input class="input mono" value="${state.lookupId}" placeholder="${v.lookupPlaceholder}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ lookupId: e.target.value, lookupErr: "", lookupBlurErr: "" }))}" data-blur="${on(() => setState({ lookupId: bnCore(state.lookupId), lookupBlurErr: state.lookupId.trim() ? lookupProblem(state.lookupId) : "" }))}"></label>
     <button type="submit" class="btn btn-primary btn-md btn-tight">${icon("search", 17)}Look up</button>
     <button type="button" class="btn btn-outline btn-md btn-tight" data-click="${on(enterManually)}">Enter details manually</button>
   </form>
@@ -3634,7 +3788,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
       title: "Merchant services agreement", meta: "PDF · 12 pages · version 4.2",
       sections: [
         ["1. What we provide", "Xplor Pay processes card payments for your business and pays the proceeds out to your bank account."],
-        ["2. Fees", "You pay the rates in your fee schedule and nothing else. There is no monthly fee and no setup fee."],
+        ["2. Fees", "You pay the rates in your fee schedule."],
         ["3. Term and ending the agreement", "There is no minimum term. You can close your account at any time and there is no exit fee."],
         ["4. Disputes and chargebacks", "If a cardholder disputes a payment, we will tell you what evidence is needed and by when, and you keep control of the response."],
         ["5. Getting paid, and money we may need back", [
@@ -3660,14 +3814,6 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
           "(b) Documents that are part of this agreement. The terms and conditions, and any other documents this agreement refers to, are part of the agreement.",
           "(c) Fees and compliance. We provide the payment services on condition that you pay all fees and other charges, and that you follow our terms of service and privacy policy, as they may be revised from time to time."
         ]]
-      ]
-    },
-    rates: {
-      title: "Rates and fee schedule", meta: "PDF · 2 pages · effective on approval",
-      sections: [
-        ["Card payments", "2.6% + 30¢ for each card payment taken."],
-        ["Monthly fees", "None."],
-        ["Payouts", "Sent to your bank account the next business day after a sale."]
       ]
     },
     privacy: {
@@ -3821,14 +3967,14 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   <p class="small-note sign-truth">By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5.</p></div>
   <div class="sign-meta">
     <span>Signed on ${new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })} · the date and time are recorded when you submit</span>
-    <span class="sign-ok">${icon("shield", 13)}ESIGN Act compliant · we'll email you a signed copy</span>
+    <span class="sign-ok">${icon("shield", 13)}Signed electronically · we'll email you a signed copy</span>
   </div>
 </section>
 <section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
   <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
   ${state.nextOpen && html`<ol class="next-grid" id="next-body">
     <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trullio</div><div class="next-body">${v.submitNote}</div></div></li>
-    <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">Usually under 2 hours. You can close this window, and we'll email and text you.</div></div></li>
+    <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">Usually under 2 hours. You can close this window, and we'll email you.</div></div></li>
     <li class="next-item"><span class="next-num">3</span><div><div class="next-title">Start taking payments</div><div class="next-body">Your first payout lands the next business day after your first sale.</div></div></li>
   </ol>`}
 </section>`;
@@ -3898,7 +4044,7 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
   <ol class="timeline">
     <li class="tl-item"><span class="tl-dot tl-dot--done">${icon("check", 12, "i-bb")}</span><div class="tl-body"><div class="tl-title">Application received</div><div class="tl-note">${v.receivedNote}</div></div></li>
     <li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote}</div></div></li>
-    <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">Usually within 2 hours${waits.length ? " of the last item arriving" : ""} · we'll email and text you</div></div></li>
+    <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">Usually within 2 hours${waits.length ? " of the last item arriving" : ""} · we'll email you</div></div></li>
   </ol>
   ${waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, you'll see it here as one clear request.</p>`}
 </section>
@@ -3946,7 +4092,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const name = pick ? pick.name : OWNER_SEED.self.name;
     return { id: pick ? pick.o.id : 0, name: name, first: name.split(" ")[0] };
   }
-  const pendText = (r, t) => { if (!r.person) return t; const p = pendPerson(); return t.split("{name}").join(p.name).split("{first}").join(p.first); };
+  const pendText = (r, t0) => { const t = t0.replace(/licen[cs]e/g, licWord()); if (!r.person) return t; const p = pendPerson(); return t.split("{name}").join(p.name).split("{first}").join(p.first); };
   const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
   function pendTitle() { const n = pendReasons().length; return n === 1 ? "One thing to fix" : (NUMBER_WORDS[n] || String(n)) + " things to fix"; }
   const PEND_HOW = { upload: "Upload a document", fields: "Write an answer", confirm: "Tell us when it's done", cosigner: "Add a co-signer", none: "Nothing to send" };
@@ -4121,12 +4267,6 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${state.screen === "rfi" && rfiView()}
     ${state.screen === "approved" && approvedView(v)}
   </div>
-  <div class="jumpbar" data-key="jumps" role="group" aria-label="Prototype: jump to a status">
-    <div class="jumpbar-inner">
-      <span class="jumpbar-label">Prototype · jump to</span>
-      ${v.statusJumps.map((j) => html`<button type="button" class="btn btn-soft btn-2xs btn-jump" data-click="${on(j.go)}">${j.label}</button>`)}
-    </div>
-  </div>
 </div>`;
   }
 
@@ -4141,7 +4281,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       </div>
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeSave)}">${icon("x", 16)}</button>
     </div>
-    <p class="dialog-body">Log back in any time and you'll carry on where you left off.${pin("return-by-login")}</p>
+    <p class="dialog-body">Log back in any time with the link in your welcome email, and you'll carry on where you left off.${pin("return-by-login")}</p>
     ${invitesOn() && html`
     <p class="dialog-body">Send a link to whoever should pick it up, such as your bookkeeper for the bank details or a co-owner for their own ID. They'll land exactly where you left off and see only their part.</p>
     <form class="dialog-form" data-submit="${on(() => { if (!SAVE_EMAIL_OK.test(state.saveEmail.trim())) { setState({ saveEmailErr: "Enter an email like name@example.com." }); return; } closeSave(); })}"${state.saveEmailErr ? html` data-error="1"` : ""}>
@@ -4221,7 +4361,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
   <div class="need-bar"><h2 class="need-head">What you'll need</h2></div>
   <div class="need-list">
     ${need("user", "Your personal details", "Your name, date of birth, home address, email and phone number.")}
-    ${need("file", "A photo ID", "A passport or driver's license. You can take the photo on your phone.")}
+    ${need("file", "A photo ID", "A passport or driver's " + licWord() + ". You can take the photo on your phone.")}
     ${need("shield", "Why we ask", (isNonprofit() ? "To confirm who runs the organization. " : "To confirm who owns the business. ") + "The details go to Trullio, our verification partner, like the rest of the application.")}
   </div>
   <div class="actions">
