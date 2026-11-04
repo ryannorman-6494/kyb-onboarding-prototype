@@ -1718,9 +1718,9 @@
       "id": "rail-quiet-step-markers",
       "area": "Visual",
       "where": "Left progress rail, step list",
-      "t": "The progress rail marks steps quietly: a soft green tick for done, a white purple-ringed number for the current step",
-      "b": "The current step keeps its light purple row but has no border around it. Its number sits in a white circle with a purple ring and a purple number, not a solid purple disc. A finished step shows a small green check mark (12px) on a pale green circle with the same light grey ring as the numbered circles, the same 22px size as the numbered circles of the steps still to do, instead of a solid dark green disc with a white tick. The current step's soft pulse ring stays. The Your progress bar and its percentage are green, not purple.",
-      "tradeoff": "The done and current markers now stand out less against the grey step numbers, so someone scanning the rail leans on the row tint and bold label to find where they are. The pale green circle has low contrast against the white rail; the green tick carries the meaning.",
+      "t": "The progress rail keeps every step's number and shows a green tick beside the word Done once a step is finished",
+      "b": "The current step keeps its light purple row but has no border around it. Its number sits in a white circle with a purple ring and a purple number, not a solid purple disc. A finished step keeps its number, in a white circle with the same light grey ring and 22px size as the numbered circles of the steps still to do, and a small green check mark (12px) sits beside the word Done at the end of the row. (Until 2026-11-04 the tick replaced the number, on a pale green circle; Ryan wanted the numbers kept so the list still reads as steps one to seven.) The current step's soft pulse ring stays. The Your progress bar and its percentage are green, not purple.",
+      "tradeoff": "The done and current markers now stand out less against the grey step numbers, so someone scanning the rail leans on the row tint, the bold label and the green Done to find where they are. A done step's circle is white like the current one's, so it is told apart by its grey ring and by the Done on the right.",
       "by": "Ryan",
       "when": "2026-10-23"
     },
@@ -2160,7 +2160,7 @@
       "where": "Step 1 · Company · Business type / legal structure",
       "t": "The company structure dropdown covers the ODIN ownership types, with public and private spelled out",
       "b": "For a company the structure dropdown lists Private corporation, Public corporation (publicly traded), Private partnership, Public partnership (publicly traded), Limited liability company (LLC, US only) and Limited liability partnership (LLP). Sole proprietor is the second business type card, and tax-exempt and government come from the non-profit pills, so together the three business types cover the nine ODIN ownership types: PRIVATE_CORPORATION, PUBLIC_CORPORATION, PRIVATE_PARTNERSHIP, PUBLIC_PARTNERSHIP, LLC, LIMITED_LIABILITY_PARTNERSHIP, SOLE_PROPRIETORSHIP, TAX_EXEMPT and GOVERNMENT. The cards stay the first choice because they decide which questions follow.",
-      "tradeoff": "Nothing in the prototype changes by structure yet: every company structure gets the same questions. Whether public companies or partnerships need different questions is for Ops to say. \"Public\" and \"private\" add jargon to the list, and most applicants are private. LLP in Canada is from general knowledge and should be confirmed.",
+      "tradeoff": "Nothing in the prototype changes by structure yet: every company structure gets the same questions. Ops confirmed on 2026-11-04 that nothing differs beyond the three business type groups, so public companies and partnerships do not need different questions. \"Public\" and \"private\" add jargon to the list, and most applicants are private. LLP in Canada is from general knowledge and should be confirmed.",
       "by": "Ryan",
       "when": "2026-11-04"
     },
@@ -2170,7 +2170,7 @@
       "where": "Step 1 · Non-profit or government · Type of organization",
       "t": "Non-profit or government asks for the type of organization with two round pills, not a dropdown",
       "b": "The Non-profit or government route has a required Type of organization question with two round pills, the same control as Yes / No: Tax-exempt organization, and Government body. They map to TAX_EXEMPT and GOVERNMENT. Two choices are quicker to scan as pills than as a closed menu. The line under them says charities, foundations and other non-profits are tax-exempt organizations. The structure used to be filled in automatically as \"Non-profit\" and by the registry lookup; the applicant now chooses it and a lookup leaves the choice alone. Save and continue stays off until one is chosen.",
-      "tradeoff": "One more required answer on the non-profit route. Step wording written for non-profits (Donations, Trustees) is not yet different for a government body. The tax-exempt label is Ryan's reading of the ODIN type; whether a government body is also tax-exempt in ODIN is not known. On 2026-11-04 Ryan considered splitting Non-profit and Government into two cards (four in all) and decided to keep the pills, because both get the same questions; if Ops says they should differ, revisit the four cards.",
+      "tradeoff": "One more required answer on the non-profit route. Step wording written for non-profits (Donations, Trustees) is not yet different for a government body. The tax-exempt label is Ryan's reading of the ODIN type; whether a government body is also tax-exempt in ODIN is not known. On 2026-11-04 Ryan considered splitting Non-profit and Government into two cards (four in all) and decided to keep the pills, because both get the same questions; Ops confirmed on 2026-11-04 that there is no difference in questions beyond the three groups, so the four-card split is closed and the pills stay.",
       "by": "Ryan",
       "when": "2026-11-04"
     },
@@ -3690,7 +3690,7 @@
     const waitNote = waitingOn === 0 ? "" : waitingOn === 1 ? (isNonprofit() ? "Waiting on one person's details" : "Waiting on one owner's details") : "Waiting on " + waitingOn + (isNonprofit() ? " people's details" : " owners' details");
     const items = STEPS.map((s) => {
       if (s.n < state.step || (state.editing && s.n !== state.step && s.n < 7)) {
-        return html`<li><button type="button" class="step is-done" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${icon("check", 12, "i-b")}</span><span class="step-label">${stepName(s)}${s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`}</span><span class="step-meta">Done</span></button></li>`;
+        return html`<li><button type="button" class="step is-done" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`}</span><span class="step-meta">${icon("check", 12)}Done</span></button></li>`;
       }
       if (s.n === state.step) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
