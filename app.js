@@ -727,7 +727,7 @@
       "area": "Trust",
       "where": "Throughout",
       "t": "“Get help” opens a phone number, not nothing",
-      "b": "The second test persona looked for someone to call at every sensitive field and found a Get help button that did nothing, so her fallback was to leave and ring a relative. Both help buttons now open a short panel with a phone line, chat and email, the hours, and a line saying Xplor will never ask for a full SSN, password or bank login by chat, phone or text, which also covers the worry about phishing texts.",
+      "b": "The second test persona looked for someone to call at every sensitive field and found a Get help button that did nothing, so her fallback was to leave and ring a relative. Both help buttons now open a short panel with a phone line and email, the hours, and a line saying Xplor will never ask for a full SSN, password or bank login by chat, phone or text, which also covers the worry about phishing texts.",
       "tradeoff": "The number and email are placeholders and need replacing with real support details.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -1649,7 +1649,7 @@
       "area": "Flow",
       "where": "Welcome page",
       "t": "The welcome page uses the same Get help button and the same hover note as a step",
-      "b": "The secondary button on the welcome page, left of Let's get started, is now Get help with the same question-mark icon as the Get help button in the step list, in both slices. It opens the same Talk to a person dialog, with the phone number, chat and email. That makes the line Want to talk to someone first? with the phone number at the bottom of the page redundant, so it is removed. What we do with your information moves up to the end of the description under the heading, as hoverable text with a question icon, the way Why are we asking? sits at the end of a step's description. It opens on hover, click or focus, closes when the pointer leaves, and Escape closes it. The Someone else handles our finances button is removed from Slice 2 too.",
+      "b": "The secondary button on the welcome page, left of Let's get started, is now Get help with the same question-mark icon as the Get help button in the step list, in both slices. It opens the same Talk to a person dialog, with the phone number and email. That makes the line Want to talk to someone first? with the phone number at the bottom of the page redundant, so it is removed. What we do with your information moves up to the end of the description under the heading, as hoverable text with a question icon, the way Why are we asking? sits at the end of a step's description. It opens on hover, click or focus, closes when the pointer leaves, and Escape closes it. The Someone else handles our finances button is removed from Slice 2 too.",
       "tradeoff": "The support number is no longer on the page itself; a person has to press Get help to see it. Slice 2 loses its one-click hand-off from the welcome page, though Finish later and the owner cards still offer it.",
       "by": "Ryan",
       "when": "2026-10-22"
@@ -1719,8 +1719,8 @@
       "area": "Visual",
       "where": "Left progress rail, step list",
       "t": "The progress rail keeps every step's number and shows a green tick beside the word Done once a step is finished",
-      "b": "The current step keeps its light purple row but has no border around it. Its number sits in a white circle with a purple ring and a purple number, not a solid purple disc. A finished step keeps its number, in a white circle with the same light grey ring and 22px size as the numbered circles of the steps still to do, and a small green check mark (12px) sits beside the word Done at the end of the row. (Until 2026-11-04 the tick replaced the number, on a pale green circle; Ryan wanted the numbers kept so the list still reads as steps one to seven.) The current step's soft pulse ring stays. The Your progress bar and its percentage are green, not purple.",
-      "tradeoff": "The done and current markers now stand out less against the grey step numbers, so someone scanning the rail leans on the row tint, the bold label and the green Done to find where they are. A done step's circle is white like the current one's, so it is told apart by its grey ring and by the Done on the right.",
+      "b": "The current step keeps its light purple row but has no border around it. Its number sits in a white circle with a purple ring and a purple number, not a solid purple disc. Every step's number sits in a white 22px circle with a light grey ring, whether the step is finished, current or still to do (white for all of them was added on 2026-11-05). A finished step keeps its number, and a small green check mark (12px) sits beside the word Done at the end of the row. (Until 2026-11-04 the tick replaced the number, on a pale green circle; Ryan wanted the numbers kept so the list still reads as steps one to seven.) The current step's soft pulse ring stays. The Your progress bar and its percentage are green, not purple.",
+      "tradeoff": "The done and current markers now stand out less against the grey step numbers, so someone scanning the rail leans on the row tint, the bold label and the green Done to find where they are. All the circles are white, so a done step is told apart from one still to do only by the Done and green tick on the right, and the current step by its purple ring and row tint.",
       "by": "Ryan",
       "when": "2026-10-23"
     },
@@ -2140,7 +2140,7 @@
       "where": "Under review screen · What happens next, and the timeline",
       "t": "Xplor sends the applicant email only, never a text",
       "b": "The under review screen and its timeline say \"we'll email you\" when a decision is ready. They used to say \"we'll email and text you\". Ryan confirmed on 2026-11-04 that Xplor will not text the applicant during onboarding, only email. Because no text is promised, the screens do not need a line about what a text will or will not ask for.",
-      "tradeoff": "An applicant who does not check email gets no second prompt. The Get help dialog still says Xplor never asks for a full SSN, password or bank login over chat, phone or text, which stays true and is general fraud advice.",
+      "tradeoff": "An applicant who does not check email gets no second prompt. The Get help dialog still says Xplor never asks for a full SSN, password or bank login over phone or text, which stays true and is general fraud advice.",
       "by": "Ryan",
       "when": "2026-11-04"
     },
@@ -2193,6 +2193,26 @@
       "tradeoff": "It promises an email for every question, so the More info needed email has to be sent whenever Ops asks for something (the template exists; nothing connects Ops picks to it yet). Step 7's What happens next panel and the why-we-ask notes still name Trullio; only the under review page was changed.",
       "by": "Ryan",
       "when": "2026-11-04"
+    },
+    {
+      "id": "dialogs-close-on-outside-click",
+      "area": "Flow",
+      "where": "Every dialog",
+      "t": "A dialog closes when you click anywhere outside it, as well as on its Close button",
+      "b": "The Get help, Finish later, confirmation, document preview, hand-off and design notes dialogs all close on a click on the dimmed area around them, the same as pressing their Close button or Escape. The press has to start on the dimmed area too, so selecting text inside a dialog and letting go outside it does not close it. Closing this way does the same as Close: nothing is saved or sent, and a confirmation counts as cancelled.",
+      "tradeoff": "A stray click outside a dialog that holds something half done, such as a hand-off with an email typed in, closes it and loses what was typed. The dimmed area gives no hint that it will do this.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "help-no-chat",
+      "area": "Copy",
+      "where": "Get help dialog",
+      "t": "The Get help dialog offers a phone number and email, with no chat",
+      "b": "The Talk to a person dialog lists Call us and Email, with their hours and reply time. The Chat row (replies in about 3 minutes) is gone because Xplor has no chat service, and the warning at the bottom now reads that Xplor will never ask for a full SSN, password or bank login over phone or text.",
+      "tradeoff": "Phone hours are the only live option, so someone outside those hours has only email, with a reply within one business day.",
+      "by": "Ryan",
+      "when": "2026-11-05"
     }
   ];
 
@@ -4458,10 +4478,9 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     </div>
     <ul class="help-list">
       <li><span class="help-label">Call us</span><span class="help-value mono">${SUPPORT_PHONE}</span><span class="help-note">${SUPPORT_HOURS}</span></li>
-      <li><span class="help-label">Chat</span><span class="help-value">Replies in about 3 minutes</span><span class="help-note">Same hours</span></li>
       <li><span class="help-label">Email</span><span class="help-value">support@xplorpay.example</span><span class="help-note">We reply within one business day</span></li>
     </ul>
-    <p class="dialog-foot">${icon("lock", 14)}We will never ask for your full SSN, password or bank login over chat, phone or text.</p>
+    <p class="dialog-foot">${icon("lock", 14)}We will never ask for your full SSN, password or bank login over phone or text.</p>
   </div>
 </div>`;
   }
@@ -4710,6 +4729,22 @@ ${protoView()}`;
   // The owner actions menu closes on a click anywhere outside it.
   document.addEventListener("click", (e) => {
     if (state.menuOwner && !(e.target.closest && e.target.closest(".kebab-wrap"))) setState({ menuOwner: 0 });
+  });
+  // A dialog closes on a click on the dimmed area outside it, as well as on its Close button and Escape (decision dialogs-close-on-outside-click).
+  // The press has to start on the dimmed area too, so dragging to select text inside a dialog and letting go outside does not close it.
+  let pressedBackdrop = false;
+  document.addEventListener("mousedown", (e) => { pressedBackdrop = !!(e.target.classList && e.target.classList.contains("backdrop")); });
+  document.addEventListener("click", (e) => {
+    const t = e.target;
+    if (!pressedBackdrop || !t.classList || !t.classList.contains("backdrop")) return;
+    pressedBackdrop = false;
+    const key = t.getAttribute("data-key");
+    if (key === "confirm") closeConfirm();
+    else if (key === "doc-view") closeDoc();
+    else if (key === "help") closeHelp();
+    else if (key === "delegate") closeDelegate();
+    else if (key === "save") setState({ saveOpen: false });
+    else if (key === "notes-list") setState({ notesListOpen: false });
   });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
