@@ -419,7 +419,7 @@
       "area": "Flow",
       "where": "Step 1 · Business & address",
       "t": "Ask for the registry number before anything else",
-      "b": "One EIN or business number fills in the legal name, structure, incorporation date and address. Correcting prefilled details is faster and far more accurate than composing them, and a registry match removes a document from step 6.",
+      "b": "One EIN or business number fills in the legal name, structure, incorporation date and state. Correcting prefilled details is faster and far more accurate than composing them, and a registry match removes a document from step 6.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -2175,14 +2175,14 @@
       "when": "2026-11-04"
     },
     {
-      "id": "state-from-address",
+      "id": "state-of-incorporation-asked",
       "area": "Flow",
       "where": "Step 1 · Registered details",
-      "t": "No separate state field; Doing business as sits beside the legal name",
-      "b": "The registered details card no longer asks for the state of incorporation (or, for a non-profit, the state registered in). The state is already part of the registered address, so asking again made the applicant answer the same thing twice and gave them two places to disagree. With it gone, a company's four short fields sit in a two by two grid: Legal business name beside Doing business as, then Business type / legal structure beside Date of incorporation. The Non-profit or government route moves Doing business as next to the legal name in the same way, with Type of organization below them across the full width. The sole proprietor card is unchanged. The registry lookup no longer fills a state, and the check that tells whether the registry details were edited now compares only the legal name and address.",
-      "tradeoff": "Nothing now holds the state as a separate answer, so anything that needs it must read it from the address text. If engineering needs the state of incorporation as its own value, it has to be pulled from the registry result or parsed from the address. On the non-profit route the Date registered field now sits alone on the last row. The Canada company card already had no state field, so it only gains the new order.",
+      "t": "The state of incorporation is its own required field, as well as the registered address",
+      "b": "The registered details card asks for the state of incorporation (State registered in, for a non-profit or government body) as a required dropdown of the US states, in addition to the registered address, which is also required. The registry lookup fills it. Canada has no state field, so the Canada card is unchanged. The layout follows the field: for a US company, Legal business name runs full width and the four short fields sit in a two by two grid (Doing business as and Business type / legal structure, then Date of incorporation and State of incorporation). For a non-profit or government body, Doing business as sits beside the legal name, Type of organization runs across the full width below them, and Date registered sits beside State registered in. Canada keeps legal name beside Doing business as and structure beside the date. The sole proprietor card is unchanged.",
+      "tradeoff": "The applicant gives the state twice, once here and once inside the address text, so the two can disagree. It was removed on 2026-11-04 so it could be read from the address, and Ryan brought it back on 2026-11-05. Nothing checks that the state matches the address.",
       "by": "Ryan",
-      "when": "2026-11-04"
+      "when": "2026-11-05"
     },
     {
       "id": "review-screen-email-then-respond",
@@ -2221,7 +2221,7 @@
   // walked the way a new applicant meets it; "Sample business" in the prototype
   // options swaps in a finished Riverside Pilates for demoing the later screens.
   const EMPTY_ANSWERS = {
-    sigSame: "", structure: "", incorporated: "", legalName: "", dba: "",
+    sigSame: "", structure: "", incorporated: "", legalName: "", dba: "", stateInc: "",
     website: "", phone: "", email: "", description: "", regAddress: "",
     tradingSame: "", tradingAddress: "",
     monthlyVolume: "", avgTicket: "", maxTicket: "", cpSplit: "",
@@ -2258,6 +2258,7 @@
     incorporated: "03 / 12 / 2019",
     legalName: "Riverside Pilates LLC",
     dba: "Riverside Pilates",
+    stateInc: "Oregon",
     website: "riversidepilates.com",
     phone: "+1 (503) 555-0148",
     email: "hello@riversidepilates.com",
@@ -2287,6 +2288,7 @@
     dba: "Riverside Pilates",
     structure: "Limited liability company (LLC)",
     incorporated: "03 / 12 / 2019",
+    stateInc: "Oregon",
     regAddress: "418 SE Water Ave, Suite 210, Portland, OR 97214"
   };
 
@@ -2674,6 +2676,7 @@
     self: { name: "Dana R. Whitfield", dob: "04 / 11 / 1986", home: "92 NE Bryce St, Portland, OR 97212", email: "dana@riversidepilates.com", phone: "+1 (503) 555-0148" },
     other: { name: "Marcus J. Lee", dob: "09 / 10 / 1979", home: "1408 SE Belmont St, Portland, OR 97214", email: "marcus@riversidepilates.com", phone: "+1 (503) 555-0192" }
   };
+  const US_STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
   // The applicant's own country comes first (decision country-list-own-first).
   const countries = () => (isCa() ? ["Canada", "United States", "United Kingdom", "Australia", "Other"] : ["United States", "Canada", "United Kingdom", "Australia", "Other"]);
   // Date order follows the region, so the placeholder is the instruction.
@@ -2747,7 +2750,7 @@
   function rejectLookup() {
     setState((s) => ({
       einFound: false, lookupConfirmed: false, lookupRejected: true, manualBiz: true, lookupErr: "",
-      a: Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" })
+      a: Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" })
     }));
     showToast("Thanks for telling us. We've cleared those details. Fill them in yourself, or look up a different number above. If you type them in, we'll ask for a registration document at step 6.");
   }
@@ -2757,7 +2760,7 @@
     setState(lookupProblem(state.lookupId) ? { lookupId: "", lookupErr: "", lookupBlurErr: "" } : { lookupBlurErr: "" });
     setState((s) => ({
       manualBiz: true, einFound: false, lookupConfirmed: false, lookupRejected: false, noEin: isSole(), lookupErr: "",
-      a: s.einFound ? Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" }) : s.a
+      a: s.einFound ? Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" }) : s.a
     }));
     // A sole proprietor with no number to look up gives their SSN/SIN at step 2 instead, so this is also the "I don't have one" route.
     showToast(isSole() ? "No problem. You'll give us your " + (isCa() ? "SIN" : "SSN") + " at step 2 instead, so there's no " + (isCa() ? "business number" : "EIN") + " letter to find." : "No problem. Fill in the details below. We'll ask for a registration document at step 6 so we can check them.");
@@ -2765,7 +2768,7 @@
   // The rest of step 1 stays out of sight until there is something to put in it.
   const step1Open = () => state.manualBiz || (isSole() && state.noEin) || state.einFound;
   // True while the registry-filled details are exactly as the lookup returned them.
-  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === (isCa() ? CA_ADDRESS : REGISTRY_RESULT.regAddress);
+  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === (isCa() ? CA_ADDRESS : REGISTRY_RESULT.regAddress) && (isCa() || state.a.stateInc === REGISTRY_RESULT.stateInc);
 
   // ---------------------------------------------------------------------------
   // Validation. Pure reads of state: returns { fieldId: message } for a step.
@@ -3002,11 +3005,12 @@
       if (!step1Open()) return [];
       return [
         (state.einFound || state.manualBiz || (isSole() && state.noEin)) && card("s1-reg", isSole() ? "Your details" : "Registered details", isSole() ? "Check these and change anything that isn't right." : (state.einFound ? "Straight from the registry. Change anything that isn't right." : "Enter these as they appear on your registration."), [
-          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
+          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || (isCompany() && !ca), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
           fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
           isCompany() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
           isNonprofit() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES, hint: "Charities, foundations and other non-profits are tax-exempt organizations." }) : null,
-          isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() })
+          isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
+          ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ], { assurance: isSole() || !state.einFound || !state.lookupConfirmed ? "" : registryUntouched() ? "Matched against " + (ca ? "CRA and provincial registry records" : "IRS and Oregon Secretary of State records") : "You've changed some of the registry details, so we'll check your documents against what you've entered." }),
         card("s1-addr", "Addresses", "", [
           fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "text", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
