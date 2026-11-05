@@ -301,6 +301,11 @@
   // line marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END, and the SIMPLE TRIAL rule in app.css. Nothing else depends on it.
   const MOREINFO_CARDS = "A card for each request"; // SIMPLE TRIAL
   const MOREINFO_SIMPLE = "Just uploads and notes"; // SIMPLE TRIAL
+  // TYPE UP TRIAL (decision type-asked-up-trial): a Prototype option that asks the specific type (company structure, or tax-exempt versus
+  // government) on the business type page, right under the card, instead of in step 1. To undo: delete every line marked TYPE UP TRIAL,
+  // the TYPE UP TRIAL block in bizTypeView, and the TYPE UP TRIAL rules in app.css. Nothing else depends on it.
+  const TYPEASK_STEP1 = "On step 1 (as built)"; // TYPE UP TRIAL
+  const TYPEASK_UP = "On the business type page"; // TYPE UP TRIAL
   // Where the whole prototype starts (decision login-default-start): the welcome email and login for a new Odin user by default,
   // or the existing-user email and business picker. The sample business is the Fields start as option, not a start.
   const START_LOGIN = "New Odin User";
@@ -313,6 +318,7 @@
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
       moreInfo: q.get("moreinfo") === "cards" ? MOREINFO_CARDS : MOREINFO_SIMPLE, // SIMPLE TRIAL
+      typeAsk: q.get("typeask") === "up" ? TYPEASK_UP : TYPEASK_STEP1, // TYPE UP TRIAL
       division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
@@ -326,6 +332,7 @@
     const q = new URLSearchParams();
     if (ctx.slice === SLICE_2) q.set("slice", "2");
     if (ctx.moreInfo === MOREINFO_CARDS) q.set("moreinfo", "cards"); // SIMPLE TRIAL
+    if (ctx.typeAsk === TYPEASK_UP) q.set("typeask", "up"); // TYPE UP TRIAL
     if (ctx.division === DIV_CLUBREADY) q.set("division", "clubready");
     if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
@@ -344,6 +351,7 @@
   const licWord = () => (isCa() ? "licence" : "license");
   // Invites, owner links and hand-offs to someone else exist in slice 2 only.
   const invitesOn = () => ctx.slice === SLICE_2;
+  const typeUp = () => ctx.typeAsk === TYPEASK_UP; // TYPE UP TRIAL
   // A division other than Standard opens the prototype on the one step it changes (step 6) with the sample business filled in.
   const divisionOn = () => ctx.division !== DIV_STANDARD;
 
@@ -351,6 +359,7 @@
     slice: [SLICE_1, SLICE_2],
     division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
     moreInfo: [MOREINFO_SIMPLE, MOREINFO_CARDS], // SIMPLE TRIAL
+    typeAsk: [TYPEASK_STEP1, TYPEASK_UP], // TYPE UP TRIAL
     start: [START_LOGIN, START_EXISTING],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
@@ -2213,6 +2222,26 @@
       "tradeoff": "Phone hours are the only live option, so someone outside those hours has only email, with a reply within one business day.",
       "by": "Ryan",
       "when": "2026-11-05"
+    },
+    {
+      "id": "required-badge-warning",
+      "area": "Visual",
+      "where": "Step 6 · Supporting documents",
+      "t": "The Required badge on a document is the warning colour, and turns into a green Checked badge once the file is in",
+      "b": "On each document row the Required badge, beside the title, is the warning colour (light warning background, warning text) instead of grey, to show the file has to be added before the applicant can continue. When the file has been added and checked, that same badge turns green and reads Checked, with a tick. It replaces the Checked pill that used to sit at the top right of the row, so a finished row has no badge on the right at all. While a file is uploading or being read, the busy pill still shows on the right. A document that is Not needed stays grey.",
+      "tradeoff": "Several orange badges at once on an empty step make the page look more urgent than it is, and the warning colour is also the one used for caution elsewhere, so it can read as a problem rather than a to-do. A finished row no longer says Required anywhere, so the badge stops telling the applicant the file was mandatory; the green tick says it is dealt with.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "type-asked-up-trial",
+      "area": "Flow",
+      "where": "Business type page and step 1 · Registered details",
+      "t": "Trial: ask the specific type on the business type page, under the card, instead of in step 1",
+      "b": "A Prototype option, Specific type asked, switches between the build as it is (the company structure dropdown and the Tax-exempt or Government pills sit in step 1, and the registry lookup prefills the company structure) and a trial where the same question is asked on the business type page. In the trial, the card for Company opens up when it is chosen and holds What kind of company is it? as a dropdown of the same structures inside it, the card for Non-profit or government opens up and holds What type of organization is it? as the two pills, and Individual / Sole proprietor asks nothing more. Continue stays off until the follow-up is answered. Step 1 then no longer shows the structure or the pills, and the registry lookup leaves the chosen type alone, so the page writes one ownership type value that maps straight to the nine ODIN types. Step 1's name, date and state fields close up into two columns. Built so Ryan can compare the two and then keep or delete it; it is not a decision to switch yet.",
+      "tradeoff": "In the trial the applicant answers the structure by hand before the lookup, so the registry can no longer prefill it, and someone unsure whether they are an LLC or a private corporation has to decide without help. It is one engineering field instead of two answers that must be combined. To remove the trial, delete every line marked TYPE UP TRIAL in app.js and app.css.",
+      "by": "Ryan",
+      "when": "2026-11-05"
     }
   ];
 
@@ -2758,7 +2787,9 @@
     // Keep only the 9-digit BN so the program account suffix never reaches the review row or the W-9.
     if (bnCore(state.lookupId) !== state.lookupId) setState({ lookupId: bnCore(state.lookupId) });
     // A sole trader's number confirms the EIN only; there is no registry record of a company to fill in.
-    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: state.a.structure }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Private corporation", legalName: CA_NAME, regAddress: CA_ADDRESS }) : REGISTRY_RESULT;
+    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: state.a.structure }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Private corporation", legalName: CA_NAME, regAddress: CA_ADDRESS }) : Object.assign({}, REGISTRY_RESULT);
+    // TYPE UP TRIAL: the type was chosen on the business type page, so the lookup leaves it alone.
+    if (typeUp() && !isSole()) delete filled.structure;
     setState((s) => ({ lookupErr: "", noEin: false, einFound: true, lookupConfirmed: isSole(), lookupRejected: false, manualBiz: false, a: Object.assign({}, s.a, filled) }));
     showToast(lookupResultText(state));
   }
@@ -2770,7 +2801,7 @@
   function rejectLookup() {
     setState((s) => ({
       einFound: false, lookupConfirmed: false, lookupRejected: true, manualBiz: true, lookupErr: "",
-      a: Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" })
+      a: Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() || typeUp() ? s.a.structure : "" })
     }));
     showToast("Thanks for telling us. We've cleared those details. Fill them in yourself, or look up a different number above. If you type them in, we'll ask for a registration document at step 6.");
   }
@@ -2780,7 +2811,7 @@
     setState(lookupProblem(state.lookupId) ? { lookupId: "", lookupErr: "", lookupBlurErr: "" } : { lookupBlurErr: "" });
     setState((s) => ({
       manualBiz: true, einFound: false, lookupConfirmed: false, lookupRejected: false, noEin: isSole(), lookupErr: "",
-      a: s.einFound ? Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() ? s.a.structure : "" }) : s.a
+      a: s.einFound ? Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() || typeUp() ? s.a.structure : "" }) : s.a
     }));
     // A sole proprietor with no number to look up gives their SSN/SIN at step 2 instead, so this is also the "I don't have one" route.
     showToast(isSole() ? "No problem. You'll give us your " + (isCa() ? "SIN" : "SSN") + " at step 2 instead, so there's no " + (isCa() ? "business number" : "EIN") + " letter to find." : "No problem. Fill in the details below. We'll ask for a registration document at step 6 so we can check them.");
@@ -3025,10 +3056,10 @@
       if (!step1Open()) return [];
       return [
         (state.einFound || state.manualBiz || (isSole() && state.noEin)) && card("s1-reg", isSole() ? "Your details" : "Registered details", isSole() ? "Check these and change anything that isn't right." : (state.einFound ? "Straight from the registry. Change anything that isn't right." : "Enter these as they appear on your registration."), [
-          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || (isCompany() && !ca), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
+          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || (isCompany() && !ca && !typeUp()), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
           fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
-          isCompany() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
-          isNonprofit() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES, hint: "Charities, foundations and other non-profits are tax-exempt organizations." }) : null,
+          isCompany() && !typeUp() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
+          isNonprofit() && !typeUp() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES, hint: "Charities, foundations and other non-profits are tax-exempt organizations." }) : null,
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ], { assurance: isSole() || !state.einFound || !state.lookupConfirmed ? "" : registryUntouched() ? "Matched against " + (ca ? "CRA and provincial registry records" : "IRS and Oregon Secretary of State records") : "You've changed some of the registry details, so we'll check your documents against what you've entered." }),
@@ -3695,14 +3726,27 @@
     <h1 class="welcome-title">What type of business are you?${pin("business-type-first")}</h1>
     <p class="welcome-lede">Tell us how your business is set up. We'll only ask the questions that apply to you.</p>
     <div class="biz-list" role="radiogroup" aria-label="Business type">
-      ${BIZ_TYPES.map((t) => html`<button type="button" class="biz-card${state.bizType === t.id ? " is-selected" : ""}" role="radio" aria-checked="${String(state.bizType === t.id)}" data-key="biz-${t.id}" data-click="${on(() => chooseBizType(t.id))}">
+      ${BIZ_TYPES.map((t) => {
+        // TYPE UP TRIAL: the selected Company or Non-profit card opens up and holds its follow-up question inside it.
+        const head = (cls) => html`<button type="button" class="biz-card${state.bizType === t.id ? " is-selected" : ""}${cls}" role="radio" aria-checked="${String(state.bizType === t.id)}" data-key="biz-${t.id}" data-click="${on(() => chooseBizType(t.id))}">
         <span class="biz-radio" aria-hidden="true"></span>
         <span><span class="biz-label">${t.label}</span><span class="biz-desc">${bizDesc(t)}</span></span>
-      </button>`)}
+      </button>`;
+        if (typeUp() && state.bizType === t.id && t.id === "company") return html`<div class="biz-open" data-key="biz-open-company">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-company">
+        <label class="field-label field-label--block" for="f-structure-up">What kind of company is it?${REQ}</label>
+        <select class="input${state.a.structure === "" ? " is-unset" : ""}" id="f-structure-up" data-input="${on((e) => set("structure", e.target.value))}">${state.a.structure === "" && html`<option value="" selected>Choose a type</option>`}${companyStructures().map((op) => html`<option${attr("selected", op === state.a.structure)}>${op}</option>`)}</select>
+      </div></div>`;
+        if (typeUp() && state.bizType === t.id && t.id === "non-profit") return html`<div class="biz-open" data-key="biz-open-nonprofit">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-nonprofit">
+        <span class="field-label field-label--block" id="l-structure-up">What type of organization is it?${REQ}</span>
+        <div class="yn yn--pills" role="group" aria-labelledby="l-structure-up">${NONPROFIT_TYPES.map((opt) => html`<button type="button" class="yn-btn" aria-pressed="${String(state.a.structure === opt)}" data-click="${on(() => set("structure", opt))}">${opt}</button>`)}</div>
+        <p class="small-note">Charities, foundations and other non-profits are tax-exempt organizations.</p>
+      </div></div>`;
+        return head("");
+      })}
     </div>
     <div class="actions">
       <button type="button" class="btn btn-outline btn-lg" data-click="${on(() => go("welcome", 1))}">${icon("chev-l", 17)}Back</button>
-      <button type="button" class="btn btn-primary btn-lg" ${state.bizType ? "" : "disabled"} data-click="${on(() => state.bizType && go("flow", 1))}">Continue${icon("arrow-r", 19)}</button>
+      <button type="button" class="btn btn-primary btn-lg" ${state.bizType && (!typeUp() || isSole() || state.a.structure) ? "" : "disabled"} data-click="${on(() => state.bizType && (!typeUp() || isSole() || state.a.structure) && go("flow", 1))}">Continue${icon("arrow-r", 19)}</button>
     </div>
   </div>
 </div>`;
@@ -3826,14 +3870,14 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     let action;
     if (open && d.key === "w9") action = html`<div class="doc-actions"><button type="button" class="btn btn-primary btn-sm" aria-label="Review and sign ${d.title}" data-click="${on(() => openDoc("w9"))}">${icon("pen", 15)}Review and sign</button><button type="button" class="btn btn-outline btn-sm" aria-label="Upload your own ${d.title}" data-click="${on(() => upload(d.key, d.file, d.read))}">${icon("upload", 15)}Upload your own</button></div>`;
     else if (open) action = html`<button type="button" class="btn btn-outline btn-sm" aria-label="Choose file for ${d.title}" data-click="${on(() => upload(d.key, d.file, d.read))}">${icon("upload", 15)}Choose file</button>`;
-    else if (s === "done") action = html`<span class="state-pill state-pill--done">${icon("check", 14, "i-b")}Checked</span>`;
+    else if (s === "done") action = "";
     else if (s === "skipped") action = html`<span class="state-pill state-pill--muted">Not needed</span>`;
     else action = html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>${s === "uploading" ? "Uploading" : "Reading it"}</span>`;
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3><span class="req">${d.requirement}</span>${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="req req--done">${icon("check", 12, "i-b")}Checked</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
       ${d.why && fieldWhyView({ id: "doc_" + d.key, why: d.why })}
       ${errView("doc_" + d.key)}
@@ -4492,7 +4536,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       const options = CONTEXT_OPTIONS[key];
       const pick = (e) => {
         setCtx({ [key]: options.indexOf(e.target.value) > -1 ? e.target.value : options[0] });
-        if (key === "data" || key === "link" || key === "start" || key === "slice" || key === "division") { restored = false; resetData(); }
+        if (key === "data" || key === "link" || key === "start" || key === "slice" || key === "division" || key === "typeAsk") { restored = false; resetData(); }
       };
       return html`<label><span class="field-label field-label--block">${label}${pinId && pin(pinId)}</span><select class="input" data-input="${on(pick)}">${options.map((op) => html`<option${attr("selected", ctx[key] === op)}>${op}</option>`)}</select></label>`;
     };
@@ -4504,6 +4548,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Region", "region")}
     ${select("Fields start as", "data")}
     ${select("Division", "division", "division-option")}
+    ${select("Specific type asked", "typeAsk", "type-asked-up-trial")}
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
     ${select("Link opened as", "link")}
     ${(state.screen === "rfi" || ctx.link === LINKS.info) && html`<hr class="proto-rule">

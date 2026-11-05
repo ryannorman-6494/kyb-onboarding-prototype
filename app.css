@@ -303,6 +303,8 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .doc-titlebar { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 3px; }
 .doc-title { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .req { display: inline-flex; align-items: center; height: var(--size-control-small); font: var(--font-label-default); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); background: var(--color-background-neutral-default); color: var(--color-text-primary); }
+.req--required { background: var(--color-background-warning-subtle); color: var(--color-text-warning); }
+.req--done { gap: 4px; background: var(--color-background-success-subtle); color: var(--color-text-success); }
 .state-pill { height: var(--size-control-medium); flex: none; display: inline-flex; align-items: center; gap: var(--space-gap-related); padding: 0 var(--space-padding-surface); border-radius: var(--radius-small); font: var(--font-label-default); }
 .state-pill--busy { background: var(--color-background-neutral-default); color: var(--color-text-primary); }
 .state-pill--done { background: var(--color-background-success-subtle); color: var(--color-text-success); }
@@ -736,3 +738,12 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .simple-doc .doc-file { margin-top: 0; }
 
 /* Step 4: the optional extra bank account link sits quietly under the card, as text rather than a button. */
+
+/* TYPE UP TRIAL (decision type-asked-up-trial): the selected business type card opens up and holds its follow-up question. Delete to undo. */
+.biz-open { background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
+.biz-open .biz-head.biz-card { background: transparent; box-shadow: none; border-radius: var(--radius-default) var(--radius-default) 0 0; }
+.biz-sub { padding: 0 18px 20px 50px; animation: biz-sub-in 200ms ease-out; }
+.biz-sub .input { max-width: 420px; }
+.biz-sub .small-note { margin-top: 8px; }
+@keyframes biz-sub-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .biz-sub { animation: none; } }
