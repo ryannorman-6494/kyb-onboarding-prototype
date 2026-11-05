@@ -17,8 +17,8 @@
  *
  * Security: nothing leaves the page. There are no network calls (the CSP in
  * index.html blocks them as well), nothing is written to storage or cookies,
- * and every value stays in memory until the tab closes. Document uploads,
- * and the registry lookup are simulated.
+ * and every value stays in memory until the tab closes. Document uploads
+ * are simulated.
  */
 (function () {
   "use strict";
@@ -424,21 +424,12 @@
       "when": "2026-09-23"
     },
     {
-      "id": "lookup-first",
-      "area": "Flow",
-      "where": "Step 1 · Business & address",
-      "t": "Ask for the registry number before anything else",
-      "b": "One EIN or business number fills in the legal name, structure, incorporation date and state. Correcting prefilled details is faster and far more accurate than composing them, and a registry match removes a document from step 6.",
-      "by": "Claude",
-      "when": "2026-09-23"
-    },
-    {
       "id": "no-mcc-picker",
       "area": "Copy",
       "where": "Step 1 · Business & address",
-      "t": "Describe the business first; the category list is a checked suggestion, not a quiz",
-      "b": "Almost no merchant knows their MCC, and guessing at a dropdown produces wrong classifications that surface as problems weeks later. They describe the business in their own words (optional), we suggest a category from that and fill it in, and the full merchant category code (MCC) list is one search away if the suggestion is wrong or there is no description. The category is the required field, the description only helps fill it.",
-      "tradeoff": "Classification has to be right, and has to be shown, or this is worse than the dropdown. The code is a merchant category code (MCC), Ryan's call on 2026-10-06 (decision 68); whether Canada needs NAICS as well is for ops to say.",
+      "t": "The category is picked from a short searchable list, with a help link for people who do not know their code",
+      "b": "The business description box that used to suggest a category is gone. Almost no merchant knows their merchant category code (MCC), so the field is a searchable list the applicant types into, by name or by four-digit code, and the list is short because it holds only the codes set up for their division (decision mcc-from-division). Under the field a help link points to a country-specific website for people who do not know their code. Nothing is suggested or pre-filled, and the category is required.",
+      "tradeoff": "With no description the applicant has no keywords to match against, so someone who does not know their code relies on the list names and the help link. The suggestion used to be a simulated keyword guess, which is no longer in the prototype. The help link's destination is a stand-in (see mcc-from-division). Earlier decisions here (category-editable, category-is-mcc) describe the old suggestion and have been reworded.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -707,7 +698,7 @@
       "area": "Copy",
       "where": "Steps 1, 6 and the submitted screen",
       "t": "Nothing contradicts itself, and the status screens only name the people entered",
-      "b": "Found by the first persona test run. Step 1 says the registry match saves you a document, so the registration proof and EIN letter now show as “Not needed” in step 6, and the “to go” count is worked out from the list. The W-9 read-back and the submitted screen use the owners the applicant entered rather than the sample people, and the “everyone's done their bit” tile only says so when it is true. Spelling is US throughout (license, authorized, tokenized, recognize). Entrance animations were shortened and shrunk so cards settle before someone clicks.",
+      "b": "Found by the first persona test run. The “to go” count in step 6 is worked out from the list. (This round also made the registration proof and EIN letter show as “Not needed” after a registry match; the registry match was removed on 2026-11-05, see ein-in-registered-details, and both documents are always required again.) The W-9 read-back and the submitted screen use the owners the applicant entered rather than the sample people, and the “everyone's done their bit” tile only says so when it is true. Spelling is US throughout (license, authorized, tokenized, recognize). Entrance animations were shortened and shrunk so cards settle before someone clicks.",
       "by": "Ryan",
       "when": "2026-10-05"
     },
@@ -726,7 +717,7 @@
       "area": "Flow",
       "where": "Business type (page 2)",
       "t": "Ask who you are before asking anything else",
-      "b": "A sole trader in the second persona test was asked for a date and state of incorporation, got a registry match for a stranger's company and had no way to say none of it applied. The page after the welcome screen, adapted from the Figma Make prototype, now asks what type of business you are (company, individual / sole trader, non-profit). The answer shapes the rest: a sole trader is asked whether they have an EIN at all, sees no incorporation fields, no ownership percentages and no owner invitations, and is not asked for registration documents; a non-profit is asked who runs the organization rather than who owns it. Changing the answer later clears what was entered, so nothing that no longer applies is left behind.",
+      "b": "A sole trader in the second persona test was asked for a date and state of incorporation, got a registry match for a stranger's company and had no way to say none of it applied. The page after the welcome screen, adapted from the Figma Make prototype, now asks what type of business you are (company, individual / sole trader, non-profit). The answer shapes the rest: a sole trader gives an EIN only if they have one, sees no incorporation fields, no ownership percentages and no owner invitations, and is not asked for registration documents; a non-profit is asked who runs the organization rather than who owns it. Changing the answer later clears what was entered, so nothing that no longer applies is left behind.",
       "tradeoff": "Back from step 1 returns here, and changing type restarts the form. That is deliberate but loses typed answers.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -760,21 +751,11 @@
       "when": "2026-10-02"
     },
     {
-      "id": "lookup-not-me",
-      "area": "Trust",
-      "where": "Step 1 · Business & address",
-      "t": "After a lookup, ask “Is this your business?” and let them say no",
-      "b": "Three testers in the second round (a baker, a food-pantry treasurer and a studio owner's earlier run) were shown a business that was not theirs and had nothing to click except overwriting every field. The match now asks to be confirmed. Saying no clears what was filled in and opens the empty form, so they can type the details themselves (the registration document is then requested at step 6) or look up a different number above, which fills the form again. Once confirmed, the “matched against records” note only shows while the details are still as the registry returned them.",
-      "tradeoff": "One more click on the common path. Worth it, because a silent wrong match is worse than a click.",
-      "by": "Claude",
-      "when": "2026-10-05"
-    },
-    {
       "id": "category-editable",
       "area": "Copy",
       "where": "Step 1 · Business & address",
-      "t": "Show the business category in plain words, as a suggestion they can change",
-      "b": "The prototype used to announce “7997 · Membership clubs (fitness)” for every business, and four testers out of four met it. The category is now a plain-words field below the description: pre-filled with a best guess when the description matches one, left for them to choose when it does not, with a way out (“we'll confirm with you”). No code is shown. The guess is a simple keyword match standing in for a real classifier.",
+      "t": "Show the business category in plain words, as a field they can change",
+      "b": "The prototype used to announce “7997 · Membership clubs (fitness)” for every business, and four testers out of four met it. The category is now a field the applicant chooses (searchable, name or code), never a code stated back to them. Reworded on 2026-11-05: it used to be pre-filled from a business description with a way out (“we'll confirm with you”); the description box and the suggestion are gone (decision no-mcc-picker).",
       "tradeoff": "The suggestion will still be wrong sometimes, which is why it is a field and not a statement.",
       "by": "Claude",
       "when": "2026-10-05"
@@ -820,22 +801,12 @@
       "when": "2026-10-05"
     },
     {
-      "id": "lookup-progressive",
-      "area": "Flow",
-      "where": "Step 1 · Lookup",
-      "t": "Step 1 shows only the lookup until it has been used, with a quiet way to skip it",
-      "b": "The rest of step 1 (about a dozen fields) is hidden until the applicant presses Look up or chooses Enter details manually. A bad number gets a plain hint under the box, not a red input, because pressing the button is not a mistake. A successful match shows a green toast in the top-right corner (see success-toasts) and the form appears at once. Choosing Enter details manually clears any match already filled in and asks for a registration document at step 6. For sole proprietors it is also the “I don't have an EIN” route (the separate button is gone), so their SSN or SIN is asked at step 2.",
-      "tradeoff": "Anyone who wants to see the whole form before committing cannot.",
-      "by": "Ryan",
-      "when": "2026-10-05"
-    },
-    {
       "id": "success-toasts",
       "area": "Feedback",
-      "where": "Step 1 and everywhere a green confirmation appeared",
+      "where": "Everywhere a green confirmation appears",
       "t": "Green confirmations are toasts in the top-right corner, not blocks in the page",
-      "b": "The lookup match, the “no EIN” choice and “enter details manually” used to push a green block into the page and hold the next fields back. They now appear as a toast that fades after about four and a half seconds, so the fields arrive straight away. The note at the top of step 6 is reassurance rather than a confirmation, so it is now a neutral callout that stays.",
-      "tradeoff": "A toast can be missed or fade before it is read. The manual-entry toast carries the “we'll ask for a registration document” warning, which is also repeated by step 6 itself.",
+      "b": "Confirmations used to push a green block into the page and hold the next fields back. They now appear as a toast that fades after about four and a half seconds, so the fields arrive straight away. The note at the top of step 6 is reassurance rather than a confirmation, so it is now a neutral callout that stays. (Step 1's lookup, the main source of these, was removed on 2026-11-05.)",
+      "tradeoff": "A toast can be missed or fade before it is read.",
       "by": "Ryan",
       "when": "2026-10-05"
     },
@@ -884,8 +855,8 @@
       "area": "Flow",
       "where": "Step 6 · Supporting documents",
       "t": "Documents that are no longer needed are not listed",
-      "b": "A registry match or a sole proprietor without an EIN each removes a document. Those rows used to stay on the page greyed out with a “Not needed” pill and an explanation, which added a line for something the applicant never has to do. Step 6 now lists only the documents still to add, the note above says how many are left, and the review summary no longer counts the ones that dropped away.",
-      "tradeoff": "The registry match already says it saves a document.",
+      "b": "A sole proprietor without an EIN has no EIN letter to add, so that row is not listed. A row like that used to stay on the page greyed out with a “Not needed” pill and an explanation, which added a line for something the applicant never has to do. Step 6 now lists only the documents still to add, the note above says how many are left, and the review summary no longer counts the ones that dropped away.",
+      "tradeoff": "",
       "by": "Ryan",
       "when": "2026-10-05"
     },
@@ -920,16 +891,6 @@
       "when": "2026-10-06"
     },
     {
-      "id": "lookup-clears-refused-number",
-      "area": "Flow",
-      "where": "Step 1 · Lookup",
-      "t": "A number that was refused is cleared when the applicant chooses to go on without it",
-      "b": "A baker typed her SSN into the EIN box, was told gently it was the wrong kind of number, then chose Enter details manually. The green “No problem” toast appeared, but her SSN stayed in the box with its red message beside it, so the page contradicted itself and she wondered whether the number had been kept. Choosing Enter details manually now empties a refused number and its message. A number that was valid is left alone.",
-      "tradeoff": "An applicant who mistyped one digit loses what they typed and must retype it if they change their mind and look it up after all.",
-      "by": "Claude",
-      "when": "2026-10-06"
-    },
-    {
       "id": "dates-format-and-check",
       "area": "Flow",
       "where": "Steps 1, 2 and 5 · Every date field",
@@ -954,7 +915,7 @@
       "area": "Flow",
       "where": "Step 1 · Merchant category code",
       "t": "The category is a merchant category code (MCC), not an SIC code",
-      "b": "Ryan chose merchant category codes over SIC codes: they are what the card networks use and what the application is ultimately classified by. The field is now “Merchant category code (MCC)”, searched by name or code, and the suggestion from the description points at MCCs (bakeries 5462, restaurants 5812, caterers 5811, fitness 7997, charities 8398 and so on). The SIC list is no longer loaded.",
+      "b": "Ryan chose merchant category codes over SIC codes: they are what the card networks use and what the application is ultimately classified by. The field is “Merchant category code (MCC)”, searched by name or code. The full list is in mcc-codes.js; which codes an applicant sees depends on their division (decision mcc-from-division). The SIC list is no longer loaded.",
       "tradeoff": "The list in mcc-codes.js has 221 codes written from general knowledge of the public MCC list, not checked against the Visa or Mastercard publication, and it leaves out the codes the networks restrict (gambling, adult, money transfer and similar) until ops say which Xplor accepts. Do not rely on it until ops supply the real list. Whether Canada also needs NAICS is still open.",
       "by": "Ryan",
       "when": "2026-10-06"
@@ -1045,7 +1006,7 @@
       "area": "Copy",
       "where": "Whole flow · non-profit",
       "t": "The rest of the business wording is swapped for a non-profit",
-      "b": "For a non-profit the step list and review rows read “Organization & address” and “Leaders & signatory” (the browser tab title too). Step 1 says organization on the legal name, phone and email labels, their placeholders, the website hint, the contact card line and the category hint. The why-we-ask notes for steps 1, 2 and 7, the identity-check hint, the number-lookup reassurance and the Canadian “organization's business number” prompt say organization, and the step 2 note says directors and trustees have to be identified instead of 25% owners. Document read-backs and the checking note say organization, the statement preview speaks of a supporter's statement, the owner-link recipient page says who runs the organization and the approved screen says people can pay themselves.",
+      "b": "For a non-profit the step list and review rows read “Organization & address” and “Leaders & signatory” (the browser tab title too). Step 1 says organization on the legal name, phone and email labels, their placeholders, the website hint, the contact card line and the category hint. The why-we-ask notes for steps 1, 2 and 7 and the identity-check hint say organization, and the step 2 note says directors and trustees have to be identified instead of 25% owners. Document read-backs and the checking note say organization, the statement preview speaks of a supporter's statement, the owner-link recipient page says who runs the organization and the approved screen says people can pay themselves.",
       "tradeoff": "Deliberately left alone: the business-type page (it is where the type is chosen, so “business” is the neutral word), the welcome page (shown before the type is known), the agreement, rates and privacy sample text, which legal owns, and the W-9 (“Business name, if different” follows the IRS form). “Leaders” and “supporter” are my wording, not Ryan's or ops'. “Supporter” does not fit a non-profit selling tickets or services. The Merchant services agreement title and “merchant” in the approved screen are unchanged.",
       "by": "Claude",
       "when": "2026-10-06"
@@ -1069,16 +1030,6 @@
       "tradeoff": "That Trullio verifies bank accounts is relayed by Ryan, not from a document; Trullio or compliance should confirm it covers US and Canadian accounts and what happens when an account cannot be verified (the Banking Verification request is the likely route). A mistyped number is now caught only after submit, not by a document at step 6. Step 6 has one less file to find, which was the most common place people got stuck without the paper in hand.",
       "by": "Ryan",
       "when": "2026-11-02"
-    },
-    {
-      "id": "welcome-registry-promise-softened",
-      "area": "Copy",
-      "where": "Welcome page · What you'll need",
-      "t": "The welcome page no longer promises that the registry fills in everything",
-      "b": "The registration card said “We'll pull the rest from IRS and state records, so there's a lot less for you to type.” In the third persona run a sole proprietor entered a valid EIN, was told “There's no registry record to fill in for you” and typed everything herself, so the promise did not hold. It now reads “If we find a record we'll fill in the rest, so there's less for you to type.” (and the same with the CRA business number for Canada).",
-      "tradeoff": "The welcome page is shown before the applicant says what type of business they are, so it cannot be worded for sole proprietors alone; the softer line is true for everyone but sells the shortcut less strongly. The registry match is simulated (stub registry-lookup), so how often a real lookup finds a record is unknown.",
-      "by": "Ryan",
-      "when": "2026-10-06"
     },
     {
       "id": "max-sale-not-below-average",
@@ -1387,7 +1338,7 @@
       "where": "Merchant flow after the sales form",
       "t": "What the salesperson entered starts the merchant's answers",
       "b": "The owner's name, email and phone, the trading name and the category code carry over from the sales form, so the merchant checks them instead of typing them. The owner is already listed on step 2 as the applicant (the person the link went to, so they are marked as signing for themselves). The business email and phone on step 1 are not filled from the owner, because a studio's general inbox is often a different address. The code screen shows the owner's email, masked. A country of Canada switches the merchant's flow to Canada, and the United States or Puerto Rico to the United States. Everything stays editable, on the basis that nearly all of it will be right.",
-      "tradeoff": "This sets aside the earlier call that owners start empty for a company, but only when a salesperson's form came first. Ownership starts at 100% for that owner, as with Add myself. Other countries (Australia, New Zealand, UK, Mexico) leave the region unchanged because the merchant flow only covers the United States and Canada. The bank depositor descriptor is not carried over because it is a different thing from the billing descriptor on step 3. For a non-profit the owner is listed as a Director at 10%, For a sole proprietor the owner card gets the same name, email and phone, and the owner's name also fills their legal name on step 1, since they are the business. Fees, MIDs, payouts and the requested date have no matching question in the merchant flow, so they are kept for ops only. The registry lookup still overwrites the legal name and address, but not the trading name.",
+      "tradeoff": "This sets aside the earlier call that owners start empty for a company, but only when a salesperson's form came first. Ownership starts at 100% for that owner, as with Add myself. Other countries (Australia, New Zealand, UK, Mexico) leave the region unchanged because the merchant flow only covers the United States and Canada. The bank depositor descriptor is not carried over because it is a different thing from the billing descriptor on step 3. For a non-profit the owner is listed as a Director at 10%, For a sole proprietor the owner card gets the same name, email and phone, and the owner's name also fills their legal name on step 1, since they are the business. Fees, MIDs, payouts and the requested date have no matching question in the merchant flow, so they are kept for ops only.",
       "by": "Ryan",
       "when": "2026-10-13"
     },
@@ -1668,7 +1619,7 @@
       "area": "Visual",
       "where": "Welcome page · What you'll need",
       "t": "The four things to have ready sit in one card, split by light dividers",
-      "b": "The four What you'll need items (registration and tax numbers, the people who own the organization, bank account and documents, and a rough idea of card sales) were four separate cards stacked with gaps. They are now one card with the four items inside it, separated by a thin light divider. The dividers stop at the card's inner margins, lining up with the text and icons, rather than running edge to edge. The change applies to both slices, and the page an invited owner sees in Slice 2 uses the same list, so it changes with it. On 2026-10-30 Ryan asked for more room, and the list stayed one card rather than going back to four: each row now has 28px of padding all round (it was 20px above and below and 18px at the sides), 6px between title and text, a looser line height, and the dividers line up with the new 28px margins.",
+      "b": "The four What you'll need items (registration and tax numbers, the people who own the organization, bank account and documents, and a rough idea of card sales) were four separate cards stacked with gaps. They are now one card with the four items inside it, separated by a thin light divider. The dividers stop at the card's inner margins, lining up with the text and icons, rather than running edge to edge. The change applies to both slices, and the page an invited owner sees in Slice 2 uses the same list, so it changes with it. On 2026-10-30 Ryan asked for more room, and the list stayed one card rather than going back to four: each row now has 28px of padding all round (it was 20px above and below and 18px at the sides), 6px between title and text, a looser line height, and the dividers line up with the new 28px margins. On 2026-11-05 Ryan found that a little too roomy, so the rows are 24px above and below with the 28px at the sides kept, and the card's corners go from 8px to 12px, the radius the other large cards use (the first version had the small one). The same day the list was updated after the refinement session with engineering: step 1's line mentions choosing the merchant category from a short list, and the people line asks for each person's title, drops whoever signs in Slice 1 (one person fills in the form and signs) and says in Slice 1 that the applicant fills it in for everyone.",
       "tradeoff": "One card reads as a single checklist, which is lighter on the page, but the items are no longer separate objects, so a later change that makes one of them clickable or expandable would need them drawn as cards again.",
       "by": "Ryan",
       "when": "2026-10-22"
@@ -1979,8 +1930,8 @@
       "area": "Business",
       "where": "Step 1 · Business type / legal structure (Canada)",
       "t": "Canada does not offer LLC as a legal structure",
-      "b": "In Canada the legal structure list leaves out the LLC, and the registry lookup and sample business fill in Private corporation (the list was widened on 2026-11-04, see company-structure-nine-types). The US list keeps Limited liability company (LLC). The made-up Canadian business is named Riverside Pilates Inc. so its name matches its structure. Also reworded: the legal proceedings question no longer says on the go, and the step 7 review line for all-No declarations reads All answers No, not Nothing to declare, to follow the tone of voice rule on idioms.",
-      "tradeoff": "Two options is my draft. Canadian structures such as an unlimited liability company or a co-operative are not listed; compliance should say which Xplor accepts. The registry lookup still returns the same made-up Portland business for every region.",
+      "b": "In Canada the legal structure list leaves out the LLC, and the sample business fills in Private corporation (the list was widened on 2026-11-04, see company-structure-nine-types). The US list keeps Limited liability company (LLC). The made-up Canadian business is named Riverside Pilates Inc. so its name matches its structure. Also reworded: the legal proceedings question no longer says on the go, and the step 7 review line for all-No declarations reads All answers No, not Nothing to declare, to follow the tone of voice rule on idioms.",
+      "tradeoff": "Two options is my draft. Canadian structures such as an unlimited liability company or a co-operative are not listed; compliance should say which Xplor accepts.",
       "by": "Ryan",
       "when": "2026-10-28"
     },
@@ -2088,7 +2039,7 @@
       "area": "Flow",
       "where": "Step 1, Canada · Business Number field",
       "t": "The Business Number field accepts a number with its program account and keeps the first 9 digits",
-      "b": "A Canadian business number is often printed with a program account, such as 123456789RT0001 or 123456789RC0001. In Canada the field now accepts nine digits followed by two letters and four digits, keeps only the first nine when the applicant leaves the box or looks it up, and the note under the field says \"Just the first 9 digits. Leave off RT0001 or similar.\" Any other entry still has to be exactly nine digits. The US EIN field is unchanged.",
+      "b": "A Canadian business number is often printed with a program account, such as 123456789RT0001 or 123456789RC0001. In Canada the field now accepts nine digits followed by two letters and four digits, keeps only the first nine when the applicant leaves the box, and the note under the field says \"Just the first 9 digits. Leave off RT0001 or similar.\" Any other entry still has to be exactly nine digits. The US EIN field is unchanged.",
       "tradeoff": "The rule comes from general knowledge of the CRA format, not an Xplor document, so it should be confirmed. The program account is dropped, so Ops will not see which program the applicant typed. A mistyped suffix is accepted without a check.",
       "by": "Ryan",
       "when": "2026-11-04"
@@ -2096,10 +2047,10 @@
     {
       "id": "ca-sample-data-canadian",
       "area": "Flow",
-      "where": "Canada path · sample business, registry lookup, sample owners",
+      "where": "Canada path · sample business, sample owners",
       "t": "The Canada path uses invented Canadian addresses, phones, bank and ID number",
-      "b": "With the region set to Canada, the registry lookup, the sample business and both sample owners use made-up Vancouver, BC details: the registered address (418 Water St, Suite 210, V6B 1A1), the 604 phone numbers, the owners' home addresses with V postal codes, a Canadian bank name and an ID number with no Oregon prefix. The US path is unchanged (Portland, OR). The registry still returns the same business for every number typed, and the Canadian one is a corporation.",
-      "tradeoff": "All values are invented and the addresses are not checked against real streets. The sample bank's routing, institution and transit numbers were left as they were. The registry result is still a fixed stand-in, not a real lookup, whatever number the applicant types.",
+      "b": "With the region set to Canada, the sample business and both sample owners use made-up Vancouver, BC details: the registered address (418 Water St, Suite 210, V6B 1A1), the 604 phone numbers, the owners' home addresses with V postal codes, a Canadian bank name and an ID number with no Oregon prefix. The US path is unchanged (Portland, OR). The Canadian sample business is a corporation.",
+      "tradeoff": "All values are invented and the addresses are not checked against real streets. The sample bank's routing, institution and transit numbers were left as they were.",
       "by": "Ryan",
       "when": "2026-11-04"
     },
@@ -2178,7 +2129,7 @@
       "area": "Flow",
       "where": "Step 1 · Non-profit or government · Type of organization",
       "t": "Non-profit or government asks for the type of organization with two round pills, not a dropdown",
-      "b": "The Non-profit or government route has a required Type of organization question with two round pills, the same control as Yes / No: Tax-exempt organization, and Government body. They map to TAX_EXEMPT and GOVERNMENT. Two choices are quicker to scan as pills than as a closed menu. The line under them says charities, foundations and other non-profits are tax-exempt organizations. The structure used to be filled in automatically as \"Non-profit\" and by the registry lookup; the applicant now chooses it and a lookup leaves the choice alone. Save and continue stays off until one is chosen.",
+      "b": "The Non-profit or government route has a required Type of organization question with two round pills, the same control as Yes / No: Tax-exempt organization, and Government body. They map to TAX_EXEMPT and GOVERNMENT. Two choices are quicker to scan as pills than as a closed menu. The line under them says charities, foundations and other non-profits are tax-exempt organizations. The structure used to be filled in automatically as \"Non-profit\"; the applicant now chooses it. Save and continue stays off until one is chosen.",
       "tradeoff": "One more required answer on the non-profit route. Step wording written for non-profits (Donations, Trustees) is not yet different for a government body. The tax-exempt label is Ryan's reading of the ODIN type; whether a government body is also tax-exempt in ODIN is not known. On 2026-11-04 Ryan considered splitting Non-profit and Government into two cards (four in all) and decided to keep the pills, because both get the same questions; Ops confirmed on 2026-11-04 that there is no difference in questions beyond the three groups, so the four-card split is closed and the pills stay.",
       "by": "Ryan",
       "when": "2026-11-04"
@@ -2188,7 +2139,7 @@
       "area": "Flow",
       "where": "Step 1 · Registered details",
       "t": "The state of incorporation is its own required field, as well as the registered address",
-      "b": "The registered details card asks for the state of incorporation (State registered in, for a non-profit or government body) as a required dropdown of the US states, in addition to the registered address, which is also required. The registry lookup fills it. Canada has no state field, so the Canada card is unchanged. The layout follows the field: for a US company, Legal business name runs full width and the four short fields sit in a two by two grid (Doing business as and Business type / legal structure, then Date of incorporation and State of incorporation). For a non-profit or government body, Doing business as sits beside the legal name, Type of organization runs across the full width below them, and Date registered sits beside State registered in. Canada keeps legal name beside Doing business as and structure beside the date. The sole proprietor card is unchanged.",
+      "b": "The registered details card asks for the state of incorporation (State registered in, for a non-profit or government body) as a required dropdown of the US states, in addition to the registered address, which is also required. Canada has no state field, so the Canada card is unchanged. The layout follows the field. A US company has Legal business name beside the EIN, Doing business as beside Business type / legal structure, then Date of incorporation beside State of incorporation. A non-profit or government body has the legal name across the full width, Doing business as beside the EIN, Type of organization across the full width below them, and Date registered beside State registered in. Canada has legal name beside the Business Number, Doing business as beside structure, and the date on its own. The sole proprietor card has the full-width legal name, then Trading name beside the EIN (decision ein-in-registered-details).",
       "tradeoff": "The applicant gives the state twice, once here and once inside the address text, so the two can disagree. It was removed on 2026-11-04 so it could be read from the address, and Ryan brought it back on 2026-11-05. Nothing checks that the state matches the address.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2238,8 +2189,58 @@
       "area": "Flow",
       "where": "Business type page and step 1 · Registered details",
       "t": "Trial: ask the specific type on the business type page, under the card, instead of in step 1",
-      "b": "A Prototype option, Specific type asked, switches between the build as it is (the company structure dropdown and the Tax-exempt or Government pills sit in step 1, and the registry lookup prefills the company structure) and a trial where the same question is asked on the business type page. In the trial, the card for Company opens up when it is chosen and holds What kind of company is it? as a dropdown of the same structures inside it, the card for Non-profit or government opens up and holds What type of organization is it? as the two pills, and Individual / Sole proprietor asks nothing more. Continue stays off until the follow-up is answered. Step 1 then no longer shows the structure or the pills, and the registry lookup leaves the chosen type alone, so the page writes one ownership type value that maps straight to the nine ODIN types. Step 1's name, date and state fields close up into two columns. Built so Ryan can compare the two and then keep or delete it; it is not a decision to switch yet.",
-      "tradeoff": "In the trial the applicant answers the structure by hand before the lookup, so the registry can no longer prefill it, and someone unsure whether they are an LLC or a private corporation has to decide without help. It is one engineering field instead of two answers that must be combined. To remove the trial, delete every line marked TYPE UP TRIAL in app.js and app.css.",
+      "b": "A Prototype option, Specific type asked, switches between the build as it is (the company structure dropdown and the Tax-exempt or Government pills sit in step 1) and a trial where the same question is asked on the business type page. In the trial, the card for Company opens up when it is chosen and holds What kind of company is it? as a dropdown of the same structures inside it, the card for Non-profit or government opens up and holds What type of organization is it? as the two pills, and Individual / Sole proprietor asks nothing more. Continue stays off until the follow-up is answered. Step 1 then no longer shows the structure or the pills, so the page writes one ownership type value that maps straight to the nine ODIN types. Step 1's name, date and state fields close up into two columns. Built so Ryan can compare the two and then keep or delete it; it is not a decision to switch yet.",
+      "tradeoff": "In the trial the applicant answers the structure on the business type page, before step 1, and someone unsure whether they are an LLC or a private corporation has to decide without help. It is one engineering field instead of two answers that must be combined. To remove the trial, delete every line marked TYPE UP TRIAL in app.js and app.css. The question for engineering, whether the real registry lookup returns the entity type, no longer matters: the lookup was removed on 2026-11-05 (decision ein-in-registered-details), so the type is chosen or typed by the applicant either way.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "mcc-from-division",
+      "area": "Flow",
+      "where": "Step 1 · Merchant category code",
+      "t": "The category list is the set of codes for the applicant's division, with a country-specific help link",
+      "b": "From the refinement session with engineering: the business description box is removed and the merchant category code (MCC) field is a searchable list only. The codes in it are inherited from the division the business sits in. An Ops user creates the division in Odin, so each one has a finite list of codes, perhaps 20 or 30, and the applicant never searches the whole card-network list. Typing narrows the list by name or by code, and opening an empty field shows every code in the division. The helper text under the field carries a link to a country-specific website for people who do not know their code: a US site when the application is US, a Canadian one when it is Canadian, opening in a new tab.",
+      "tradeoff": "The three division lists in the prototype (Standard 32 codes, ClubReady 14, Club Essentials 20) are invented stand-ins, not Ops's lists, and every MCC in them comes from mcc-codes.js, which was written from general knowledge and is unchecked. The help link points at the US Census Bureau and Statistics Canada industry code pages, which are NAICS pages and not MCC pages, so they are placeholders: Ops or engineering need to name the real site for each country. If a division list has only one code the field could be pre-filled; not designed. The division changes the list only; the prototype's Division option still opens on step 6 with the sample business filled in, so step 1 is reached by going back.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "slice-1-no-signer-question",
+      "area": "Flow",
+      "where": "Step 2 · Owners & signatory (Slice 1)",
+      "t": "Slice 1 does not ask who will be signing",
+      "b": "From the refinement session with engineering: in Slice 1 only one person gets access to the form, so that person is the signer. The Who'll be signing? card (Will you be signing it yourself?, and the signatory name and title when the answer was No) is removed from step 2 in Slice 1. Step 7 still asks for the signatory name and title and the typed signature; the name starts as the first owner and the title as the applicant's own title, and both stay editable. Slice 2 (invites) keeps the card, because there the person filling in the form may not be the one who signs.",
+      "tradeoff": "In Slice 1 the signer is always whoever opened the form, so a company where the owner is not the person completing the form has to change the name on step 7 by hand. In Slice 1 step 2 is called Owners (Leaders for a non-profit) in the rail, the page title and the step 7 review row; Slice 2 keeps Owners & signatory.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "owner-title-free-text",
+      "area": "Copy",
+      "where": "Step 2 · Owner card, Title / role",
+      "t": "Title is free text for every business type",
+      "b": "From the refinement session with engineering: the Title / role field on the owner card is a plain text box for companies, non-profits and government bodies, not a dropdown of Owner / CEO, Director, Managing partner, Company secretary and Officer. People hold titles the list did not cover. Starting values stay as they were (Owner / CEO for Add myself on a company, Director for a plain add and for non-profits) and the applicant types over them. The title still carries into the step 7 signatory title.",
+      "tradeoff": "Free text means titles will not be consistent, so anything downstream that reads the title (screening, reports) cannot rely on a fixed set of values. It is a required field.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "sole-owner-title-share",
+      "area": "Flow",
+      "where": "Step 2 · Owner card (Individual / Sole proprietor)",
+      "t": "A sole proprietor also gives a title and an ownership percentage, prefilled",
+      "b": "From the refinement session with engineering: the sole proprietor's owner card now has the Title / role and Ownership percentage fields the other business types have, so every owner record carries the same data. They start as Owner and 100, and both can be edited. The card header still says Sole owner. The step 7 signatory title starts as Owner.",
+      "tradeoff": "Two fields the applicant has no real choice about, shown only because engineering wants the same record for every type. The prefill keeps it to nothing to type. A sole proprietor who changes the percentage below 25 is told to enter 25 or more, the same rule as everyone else.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "ein-in-registered-details",
+      "area": "Flow",
+      "where": "Step 1 · Registered details",
+      "t": "The EIN or business number is a field in Registered details, and there is no registry lookup",
+      "b": "From the refinement session with engineering. The lookup went because of what it can actually do. Trullio can only prefill an address from a lookup, it needs the business's name and country to do it, and it then returns every business that shares that name in that country. The applicant could be shown a long list of possible matches, or have the wrong business prefilled, all so that they save typing an address. That is a bad trade, so the lookup, the Look up button, Enter details manually, the Is this your business? question and the match toasts are removed, and the whole of step 1 shows from the start. The EIN (Business Number in Canada) is now an ordinary field in the Registered details card, with the legal name, Doing business as, structure, date and state. A company or a non-profit has to give one; for a sole proprietor it is optional, and the hint says that without one they give their SSN (SIN in Canada) in step 2 instead. It is checked for nine digits, an SSN-shaped number is refused with a plain message, and a Canadian number pasted with its program account (RT0001) is cut back to the nine digits as the person leaves the field. The layout puts the legal name beside the EIN for a company, and Doing business as beside it for a non-profit and a sole proprietor. Nothing is filled in from the number. The address is typed in the Addresses card. The copy that went with the lookup is changed: the welcome page's registration line now says what Step 1 asks for, the why-we-ask note says the registration documents in step 6 are how the details are checked, the line about protecting the EIN at the lookup is gone, and the confirmation's checking line names the registration for a company or non-profit. With no registry match to waive them, the proof of registration and the EIN letter are now always required in step 6 (a sole proprietor still adds the EIN letter only if they gave an EIN).",
+      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Step 6 asks for more: every company and non-profit now adds a registration document and, in the US, an EIN letter, which a match used to waive. Ops should confirm they want both every time. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record.",
       "by": "Ryan",
       "when": "2026-11-05"
     }
@@ -2270,8 +2271,8 @@
   // walked the way a new applicant meets it; "Sample business" in the prototype
   // options swaps in a finished Riverside Pilates for demoing the later screens.
   const EMPTY_ANSWERS = {
-    sigSame: "", structure: "", incorporated: "", legalName: "", dba: "", stateInc: "",
-    website: "", phone: "", email: "", description: "", regAddress: "",
+    sigSame: "", structure: "", incorporated: "", legalName: "", ein: "", dba: "", stateInc: "",
+    website: "", phone: "", email: "", regAddress: "",
     tradingSame: "", tradingAddress: "",
     monthlyVolume: "", avgTicket: "", maxTicket: "", cpSplit: "",
     channel: "", goods: "", recurring: "", trial: "", marketplace: "",
@@ -2295,7 +2296,7 @@
   const CA_NAME = "Riverside Pilates Inc.";
   // Invented Canadian values, so the Canada path carries no Oregon address, phone, bank or ID number (decision ca-sample-data-canadian).
   const CA_ADDRESS = "418 Water St, Suite 210, Vancouver, BC V6B 1A1";
-  const CA_SAMPLE_BUSINESS = { regAddress: CA_ADDRESS, phone: "+1 (604) 555-0148", bankName: "Pacific Coast Credit Union" };
+  const CA_SAMPLE_BUSINESS = { ein: "123456789", regAddress: CA_ADDRESS, phone: "+1 (604) 555-0148", bankName: "Pacific Coast Credit Union" };
   const CA_OWNER_SEED = {
     self: { home: "92 Bryce St, Vancouver, BC V5T 2A1", phone: "+1 (604) 555-0148" },
     other: { home: "1408 Belmont Ave, Vancouver, BC V6J 3B5", phone: "+1 (604) 555-0192" }
@@ -2311,7 +2312,8 @@
     website: "riversidepilates.com",
     phone: "+1 (503) 555-0148",
     email: "hello@riversidepilates.com",
-    description: "Reformer pilates classes, 10-class passes and monthly memberships, sold in studio and through our website.",
+    ein: "93-4417208",
+    category: "7997 · Membership Clubs (Sports, Recreation, Athletic), Country Clubs, and Private Golf Courses",
     regAddress: "418 SE Water Ave, Suite 210, Portland, OR 97214",
     tradingSame: "yes",
     monthlyVolume: "42,000", avgTicket: "38", maxTicket: "1,200", cpSplit: "70",
@@ -2329,53 +2331,21 @@
     matchConsent: true, ofacAck: true
   });
 
-  // What the registry lookup on step 1 fills in. On an empty run this is the
-  // moment the form stops being blank, which is the whole reason the number is
-  // asked for first — so it has to actually happen, not be pre-baked.
-  const REGISTRY_RESULT = {
-    legalName: "Riverside Pilates LLC",
-    dba: "Riverside Pilates",
-    structure: "Limited liability company (LLC)",
-    incorporated: "03 / 12 / 2019",
-    stateInc: "Oregon",
-    regAddress: "418 SE Water Ave, Suite 210, Portland, OR 97214"
-  };
-
-  // Business category is a merchant category code (MCC). The list lives in mcc-codes.js and is searched in the
-  // picker; what the applicant writes in the description suggests one. The first pattern that
-  // matches is suggested, and no match suggests nothing. This is a keyword guess standing in
-  // for a real classifier.
+  // Business category is a merchant category code (MCC). The full list lives in mcc-codes.js, but the applicant only sees
+  // the codes set up for their division (decision mcc-from-division). In the real product Ops builds each division in
+  // Odin with its own finite list of codes, so the picker inherits it. These three lists are INVENTED stand-ins
+  // (DIVISION_MCC), not Ops's lists. Standard has 32 codes, ClubReady 14 and Club Essentials 20, to show a short and a longer list.
   const MCC_LIST = String(window.MCC_CODES || "").split("\n").filter(Boolean).map((l) => { const p = l.split("\t"); return { code: p[0], name: p[1], label: p[0] + " · " + p[1], hay: (p[0] + " " + p[1]).toLowerCase() }; });
-  const CATEGORY_GUESSES = [
-    { code: "8661", re: /church|chapel|worship|temple|mosque|synagogue/i },
-    { code: "8398", re: /charit|donat|non-?profit|pantry|food bank|fundrais|volunteer|community/i },
-    { code: "7221", re: /photo/i },
-    { code: "7829", re: /video|film/i },
-    { code: "7333", re: /design|illustrat|artist/i },
-    { code: "7338", re: /print/i },
-    { code: "7997", re: /pilates|yoga|gym|fitness/i },
-    { code: "7911", re: /dance|ballet/i },
-    { code: "7997", re: /sport|membership|club/i },
-    { code: "5462", re: /bak(e|ery|ing)|cake|cupcake|pastr|confection|chocolate/i },
-    { code: "5811", re: /catering|caterer/i },
-    { code: "5812", re: /cafe|coffee|restaurant|takeaway|food truck/i },
-    { code: "8931", re: /account|tax|bookkeep/i },
-    { code: "8111", re: /legal|\blaw/i },
-    { code: "7392", re: /consult|advis/i },
-    { code: "1711", re: /plumb|heating|air.?condition/i },
-    { code: "1731", re: /electric/i },
-    { code: "7349", re: /clean|janitor/i },
-    { code: "0780", re: /garden|landscap|lawn/i },
-    { code: "7538", re: /mechanic|auto repair|car repair/i },
-    { code: "7699", re: /repair/i },
-    { code: "5999", re: /retail|shop|store|\bsell|merch/i }
-  ];
-  const mccByCode = (code) => MCC_LIST.filter((x) => x.code === code)[0];
-  const suggestCategory = (text) => { const hit = CATEGORY_GUESSES.filter((c) => c.re.test(text || ""))[0]; const e = hit && mccByCode(hit.code); return e ? e.label : ""; };
-  // Every word typed must appear in the code or title, so "bake" and "5461" both find bakeries.
-  // Retail and service codes (5000s, 7000s, 8000s) are listed ahead of contractors, transport and wholesale, since that is what most applicants run.
-  const mccRank = (x) => (/^[578]/.test(x.code) ? 0 : 1);
-  const searchMcc = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); const hits = t.length ? MCC_LIST.filter((x) => t.every((w) => x.hay.indexOf(w) > -1)) : MCC_LIST; return hits.filter((x) => mccRank(x) === 0).concat(hits.filter((x) => mccRank(x) === 1)); };
+  const DIVISION_MCC = {
+    [DIV_STANDARD]: ["5462", "5499", "5651", "5732", "5811", "5812", "5814", "5942", "5947", "5977", "5995", "5999", "7221", "7230", "7298", "7299", "7333", "7349", "7392", "7399", "7699", "7911", "7997", "8011", "8041", "8099", "8111", "8299", "8351", "8398", "8641", "8661"],
+    [DIV_CLUBREADY]: ["5499", "5941", "5977", "7230", "7297", "7298", "7299", "7911", "7941", "7997", "7999", "8011", "8041", "8099"],
+    [DIV_CE]: ["5499", "5811", "5812", "5813", "5941", "5947", "7011", "7032", "7230", "7298", "7299", "7911", "7933", "7941", "7992", "7997", "7999", "8299", "8398", "8641"]
+  };
+  const divisionMccs = () => { const codes = DIVISION_MCC[ctx.division] || DIVISION_MCC[DIV_STANDARD]; return MCC_LIST.filter((x) => codes.indexOf(x.code) > -1); };
+  // Country specific help for an applicant who does not know their code. STAND-IN link: Ops or engineering to name the real site.
+  const mccHelp = () => (isCa() ? { name: "Statistics Canada", url: "https://www.statcan.gc.ca/en/subjects/standard/naics/2022/v1/index" } : { name: "US Census Bureau", url: "https://www.census.gov/naics/" });
+  // Every word typed must appear in the code or title, so "bake" and "5462" both find bakeries. An empty search lists the whole division list.
+  const searchMcc = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); const all = divisionMccs(); return t.length ? all.filter((x) => t.every((w) => x.hay.indexOf(w) > -1)) : all; };
 
   // A returning visitor to the emailed link gets a saved business back, so that visit borrows the sample one.
   let restored = false;
@@ -2385,7 +2355,9 @@
   // "organization" for a non-profit, "business" for everyone else, for copy that names what is applying.
   const orgWord = () => (isNonprofit() ? "organization" : "business");
   // Step names: a non-profit has no owners and is not a business.
-  const stepName = (s) => (isNonprofit() ? { 1: "Organization & address", 2: "Leaders & signatory" }[s.n] || s.label : s.label);
+  // Step 2 is called Owners (Leaders for a non-profit) in Slice 1, where nobody is asked who signs; Slice 2 keeps "& signatory" (decision slice-1-no-signer-question).
+  const step2Name = () => (isNonprofit() ? "Leaders" : "Owners") + (invitesOn() ? " & signatory" : "");
+  const stepName = (s) => (s.n === 2 ? step2Name() : isNonprofit() && s.n === 1 ? "Organization & address" : s.label);
   const isCompany = () => !isSole() && !isNonprofit();
 
   function freshOwners() {
@@ -2419,24 +2391,15 @@
       newPassword: "",
       confirmPassword: "",
       changeErr: "",
-      // The sample business is for demoing the later screens, so step 1 is
-      // already looked up rather than making you press the button first.
       // Which kind of business the applicant is, chosen on the page after the welcome screen.
       // The sample business is a company, so its later screens stay as designed.
       bizType: sample ? "company" : "",
-      noEin: false,
-      // After a lookup: has the applicant said the match is theirs, said it is not, or chosen to type details themselves.
-      lookupConfirmed: sample,
-      lookupRejected: false,
-      manualBiz: false,
       // The green success toast in the top-right corner: { id, text } or null.
       toast: null,
       // The searchable category picker: which field is open, what has been typed, and the highlighted row.
       comboOpen: "",
       comboQuery: "",
       comboIdx: 0,
-      einFound: sample,
-      lookupId: sample ? "93-4417208" : "",
       openOwner: 1,
       openCards: {},
       revealed: {},
@@ -2450,8 +2413,6 @@
       tried: {},
       // Fields the applicant has been in and left. Their problems show straight away; the rest wait for a press of Save and continue.
       touched: {},
-      lookupErr: "",
-      lookupBlurErr: "",
       viewed: {},
       // True while someone is fixing one section from the final review. Progress
       // stays where it was and the footer collapses to a single Save.
@@ -2759,20 +2720,17 @@
 
   // Pre-filled answers for each owner. Owners added during the session start
   // empty apart from neutral defaults.
-  // Step 1's lookup. On an empty run this is what turns a blank form into a
-  // filled one, so it writes the registry result into the answers rather than
-  // just revealing values that were already sitting there.
   // 18000 -> 18,000; leaves anything that is not a plain number alone.
   const fmtMoney = (s) => { const n = String(s).replace(/,/g, ""); return /^\d+(\.\d+)?$/.test(n) ? Number(n).toLocaleString("en-US") : String(s); };
   const digitsOf = (s) => String(s == null ? "" : s).replace(/\D/g, "");
 
-  // What is wrong with a registry number, or "" if it is fine. Shared by the Look up button and by leaving the box.
+  // What is wrong with an EIN or business number, or "" if it is fine. Used by the field's validation (decision ein-in-registered-details).
   // A Canadian BN is often printed with a program account, such as 123456789RT0001. Only the first 9 digits are the BN, so the
   // two letters and four digits are dropped (decision ca-bn-program-account). Anything else is returned unchanged for the digit check.
   const bnCore = (value) => { const m = isCa() && /^\s*(\d{9})\s*[A-Za-z]{2}\s*\d{4}\s*$/.exec(String(value)); return m ? m[1] : value; };
-  function lookupProblem(raw) {
+  function einProblem(raw) {
     const value = bnCore(raw);
-    // A registry number is nine digits, so a short or long one is caught here rather than "matching" something else.
+    // An EIN or business number is nine digits, so a short or long one is caught here.
     if (/^\s*\d{3}[- ]\d{2}[- ]\d{4}\s*$/.test(value)) {
       return "That looks like a Social Security number, which we don't need here. " + (isCa() ? "A business number" : "An EIN") + " looks like " + (isCa() ? "123456789" : "12-3456789") + ". Not sure whether you have one? Use Get help and we'll talk it through.";
     }
@@ -2781,45 +2739,6 @@
     }
     return "";
   }
-  function runLookup() {
-    const problem = lookupProblem(state.lookupId);
-    if (problem) { setState({ lookupErr: problem }); return; }
-    // Keep only the 9-digit BN so the program account suffix never reaches the review row or the W-9.
-    if (bnCore(state.lookupId) !== state.lookupId) setState({ lookupId: bnCore(state.lookupId) });
-    // A sole trader's number confirms the EIN only; there is no registry record of a company to fill in.
-    const filled = isSole() ? { structure: "Sole proprietor" } : isNonprofit() ? Object.assign({}, REGISTRY_RESULT, { structure: state.a.structure }) : isCa() ? Object.assign({}, REGISTRY_RESULT, { structure: "Private corporation", legalName: CA_NAME, regAddress: CA_ADDRESS }) : Object.assign({}, REGISTRY_RESULT);
-    // TYPE UP TRIAL: the type was chosen on the business type page, so the lookup leaves it alone.
-    if (typeUp() && !isSole()) delete filled.structure;
-    setState((s) => ({ lookupErr: "", noEin: false, einFound: true, lookupConfirmed: isSole(), lookupRejected: false, manualBiz: false, a: Object.assign({}, s.a, filled) }));
-    showToast(lookupResultText(state));
-  }
-  const lookupResultText = (st) => isSole() ? "Noted: your " + (isCa() ? "business number" : "EIN") + " ending " + (digitsOf(st.lookupId).slice(-4) || "—") + ". There's no registry record to fill in for you, so check the details below." : isCa() ? "Found: Riverside Pilates Inc. · BN 123456789 RC0001 · active" : "Found: Riverside Pilates LLC · EIN ending " + (digitsOf(st.lookupId).slice(-4) || "7208") + " · active in Oregon since 2019";
-
-  // "Is this your business?" A lookup can return the wrong record, so the applicant
-  // confirms it, or says it is not theirs and the filled-in details are cleared.
-  const confirmLookup = () => setState({ lookupConfirmed: true });
-  function rejectLookup() {
-    setState((s) => ({
-      einFound: false, lookupConfirmed: false, lookupRejected: true, manualBiz: true, lookupErr: "",
-      a: Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() || typeUp() ? s.a.structure : "" })
-    }));
-    showToast("Thanks for telling us. We've cleared those details. Fill them in yourself, or look up a different number above. If you type them in, we'll ask for a registration document at step 6.");
-  }
-  // Skips the lookup. If a match was already filled in, it is cleared so nothing from the wrong record lingers.
-  function enterManually() {
-    // A number that was refused (an SSN typed into the EIN box, say) goes with its message, so nothing contradicts the confirmation.
-    setState(lookupProblem(state.lookupId) ? { lookupId: "", lookupErr: "", lookupBlurErr: "" } : { lookupBlurErr: "" });
-    setState((s) => ({
-      manualBiz: true, einFound: false, lookupConfirmed: false, lookupRejected: false, noEin: isSole(), lookupErr: "",
-      a: s.einFound ? Object.assign({}, s.a, { legalName: "", dba: "", incorporated: "", stateInc: "", regAddress: "", structure: isNonprofit() || typeUp() ? s.a.structure : "" }) : s.a
-    }));
-    // A sole proprietor with no number to look up gives their SSN/SIN at step 2 instead, so this is also the "I don't have one" route.
-    showToast(isSole() ? "No problem. You'll give us your " + (isCa() ? "SIN" : "SSN") + " at step 2 instead, so there's no " + (isCa() ? "business number" : "EIN") + " letter to find." : "No problem. Fill in the details below. We'll ask for a registration document at step 6 so we can check them.");
-  }
-  // The rest of step 1 stays out of sight until there is something to put in it.
-  const step1Open = () => state.manualBiz || (isSole() && state.noEin) || state.einFound;
-  // True while the registry-filled details are exactly as the lookup returned them.
-  const registryUntouched = () => state.a.legalName === (isCa() ? CA_NAME : REGISTRY_RESULT.legalName) && state.a.regAddress === (isCa() ? CA_ADDRESS : REGISTRY_RESULT.regAddress) && (isCa() || state.a.stateInc === REGISTRY_RESULT.stateInc);
 
   // ---------------------------------------------------------------------------
   // Validation. Pure reads of state: returns { fieldId: message } for a step.
@@ -2829,6 +2748,8 @@
   // ---------------------------------------------------------------------------
 
   function fieldError(f) {
+    // The EIN or business number is checked whenever something is typed, even for a sole proprietor, where it is optional.
+    if (f.id === "ein" && !f.disabled && String(f.value).trim()) { const p = einProblem(f.value); if (p) return p; }
     if (!f.required || f.disabled) return "";
     const v = f.value;
     if (f.kind === "check") return v === true ? "" : "Tick this to continue.";
@@ -2870,8 +2791,6 @@
     const a = state.a;
     const owners = state.owners.map((o) => Object.assign({}, o, ownerInfo(o)));
 
-    if (step === 1 && state.einFound && !state.lookupConfirmed) errs.lookup = "Tell us whether this is your " + (isNonprofit() ? "organization" : "business") + ", or look the number up again.";
-    if (step === 1 && !state.einFound && !state.manualBiz && !(isSole() && state.noEin)) errs.lookup = isSole() ? "Look up your " + (isCa() ? "business number" : "EIN") + ", or choose “Enter details manually”." : "Look up your " + (isCa() ? "business number" : "EIN") + " first and we'll fill in the rest.";
     if (step === 2 && state.screen === "invitee") {
       // The recipient fills in their own whole card.
       state.owners.filter((o) => o.id === state.inviteOwner).forEach((o) => ownerFields(o).forEach(add));
@@ -3022,8 +2941,9 @@
     return [
       sub("about", "About them"),
       f("name", "Full legal name", "text", { span: true, placeholder: "As printed on their ID", hint: "Exactly as it appears on the ID you'll upload." }),
-      isSole() ? null : f("role", "Title / role", "select", { placeholder: "Choose a role", options: isNonprofit() ? ["Director", "Trustee", "Executive director", "Officer"] : ["Owner / CEO", "Director", "Managing partner", "Company secretary", "Officer"] }),
-      isCompany() ? f("pct", "Ownership percentage", "mono", { placeholder: "e.g. 60", hint: "We only need owners with 25% or more." }) : null,
+      // Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
+      f("role", "Title / role", "text", { placeholder: "e.g. Director" }),
+      isNonprofit() ? null : f("pct", "Ownership percentage", "mono", { placeholder: "e.g. 60", hint: isSole() ? "" : "We only need owners with 25% or more." }),
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
@@ -3049,20 +2969,27 @@
     ];
   }
 
+  const einField = (ca) => fld("ein", ca ? "Business Number (BN)" : "Employer Identification Number (EIN)", "mono", {
+    optional: isSole(),
+    placeholder: ca ? "123456789" : "12-3456789",
+    hint: (isSole() ? "If you have one. " : "") + (ca ? "Just the first 9 digits. Leave off RT0001 or similar." : "Nine digits, like 12-3456789.") + (isSole() ? " If you don't, you'll give your " + (ca ? "SIN" : "SSN") + " in step 2 instead." : "")
+  });
+
   function cardsFor(step) {
     const a = state.a;
     const ca = isCa();
     if (step === 1) {
-      if (!step1Open()) return [];
       return [
-        (state.einFound || state.manualBiz || (isSole() && state.noEin)) && card("s1-reg", isSole() ? "Your details" : "Registered details", isSole() ? "Check these and change anything that isn't right." : (state.einFound ? "Straight from the registry. Change anything that isn't right." : "Enter these as they appear on your registration."), [
-          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || (isCompany() && !ca && !typeUp()), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
-          fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
+        card("s1-reg", isSole() ? "Your details" : "Registered details", "Enter these as they appear on " + (isSole() ? "your tax records." : "your registration."), [
+          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || isNonprofit(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
+          // The EIN or business number is typed here like any other detail; nothing is looked up from it (decision ein-in-registered-details). A company or non-profit has to give one; a sole proprietor may not have one.
+          isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
+          isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "e.g. Riverside Pilates" }) : einField(ca),
           isCompany() && !typeUp() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
           isNonprofit() && !typeUp() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES, hint: "Charities, foundations and other non-profits are tax-exempt organizations." }) : null,
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
-        ], { assurance: isSole() || !state.einFound || !state.lookupConfirmed ? "" : registryUntouched() ? "Matched against " + (ca ? "CRA and provincial registry records" : "IRS and Oregon Secretary of State records") : "You've changed some of the registry details, so we'll check your documents against what you've entered." }),
+        ]),
         card("s1-addr", "Addresses", "", [
           fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "text", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
           fld("tradingSame", "Is that also where you operate?", "yn", { span: true }),
@@ -3074,14 +3001,15 @@
           fld("website", "Primary website URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", hint: "We take a look at the site to check " + (isNonprofit() ? "what you do" : "what you sell") + ". A live one speeds things up a lot. Leave it blank if you don't have one." })
         ]),
         card("s1-desc", isNonprofit() ? "What the organization does" : "What the business sells", "", [
-          fld("description", isNonprofit() ? "Organization description" : "Business description", "long", { span: true, optional: true, placeholder: isNonprofit() ? "In plain language, what people are paying or giving for, such as donations, tickets or memberships." : "In plain language, what a customer is paying for.", hint: "In your own words. It helps us pick your " + (isNonprofit() ? "organization's" : "business") + " category below, so you don't have to hunt for a code." })
-        , fld("category", "Merchant category code (MCC)", "combo", { span: true, dflt: suggestCategory(a.description), placeholder: "Search by name or code", hint: state.a.category ? "" : suggestCategory(a.description) ? "Our best guess from your description. Change it if it isn't right." : a.description.trim() ? "We couldn't match this from your description. Search the list for the closest one." : "Describe your " + orgWord() + " above and we'll suggest one, or search the list." })
+          // The list holds only the codes set up for the applicant's division (decision mcc-from-division). The help link is country specific.
+          fld("category", "Merchant category code (MCC)", "combo", { span: true, placeholder: "Search by name or code", hint: html`Pick the closest match. Not sure of your code? Look up your ${orgWord()}'s industry on the <a href="${mccHelp().url}" target="_blank" rel="noopener noreferrer">${mccHelp().name} website</a>.` })
         ], { pinId: "no-mcc-picker" })
       ];
     }
     if (step === 2) {
       // A sole trader is the only owner and signs for themselves, so there is nothing to ask.
-      if (isSole()) return [];
+      // In Slice 1 one person fills in the whole form and signs, so nobody is asked who signs (decision slice-1-no-signer-question). Slice 2 keeps the card.
+      if (isSole() || !invitesOn()) return [];
       return [
         card("s2-sig", "Who'll be signing?", isNonprofit() ? "The signatory is the person who signs the agreement for the organization." : "It doesn't have to be the biggest owner.", [
           fld("sigSame", "Will you be signing it yourself?", "yn", { span: true }),
@@ -3185,7 +3113,7 @@
 
   function whyFor(step, ca) {
     return {
-      1: { t: "Why are we asking?", b: "Your bank needs to see that the " + orgWord() + " really exists and that its name, number and address all line up. Matching the registry for you speeds up the review.", p: ["Checked against " + (ca ? "CRA and provincial registries" : "IRS and Secretary of State records"), "A match is one less document to dig out", "Your description sets your merchant category for you"] },
+      1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. The registration documents you add in step 6 are how we check, so type these details as they appear on your registration.", p: ["Checked against the registration documents you add in step 6", "Typing them as they appear on your registration avoids questions later"] },
       2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
       3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. Trullio, our verification partner, checks it after you submit, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
@@ -3207,9 +3135,9 @@
     if (idOnly) return idRows;
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
-    if (!isSole()) list.push({ key: "reg", title: isNonprofit() ? "Proof of registration or non-profit status" : "Proof of business registration", requirement: state.einFound ? "Not needed" : "Required", hint: state.einFound ? "Skipped. The registry match in step 1 already confirmed your " + (isNonprofit() ? "organization" : "business") + " is registered." : "Articles of incorporation, certificate of formation or equivalent.", file: "articles-of-organization.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (a.incorporated ? " · formed " + a.incorporated : "") + " — matches step 1", skip: state.einFound });
+    if (!isSole()) list.push({ key: "reg", title: isNonprofit() ? "Proof of registration or non-profit status" : "Proof of business registration", requirement: "Required", hint: "Articles of incorporation, certificate of formation or equivalent.", file: "articles-of-organization.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (a.incorporated ? " · formed " + a.incorporated : "") + " — matches step 1" });
     if (!ca) {
-      if (!(isSole() && !state.einFound)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: state.einFound ? "Not needed" : "Required", hint: state.einFound ? "Skipped. The IRS match in step 1 already confirmed your EIN." : "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (digitsOf(state.lookupId) ? " · EIN ending " + digitsOf(state.lookupId).slice(-4) + " — matches step 1" : ""), skip: state.einFound });
+      if (!(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: "Required", hint: "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (digitsOf(a.ein) ? " · EIN ending " + digitsOf(a.ein).slice(-4) + " — matches step 1" : "") });
       list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Review it and sign here, or upload your own signed copy.", file: "w9-uploaded.pdf", read: "Read: a W-9 for " + (w9Info().name || "your " + orgWord()) + (w9Info().hasEin ? " · EIN ending " + w9Info().last4 + " — matches step 1" : "") });
     }
     if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf", read: "Read: 3 months, 0.2% chargeback ratio — within limits" });
@@ -3278,8 +3206,8 @@
       invitedOwners: invitedLeft,
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
-      needRegistration: ca ? "Step 1 starts with your CRA business number. If we find a record we'll fill in the rest, so there's less for you to type." : "Step 1 starts with your EIN. If we find a record we'll fill in the rest, so there's less for you to type.",
-      needIds: ca ? "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's licence or passport and a SIN (a non-profit or government body doesn't need the SIN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : "") : "Owners with 25% or more (or directors and trustees, for a non-profit) and whoever signs: a driver's license or passport and an SSN (a non-profit or government body doesn't need the SSN)." + (invitesOn() ? " If it's easier, they can fill in their own bit." : ""),
+      needRegistration: (ca ? "Your CRA business number, plus the legal name, registered address and registration date as they appear on your registration." : "Your EIN, plus the legal name, registered address and incorporation details as they appear on your registration.") + " You'll also choose your merchant category from a short list.",
+      needIds: "Owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN (a non-profit or government body doesn't need the SIN)." : "a driver's license or passport and an SSN (a non-profit or government body doesn't need the SSN).") + (invitesOn() ? " If it's easier, they can fill in their own bit." : " You fill this in for everyone, so have it all to hand."),
       needBank: ca ? "Your institution, transit and account numbers." : "Your routing and account numbers.",
       shellRailNote: isStatus ? "Submitted — with our verification partner" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
       remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
@@ -3304,12 +3232,6 @@
       nextLabel: st.step === 7 ? "Submit for verification" : "Save and continue",
       submitNote: "Straight away. Trullio, our verification partner, gets one complete package.",
       saveProgressNote: isWelcome ? "You haven't started yet, so there's nothing to lose." : "Last saved on step " + st.step + ", a moment ago.",
-      lookupTitle: isSole() ? (ca ? "Do you have a business number?" : "Do you have an EIN?") : ca ? "Let's start with your " + (isNonprofit() ? "organization's " : "") + "business number" : "Let's start with your EIN",
-      lookupLabel: ca ? "Business Number (BN)" : "Employer Identification Number (EIN)",
-      lookupPlaceholder: ca ? "123456789" : "12-3456789",
-      lookupNote: isSole() ? "If you have one, we'll use it to fill in what we can. If you don't, you can carry on without it." : ca ? "We'll match it against CRA and provincial registry records and fill in the rest for you. Just the first 9 digits. Leave off RT0001 or similar." : "We'll match it against IRS and state registry records and fill in the rest for you.",
-      lookupAssurance: (ca ? "Your BN" : "Your EIN") + " is protected the moment you submit it. We use it once to verify the " + orgWord() + " and Xplor staff never see it.",
-      lookupResult: lookupResultText(st),
       // The ownership card shows how many owners are listed, and All listed only once the shares pass 75% (decision ownership-no-question). Nothing asks whether anyone is missing.
       ownersOver100: ownedPct > 100,
       ownersAllListed: ownedPct > 75 && ownedPct <= 100 && owners.length > 0,
@@ -3322,11 +3244,11 @@
       // The status screens name the owners actually entered, never the sample people.
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
-      checkNote: "Checking " + [st.einFound && "your " + orgWord() + " registration", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
+      checkNote: "Checking " + [!isSole() && "your " + orgWord() + " registration", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
       receivedNote: st.submittedAt ? "Sent to our verification partner at " + st.submittedAt : "Sent to our verification partner",
       summary: [
-        { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, ca ? (st.lookupId && "BN " + st.lookupId) : (st.einFound && "EIN ••••" + (digitsOf(st.lookupId).slice(-4) || "7208")), a.regAddress], step: 1 },
-        { label: isNonprofit() ? "Leaders & signatory" : "Owners & signatory", parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
+        { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, a.ein && (ca ? "BN " + digitsOf(a.ein) : "EIN ••••" + digitsOf(a.ein).slice(-4)), a.regAddress], step: 1 },
+        { label: step2Name(), parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
         { label: "How you take payments", parts: [a.monthlyVolume && "$" + fmtMoney(a.monthlyVolume) + "/mo", a.avgTicket && "avg $" + fmtMoney(a.avgTicket), a.cpSplit && a.cpSplit + "% card present", a.goods && a.goods.toLowerCase()], step: 3 },
         { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase()], step: 4 },
         { label: "Compliance declarations", parts: [declarationsSummary(a, ca), (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
@@ -3775,30 +3697,6 @@
 </nav>`;
   }
 
-  function step1View(v) {
-    return html`<section class="card" data-key="s1-lookup">
-  <h2 class="card-title lookup-title">${v.lookupTitle}${pin("lookup-first")}</h2>
-  <p class="lookup-note">${v.lookupNote}</p>
-  <form class="lookup-row" data-submit="${on(runLookup)}"${state.lookupBlurErr ? html` data-error="1"` : ""}>
-    <label class="lookup-field"><span class="field-label field-label--block">${v.lookupLabel}${isSole() ? html`<span class="chip">Optional</span>` : REQ}</span><input class="input mono" value="${state.lookupId}" placeholder="${v.lookupPlaceholder}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ lookupId: e.target.value, lookupErr: "", lookupBlurErr: "" }))}" data-blur="${on(() => setState({ lookupId: bnCore(state.lookupId), lookupBlurErr: state.lookupId.trim() ? lookupProblem(state.lookupId) : "" }))}"></label>
-    <button type="submit" class="btn btn-primary btn-md btn-tight">${icon("search", 17)}Look up</button>
-    <button type="button" class="btn btn-outline btn-md btn-tight" data-click="${on(enterManually)}">Enter details manually</button>
-  </form>
-  ${state.lookupBlurErr && html`<p class="field-error" role="alert">${state.lookupBlurErr}</p>`}
-  ${state.lookupErr && !state.lookupBlurErr && html`<p class="lookup-hint" role="status">${state.lookupErr}</p>`}
-  ${ERR.lookup && !state.lookupErr && html`<p class="field-error" data-error="1" role="alert">${ERR.lookup}</p>`}
-  ${callout(v.lookupAssurance, "callout--lookup")}${pin("tokenized-ids")}${pin("mask-on-blur")}
-</section>
-${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="card rise" data-key="s1-confirm">
-  <h2 class="card-title">Is this your ${isNonprofit() ? "organization" : "business"}?${pin("lookup-not-me")}</h2>
-  <p class="card-note">Check the name and address below. If it belongs to someone else, say so and we'll clear it.</p>
-  <div class="btn-row">
-    <button type="button" class="btn btn-primary btn-md" data-click="${on(confirmLookup)}">${icon("check", 16, "i-b")}Yes, that's ${isNonprofit() ? "us" : "my business"}</button>
-    <button type="button" class="btn btn-outline btn-md" data-click="${on(rejectLookup)}">No, that's not ${isNonprofit() ? "us" : "my business"}</button>
-  </div>
-</section>`}`;
-  }
-
   function ownerView(o, recipient) {
     const isOpen = state.openOwner === o.id;
     const toggle = () => setState({ openOwner: state.openOwner === o.id ? 0 : o.id });
@@ -3969,8 +3867,8 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
     const a = state.a;
     const owners = state.owners.map((o) => Object.assign({}, o, ownerInfo(o)));
     const signer = ((owners.filter((o) => o.self)[0] || owners[0] || {}).name || "").trim();
-    const ein = digitsOf(state.lookupId);
-    const hasEin = state.einFound && ein.length === 9;
+    const ein = digitsOf(state.a.ein);
+    const hasEin = ein.length === 9;
     return {
       signer, hasEin, last4: ein.slice(-4),
       name: isSole() ? (a.legalName || signer) : a.legalName,
@@ -4124,7 +4022,6 @@ ${state.einFound && !isSole() && !state.lookupConfirmed && html`<section class="
         <p class="step-sub">${v.stepSubtitle}${v.stepSubtitle ? " " : ""}${whyView(v)}</p>
       </header>
       ${state.stepEdit && state.stepEdit.step === step && html`<div class="callout edit-note" data-key="step-edit" role="status">${icon("info", 16)}<span>${state.stepEdit.by} updated their details at ${state.stepEdit.at}. You're seeing their latest answers.</span></div>`}
-      ${step === 1 && step1View(v)}
       ${step === 2 && step2View(v)}
       ${step === 6 && step6View(v)}
       ${step === 7 && reviewView(v)}
@@ -4769,6 +4666,8 @@ ${protoView()}`;
       const w = String(state.a.website || "").trim();
       if (w && !/^[a-z][a-z0-9+.-]*:\/\//i.test(w)) set("website", "https://" + w);
     }
+    // A Canadian business number pasted with its program account (123456789RT0001) is cut back to the 9 digits as the person leaves the field (decision ca-bn-program-account).
+    if (id === "f-ein" && bnCore(state.a.ein || "") !== (state.a.ein || "")) set("ein", bnCore(state.a.ein));
     if (id && id.indexOf("f-") === 0 && !state.touched[id.slice(2)]) setState({ touched: Object.assign({}, state.touched, { [id.slice(2)]: true }) });
   });
   // The owner actions menu closes on a click anywhere outside it.

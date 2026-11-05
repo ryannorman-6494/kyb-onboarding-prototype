@@ -114,7 +114,6 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 /* Atlas Callout: radius large, padding default, fill is the severity's subtle background, icon and text carry the severity. Info is a calm grey. */
 .callout { display: flex; align-items: flex-start; gap: var(--space-gap-related); padding: var(--space-padding-surface); border-radius: var(--radius-default); background: var(--color-background-info-subtle); color: var(--color-text-info); font: var(--font-body-default); }
 .callout > .i { margin-top: 2px; color: var(--color-icon-info); }
-.callout--lookup { margin-top: 14px; }
 .callout--card { margin-top: var(--space-gap-group); }
 .callout--lg { padding: var(--space-padding-surface); font: var(--font-body-default); }
 .callout--positive { align-items: center; background: var(--color-background-success-subtle); color: var(--color-text-success); }
@@ -144,8 +143,8 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .need-title { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); margin-bottom: 2px; }
 .need-body { font-size: var(--type-body-small-size); line-height: 1.45; color: var(--color-text-subtle); }
 /* What you'll need: the items sit in one card, split by a light divider that stops at the card's inner margins (decision welcome-needs-one-card). */
-.need-list { gap: 0; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
-.need-list .need { position: relative; background: transparent; box-shadow: none; border-radius: 0; gap: 16px; padding: 28px 28px; }
+.need-list { gap: 0; background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
+.need-list .need { position: relative; background: transparent; box-shadow: none; border-radius: 0; gap: 16px; padding: 24px 28px; }
 .need-list .need .need-title { margin-bottom: 6px; }
 .need-list .need .need-body { line-height: 1.55; }
 .need-list .need .icon-tile { width: 20px; height: 20px; background: transparent; border-radius: 0; }
@@ -229,6 +228,7 @@ button.step:hover { background: var(--color-background-hover); }
 .chip--secure { gap: var(--space-gap-pair); background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
 .chip--success { background: var(--color-background-success-subtle); color: var(--color-text-success); }
 .field-hint { font: var(--font-caption-default); color: var(--color-text-subtle); margin-top: var(--space-gap-related); }
+.field-hint a { text-decoration: underline; }
 
 /* Atlas Text field: height Large (40) because onboarding forms are roomy, radius default, border and glow focus (no ring: the box already has a border). */
 .input { width: 100%; height: var(--size-control-large); padding: 0 var(--component-input-padding-x-large); border: none; border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); font: var(--font-body-default); color: var(--color-text-primary); }
@@ -273,12 +273,6 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .check.is-disabled .check-label { color: var(--color-text-subtle); }
 .check-label { display: block; margin-top: 2px; font: var(--font-body-default); color: var(--color-text-primary); }
 .check-hint { display: block; font: var(--font-caption-default); color: var(--color-text-subtle); margin-top: var(--space-gap-pair); }
-
-/* ---------- Step 1: registry lookup ---------- */
-.lookup-title { margin-bottom: 4px; }
-.lookup-note { font-size: var(--type-body-small-size); color: var(--color-text-subtle); margin-bottom: 16px; }
-.lookup-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
-.lookup-field { flex: 1; min-width: 240px; }
 
 /* ---------- Step 2: owners ---------- */
 .own-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-gap-group); margin-bottom: 6px; }
@@ -572,16 +566,12 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .biz-card.is-selected .biz-radio::after { content: ""; width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--color-background-brand-default); }
 .biz-label { display: block; font-size: var(--type-body-large-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); margin-bottom: 2px; }
 .biz-desc { display: block; font-size: var(--type-body-small-size); line-height: 1.45; color: var(--color-text-subtle); }
-.lookup-skip { margin-top: 14px; }
-.lookup-skip .btn[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--color-border-brand); }
 
 /* W-9 review and sign (step 6) */
 .doc-actions { display: flex; gap: var(--space-gap-related); flex-wrap: wrap; justify-content: flex-end; }
 .w9-sign { display: flex; flex-direction: column; gap: 12px; padding: 0 24px 16px; }
 .w9-actions { display: flex; gap: var(--space-gap-related); }
 
-/* Lookup: a bad number is a hint, not an error state. */
-.lookup-hint { margin-top: 10px; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 .footer-hint { margin: 0; text-align: right; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 /* Success toast, top right. Fades itself out at the end of its 4.5 seconds; app.js removes it then. */
 .toast { position: fixed; top: 20px; right: 20px; z-index: 60; display: flex; align-items: center; gap: var(--space-gap-related); max-width: 400px; padding: var(--space-padding-surface) var(--space-padding-surface) var(--space-padding-surface) 22px; border-radius: var(--radius-large); background: var(--color-background-surface-raised-2); color: var(--color-text-primary); font: var(--font-body-default); box-shadow: inset 6px 0 0 var(--color-icon-success), inset 0 0 0 1px var(--color-border-default), var(--shadow-md); animation: xtoast 4.5s ease both; }
