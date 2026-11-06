@@ -531,10 +531,11 @@
       "id": "read-on-upload",
       "area": "Flow",
       "where": "Step 6 · Supporting documents",
-      "t": "Read each document at upload and show the read-back",
-      "b": "Every file returns a line saying what was read off it and which step it matches. An unreadable scan is the classic three-day round trip, and catching it while the person is still on the page is the largest single time saving in the flow.",
-      "by": "Claude",
-      "when": "2026-09-23"
+      "t": "Documents are not scanned or read at upload: a file just shows as uploaded",
+      "b": "Changed from the earlier design (Ryan, 2026-11-06), which read each file at upload and showed a read-back line. The product will not be able to do that, and no document is checked at this point. Choosing Add file shows the file as uploading for a moment and then as uploaded, the badge on the row says Uploaded rather than Checked, the review step counts documents as uploaded, and nothing on the step or in the Why are we asking panel says a file is scanned, read or checked.",
+      "tradeoff": "A blurry, wrong or unreadable file is no longer caught while the person is still on the page, so it can only come back later as a request for more information. Any checking of the documents happens after submission, and how and when is for Ops and the verification partner to say.",
+      "by": "Ryan",
+      "when": "2026-11-06"
     },
     {
       "id": "rfi-not-restart",
@@ -1201,16 +1202,6 @@
       "tradeoff": "This is a visual match built in plain CSS, not the real MUI components, so details such as keyboard behaviour, focus handling and exact spacing can differ from Odin. Button heights follow Atlas (Large 40, Medium 32), so the old 44 and 48 pixel buttons are smaller. The dark approved-page card still uses the Xplor deep-space colour, which has no Atlas semantic token. The mock app shell, prototype controls and design-decision pins keep their own styling because they are not product UI. The Atlas Progress bar page still uses old token names, so the progress meter is Atlas-coloured but not built from that component.",
       "by": "Ryan",
       "when": "2026-10-13"
-    },
-    {
-      "id": "terminal-none",
-      "area": "Flow",
-      "where": "Business activity",
-      "t": "Terminal list ends with “None”, not “None yet”",
-      "b": "The last option in the POS / terminal list is “None” instead of “None yet”, which read as an admission to someone who simply does not want a reader.",
-      "tradeoff": "“None” loses the hint that a reader can be added later.",
-      "by": "Ryan",
-      "when": "2026-10-12"
     },
     {
       "id": "signatory-title-fallback",
@@ -2119,7 +2110,7 @@
       "area": "Flow",
       "where": "Step 1 · Non-profit or government · Type of organization",
       "t": "Non-profit or government asks for the type of organization with two round pills, not a dropdown",
-      "b": "The Non-profit or government route has a required Type of organization question with two round pills, the same control as Yes / No: Tax-exempt organization, and Government body. They map to TAX_EXEMPT and GOVERNMENT. Two choices are quicker to scan as pills than as a closed menu. The line under them says charities, foundations and other non-profits are tax-exempt organizations. The structure used to be filled in automatically as \"Non-profit\"; the applicant now chooses it. Save and continue stays off until one is chosen.",
+      "b": "The Non-profit or government route has a required Type of organization question with two round pills, the same control as Yes / No: Tax-exempt, and Government body. They map to TAX_EXEMPT and GOVERNMENT. Two choices are quicker to scan as pills than as a closed menu. The line under them says charities, foundations and other non-profits are tax-exempt organizations. The structure used to be filled in automatically as \"Non-profit\"; the applicant now chooses it. Save and continue stays off until one is chosen.",
       "tradeoff": "One more required answer on the non-profit route. Step wording written for non-profits (Donations, Trustees) is not yet different for a government body. The tax-exempt label is Ryan's reading of the ODIN type; whether a government body is also tax-exempt in ODIN is not known. On 2026-11-04 Ryan considered splitting Non-profit and Government into two cards (four in all) and decided to keep the pills, because both get the same questions; Ops confirmed on 2026-11-04 that there is no difference in questions beyond the three groups, so the four-card split is closed and the pills stay.",
       "by": "Ryan",
       "when": "2026-11-04"
@@ -2168,7 +2159,7 @@
       "id": "required-badge-warning",
       "area": "Visual",
       "where": "Step 6 · Supporting documents",
-      "t": "The Required badge on a document is the warning colour, and turns into a green Checked badge once the file is in",
+      "t": "The Required badge on a document is the warning colour, and turns into a green Uploaded badge once a file is in",
       "b": "On each document row the Required badge, beside the title, is the warning colour (light warning background, warning text) instead of grey, to show the file has to be added before the applicant can continue. When the file has been added and checked, that same badge turns green and reads Checked, with a tick. It replaces the Checked pill that used to sit at the top right of the row, so a finished row has no badge on the right at all. While a file is uploading or being read, the busy pill still shows on the right. A document that is Not needed stays grey.",
       "tradeoff": "Several orange badges at once on an empty step make the page look more urgent than it is, and the warning colour is also the one used for caution elsewhere, so it can read as a problem rather than a to-do. A finished row no longer says Required anywhere, so the badge stops telling the applicant the file was mandatory; the green tick says it is dealt with.",
       "by": "Ryan",
@@ -2269,7 +2260,7 @@
       "area": "Flow",
       "where": "Step 1 · Registered / legal address",
       "t": "The registered address box suggests addresses as you type",
-      "b": "After three characters, the registered address (the business address for a sole proprietor) shows a short list of matching addresses under the box. Picking one fills the whole address. The box stays free text: whatever is typed is the answer, and a search that finds nothing says so and lets the person carry on with what they entered. Arrow keys move through the list, Enter picks the highlighted address and Escape closes it. The trading address and the owners' home addresses are plain boxes.",
+      "b": "After three characters, the registered address (the business address for a sole proprietor) shows a short list of matching addresses under the box. Picking one fills the address in, split into separate boxes (see address-split-fields). A search that finds nothing says so and points to Enter address manually. Typing 123 lists several sample addresses for the region. Arrow keys move through the list, Enter picks the highlighted address and Escape closes it. The trading address and the owners' home addresses work the same way.",
       "tradeoff": "The prototype uses a short fixed list per country, so a real address usually finds nothing. The real service and its coverage, in the US and Canada, are for engineering to name. An address picked from the list may not match the registration exactly, and nothing checks it against the registry.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2283,6 +2274,66 @@
       "tradeoff": "An applicant with a Facebook page or a booking link can still paste it as the website. Underwriting gets N/A on file for a business with none, so it can tell that apart from a field left empty. Ops should say whether a missing website needs anything else from the applicant, such as a description of how they sell.",
       "by": "Ryan",
       "when": "2026-11-05"
+    },
+    {
+      "id": "address-split-fields",
+      "area": "Flow",
+      "where": "Step 1 · Registered / legal address and Trading address; Step 2 · Home address",
+      "t": "An address is entered as separate boxes, filled by search or typed in by hand",
+      "b": "Every address question starts as a search box with an Enter address manually link under it. Picking a search result, or choosing the link, opens one box for each part: street address, apartment, suite or unit (optional), city, state or province (a list), and ZIP or postal code. A picked address fills the boxes in, and every box can be edited. A Clear and search again link empties the address and goes back to the search box. The same pattern is on the registered or business address and the trading address at step 1, and on each owner's home address at step 2. Behind the scenes the address is still one line, so the review step, the W-9 and a sole proprietor's home address copy carry on as before. An address counts as complete when it has a street, city, state or province, and ZIP or postal code; the unit is optional.",
+      "tradeoff": "An address now takes up to five boxes where it took one, which is longer to fill in by hand than typing a single line. Splitting a one-line address back into parts guesses from the commas and a trailing state and ZIP, so an unusual address may land in the wrong box and need correcting. The state and province lists cover the 50 states, DC and the 13 provinces and territories, but not US territories or military addresses.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "business-type-change-warning",
+      "area": "Flow",
+      "where": "What type of business are you? screen",
+      "t": "A small note warns that changing the business type later loses what has been entered",
+      "b": "Under the list of business types, above the Back and Continue buttons, a small line of plain caption text says: Choose carefully. If you carry on and later come back here to change your business type, anything you've entered will be lost. It has no box, icon or colour so it does not compete with the choice itself. It is true to how the prototype behaves: choosing a different type after one was already chosen clears the answers.",
+      "tradeoff": "Small and quiet means some people will not read it. The alternative, asking for a confirmation each time someone changes type, would be louder and slower for the people who did choose on purpose.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "document-add-file-grid",
+      "area": "Visual",
+      "where": "Step 6 · Supporting documents",
+      "t": "Add file stays on every document, and uploaded files sit two to a row",
+      "b": "The button on each document row now says Add file and stays after a file is in, so any number of files can be added to one document. Each uploaded file is a tile showing its name with a Remove link, or Uploading for a moment while it arrives. Tiles are half the width of the card, two to a row, and the next file fills the space beside the last one before starting a new row. On a phone they stack one to a row. The row counts as done once one file has uploaded, so the Required badge turns into Uploaded after the first file. The W-9 keeps Review and sign next to Add file until a file is in, and a signed W-9 shows as a file tile too. A second file with the same name gets -2 added to it.",
+      "tradeoff": "The step never says how many files a document needs, so someone could add one page of a three-page statement and carry on. Uploading more than one file is not limited, and the prototype has no file size or type check.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "top-nav-follows-content-column",
+      "area": "Visual",
+      "where": "Top bar, every screen except the emails",
+      "t": "The logo and Save & Exit line up with the left and right edges of the content below",
+      "b": "The top bar still runs the full width of the window, but the logo and the Save & Exit button now sit on the edges of the content column of whichever screen is showing: the full width of the step list and form on the flow screens (1220 pixels at most), the 720 pixel column on the welcome, business type and owner screens, the 560 pixel column on sign-in and change password, and the 820 pixel column on the status screens. The side padding matches the page's own, so the edges stay lined up as the window narrows.",
+      "tradeoff": "The logo sits in a different place on different screens, which is the point, but it does shift a little when someone moves from the welcome screens into the flow.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "tax-exempt-pill-label",
+      "area": "Copy",
+      "where": "Step 1 and the business type screen · Type of organization",
+      "t": "The pill says Tax-exempt, and the line about charities and foundations is gone",
+      "b": "The two pills on the non-profit route now read Tax-exempt and Government body. The helper line under them, Charities, foundations and other non-profits are tax-exempt organizations, is removed on both the business type screen and step 1. The answer still maps to TAX_EXEMPT.",
+      "tradeoff": "Without the line, someone running a charity or foundation has to work out for themselves that Tax-exempt is the pill for them.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "pos-terminal-field-removed",
+      "area": "Flow",
+      "where": "Step 3 · How you take payments",
+      "t": "The POS / terminal type question is gone",
+      "b": "Removed because it is no longer needed (Ryan, 2026-11-06). It was a dropdown (Xplor Pay countertop terminal, Xplor Pay mobile reader, third-party terminal, None) that appeared when card present was above 0%. The earlier decision to end the list with None went with it.",
+      "tradeoff": "What equipment the business will use is no longer captured at application, so anything that depends on it, such as ordering readers, has to ask later.",
+      "by": "Ryan",
+      "when": "2026-11-06"
     }
   ];
 
@@ -2318,7 +2369,7 @@
     channel: "", goods: "", recurring: "", trial: "", marketplace: "",
     international: "", countries: "", refundPolicy: "",
     prior: "", priorName: "", priorCbRatio: "",
-    achVolume: "", descriptor: "", posType: "",
+    achVolume: "", descriptor: "",
     // Comes from the Xplor account rather than being typed, so it's filled in
     // even on an empty run — the hint on the field says as much.
     platform: "Xplor Studio",
@@ -2362,7 +2413,6 @@
     refundPolicy: "riversidepilates.com/refunds",
     prior: "no",
     descriptor: "RIVERSIDE PILATES",
-    posType: "Xplor Pay countertop terminal",
     velocityAck: true,
     bankName: "Umpqua Bank", accountHolder: "Riverside Pilates LLC",
     accountType: "Business checking", routing: "323075880",
@@ -2389,10 +2439,29 @@
   const NO_WEBSITE = "N/A";
   // Address lookup stand-ins (fake address-lookup): a short fixed list per country. Typing three or more characters shows the addresses that contain every word typed; the real product would search a postal address service.
   const ADDRESS_STUBS = {
-    "United States": ["418 SE Water Ave, Suite 210, Portland, OR 97214", "412 SW Alder St, Portland, OR 97204", "1200 Main St, Springfield, IL 62701", "88 Market St, San Francisco, CA 94105", "250 Elm Ave, Austin, TX 78701", "75 Lakeview Dr, Denver, CO 80202", "310 Pine St, Seattle, WA 98101", "9 Harbor Rd, Boston, MA 02110", "1500 Peachtree St NE, Atlanta, GA 30309", "4100 N Central Ave, Phoenix, AZ 85012"],
-    "Canada": ["418 Water St, Suite 210, Vancouver, BC V6B 1A1", "1055 W Georgia St, Vancouver, BC V6E 3P3", "100 King St W, Toronto, ON M5X 1A9", "1 Yonge St, Toronto, ON M5E 1W7", "800 Rue de la Gauchetière O, Montréal, QC H5A 1K6", "500 4 Ave SW, Calgary, AB T2P 2V6", "99 Bank St, Ottawa, ON K1P 6B9", "1800 Hollis St, Halifax, NS B3J 1V7", "350 Portage Ave, Winnipeg, MB R3C 0C4"]
+    "United States": ["123 Main St, Springfield, IL 62701", "123 Market St, San Francisco, CA 94105", "123 Congress Ave, Austin, TX 78701", "123 Peachtree St NE, Atlanta, GA 30303", "123 Broadway, New York, NY 10006", "1230 Pine St, Seattle, WA 98101", "418 SE Water Ave, Suite 210, Portland, OR 97214", "412 SW Alder St, Portland, OR 97204", "1200 Main St, Springfield, IL 62701", "88 Market St, San Francisco, CA 94105", "250 Elm Ave, Austin, TX 78701", "75 Lakeview Dr, Denver, CO 80202", "310 Pine St, Seattle, WA 98101", "9 Harbor Rd, Boston, MA 02110", "1500 Peachtree St NE, Atlanta, GA 30309", "4100 N Central Ave, Phoenix, AZ 85012"],
+    "Canada": ["123 Main St, Vancouver, BC V6A 2S5", "123 Bay St, Toronto, ON M5K 1E7", "123 Rue Sherbrooke O, Montréal, QC H2X 1X4", "123 8 Ave SW, Calgary, AB T2P 1B3", "123 Sparks St, Ottawa, ON K1P 5E9", "1230 Granville St, Vancouver, BC V6Z 1M8", "418 Water St, Suite 210, Vancouver, BC V6B 1A1", "1055 W Georgia St, Vancouver, BC V6E 3P3", "100 King St W, Toronto, ON M5X 1A9", "1 Yonge St, Toronto, ON M5E 1W7", "800 Rue de la Gauchetière O, Montréal, QC H5A 1K6", "500 4 Ave SW, Calgary, AB T2P 2V6", "99 Bank St, Ottawa, ON K1P 6B9", "1800 Hollis St, Halifax, NS B3J 1V7", "350 Portage Ave, Winnipeg, MB R3C 0C4"]
   };
   const searchAddress = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); if (String(q || "").trim().length < 3) return []; return ADDRESS_STUBS[isCa() ? "Canada" : "United States"].filter((x) => t.every((w) => x.toLowerCase().indexOf(w) > -1)); };
+  // The address is stored as one line, and these split it into parts and join it back (decision address-split-fields). Parsing works from the end: "state ZIP" or "province postal code" last, then the city, then the street, with anything left over as the unit.
+  const US_REGIONS = "AL Alabama;AK Alaska;AZ Arizona;AR Arkansas;CA California;CO Colorado;CT Connecticut;DE Delaware;DC District of Columbia;FL Florida;GA Georgia;HI Hawaii;ID Idaho;IL Illinois;IN Indiana;IA Iowa;KS Kansas;KY Kentucky;LA Louisiana;ME Maine;MD Maryland;MA Massachusetts;MI Michigan;MN Minnesota;MS Mississippi;MO Missouri;MT Montana;NE Nebraska;NV Nevada;NH New Hampshire;NJ New Jersey;NM New Mexico;NY New York;NC North Carolina;ND North Dakota;OH Ohio;OK Oklahoma;OR Oregon;PA Pennsylvania;RI Rhode Island;SC South Carolina;SD South Dakota;TN Tennessee;TX Texas;UT Utah;VT Vermont;VA Virginia;WA Washington;WV West Virginia;WI Wisconsin;WY Wyoming".split(";").map((x) => [x.slice(0, 2), x.slice(3)]);
+  const CA_REGIONS = "AB Alberta;BC British Columbia;MB Manitoba;NB New Brunswick;NL Newfoundland and Labrador;NS Nova Scotia;NT Northwest Territories;NU Nunavut;ON Ontario;PE Prince Edward Island;QC Quebec;SK Saskatchewan;YT Yukon".split(";").map((x) => [x.slice(0, 2), x.slice(3)]);
+  const addrJoin = (p) => [p.l1, p.l2, p.city, [p.region, p.postal].map((x) => String(x || "").trim()).filter(Boolean).join(" ")].map((x) => String(x || "").trim()).filter(Boolean).join(", ");
+  function addrParse(str) {
+    const bits = String(str || "").split(",").map((x) => x.trim()).filter(Boolean);
+    const out = { l1: "", l2: "", city: "", region: "", postal: "" };
+    if (!bits.length) return out;
+    const last = bits.pop();
+    const m = last.match(/^(.*?)\s*([A-Z]\d[A-Z]\s?\d[A-Z]\d|\d{5}(?:-\d{4})?)$/i);
+    out.region = m ? m[1].trim() : last;
+    out.postal = m ? m[2].trim() : "";
+    out.city = bits.pop() || "";
+    out.l1 = bits.shift() || "";
+    out.l2 = bits.join(", ");
+    return out;
+  }
+  // The parts for an address answer: the ones being typed if they still add up to the stored line, otherwise the line itself taken apart.
+  const addrOf = (id, value) => { const p = state.addrParts[id]; return p && addrJoin(p) === String(value || "") ? p : addrParse(value); };
   const searchMcc = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); const all = divisionMccs(); return t.length ? all.filter((x) => t.every((w) => x.hay.indexOf(w) > -1)) : all; };
 
   // A returning visitor to the emailed link gets a saved business back, so that visit borrows the sample one.
@@ -2451,6 +2520,9 @@
       // The address lookup: which address field has its suggestions open, and the highlighted row (-1 until the arrow keys are used).
       addrOpen: "",
       addrIdx: -1,
+      addrQ: {},
+      addrManual: {},
+      addrParts: {},
       openOwner: 1,
       openCards: {},
       revealed: {},
@@ -2609,7 +2681,7 @@
   const back = () => (state.step <= 1 ? setState({ screen: "bizType" }) : setState({ step: state.step - 1 }));
 
   // Legal structure choices (decision company-structure-nine-types). Each maps to one ODIN ownership type; sole proprietor, tax-exempt and government come from the card and the pills.
-  const NONPROFIT_TYPES = ["Tax-exempt organization", "Government body"];
+  const NONPROFIT_TYPES = ["Tax-exempt", "Government body"];
   const companyStructures = () => isCa()
     ? ["Private corporation", "Public corporation (publicly traded)", "Private partnership", "Public partnership (publicly traded)", "Limited liability partnership (LLP)"]
     : ["Private corporation", "Public corporation (publicly traded)", "Private partnership", "Public partnership (publicly traded)", "Limited liability company (LLC)", "Limited liability partnership (LLP)"];
@@ -2720,15 +2792,16 @@
   const toggleCard = (key, dflt) => setState((s) => ({
     openCards: Object.assign({}, s.openCards, { [key]: !(s.openCards[key] === undefined ? dflt : s.openCards[key]) })
   }));
-  const doc = (key) => state.docs[key] || { state: "idle", file: "", read: "" };
-  const setDoc = (key, st, file, read) => setState((s) => ({
-    docs: Object.assign({}, s.docs, { [key]: { state: st, file: file || "", read: read || "" } })
-  }));
-  // Simulated upload: no file picker opens and no file is read.
-  function upload(key, file, read) {
-    setDoc(key, "uploading");
-    setTimeout(() => setDoc(key, "reading"), 900);
-    setTimeout(() => setDoc(key, "done", file, read), 2000);
+  // A document row holds a list of files, and any number can be added (decision document-add-file-grid). A row counts as done once one file has finished uploading.
+  const doc = (key) => { const d = state.docs[key]; const files = d && d.files ? d.files : []; const ready = files.filter((f) => !f.busy); return { files: files, state: ready.length ? "done" : files.length ? "uploading" : "idle", file: ready.length ? ready[0].name : "" }; };
+  const setDocFiles = (key, fn) => setState((s) => ({ docs: Object.assign({}, s.docs, { [key]: { files: fn((s.docs[key] && s.docs[key].files) || []) } }) }));
+  // Simulated upload: no file picker opens and no file is read. The file shows as uploading for a moment, then as uploaded.
+  function upload(key, file) {
+    const have = doc(key).files.map((f) => f.name);
+    let i = 1, name = file;
+    while (have.indexOf(name) > -1) { i++; name = file.replace(/(\.[a-z0-9]+)?$/i, "-" + i + "$1"); }
+    setDocFiles(key, (fs) => fs.concat([{ name: name, busy: true }]));
+    setTimeout(() => setDocFiles(key, (fs) => fs.map((f) => (f.name === name ? { name: name, busy: false } : f))), 1400);
   }
 
   // ---------------------------------------------------------------------------
@@ -2815,6 +2888,8 @@
     const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
+    // An address is complete once it has a street, city, state or province, and ZIP or postal code (decision address-split-fields).
+    if (f.kind === "address") { const p = addrOf(f.id, v); if (!p.l1.trim() || !p.city.trim() || !p.region.trim() || !p.postal.trim()) return "Fill in the street, city, " + (ca ? "province and postal code." : "state and ZIP code."); }
     if (key === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v).trim())) return "Enter an email like name@example.com.";
     if (key === "phone" && (d.length < 10 || d.length > 15)) return "Enter the full number, including the area code.";
     if (DATE_KEYS.indexOf(key) > -1) { const p = dateProblem(key, v); if (p) return p; }
@@ -3002,7 +3077,7 @@
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
-      f("home", "Home address", "text", { span: true, placeholder: addressPh() }),
+      f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
       f("email", "Email address", "text", { placeholder: "name@example.com" }),
       f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
       sub("id", "Their ID"),
@@ -3041,14 +3116,14 @@
           isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "e.g. Riverside Pilates" }) : einField(ca),
           isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
           isCompany() && !typeUp() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
-          isNonprofit() && !typeUp() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES, hint: "Charities, foundations and other non-profits are tax-exempt organizations." }) : null,
+          isNonprofit() && !typeUp() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES }) : null,
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ]),
         card("s1-addr", "Addresses", "", [
           fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
           fld("tradingSame", "Is that also where you operate?", "yn", { span: true }),
-          a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "text", { span: true, conditional: true, placeholder: addressPh(), hint: "Where you actually trade. We use it for your statement descriptor and to send any card machines." }) : null
+          a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh(), hint: "Where you actually trade. We use it for your statement descriptor and to send any card machines." }) : null
         ]),
         card("s1-contact", "How we reach you", isNonprofit() ? "For account notices and questions from the people paying you. We won't add you to any marketing." : "For account notices and customer queries. We won't add you to any marketing.", [
           fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
@@ -3100,7 +3175,6 @@
         ]),
         card("s3-payfac", isNonprofit() ? "How you'll appear on statements" : "How you'll appear to customers", "", [
           fld("descriptor", "Billing descriptor", "descriptor", { span: true, hint: "This is what " + (isNonprofit() ? "the people paying you" : "your customers") + " will see on their statement. Use a name they'll recognize. It helps avoid “I don't know this charge” disputes." }),
-          a.cpSplit !== "0" ? fld("posType", "POS / terminal type", "select", { conditional: true, placeholder: "Choose a terminal", options: ["Xplor Pay countertop terminal", "Xplor Pay mobile reader", "Third-party terminal", "None"] }) : null,
           // Only someone arriving from an existing Xplor account has a platform to show; a new applicant would be asked about a product they may not use.
           isSample() ? fld("platform", "Platform", "text", { optional: true, hint: "Already filled in from your Xplor account." }) : null,
           fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "$" + fmtMoney(limitsFrom(a).perTx) + " per transaction and $" + fmtMoney(limitsFrom(a).monthly) + " per month, based on what you entered above. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " above to see your limits. You can tick this once you have." })
@@ -3175,7 +3249,7 @@
       3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. Trullio, our verification partner, checks it after you submit, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
       5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal. It means a person reviews your file instead of it going straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
-      6: { t: "Why do you need files?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Checking them as they upload means a blurry scan gets caught now, not after a three-day wait.", p: ["Scanned for malware, stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
+      6: { t: "Why do you need files?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Most decisions come back in under 2 hours", "Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
     }[step];
   }
@@ -3187,21 +3261,20 @@
       hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's " + licWord() + ". All four corners in shot and no glare.",
       why: "To confirm you are who you say you are. It goes only to Trullio, our verification partner.",
       file: "id-" + o.id + "-license.jpg",
-      read: "Read: " + o.name + " · " + (ownerVal(o, "idType") || "photo ID") + (digitsOf(ownerVal(o, "idExpiry")).length === 8 ? " · expires " + digitsOf(ownerVal(o, "idExpiry")).slice(-4) : "") + (o.name && ownerVal(o, "idType") ? " — matches step 2" : "")
     }));
     if (idOnly) return idRows;
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
     // Canada's counterpart to the US EIN letter (decision ca-bn-confirmation-document). Any one of the CRA documents will do.
-    if (ca && !(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "bn", title: "CRA business number confirmation", requirement: "Required", hint: "Any one of these: your CRA business registration confirmation, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter from your CRA My Business Account, or articles of incorporation showing your business number.", file: "cra-bn-confirmation.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (digitsOf(a.ein) ? " · BN ending " + digitsOf(a.ein).slice(-4) + " — matches step 1" : "") });
+    if (ca && !(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "bn", title: "CRA business number confirmation", requirement: "Required", hint: "Any one of these: your CRA business registration confirmation, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter from your CRA My Business Account, or articles of incorporation showing your business number.", file: "cra-bn-confirmation.pdf" });
     if (!ca) {
-      if (!(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: "Required", hint: "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (digitsOf(a.ein) ? " · EIN ending " + digitsOf(a.ein).slice(-4) + " — matches step 1" : "") });
-      list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Review it and sign here, or upload your own signed copy.", file: "w9-uploaded.pdf", read: "Read: a W-9 for " + (w9Info().name || "your " + orgWord()) + (w9Info().hasEin ? " · EIN ending " + w9Info().last4 + " — matches step 1" : "") });
+      if (!(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: "Required", hint: "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf" });
+      list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Review it and sign here, or upload your own signed copy.", file: "w9-uploaded.pdf" });
     }
-    if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf", read: "Read: 3 months, 0.2% chargeback ratio — within limits" });
+    if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf" });
     // Division rows (decisions clubready-lease-by-division, club-essentials-financial-history). Wording is a draft, not approved copy.
-    if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business " + licWord() + " or utility bill", requirement: "Required", hint: "Your club's signed lease. If you don't have one yet, a business " + licWord() + " or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf", read: "Read: lease for " + (a.legalName || "your " + orgWord()) });
-    if (ctx.division === DIV_CE) list.push({ key: "finhist", division: DIV_CE, title: "Two years of financial history", requirement: "Required", hint: "Financial history for your " + orgWord() + " covering the last two years.", file: "financial-history.pdf", read: "Read: two years of financial history for " + (a.legalName || "your " + orgWord()) });
+    if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business " + licWord() + " or utility bill", requirement: "Required", hint: "Your club's signed lease. If you don't have one yet, a business " + licWord() + " or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf" });
+    if (ctx.division === DIV_CE) list.push({ key: "finhist", division: DIV_CE, title: "Two years of financial history", requirement: "Required", hint: "Financial history for your " + orgWord() + " covering the last two years.", file: "financial-history.pdf" });
     return list;
   }
 
@@ -3282,7 +3355,7 @@
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: "Add the account your payouts should go to. Once you're approved, you can add more accounts for your other merchants.",
         5: "Every application includes these. Saying yes to one is never an automatic no — it just means someone reads your file.",
-        6: "We check each file as it uploads, so you'll know straight away if something doesn't work.",
+        6: "Add each file we ask for. You can add as many as you need to each one.",
         7: "Check everything you've told us. When you sign, we send it all in one go."
       }[st.step],
       stepComplete: stepComplete,
@@ -3310,7 +3383,7 @@
         { label: "How you take payments", parts: [a.monthlyVolume && "$" + fmtMoney(a.monthlyVolume) + "/mo", a.avgTicket && "avg $" + fmtMoney(a.avgTicket), a.cpSplit && a.cpSplit + "% card present", a.goods && a.goods.toLowerCase()], step: 3 },
         { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase()], step: 4 },
         { label: "Compliance declarations", parts: [declarationsSummary(a, ca), (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
-        { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " checked"]; })(), step: 6 }
+        { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " uploaded"]; })(), step: 6 }
       ].map((r) => {
         const done = r.parts.filter(Boolean);
         return { label: r.label, step: r.step, value: done.length ? done.join(" · ") : "Nothing filled in yet", empty: !done.length };
@@ -3458,24 +3531,49 @@
         control = html`<div class="yn" role="group" aria-labelledby="l-${f.id}"${described}><button type="button" class="yn-btn" aria-pressed="${String(f.value === "yes")}" data-click="${on(() => set(f.id, "yes"))}">Yes</button><button type="button" class="yn-btn" aria-pressed="${String(f.value === "no")}" data-click="${on(() => set(f.id, "no"))}">No</button>${f.unsure && html`<button type="button" class="yn-btn" aria-pressed="${String(f.value === "unsure")}" data-click="${on(() => set(f.id, "unsure"))}">Unsure</button>`}</div>`;
         break;
       case "address": {
-        // An address box with suggestions (fake address-lookup). The box stays free text: whatever is typed is the answer, and picking a suggestion replaces it. A list that finds nothing never blocks the person.
-        const open = state.addrOpen === f.id;
-        const matches = open ? searchAddress(f.value) : [];
-        const idx = Math.min(state.addrIdx, matches.length - 1);
-        const pickIt = (label) => { set(f.id, label); setState({ addrOpen: "", addrIdx: -1 }); };
-        const keys = (e) => {
-          if (e.key === "ArrowDown" || e.key === "ArrowUp") { if (!matches.length) return; e.preventDefault(); const n = matches.length; setState({ addrIdx: e.key === "ArrowDown" ? (idx + 1) % n : (idx < 1 ? n - 1 : idx - 1) }); }
-          else if (e.key === "Enter") { if (open && matches[idx]) { e.preventDefault(); pickIt(matches[idx]); } }
-          else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ addrOpen: "", addrIdx: -1 }); } }
-        };
-        const typed = String(f.value).trim().length >= 3;
-        control = html`<div class="combo">
-  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${f.value}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => { set(f.id, e.target.value); setState({ addrOpen: f.id, addrIdx: -1 }); })}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
+        // Address entry (decisions address-lookup, address-split-fields). A search box finds the address. Picking a result, or choosing "Enter address manually", opens one box for each part: street, unit, city, state or province, and ZIP or postal code. The whole address is still kept as one line, so everything that reads it carries on working.
+        const ca = isCa();
+        const cur = () => addrOf(f.id, state.a[f.id] === undefined ? f.value : state.a[f.id]);
+        const parts = addrOf(f.id, f.value);
+        const hasValue = String(f.value).trim() !== "";
+        const showParts = state.addrManual[f.id] === true || (hasValue && state.addrManual[f.id] !== false);
+        const setPart = (k, v) => { const np = Object.assign({}, cur(), { [k]: v }); setState((s) => ({ addrParts: Object.assign({}, s.addrParts, { [f.id]: np }), addrManual: Object.assign({}, s.addrManual, { [f.id]: true }) })); set(f.id, addrJoin(np)); };
+        if (showParts) {
+          const regions = (ca ? CA_REGIONS : US_REGIONS).slice();
+          if (parts.region && !regions.some((r) => r[0] === parts.region)) regions.unshift([parts.region, parts.region]);
+          const cell = (k, label, extra) => html`<div class="addr-cell${extra || ""}"><label class="field-label" for="${k === "l1" ? id : id + "-" + k}">${label}</label><input class="input" id="${k === "l1" ? id : id + "-" + k}" value="${parts[k]}" autocomplete="off"${k === "l1" ? described : ""} data-input="${on((e) => setPart(k, e.target.value))}"></div>`;
+          control = html`<div class="addr" data-key="addr-${f.id}">
+  <div class="addr-grid">
+    ${cell("l1", "Street address", " addr-cell--wide")}
+    ${cell("l2", "Apartment, suite or unit (optional)", " addr-cell--wide")}
+    ${cell("city", "City")}
+    <div class="addr-cell"><label class="field-label" for="${id}-region">${ca ? "Province" : "State"}</label><select class="input${parts.region === "" ? " is-unset" : ""}" id="${id}-region" data-input="${on((e) => setPart("region", e.target.value))}">${parts.region === "" && html`<option value="" selected>Choose one</option>`}${regions.map((r) => html`<option value="${r[0]}"${attr("selected", r[0] === parts.region)}>${r[1]}</option>`)}</select></div>
+    ${cell("postal", ca ? "Postal code" : "ZIP code")}
+  </div>
+  <button type="button" class="btn-link addr-reset" data-click="${on(() => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: false }), addrParts: Object.assign({}, s.addrParts, { [f.id]: null }), addrQ: Object.assign({}, s.addrQ, { [f.id]: "" }) })); set(f.id, ""); })}">Clear and search again</button>
+</div>`;
+        } else {
+          const q = state.addrQ[f.id] || "";
+          const open = state.addrOpen === f.id;
+          const matches = open ? searchAddress(q) : [];
+          const idx = Math.min(state.addrIdx, matches.length - 1);
+          const pickIt = (label) => { setState((s) => ({ addrParts: Object.assign({}, s.addrParts, { [f.id]: addrParse(label) }), addrManual: Object.assign({}, s.addrManual, { [f.id]: true }), addrQ: Object.assign({}, s.addrQ, { [f.id]: "" }), addrOpen: "", addrIdx: -1 })); set(f.id, label); };
+          const keys = (e) => {
+            if (e.key === "ArrowDown" || e.key === "ArrowUp") { if (!matches.length) return; e.preventDefault(); const n = matches.length; setState({ addrIdx: e.key === "ArrowDown" ? (idx + 1) % n : (idx < 1 ? n - 1 : idx - 1) }); }
+            else if (e.key === "Enter") { if (open && matches[idx]) { e.preventDefault(); pickIt(matches[idx]); } }
+            else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ addrOpen: "", addrIdx: -1 }); } }
+          };
+          const typed = q.trim().length >= 3;
+          const startManual = () => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: true }), addrOpen: "", addrIdx: -1 })); setTimeout(() => { const el = document.getElementById(id); if (el) el.focus(); }, 40); };
+          control = html`<div class="addr" data-key="addr-${f.id}"><div class="combo">
+  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${q}" placeholder="Start typing to search for the address" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => setState((s) => ({ addrQ: Object.assign({}, s.addrQ, { [f.id]: e.target.value }), addrOpen: f.id, addrIdx: -1 })))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
   <span class="combo-chev" aria-hidden="true">${icon("search", 16)}</span>
   ${open && typed && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb-addr">
-    ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or use the address exactly as you've entered it.</li>`}
+    ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
   </ul>`}
-</div>`;
+</div>
+<button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button></div>`;
+        }
         break;
       }
       default:
@@ -3739,11 +3837,11 @@
         if (typeUp() && state.bizType === t.id && t.id === "non-profit") return html`<div class="biz-open" data-key="biz-open-nonprofit">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-nonprofit">
         <span class="field-label field-label--block" id="l-structure-up">What type of organization is it?${REQ}</span>
         <div class="yn yn--pills" role="group" aria-labelledby="l-structure-up">${NONPROFIT_TYPES.map((opt) => html`<button type="button" class="yn-btn" aria-pressed="${String(state.a.structure === opt)}" data-click="${on(() => set("structure", opt))}">${opt}</button>`)}</div>
-        <p class="small-note">Charities, foundations and other non-profits are tax-exempt organizations.</p>
       </div></div>`;
         return head("");
       })}
     </div>
+    <p class="small-note biz-warn" data-key="biz-warn">Choose carefully. If you carry on and later come back here to change your business type, anything you've entered will be lost.</p>
     <div class="actions">
       <button type="button" class="btn btn-outline btn-lg" data-click="${on(() => go("welcome", 1))}">${icon("chev-l", 17)}Back</button>
       <button type="button" class="btn btn-primary btn-lg" ${state.bizType && (!typeUp() || isSole() || state.a.structure) ? "" : "disabled"} data-click="${on(() => state.bizType && (!typeUp() || isSole() || state.a.structure) && go("flow", 1))}">Continue${icon("arrow-r", 19)}</button>
@@ -3840,32 +3938,30 @@
   function docView(d) {
     const s = d.skip ? "skipped" : doc(d.key).state;
     const cur = doc(d.key);
-    const open = s === "idle";
-    const cls = s === "done" ? " is-done" : s === "skipped" ? " is-skipped" : s === "idle" ? "" : open ? " is-later" : " is-busy";
+    const cls = s === "done" ? " is-done" : s === "skipped" ? " is-skipped" : s === "idle" ? "" : " is-busy";
+    // The button stays on every row, so any number of files can be added. The W-9 also keeps its sign-on-screen option until a file is in.
     let action;
-    if (open && d.key === "w9") action = html`<div class="doc-actions"><button type="button" class="btn btn-primary btn-sm" aria-label="Review and sign ${d.title}" data-click="${on(() => openDoc("w9"))}">${icon("pen", 15)}Review and sign</button><button type="button" class="btn btn-outline btn-sm" aria-label="Upload your own ${d.title}" data-click="${on(() => upload(d.key, d.file, d.read))}">${icon("upload", 15)}Upload your own</button></div>`;
-    else if (open) action = html`<button type="button" class="btn btn-outline btn-sm" aria-label="Choose file for ${d.title}" data-click="${on(() => upload(d.key, d.file, d.read))}">${icon("upload", 15)}Choose file</button>`;
-    else if (s === "done") action = "";
-    else if (s === "skipped") action = html`<span class="state-pill state-pill--muted">Not needed</span>`;
-    else action = html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>${s === "uploading" ? "Uploading" : "Reading it"}</span>`;
+    if (s === "skipped") action = html`<span class="state-pill state-pill--muted">Not needed</span>`;
+    else if (d.key === "w9" && s === "idle") action = html`<div class="doc-actions"><button type="button" class="btn btn-primary btn-sm" aria-label="Review and sign ${d.title}" data-click="${on(() => openDoc("w9"))}">${icon("pen", 15)}Review and sign</button><button type="button" class="btn btn-outline btn-sm" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}">${icon("upload", 15)}Add file</button></div>`;
+    else action = html`<button type="button" class="btn btn-outline btn-sm" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}">${icon("upload", 15)}Add file</button>`;
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="req req--done">${icon("check", 12, "i-b")}Checked</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="req req--done">${icon("check", 12, "i-b")}Uploaded</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
       ${d.why && fieldWhyView({ id: "doc_" + d.key, why: d.why })}
       ${errView("doc_" + d.key)}
     </div>
     ${action}
   </div>
-  ${s === "done" && html`<div class="doc-file"><span class="doc-file-name">${cur.file}</span><button type="button" class="btn-link" aria-label="Replace ${d.title}" data-click="${on(() => setDoc(d.key, "idle"))}">Replace</button></div>`}
+  ${cur.files.length > 0 && html`<div class="doc-files" data-key="files-${d.key}">${cur.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name" title="${f.name}">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name)))}">Remove</button>`}</div>`)}</div>`}
 </article>`;
   }
 
   function step6View(v) {
     return html`<div class="stack" data-key="s6-docs">${v.docList.filter((d) => !d.skip).map((d) => docView(d))}</div>
-<div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>We scan and read every file as it uploads, so if one isn't legible you'll hear about it now rather than in three days' time. Files are stored encrypted and shared only with Trullio, our verification partner.${pin("read-on-upload")}</span></div>`;
+<div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>Add as many files as you like to each item. Files are stored encrypted and shared only with Trullio, our verification partner.${pin("read-on-upload")}</span></div>`;
   }
 
   // ---------------------------------------------------------------------------
@@ -3963,7 +4059,7 @@
     if (norm(state.w9Name) !== norm(w.signer)) { setState({ w9Err: "Type your full legal name exactly as it appears in step 2." }); return; }
     const when = new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
     setState({ viewDoc: "", w9Err: "", w9Name: "", w9Certify: false });
-    setDoc("w9", "done", "Form W-9 · signed here", "Signed electronically by " + w.signer + " on " + when + (w.hasEin ? " · EIN ending " + w.last4 : ""));
+    setDocFiles("w9", () => [{ name: "Form W-9 · signed here", busy: false }]);
   }
 
   function w9DialogView() {
@@ -4540,7 +4636,10 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
   // The thin top bar, full width of the window, on every screen except the welcome email (decision top-nav-save-exit). Save & Exit shows only while there is an application to save: the welcome page, the business type page and the seven steps.
   function topNavView(v) {
     const canSave = v.isWelcome || v.isBizType || v.isFlow;
-    return html`<header class="topnav" data-key="topnav">
+    // The bar is as wide as the content column of the screen under it: 560 for sign-in, 820 for the status screens, 1220 for the flow, 720 for the rest.
+    // (A class sets the width, since the page's content security policy does not allow inline styles.)
+    const navW = { login: 560, flow: 1220, submitted: 820, rfi: 820, approved: 820 }[state.screen] || 720;
+    return html`<header class="topnav topnav--${navW}${state.screen === "flow" ? " topnav--flow" : ""}" data-key="topnav">
   <div class="topnav-inner">
     <img class="topnav-logo" src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="1354" height="295">
     ${canSave && html`<button type="button" class="btn btn-neutral btn-md topnav-exit" data-click="${on(openSave)}">Save &amp; Exit</button>`}
