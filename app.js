@@ -427,9 +427,9 @@
       "id": "no-mcc-picker",
       "area": "Copy",
       "where": "Step 1 · Business & address",
-      "t": "The category is picked from a short searchable list, with a help link for people who do not know their code",
-      "b": "The business description box that used to suggest a category is gone. Almost no merchant knows their merchant category code (MCC), so the field is a searchable list the applicant types into, by name or by four-digit code, and the list is short because it holds only the codes set up for their division (decision mcc-from-division). Under the field a help link points to a country-specific website for people who do not know their code. Nothing is suggested or pre-filled, and the category is required.",
-      "tradeoff": "With no description the applicant has no keywords to match against, so someone who does not know their code relies on the list names and the help link. The suggestion used to be a simulated keyword guess, which is no longer in the prototype. The help link's destination is a stand-in (see mcc-from-division). Earlier decisions here (category-editable, category-is-mcc) describe the old suggestion and have been reworded.",
+      "t": "The category is picked from a short searchable list, with a plain-words hint for people who do not know their code",
+      "b": "The business description box that used to suggest a category is gone. Almost no merchant knows their merchant category code (MCC), so the field is a searchable list the applicant types into, by name or by four-digit code, and the list is short because it holds only the codes set up for their division (decision mcc-from-division). Under the field a short hint tells people who are unsure to search by a word that describes what they sell (see mcc-no-help-link). Nothing is suggested or pre-filled, and the category is required.",
+      "tradeoff": "With no description the applicant has no keywords to match against, so someone who does not know their code relies on the list names and the hint. The suggestion used to be a simulated keyword guess, which is no longer in the prototype. Earlier decisions here (category-editable, category-is-mcc) describe the old suggestion and have been reworded.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -2179,9 +2179,9 @@
       "id": "mcc-from-division",
       "area": "Flow",
       "where": "Step 1 · Merchant category code",
-      "t": "The category list is the set of codes for the applicant's division, with a country-specific help link",
-      "b": "From the refinement session with engineering: the business description box is removed and the merchant category code (MCC) field is a searchable list only. The codes in it are inherited from the division the business sits in. An Ops user creates the division in Odin, so each one has a finite list of codes, perhaps 20 or 30, and the applicant never searches the whole card-network list. Typing narrows the list by name or by code, and opening an empty field shows every code in the division. The helper text under the field carries a link to a country-specific website for people who do not know their code: a US site when the application is US, a Canadian one when it is Canadian, opening in a new tab.",
-      "tradeoff": "The three division lists in the prototype (Standard 32 codes, ClubReady 14, Club Essentials 20) are invented stand-ins, not Ops's lists, and every MCC in them comes from mcc-codes.js, which was written from general knowledge and is unchecked. The help link points at the US Census Bureau and Statistics Canada industry code pages, which are NAICS pages and not MCC pages, so they are placeholders: Ops or engineering need to name the real site for each country. If a division list has only one code the field could be pre-filled; not designed. The division changes the list only; the prototype's Division option still opens on step 6 with the sample business filled in, so step 1 is reached by going back.",
+      "t": "The category list is the set of codes for the applicant's division",
+      "b": "From the refinement session with engineering: the business description box is removed and the merchant category code (MCC) field is a searchable list only. The codes in it are inherited from the division the business sits in. An Ops user creates the division in Odin, so each one has a finite list of codes, perhaps 20 or 30, and the applicant never searches the whole card-network list. Typing narrows the list by name or by code, and opening an empty field shows every code in the division. The helper text under the field used to link to a country-specific website; that link was removed on 2026-11-06 (decision mcc-no-help-link).",
+      "tradeoff": "The three division lists in the prototype (Standard 32 codes, ClubReady 14, Club Essentials 20) are invented stand-ins, not Ops's lists, and every MCC in them comes from mcc-codes.js, which was written from general knowledge and is unchecked. If a division list has only one code the field could be pre-filled; not designed. The division changes the list only; the prototype's Division option still opens on step 6 with the sample business filled in, so step 1 is reached by going back.",
       "by": "Ryan",
       "when": "2026-11-05"
     },
@@ -2280,7 +2280,7 @@
       "area": "Flow",
       "where": "Step 1 · Registered / legal address and Trading address; Step 2 · Home address",
       "t": "An address is entered as separate boxes, filled by search or typed in by hand",
-      "b": "Every address question starts as a search box with an Enter address manually link under it. Picking a search result, or choosing the link, opens one box for each part: street address, apartment, suite or unit (optional), city, state or province (a list), and ZIP or postal code. A picked address fills the boxes in, and every box can be edited. A Clear and search again link empties the address and goes back to the search box. The same pattern is on the registered or business address and the trading address at step 1, and on each owner's home address at step 2. Behind the scenes the address is still one line, so the review step, the W-9 and a sole proprietor's home address copy carry on as before. An address counts as complete when it has a street, city, state or province, and ZIP or postal code; the unit is optional.",
+      "b": "Every address question starts as a search box with an Enter address manually link under it. Picking a search result, or choosing the link, opens one box for each part: Street address 1, Street address 2 (optional, for an apartment, suite or unit), city, state or province (a list), and ZIP or postal code. A picked address fills the boxes in, and every box can be edited. A Clear and search again link empties the address and goes back to the search box. The same pattern is on the registered or business address and the trading address at step 1, and on each owner's home address at step 2. Behind the scenes the address is still one line, so the review step, the W-9 and a sole proprietor's home address copy carry on as before. An address counts as complete when it has a street, city, state or province, and ZIP or postal code; Street address 2 is optional.",
       "tradeoff": "An address now takes up to five boxes where it took one, which is longer to fill in by hand than typing a single line. Splitting a one-line address back into parts guesses from the commas and a trailing state and ZIP, so an unusual address may land in the wrong box and need correcting. The state and province lists cover the 50 states, DC and the 13 provinces and territories, but not US territories or military addresses.",
       "by": "Ryan",
       "when": "2026-11-06"
@@ -2332,6 +2332,36 @@
       "t": "The POS / terminal type question is gone",
       "b": "Removed because it is no longer needed (Ryan, 2026-11-06). It was a dropdown (Xplor Pay countertop terminal, Xplor Pay mobile reader, third-party terminal, None) that appeared when card present was above 0%. The earlier decision to end the list with None went with it.",
       "tradeoff": "What equipment the business will use is no longer captured at application, so anything that depends on it, such as ordering readers, has to ask later.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "mcc-no-help-link",
+      "area": "Flow",
+      "where": "Step 1 · Merchant category code (MCC) field",
+      "t": "The MCC hint no longer links to a website; it tells people to search the list by a word",
+      "b": "The link under the field (to a US or Canadian industry code website) is removed. The applicant can only choose from the codes set up for their division, so a code found on an outside website may not be in the list and would send them nowhere. The hint now reads: Pick the closest match from the list. Not sure which one fits? Search by a word that describes what you sell, like “fitness” or “retail”. Nothing opens in a new tab.",
+      "tradeoff": "Someone who really cannot match their business to a name in the list now has no further help on the page, and the list still has no way out when no code fits. Options not built: a Contact us link in the hint, or a short note that Xplor can confirm the category later. Ops should say which is acceptable.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "owner-save-button",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards",
+      "t": "Each open owner card ends with a Save button that saves the owner and closes the card; the open card has no purple outline",
+      "b": "An open owner card no longer gets the purple (brand) outline, because it is not a selected card in the way a radio card is; it keeps the same plain border as a closed one. At the bottom of every open owner card there is a Save button. In the real build it saves that owner to the back end, so the owner is kept even if the applicant leaves the onboarding flow before finishing the step. On screen it only shows the Saving then Saved tell in the progress column and closes the card, so the applicant knows that owner is done and can move to the next. Saving is not required: every owner is saved when the step is completed even if Save was never pressed on some of them. The Save button is not shown on the page an invited owner sees.",
+      "tradeoff": "The prototype already keeps what is typed as it is typed, so Save changes nothing in the data here; it exists to show the behaviour, and to give the applicant a clear sense of finishing one person. Save does not check the card, so an incomplete owner can be saved and closed, and the problems only appear when the applicant continues. Some applicants may think Save is required for every owner.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "address-links-below-hint",
+      "area": "Visual",
+      "where": "Step 1 and Step 2 · Address questions",
+      "t": "Enter address manually and Clear and search again sit below the helper text, outside the input",
+      "b": "On every address question the Enter address manually link, and the Clear and search again link once the address boxes are open, now come after the helper text rather than straight under the input. The helper text belongs to the input component; a link or button like these is a separate element and sits outside it, so it follows the helper text. Where an address question has no helper text the link sits directly under the input as before.",
+      "tradeoff": "The link is a little further from the search box, and where the helper text is long it is pushed down the page, so someone could read past it. Under the open address boxes the helper text now sits above Clear and search again, rather than the link being the last thing in the group.",
       "by": "Ryan",
       "when": "2026-11-06"
     }
@@ -2432,8 +2462,6 @@
     [DIV_CE]: ["5499", "5811", "5812", "5813", "5941", "5947", "7011", "7032", "7230", "7298", "7299", "7911", "7933", "7941", "7992", "7997", "7999", "8299", "8398", "8641"]
   };
   const divisionMccs = () => { const codes = DIVISION_MCC[ctx.division] || DIVISION_MCC[DIV_STANDARD]; return MCC_LIST.filter((x) => codes.indexOf(x.code) > -1); };
-  // Country specific help for an applicant who does not know their code. STAND-IN link: Ops or engineering to name the real site.
-  const mccHelp = () => (isCa() ? { name: "Statistics Canada", url: "https://www.statcan.gc.ca/en/subjects/standard/naics/2022/v1/index" } : { name: "US Census Bureau", url: "https://www.census.gov/naics/" });
   // Every word typed must appear in the code or title, so "bake" and "5462" both find bakeries. An empty search lists the whole division list.
   // The value stored in the website answer when the applicant says they have no website.
   const NO_WEBSITE = "N/A";
@@ -3133,8 +3161,8 @@
           fld("noWebsite", "I don't have a website", "check", { span: true, optional: true })
         ]),
         card("s1-desc", isNonprofit() ? "What the organization does" : "What the business sells", "", [
-          // The list holds only the codes set up for the applicant's division (decision mcc-from-division). The help link is country specific.
-          fld("category", "Merchant category code (MCC)", "combo", { span: true, placeholder: "Search by name or code", hint: html`Pick the closest match. Not sure of your code? Look up your ${orgWord()}'s industry on the <a href="${mccHelp().url}" target="_blank" rel="noopener noreferrer">${mccHelp().name} website</a>.` })
+          // The list holds only the codes set up for the applicant's division (decision mcc-from-division).
+          fld("category", "Merchant category code (MCC)", "combo", { span: true, placeholder: "Search by name or code", hint: html`Pick the closest match from the list. Not sure which one fits? Search by a word that describes what you sell, like “fitness” or “retail”.` })
         ], { pinId: "no-mcc-picker" })
       ];
     }
@@ -3477,6 +3505,7 @@
     const hintId = f.hint ? "h-" + f.id : "";
     const described = hintId ? html` aria-describedby="${hintId}"` : "";
     let control;
+    let after = ""; // a link or button that sits below the helper text, outside the input component (decision address-links-below-hint)
     switch (f.kind) {
       case "mono":
         control = html`<input class="input mono" id="${id}" value="${f.value}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${described} data-input="${onInput}">`;
@@ -3544,14 +3573,14 @@
           const cell = (k, label, extra) => html`<div class="addr-cell${extra || ""}"><label class="field-label" for="${k === "l1" ? id : id + "-" + k}">${label}</label><input class="input" id="${k === "l1" ? id : id + "-" + k}" value="${parts[k]}" autocomplete="off"${k === "l1" ? described : ""} data-input="${on((e) => setPart(k, e.target.value))}"></div>`;
           control = html`<div class="addr" data-key="addr-${f.id}">
   <div class="addr-grid">
-    ${cell("l1", "Street address", " addr-cell--wide")}
-    ${cell("l2", "Apartment, suite or unit (optional)", " addr-cell--wide")}
+    ${cell("l1", "Street address 1", " addr-cell--wide")}
+    ${cell("l2", "Street address 2 (optional)", " addr-cell--wide")}
     ${cell("city", "City")}
     <div class="addr-cell"><label class="field-label" for="${id}-region">${ca ? "Province" : "State"}</label><select class="input${parts.region === "" ? " is-unset" : ""}" id="${id}-region" data-input="${on((e) => setPart("region", e.target.value))}">${parts.region === "" && html`<option value="" selected>Choose one</option>`}${regions.map((r) => html`<option value="${r[0]}"${attr("selected", r[0] === parts.region)}>${r[1]}</option>`)}</select></div>
     ${cell("postal", ca ? "Postal code" : "ZIP code")}
   </div>
-  <button type="button" class="btn-link addr-reset" data-click="${on(() => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: false }), addrParts: Object.assign({}, s.addrParts, { [f.id]: null }), addrQ: Object.assign({}, s.addrQ, { [f.id]: "" }) })); set(f.id, ""); })}">Clear and search again</button>
 </div>`;
+          after = html`<button type="button" class="btn-link addr-reset" data-click="${on(() => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: false }), addrParts: Object.assign({}, s.addrParts, { [f.id]: null }), addrQ: Object.assign({}, s.addrQ, { [f.id]: "" }) })); set(f.id, ""); })}">Clear and search again</button>`;
         } else {
           const q = state.addrQ[f.id] || "";
           const open = state.addrOpen === f.id;
@@ -3571,8 +3600,8 @@
   ${open && typed && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb-addr">
     ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
   </ul>`}
-</div>
-<button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button></div>`;
+</div></div>`;
+          after = html`<button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button>`;
         }
         break;
       }
@@ -3589,6 +3618,7 @@
   ${errView(f.id)}
   ${f.why && fieldWhyView(f)}
   ${f.hint && html`<p class="field-hint" id="${hintId}">${f.hint}</p>`}
+  ${after}
 </div>`;
   }
 
@@ -3875,6 +3905,8 @@
   function ownerView(o, recipient) {
     const isOpen = state.openOwner === o.id;
     const toggle = () => setState({ openOwner: state.openOwner === o.id ? 0 : o.id });
+    // Save (decision owner-save-button): the owner is already kept as each field is committed, so this only shows the saving tell and closes the card.
+    const saveOwner = () => { pulseSave(); setState({ openOwner: 0 }); };
     const nm = ownerInfo(o).name;
     const known = !!nm && nm !== "New owner";
     const invited = o.status === "invited";
@@ -3906,7 +3938,7 @@
     ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}Remove</button>`}
     ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
   </div>
-  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}<div class="fields">${ownerFields(o).map(fieldView)}</div></div>`}
+  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}<div class="fields">${ownerFields(o).map(fieldView)}</div>${!recipient && html`<div class="person-actions" data-key="owner-save"><button type="button" class="btn btn-primary btn-sm" data-click="${on(saveOwner)}">Save</button></div>`}</div>`}
 </article>`;
   }
 
