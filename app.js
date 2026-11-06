@@ -409,7 +409,7 @@
       "area": "Flow",
       "where": "Welcome",
       "t": "The welcome page no longer has a hand-off button",
-      "b": "This once gave “someone else handles this” equal billing, on the reasoning that the person who signs up is often not the one with the bank details or the incorporation papers. The button is gone in both slices: the secondary button is now Get help (decision welcome-help-and-info-in-header). Handing off is still possible in Slice 2 from Finish later and from an owner card.",
+      "b": "This once gave “someone else handles this” equal billing, on the reasoning that the person who signs up is often not the one with the bank details or the incorporation papers. The button is gone in both slices: the secondary button is now Get help (decision welcome-help-and-info-in-header). Handing off is still possible in Slice 2 from Save & Exit and from an owner card.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -417,7 +417,7 @@
       "id": "save-link-scope",
       "slice": "2",
       "area": "Trust",
-      "where": "Save and finish later",
+      "where": "Save & Exit (top bar)",
       "t": "Resume links are scoped, addressed and expiring",
       "b": "A resume link is a bearer token for a part-finished KYB application, so it lasts 7 days, only works for the address it was sent to, and drops the recipient into their own part of the flow rather than the whole thing.",
       "by": "Claude",
@@ -698,7 +698,7 @@
       "area": "Copy",
       "where": "Steps 1, 6 and the submitted screen",
       "t": "Nothing contradicts itself, and the status screens only name the people entered",
-      "b": "Found by the first persona test run. The “to go” count in step 6 is worked out from the list. (This round also made the registration proof and EIN letter show as “Not needed” after a registry match; the registry match was removed on 2026-11-05, see ein-in-registered-details, and both documents are always required again.) The W-9 read-back and the submitted screen use the owners the applicant entered rather than the sample people, and the “everyone's done their bit” tile only says so when it is true. Spelling is US throughout (license, authorized, tokenized, recognize). Entrance animations were shortened and shrunk so cards settle before someone clicks.",
+      "b": "Found by the first persona test run. The “to go” count in step 6 is worked out from the list. The W-9 read-back and the submitted screen use the owners the applicant entered rather than the sample people, and the “everyone's done their bit” tile only says so when it is true. Spelling is US throughout (license, authorized, tokenized, recognize). Entrance animations were shortened and shrunk so cards settle before someone clicks.",
       "by": "Ryan",
       "when": "2026-10-05"
     },
@@ -791,12 +791,12 @@
       "when": "2026-10-05"
     },
     {
-      "id": "optional-website-refund",
+      "id": "optional-refund-policy",
       "area": "Flow",
-      "where": "Step 1 and step 3",
-      "t": "Website and refund-policy URL are optional",
-      "b": "Two testers had no website or policy page and pasted a Facebook link or a sentence to get past the required field. Both fields are now optional and say so. A missing website may slow the business check but is not a reason to stop an application.",
-      "tradeoff": "Fewer applicants will supply a policy URL, which helps with chargebacks. The underwriting team should say whether either is needed for particular business categories.",
+      "where": "Step 3",
+      "t": "The refund-policy URL is optional",
+      "b": "A tester had no policy page and pasted a sentence to get past the required field. The field is now optional and says so. (The website field was optional too until 2026-11-05; see website-required-with-none-box.)",
+      "tradeoff": "Fewer applicants will supply a policy URL, which helps with chargebacks. The underwriting team should say whether it is needed for particular business categories.",
       "by": "Ryan",
       "when": "2026-10-05"
     },
@@ -1105,9 +1105,9 @@
     {
       "id": "return-by-login",
       "area": "Trust",
-      "where": "Save and finish later",
+      "where": "Save & Exit (top bar)",
       "t": "Tell people how to come back: log in again and carry on where they left off",
-      "b": "Answers save as people go, and signing in again reopens the last saved state. The Finish later dialog says that in one line at the top (Log back in any time with the link in your welcome email, and you'll carry on where you left off), with no link of its own and no code. In Slice 1 it then just has a Close button; Slice 2 also offers the separate hand-off to someone else. Rewritten 2026-10-28 (Ryan) because the one-time-code screen is gone and the Invitations PRD uses ODIN sign-in; before that the line said to come back with the link in the email and a code.",
+      "b": "Answers save as people go, and signing in again reopens the last saved state. The Save & Exit dialog says that in one line at the top (Log back in any time with the link in your welcome email, and you'll carry on where you left off), with no link of its own and no code. In Slice 1 it then just has a Close button; Slice 2 also offers the separate hand-off to someone else. Rewritten 2026-10-28 (Ryan) because the one-time-code screen is gone and the Invitations PRD uses ODIN sign-in; before that the line said to come back with the link in the email and a code.",
       "tradeoff": "The line points to the link in the welcome email, which Ryan chose on 2026-11-04 although nobody has confirmed it is how returning users sign in (a bookmark or an ODIN address may be the real route). An applicant who deleted the email has no other pointer. The 7 days on the Slice 2 hand-off link is our own assumption; the magic link spike does not cover hand-off links at all, so whether they exist and how they work is a question for the team.",
       "by": "Ryan",
       "when": "2026-10-07"
@@ -1157,7 +1157,7 @@
       "area": "Flow",
       "where": "Left progress column · footer",
       "t": "Progress saves after every field, and the flow now says so in two places",
-      "b": "Ops confirmed the real build autosaves on every field entry, with no action needed to keep it. The footer button, previously “Save and finish later”, is renamed “Finish later” since it no longer describes a save action. The “N steps to go” line in the left progress column is replaced with a live Saved / Saving… tell (check icon when saved, a small spinner while saving, text only, no badge background) that switches to “Saving…” for about a second whenever an edit is committed (a field is left with a new value, or a checkbox, radio or select changes) and then returns to “Saved”, since a real save may take around a second, so the applicant has a constant, always-visible answer to “is this saved” without opening the save dialog. “Saved” stays green; “Saving…” is the same neutral grey as the rest of the line. The “About N minutes left” estimate stays, vertically centered with the tell, with a “·” between them as before.",
+      "b": "Ops confirmed the real build autosaves on every field entry, with no action needed to keep it. The footer button, previously “Save and finish later”, became “Finish later” since it no longer described a save action, and is now the Save & Exit button in the top bar (decision top-nav-save-exit). The “N steps to go” line in the left progress column is replaced with a live Saved / Saving… tell (check icon when saved, a small spinner while saving, text only, no badge background) that switches to “Saving…” for about a second whenever an edit is committed (a field is left with a new value, or a checkbox, radio or select changes) and then returns to “Saved”, since a real save may take around a second, so the applicant has a constant, always-visible answer to “is this saved” without opening the save dialog. “Saved” stays green; “Saving…” is the same neutral grey as the rest of the line. The “About N minutes left” estimate stays, vertically centered with the tell, with a “·” between them as before.",
       "tradeoff": "The step count disappears from that line; it is still readable from the left-hand step list and the “Step N of 7” eyebrow at the top of the page, so nothing is lost, but someone scanning only the progress-note line loses the step count at a glance. A first pass put “Saved” in a filled green badge; Ryan found it too bright and it was reverted to plain coloured text.",
       "by": "Ryan",
       "when": "2026-10-08"
@@ -1610,7 +1610,7 @@
       "where": "Welcome page",
       "t": "The welcome page uses the same Get help button and the same hover note as a step",
       "b": "The secondary button on the welcome page, left of Let's get started, is now Get help with the same question-mark icon as the Get help button in the step list, in both slices. It opens the same Talk to a person dialog, with the phone number and email. That makes the line Want to talk to someone first? with the phone number at the bottom of the page redundant, so it is removed. What we do with your information moves up to the end of the description under the heading, as hoverable text with a question icon, the way Why are we asking? sits at the end of a step's description. It opens on hover, click or focus, closes when the pointer leaves, and Escape closes it. The Someone else handles our finances button is removed from Slice 2 too.",
-      "tradeoff": "The support number is no longer on the page itself; a person has to press Get help to see it. Slice 2 loses its one-click hand-off from the welcome page, though Finish later and the owner cards still offer it.",
+      "tradeoff": "The support number is no longer on the page itself; a person has to press Get help to see it. Slice 2 loses its one-click hand-off from the welcome page, though Save & Exit and the owner cards still offer it.",
       "by": "Ryan",
       "when": "2026-10-22"
     },
@@ -1995,16 +1995,6 @@
       "when": "2026-11-04"
     },
     {
-      "id": "esign-claim-removed",
-      "area": "Copy",
-      "where": "Step 7, under the typed signature",
-      "t": "The signature line makes no legal compliance claim",
-      "b": "The line under the typed signature reads \"Signed electronically · we'll email you a signed copy\" in both regions. It used to say \"ESIGN Act compliant\", which is a US federal law and does not apply in Canada, and \"compliant\" is a claim the prototype cannot prove. The consent tick \"I agree to sign electronically\" is unchanged.",
-      "tradeoff": "The applicant gets no reassurance that the e-signature is legally valid. Compliance should say whether the form needs a statement of that kind, and which laws apply in the US and Canada.",
-      "by": "Ryan",
-      "when": "2026-11-04"
-    },
-    {
       "id": "ca-company-card-no-llc",
       "area": "Copy",
       "where": "Business type page, Company card",
@@ -2159,7 +2149,7 @@
       "area": "Flow",
       "where": "Every dialog",
       "t": "A dialog closes when you click anywhere outside it, as well as on its Close button",
-      "b": "The Get help, Finish later, confirmation, document preview, hand-off and design notes dialogs all close on a click on the dimmed area around them, the same as pressing their Close button or Escape. The press has to start on the dimmed area too, so selecting text inside a dialog and letting go outside it does not close it. Closing this way does the same as Close: nothing is saved or sent, and a confirmation counts as cancelled.",
+      "b": "The Get help, Save & Exit, confirmation, document preview, hand-off and design notes dialogs all close on a click on the dimmed area around them, the same as pressing their Close button or Escape. The press has to start on the dimmed area too, so selecting text inside a dialog and letting go outside it does not close it. Closing this way does the same as Close: nothing is saved or sent, and a confirmation counts as cancelled.",
       "tradeoff": "A stray click outside a dialog that holds something half done, such as a hand-off with an email typed in, closes it and loses what was typed. The dimmed area gives no hint that it will do this.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2239,8 +2229,58 @@
       "area": "Flow",
       "where": "Step 1 · Registered details",
       "t": "The EIN or business number is a field in Registered details, and there is no registry lookup",
-      "b": "From the refinement session with engineering. The lookup went because of what it can actually do. Trullio can only prefill an address from a lookup, it needs the business's name and country to do it, and it then returns every business that shares that name in that country. The applicant could be shown a long list of possible matches, or have the wrong business prefilled, all so that they save typing an address. That is a bad trade, so the lookup, the Look up button, Enter details manually, the Is this your business? question and the match toasts are removed, and the whole of step 1 shows from the start. The EIN (Business Number in Canada) is now an ordinary field in the Registered details card, with the legal name, Doing business as, structure, date and state. A company or a non-profit has to give one; for a sole proprietor it is optional, and the hint says that without one they give their SSN (SIN in Canada) in step 2 instead. It is checked for nine digits, an SSN-shaped number is refused with a plain message, and a Canadian number pasted with its program account (RT0001) is cut back to the nine digits as the person leaves the field. The layout puts the legal name beside the EIN for a company, and Doing business as beside it for a non-profit and a sole proprietor. Nothing is filled in from the number. The address is typed in the Addresses card. The copy that went with the lookup is changed: the welcome page's registration line now says what Step 1 asks for, the why-we-ask note says the registration documents in step 6 are how the details are checked, the line about protecting the EIN at the lookup is gone, and the confirmation's checking line names the registration for a company or non-profit. With no registry match to waive them, the proof of registration and the EIN letter are now always required in step 6 (a sole proprietor still adds the EIN letter only if they gave an EIN).",
-      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Step 6 asks for more: every company and non-profit now adds a registration document and, in the US, an EIN letter, which a match used to waive. Ops should confirm they want both every time. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record.",
+      "b": "From the refinement session with engineering. The lookup went because of what it can actually do. Trullio can only prefill an address from a lookup, it needs the business's name and country to do it, and it then returns every business that shares that name in that country. The applicant could be shown a long list of possible matches, or have the wrong business prefilled, all so that they save typing an address. That is a bad trade, so the lookup, the Look up button, Enter details manually, the Is this your business? question and the match toasts are removed, and the whole of step 1 shows from the start. The EIN (Business Number in Canada) is now an ordinary field in the Registered details card, with the legal name, Doing business as, structure, date and state. A company or a non-profit has to give one; for a sole proprietor it is optional, and the hint says that without one they give their SSN (SIN in Canada) in step 2 instead. It is checked for nine digits, an SSN-shaped number is refused with a plain message, and a Canadian number pasted with its program account (RT0001) is cut back to the nine digits as the person leaves the field. The layout puts the legal name beside the EIN for a company, and Doing business as beside it for a non-profit and a sole proprietor. Nothing is filled in from the number. The address is typed in the Addresses card. The copy that went with the lookup is changed: the welcome page's registration line now says what Step 1 asks for, the why-we-ask note says the details should match the tax documents added in step 6, the line about protecting the EIN at the lookup is gone, and the confirmation's checking line names the business details for a company or non-profit. With no registry match to waive it, the EIN letter is now always required in step 6 for a company or non-profit in the US (a sole proprietor adds it only if they gave an EIN). There is no separate proof-of-registration document: the EIN letter (in Canada, a CRA business number confirmation) and the US W-9 are the documents that back the details.",
+      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Nothing checks the entity's existence against a registration document. Ops should confirm that the EIN letter (CRA business number confirmation in Canada) and the W-9 are enough. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "ca-bn-confirmation-document",
+      "area": "Flow",
+      "where": "Step 6 · Supporting documents (Canada)",
+      "t": "Canadian businesses add a CRA business number confirmation, the counterpart of the US EIN letter",
+      "b": "In the US, a company or non-profit adds the IRS EIN letter; a Canadian one now adds a CRA business number confirmation. The row accepts any one of four documents: the CRA business registration confirmation printed from Business Registration Online, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter downloaded from CRA My Business Account, or articles of incorporation that show the business number. It follows the same rule as the EIN letter: required for a company or non-profit, and for a sole proprietor only if they gave a business number in step 1. The US W-9 is still US only, so Canada has no tax-form row.",
+      "tradeoff": "The four documents come from Ryan's notes drawn from public pages, not from an Xplor or CRA source, and the row title and wording are my draft. Ops should confirm which of them underwriting accepts, and whether Trulioo's check of the business number could make the upload unnecessary. Accepting articles of incorporation means a registration document is allowed here even though the US has no separate registration proof.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "top-nav-save-exit",
+      "area": "Layout",
+      "where": "Every screen except the welcome email · top of the page",
+      "t": "A thin top bar carries the logo and Save & Exit",
+      "b": "Every screen except the welcome email has a thin bar across the full width of the window, with the Xplor Pay logo at the left and a Save & Exit button at the right, lined up with the edges of the step content below. It stays in view as the page scrolls, and the progress list and the pinned step title sit under it. Save & Exit shows only where there is an application to save: the welcome page, the business type page and the seven steps. The sign-in screens, the business picker, the status screens and the invited owner's screens show the logo alone. Save & Exit replaces the Finish later button in the footer, so the footer now holds only Back and Save and continue. It opens the same dialog, which says the answers are saved and how to log back in. The logo that sat above the progress list moved into the bar.",
+      "tradeoff": "The way out is at the top of the page while the footer holds the way forward, so someone who has scrolled to the bottom to stop has to look up for it. Nothing is lost by leaving, because answers already save as they are entered. The invited owner's screens have no Save & Exit even though their answers save too; that is open if Slice 2 needs one.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "step-time-in-rail-only",
+      "area": "Copy",
+      "where": "Steps 1 to 7 · step title",
+      "t": "The step title shows only Step N of 7, with all timings in the progress list",
+      "b": "The clock and minutes that sat beside the Step N of 7 label above each step title are gone. The time left, and the minutes for each step, are only in the progress list at the left, so the main column shows just where you are.",
+      "tradeoff": "Someone who reads only the main column no longer sees how long the step will take. The progress list carries it on every step.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "address-lookup",
+      "area": "Flow",
+      "where": "Step 1 · Registered / legal address",
+      "t": "The registered address box suggests addresses as you type",
+      "b": "After three characters, the registered address (the business address for a sole proprietor) shows a short list of matching addresses under the box. Picking one fills the whole address. The box stays free text: whatever is typed is the answer, and a search that finds nothing says so and lets the person carry on with what they entered. Arrow keys move through the list, Enter picks the highlighted address and Escape closes it. The trading address and the owners' home addresses are plain boxes.",
+      "tradeoff": "The prototype uses a short fixed list per country, so a real address usually finds nothing. The real service and its coverage, in the US and Canada, are for engineering to name. An address picked from the list may not match the registration exactly, and nothing checks it against the registry.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "website-required-with-none-box",
+      "area": "Flow",
+      "where": "Step 1 · How we reach you",
+      "t": "The website is required, and a box says there is none",
+      "b": "The primary website URL is now a required field. Under it, a box reads I don't have a website. Ticking it fills the website box with N/A and locks it; unticking clears it and unlocks it. This replaces the earlier optional website, where testers who had none pasted a Facebook link or other text to get on. A website typed without https:// still gets it added as the person leaves the box; N/A does not.",
+      "tradeoff": "An applicant with a Facebook page or a booking link can still paste it as the website. Underwriting gets N/A on file for a business with none, so it can tell that apart from a field left empty. Ops should say whether a missing website needs anything else from the applicant, such as a description of how they sell.",
       "by": "Ryan",
       "when": "2026-11-05"
     }
@@ -2345,6 +2385,14 @@
   // Country specific help for an applicant who does not know their code. STAND-IN link: Ops or engineering to name the real site.
   const mccHelp = () => (isCa() ? { name: "Statistics Canada", url: "https://www.statcan.gc.ca/en/subjects/standard/naics/2022/v1/index" } : { name: "US Census Bureau", url: "https://www.census.gov/naics/" });
   // Every word typed must appear in the code or title, so "bake" and "5462" both find bakeries. An empty search lists the whole division list.
+  // The value stored in the website answer when the applicant says they have no website.
+  const NO_WEBSITE = "N/A";
+  // Address lookup stand-ins (fake address-lookup): a short fixed list per country. Typing three or more characters shows the addresses that contain every word typed; the real product would search a postal address service.
+  const ADDRESS_STUBS = {
+    "United States": ["418 SE Water Ave, Suite 210, Portland, OR 97214", "412 SW Alder St, Portland, OR 97204", "1200 Main St, Springfield, IL 62701", "88 Market St, San Francisco, CA 94105", "250 Elm Ave, Austin, TX 78701", "75 Lakeview Dr, Denver, CO 80202", "310 Pine St, Seattle, WA 98101", "9 Harbor Rd, Boston, MA 02110", "1500 Peachtree St NE, Atlanta, GA 30309", "4100 N Central Ave, Phoenix, AZ 85012"],
+    "Canada": ["418 Water St, Suite 210, Vancouver, BC V6B 1A1", "1055 W Georgia St, Vancouver, BC V6E 3P3", "100 King St W, Toronto, ON M5X 1A9", "1 Yonge St, Toronto, ON M5E 1W7", "800 Rue de la Gauchetière O, Montréal, QC H5A 1K6", "500 4 Ave SW, Calgary, AB T2P 2V6", "99 Bank St, Ottawa, ON K1P 6B9", "1800 Hollis St, Halifax, NS B3J 1V7", "350 Portage Ave, Winnipeg, MB R3C 0C4"]
+  };
+  const searchAddress = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); if (String(q || "").trim().length < 3) return []; return ADDRESS_STUBS[isCa() ? "Canada" : "United States"].filter((x) => t.every((w) => x.toLowerCase().indexOf(w) > -1)); };
   const searchMcc = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); const all = divisionMccs(); return t.length ? all.filter((x) => t.every((w) => x.hay.indexOf(w) > -1)) : all; };
 
   // A returning visitor to the emailed link gets a saved business back, so that visit borrows the sample one.
@@ -2400,6 +2448,9 @@
       comboOpen: "",
       comboQuery: "",
       comboIdx: 0,
+      // The address lookup: which address field has its suggestions open, and the highlighted row (-1 until the arrow keys are used).
+      addrOpen: "",
+      addrIdx: -1,
       openOwner: 1,
       openCards: {},
       revealed: {},
@@ -2489,6 +2540,8 @@
   }
   const set = (id, v) => setState((s) => {
     const a = Object.assign({}, s.a, { [id]: v });
+    // Ticking "I don't have a website" fills the website with N/A and locks it; unticking clears it again (decision website-required-with-none-box).
+    if (id === "noWebsite") a.website = v === true ? NO_WEBSITE : (s.a.website === NO_WEBSITE ? "" : s.a.website);
     // The limits tick is about the numbers shown from these two answers, so it clears when either limit changes, or is emptied (decision limits-from-entries). Compared as numbers, so 40000 and 40,000 count as the same.
     if (id === "monthlyVolume" || id === "maxTicket") {
       const before = limitsFrom(s.a), after = limitsFrom(a);
@@ -2891,8 +2944,10 @@
     const raw = state.a[id];
     return {
       id, label, kind,
-      value: o.disabled ? false : (raw !== undefined ? raw : (o.dflt !== undefined ? o.dflt : "")),
+      value: o.disabled ? false : (o.locked !== undefined ? o.locked : (raw !== undefined ? raw : (o.dflt !== undefined ? o.dflt : ""))),
       disabled: !!o.disabled,
+      // A text box that shows a fixed value and cannot be typed in (the website box once "I don't have a website" is ticked).
+      locked: o.locked !== undefined,
       span: !!o.span,
       unsure: !!o.unsure,
       // No "Optional" tag: a field without the red asterisk is optional (decision 96).
@@ -2983,22 +3038,24 @@
         card("s1-reg", isSole() ? "Your details" : "Registered details", "Enter these as they appear on " + (isSole() ? "your tax records." : "your registration."), [
           fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || isNonprofit(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
           // The EIN or business number is typed here like any other detail; nothing is looked up from it (decision ein-in-registered-details). A company or non-profit has to give one; a sole proprietor may not have one.
-          isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
           isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "e.g. Riverside Pilates" }) : einField(ca),
+          isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
           isCompany() && !typeUp() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
           isNonprofit() && !typeUp() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES, hint: "Charities, foundations and other non-profits are tax-exempt organizations." }) : null,
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ]),
         card("s1-addr", "Addresses", "", [
-          fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "text", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
+          fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
           fld("tradingSame", "Is that also where you operate?", "yn", { span: true }),
           a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "text", { span: true, conditional: true, placeholder: addressPh(), hint: "Where you actually trade. We use it for your statement descriptor and to send any card machines." }) : null
         ]),
         card("s1-contact", "How we reach you", isNonprofit() ? "For account notices and questions from the people paying you. We won't add you to any marketing." : "For account notices and customer queries. We won't add you to any marketing.", [
           fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
           fld("email", isNonprofit() ? "Organization email address" : "Business email address", "text", { placeholder: isNonprofit() ? "hello@yourorganization.org" : "hello@yourbusiness.com" }),
-          fld("website", "Primary website URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", hint: "We take a look at the site to check " + (isNonprofit() ? "what you do" : "what you sell") + ". A live one speeds things up a lot. Leave it blank if you don't have one." })
+          // The website is required. A business with none ticks the box, which fills the box with N/A and locks it (decision website-required-with-none-box).
+          fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", hint: "We take a look at the site to check " + (isNonprofit() ? "what you do" : "what you sell") + ". A live one speeds things up a lot." }),
+          fld("noWebsite", "I don't have a website", "check", { span: true, optional: true })
         ]),
         card("s1-desc", isNonprofit() ? "What the organization does" : "What the business sells", "", [
           // The list holds only the codes set up for the applicant's division (decision mcc-from-division). The help link is country specific.
@@ -3113,7 +3170,7 @@
 
   function whyFor(step, ca) {
     return {
-      1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. The registration documents you add in step 6 are how we check, so type these details as they appear on your registration.", p: ["Checked against the registration documents you add in step 6", "Typing them as they appear on your registration avoids questions later"] },
+      1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. Type these details as they appear on your registration, so they match the tax documents you add in step 6.", p: ["Checked against the tax documents you add in step 6", "Typing them as they appear on your registration avoids questions later"] },
       2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
       3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. Trullio, our verification partner, checks it after you submit, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
@@ -3135,7 +3192,8 @@
     if (idOnly) return idRows;
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
-    if (!isSole()) list.push({ key: "reg", title: isNonprofit() ? "Proof of registration or non-profit status" : "Proof of business registration", requirement: "Required", hint: "Articles of incorporation, certificate of formation or equivalent.", file: "articles-of-organization.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (a.incorporated ? " · formed " + a.incorporated : "") + " — matches step 1" });
+    // Canada's counterpart to the US EIN letter (decision ca-bn-confirmation-document). Any one of the CRA documents will do.
+    if (ca && !(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "bn", title: "CRA business number confirmation", requirement: "Required", hint: "Any one of these: your CRA business registration confirmation, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter from your CRA My Business Account, or articles of incorporation showing your business number.", file: "cra-bn-confirmation.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (digitsOf(a.ein) ? " · BN ending " + digitsOf(a.ein).slice(-4) + " — matches step 1" : "") });
     if (!ca) {
       if (!(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: "Required", hint: "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf", read: "Read: " + (a.legalName || "your " + orgWord()) + (digitsOf(a.ein) ? " · EIN ending " + digitsOf(a.ein).slice(-4) + " — matches step 1" : "") });
       list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Review it and sign here, or upload your own signed copy.", file: "w9-uploaded.pdf", read: "Read: a W-9 for " + (w9Info().name || "your " + orgWord()) + (w9Info().hasEin ? " · EIN ending " + w9Info().last4 + " — matches step 1" : "") });
@@ -3244,7 +3302,7 @@
       // The status screens name the owners actually entered, never the sample people.
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
-      checkNote: "Checking " + [!isSole() && "your " + orgWord() + " registration", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
+      checkNote: "Checking " + [!isSole() && "your " + orgWord() + " details", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
       receivedNote: st.submittedAt ? "Sent to our verification partner at " + st.submittedAt : "Sent to our verification partner",
       summary: [
         { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, a.ein && (ca ? "BN " + digitsOf(a.ein) : "EIN ••••" + digitsOf(a.ein).slice(-4)), a.regAddress], step: 1 },
@@ -3399,8 +3457,29 @@
       case "yn":
         control = html`<div class="yn" role="group" aria-labelledby="l-${f.id}"${described}><button type="button" class="yn-btn" aria-pressed="${String(f.value === "yes")}" data-click="${on(() => set(f.id, "yes"))}">Yes</button><button type="button" class="yn-btn" aria-pressed="${String(f.value === "no")}" data-click="${on(() => set(f.id, "no"))}">No</button>${f.unsure && html`<button type="button" class="yn-btn" aria-pressed="${String(f.value === "unsure")}" data-click="${on(() => set(f.id, "unsure"))}">Unsure</button>`}</div>`;
         break;
+      case "address": {
+        // An address box with suggestions (fake address-lookup). The box stays free text: whatever is typed is the answer, and picking a suggestion replaces it. A list that finds nothing never blocks the person.
+        const open = state.addrOpen === f.id;
+        const matches = open ? searchAddress(f.value) : [];
+        const idx = Math.min(state.addrIdx, matches.length - 1);
+        const pickIt = (label) => { set(f.id, label); setState({ addrOpen: "", addrIdx: -1 }); };
+        const keys = (e) => {
+          if (e.key === "ArrowDown" || e.key === "ArrowUp") { if (!matches.length) return; e.preventDefault(); const n = matches.length; setState({ addrIdx: e.key === "ArrowDown" ? (idx + 1) % n : (idx < 1 ? n - 1 : idx - 1) }); }
+          else if (e.key === "Enter") { if (open && matches[idx]) { e.preventDefault(); pickIt(matches[idx]); } }
+          else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ addrOpen: "", addrIdx: -1 }); } }
+        };
+        const typed = String(f.value).trim().length >= 3;
+        control = html`<div class="combo">
+  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${f.value}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => { set(f.id, e.target.value); setState({ addrOpen: f.id, addrIdx: -1 }); })}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
+  <span class="combo-chev" aria-hidden="true">${icon("search", 16)}</span>
+  ${open && typed && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb-addr">
+    ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or use the address exactly as you've entered it.</li>`}
+  </ul>`}
+</div>`;
+        break;
+      }
       default:
-        control = html`<input class="input" id="${id}" value="${f.value}" placeholder="${f.placeholder}"${described} data-input="${onInput}">`;
+        control = html`<input class="input" id="${id}" value="${f.value}" placeholder="${f.placeholder}"${attr("disabled", f.locked)}${described} data-input="${onInput}">`;
     }
 
     const label = f.kind === "yn" || f.kind === "pills"
@@ -3499,8 +3578,7 @@
     const infoNote = html`<span class="why-wrap" data-mouseenter="${on(openInfo)}" data-mouseleave="${on(() => setState({ infoOpen: false }))}"><button type="button" class="why-trigger" aria-expanded="${String(state.infoOpen)}" data-click="${on(openInfo)}" data-blur="${on(() => setState({ infoOpen: false }))}">What we do with your information${icon("help", 15, "i-accent")}</button>${state.infoOpen && html`<span class="why-pop" data-key="info-pop" role="note"><span class="why-pop-body"><span class="why-points">${["We encrypt your information as it travels and while it's stored.", "We protect tax and national ID numbers, so Xplor staff can't read them.", "Trullio, our verification partner, runs the identity checks.", "We only use it to verify you, never for marketing.", "We save your progress after every field."].map((t) => html`<span class="why-point">${icon("check", 14, "i-b i-ok")}<span>${t}</span></span>`)}</span></span></span>`}</span>`;
     return html`<div class="welcome" data-key="welcome">
   <div class="welcome-inner">
-    <span class="tag tag--purple">${icon("shield", 13)}Welcome to Xplor Pay</span><span class="tag tag--green">${icon("bolt", 13)}Faster approval</span>
-    <h1 class="welcome-title">Let's get you set up to take payments${pin("step-count-7")}</h1>
+    <div class="welcome-title-row"><h1 class="welcome-title">Let's get you set up to take payments${pin("step-count-7")}</h1><span class="tag tag--green">${icon("bolt", 13)}Faster approval</span></div>
     <p class="welcome-lede">We'll walk you through seven short steps. It takes about 15 minutes, and you can stop and pick up right where you left off.${pin("welcome-length")} ${infoNote}</p>
     <div class="need-bar">
       <h2 class="need-head">What you'll need</h2>
@@ -3688,7 +3766,6 @@
       return html`<li><div class="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
     });
     return html`<nav class="rail" data-key="rail" aria-label="Verification steps">
-  <div class="brand"><img class="brand-logo" src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="1354" height="295"></div>
   <div class="progress-head"><span class="progress-title" id="progress-label">Your progress</span><span class="progress-pct">${v.pct}%</span></div>
   <div class="meter" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v.pct}"><span class="meter-fill" data-width="${v.pct}"></span></div>
   <p class="progress-note">${v.remainingLabel} · <span class="save-tell${state.saving ? " is-saving" : ""}" data-key="save-tell" role="status">${state.saving ? html`<span class="save-spinner" aria-hidden="true"></span>` : icon("check", 12)}${state.saving ? "Saving…" : "Saved"}</span></p>
@@ -3978,10 +4055,6 @@
   <div${ERR.sign ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-sign">Type your full legal name to sign${REQ}</label>
   <input class="input sign-input" id="f-sign" value="${state.sign}" placeholder="${v.signatoryName || "Your full legal name"}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ sign: e.target.value }))}">${errView("sign")}
   <p class="small-note sign-truth">By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5.</p></div>
-  <div class="sign-meta">
-    <span>Signed on ${new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" })} · the date and time are recorded when you submit</span>
-    <span class="sign-ok">${icon("shield", 13)}Signed electronically · we'll email you a signed copy</span>
-  </div>
 </section>
 <section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
   <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
@@ -4016,7 +4089,6 @@
       <header class="step-head" data-key="head">
         <div class="step-meta-row">
           <span class="eyebrow">${v.stepCounter}</span>
-          <span class="meta">${icon("clock", 13)}${v.cur.time}</span>
         </div>
         <h1 class="step-title">${v.stepTitle}${pin("no-field-count")}</h1>
         <p class="step-sub">${v.stepSubtitle}${v.stepSubtitle ? " " : ""}${whyView(v)}</p>
@@ -4033,7 +4105,6 @@
           ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" ${v.stepComplete ? "" : "disabled"} data-click="${on(saveEdit)}">Save</button>`)}
         </div>` : html`${html`<button type="button" class="btn btn-neutral btn-lg back-btn" data-key="back" data-click="${on(back)}">${icon("chev-l", 17)}Back</button>`}
         <div class="footer-end" data-key="end">
-          <button type="button" class="btn btn-ghost btn-lg" data-click="${on(openSave)}">Finish later</button>
           ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" ${v.stepComplete ? "" : "disabled"} data-click="${on(next)}">${v.nextLabel}${icon("chev-r", 18)}</button>`)}
         </div>`}
       </div>
@@ -4466,9 +4537,20 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
 </div>`;
   }
 
+  // The thin top bar, full width of the window, on every screen except the welcome email (decision top-nav-save-exit). Save & Exit shows only while there is an application to save: the welcome page, the business type page and the seven steps.
+  function topNavView(v) {
+    const canSave = v.isWelcome || v.isBizType || v.isFlow;
+    return html`<header class="topnav" data-key="topnav">
+  <div class="topnav-inner">
+    <img class="topnav-logo" src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="1354" height="295">
+    ${canSave && html`<button type="button" class="btn btn-neutral btn-md topnav-exit" data-click="${on(openSave)}">Save &amp; Exit</button>`}
+  </div>
+</header>`;
+  }
+
   function appView() {
     const v = vals();
-    return html`<div class="page" data-key="page">
+    return html`${state.screen !== "email" && topNavView(v)}<div class="page" data-key="page">
   <div class="frame">
     <div class="content" data-key="content">
       ${state.screen === "email" && emailView()}
@@ -4664,7 +4746,7 @@ ${protoView()}`;
     // A website typed without a scheme gets https:// added as the person leaves the field, with no message (decision website-https).
     if (id === "f-website") {
       const w = String(state.a.website || "").trim();
-      if (w && !/^[a-z][a-z0-9+.-]*:\/\//i.test(w)) set("website", "https://" + w);
+      if (w && w !== NO_WEBSITE && !/^[a-z][a-z0-9+.-]*:\/\//i.test(w)) set("website", "https://" + w);
     }
     // A Canadian business number pasted with its program account (123456789RT0001) is cut back to the 9 digits as the person leaves the field (decision ca-bn-program-account).
     if (id === "f-ein" && bnCore(state.a.ein || "") !== (state.a.ein || "")) set("ein", bnCore(state.a.ein));
