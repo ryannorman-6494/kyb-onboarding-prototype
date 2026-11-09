@@ -2431,8 +2431,8 @@
       "id": "owner-share-slider",
       "area": "Flow",
       "where": "Step 2 · Owner cards · Ownership percentage",
-      "t": "Ownership percentage is a slider from 25% to 100% with a small box beside it, and the owner form is split into labelled chunks",
-      "b": "Ownership percentage is no longer a plain text box. It is a slider whose track runs from 0% at the left to 100% at the right, but the thumb cannot be dragged or keyed below 25%: the purple fill runs from the left end like any ordinary slider, nothing is greyed out, and the labels under it read 0%, 25% and 100%. Moving below 25 simply does nothing. and a small box to its left with a % sign. Dragging the slider fills the box, so the applicant can see exactly what the thumb is on, and typing in the box moves the slider, so a very specific value such as 33.3 can be keyed in. It is styled to look clean rather than native: a thin rounded track filled in the brand colour up to the thumb, a white round thumb with a hairline edge and soft shadow that grows slightly while dragged, and a focus ring for keyboard use. The slider stops at 25 because the product only asks for owners with 25% or more; if someone types less than 25 or more than 100 the box shows the same error as before and the slider rests at its nearest end. An owner with no percentage yet shows the slider at 25 and an empty box until one is chosen. The owner form is also split into more labelled chunks so it reads as short sections rather than one long list: About them (name and title side by side, then ownership), Personal details (date of birth, nationality, country of residence, home address, email, phone), Their ID, and Screening. Every field is shown from the start; nothing is hidden until an earlier part is finished.",
+      "t": "Superseded on 2026-11-09 by owner-slider-removed: ownership percentage is a plain box again. It was a slider from 25% to 100% with a small box beside it, and the owner form was split into labelled chunks",
+      "b": "Superseded: the slider was removed on 2026-11-09 (decision owner-slider-removed). Ownership percentage is no longer a plain text box. It is a slider whose track runs from 0% at the left to 100% at the right, but the thumb cannot be dragged or keyed below 25%: the purple fill runs from the left end like any ordinary slider, nothing is greyed out, and the labels under it read 0%, 25% and 100%. Moving below 25 simply does nothing. and a small box to its left with a % sign. Dragging the slider fills the box, so the applicant can see exactly what the thumb is on, and typing in the box moves the slider, so a very specific value such as 33.3 can be keyed in. It is styled to look clean rather than native: a thin rounded track filled in the brand colour up to the thumb, a white round thumb with a hairline edge and soft shadow that grows slightly while dragged, and a focus ring for keyboard use. The slider stops at 25 because the product only asks for owners with 25% or more; if someone types less than 25 or more than 100 the box shows the same error as before and the slider rests at its nearest end. An owner with no percentage yet shows the slider at 25 and an empty box until one is chosen. The owner form is also split into more labelled chunks so it reads as short sections rather than one long list: About them (name and title side by side, then ownership), Personal details (date of birth, nationality, country of residence, home address, email, phone), Their ID, and Screening. Every field is shown from the start; nothing is hidden until an earlier part is finished.",
       "tradeoff": "A slider is quick for a round number and slow for a precise one, so the box beside it carries the precision and the two must stay in step. Whole numbers are the natural stop for the slider; decimals only come from the box. The section headings make the card taller by a few lines, but each part is easier to find. Sole proprietors are shown the slider too, at 100, which is a control they have no reason to touch.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2462,8 +2462,8 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Each section of the owner form can be collapsed, and the contact details join Personal details",
-      "b": "The owner form is split into sections: About them, Personal details, Their ID and Screening. Each heading is now a button with a chevron that opens or closes that section on its own, and beside the name it says how many fields the section holds, for example 6 fields (an address counts as one field). The first section, About them, starts open and the other three start closed, so the card opens as one short section with three headings below it, and the applicant opens whichever they want, in any order. Closed is not locked: no section has to be finished before another can be opened, and every field is one click away (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. The earlier How to reach them section is gone: email address and phone number now sit at the end of Personal details, after the home address.",
-      "tradeoff": "Sections open independently, so the card can still grow as tall as before once everything is open, and this is not a strict accordion where opening one closes the rest. With most sections closed, nothing on the card shows what has been filled in there, only how many fields there are, so a person can skip a section and forget it; the step's Partly done status and the final review are what catch that. The count is of fields, not of fields still to fill. Sections go back to that first-open, rest-closed start if the page is reloaded.",
+      "b": "The owner form is split into three sections (name, title and ownership percentage now sit inside Personal details, see owner-form-three-sections; on 2026-11-09 Their ID was put before How to reach them): Personal details, Their ID and How to reach them (which also holds the politically exposed person question, after the SSN or SIN; the Screening section was removed on 2026-11-09). Each heading is now a button with a chevron that opens or closes that section on its own. The heading is set as a section subtitle (16px, semibold) in the normal primary text colour, not small grey capitals, so each section is clearly labelled. It no longer says how many fields the section holds (a count, such as 6 fields, was shown beside the name until 2026-11-09). A small minutes badge was beside each title from 2026-11-09 and was removed the same day. The title sits centred between the dividers above and below it, with 20px of space either side and 24px of space between the last open section's fields and the next divider; the first heading sits 24px under the always-shown fields. This is more room than the first centred version, which felt squashed. Personal details starts open and the other two start closed (changed on 2026-11-09 by owner-form-three-sections; before that every section started closed), and the applicant opens whichever they want, in any order. Closed is not locked: no section has to be finished before another can be opened, and every field is one click away (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. Email address and phone number are back in their own How to reach them section, after Personal details (they were folded into Personal details from 2026-11-09 earlier the same day).",
+      "tradeoff": "Sections open independently, so the card can still grow as tall as before once everything is open, and this is not a strict accordion where opening one closes the rest. With most sections closed, nothing on the card shows what has been filled in there, so a person can skip a section and forget it; the step's percentage done and the final review are what catch that. Sections go back to all closed if the page is reloaded.",
       "by": "Ryan",
       "when": "2026-11-09"
     },
@@ -2504,6 +2504,46 @@
       "t": "The page always reserves room for its scrollbar so the layout does not shift sideways between steps",
       "b": "Choosing steps in the left column made the whole page nudge left and right, because a short step has no page scrollbar and a long one does, and the scrollbar takes about 15px of width when it appears. The page now always shows the scrollbar track (or reserves its space where scrollbars overlay), so the left column and the step content stay exactly where they are as the applicant moves between steps.",
       "tradeoff": "On a short screen with little to scroll, an empty scrollbar track shows down the right edge where there was none. Where the system uses overlay scrollbars, as macOS does by default, nothing changes visually.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "checkbox-no-grey-box",
+      "area": "Visual",
+      "where": "Every tick box (agreements, consents, declarations)",
+      "t": "Tick boxes have no grey box behind them; the whole row is still clickable",
+      "b": "The light grey background that sat behind each tick box and its label is removed, so a tick box sits directly on the page like the other fields. The row keeps its padding, so the whole area (the box, the label and the space around them) still toggles the box when clicked. A tick box with a problem still gets its thin red outline, and a locked one is still dimmed.",
+      "tradeoff": "Without the grey fill, a tick box row no longer reads as a distinct block, so a long run of them (such as the agreements on the last step) relies on spacing alone to look separate. The row keeps its small left inset, so the box sits a few pixels in from the edge of the fields above and below.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "owner-slider-removed",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · Ownership percentage",
+      "t": "Ownership percentage is a plain box again, and the first three owner fields sit above the sections with no heading",
+      "b": "Ryan judged the slider overkill, so ownership percentage goes back to a single text box with the placeholder e.g. 40 and, for everyone except a sole proprietor, the line We only need owners with 25% or more. Typing is the only way to set it, and the checks are unchanged: a number from 0 to 100, and 25 or more for an owner. The slider, its number box, the scale labels and the 25% stop are gone. At the same time the About them heading is removed: the owner's name, title and ownership percentage are always shown at the top of the card with no accordion heading, and only the sections below are accordions, in this order: Personal details (date of birth, nationality, country of residence, home address), How to reach them (email address, phone number), Their ID, which also holds the politically exposed person question after the SSN or SIN. All three start closed.",
+      "tradeoff": "A plain box gives no visual sense of how much of the business someone owns, and nothing stops a number below 25 being typed until the error shows. Name, title and ownership are now the only fields in the always-open part of the card, so every other detail needs a click to open, including contact details that used to be a quick scan.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "pep-in-their-id",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · Their ID",
+      "t": "The politically exposed person question sits in Their ID, after the SSN, and the Screening section is gone",
+      "b": "The Screening section, which held only the question Is this person a politically exposed person?, is removed. The question now sits at the end of Their ID, directly after the Social Security Number or SIN, in the same row of the form, in the right-hand column beside it (changed on 2026-11-09: it first took the full width on its own row). For a non-profit or government body, which is not asked for an SSN or SIN, it follows the ID issuing country. The owner form is therefore three accordions: Personal details, How to reach them and Their ID. The line under the question now stops after the examples of a senior public role (head of state, senior official, judge, senior military); the sentences Answering yes doesn't disqualify you and It adds one extra screening step are removed. The answer, its Yes and No pills and the rule that it must be answered before the final submit are unchanged.",
+      "tradeoff": "Without the reassurance, someone who reads the examples and thinks of a relative or a local councillor may answer No to be safe, or hesitate over Yes, because nothing says that Yes is not a rejection. It is also now one of six questions in a section about ID documents, so it can read as part of the ID check and not as a separate screening question.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "owner-form-three-sections",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards",
+      "t": "The owner form is three accordions, and Personal details comes first, open, and holds the name, title and ownership percentage",
+      "b": "The always-shown fields at the top of the owner card are folded into a Personal details accordion, which is the first section and starts open. It holds, in this order: full legal name on the left, then title and ownership percentage side by side in the right-hand column, each taking half of it, then date of birth, nationality, country of residence and home address. The other two sections start closed: Their ID (including the politically exposed person question) and then How to reach them (email address, phone number), swapped into that order on 2026-11-09. The owner form is therefore three sections, and the card has no fields outside an accordion. Owner sections still open and close on their own, and a section holding a problem stays open. For a non-profit there is no ownership percentage, so the title takes the right-hand column alone. The always-open arrangement of name, title and percentage from owner-slider-removed is replaced by this.",
+      "tradeoff": "Title and percentage are each only a quarter of the width of the form, so a long title such as Chief Executive Officer may be cut off in the box and the percentage box is wider than the three or four digits it needs. Personal details is the longest section, with seven fields, so the first screen of the card is taller than before.",
       "by": "Ryan",
       "when": "2026-11-09"
     }
@@ -3294,18 +3334,15 @@
     const f = (key, label, kind, opts) => fld(p + key, label, kind, Object.assign({ dflt: d[key] }, opts));
     const sub = (key, label) => ({ id: p + "hdg_" + key, label: label, kind: "heading", required: false });
     return [
-      sub("about", "About them"),
+      sub("personal", "Personal details"),
       f("name", "Full legal name", "text", { placeholder: "As printed on their ID", hint: "Exactly as it appears on the ID you'll upload." }),
       // Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
       f("role", "Title / role", "text", { placeholder: "e.g. Director" }),
-      isNonprofit() ? null : f("pct", "Ownership percentage", "slider", { span: true, hint: isSole() ? "" : "We only need owners with 25% or more." }),
-      sub("personal", "Personal details"),
+      isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "e.g. 40", hint: isSole() ? "" : "We only need owners with 25% or more." }),
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
       f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
-      f("email", "Email address", "text", { placeholder: "name@example.com" }),
-      f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
       sub("id", "Their ID"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
       f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "As shown on the document", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
@@ -3317,11 +3354,12 @@
         placeholder: ca ? "000 000 000" : "000-00-0000",
         why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
       }),
-      sub("screen", "Screening"),
       f("pep", "Is this person a politically exposed person?", "yn", {
-        span: true,
-        hint: "A PEP holds, or has held, a senior public role: head of state, senior official, judge, senior military. Answering yes doesn't disqualify you. It adds one extra screening step."
-      })
+        hint: "A PEP holds, or has held, a senior public role: head of state, senior official, judge, senior military."
+      }),
+      sub("reach", "How to reach them"),
+      f("email", "Email address", "text", { placeholder: "name@example.com" }),
+      f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" })
     ];
   }
 
@@ -3740,13 +3778,6 @@
 </div>`;
         break;
       }
-      case "slider": {
-        // A range from 25 to 100 with a small box beside it. Dragging fills the box; typing in the box moves the slider (decision owner-share-slider). The answer is one text value, so validation and the totals work as they did for a plain box.
-        const n = parseFloat(f.value);
-        const at = isFinite(n) ? Math.min(100, Math.max(25, n)) : 25; // the thumb never shows below 25
-        control = html`<div class="slider-row"><div class="affix slider-num"><input id="${id}" value="${f.value}" placeholder="25" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"><span class="affix-prefix" aria-hidden="true">%</span></div><div class="slider-track"><input type="range" class="slider" id="s-${f.id}" min="0" max="100" step="1" value="${String(at)}" aria-label="${f.label}"${described} data-input="${on((e) => { /* The track runs from 0, but the thumb will not rest below 25 (decision owner-share-slider). */ const v = Math.max(25, Number(e.target.value)); e.target.value = String(v); set(f.id, String(v)); })}"><div class="slider-scale" aria-hidden="true"><span>0%</span><span class="slider-scale-mid"><span>25%</span><span>100%</span></span></div></div></div>`;
-        break;
-      }
       case "currency":
         // The dollar sign alone does not say which dollar, so the currency code closes the field (decision currency-code-on-amounts).
         control = html`<div class="affix affix--money"><span class="affix-prefix" aria-hidden="true">${f.prefix}</span><input id="${id}" value="${f.value}" placeholder="${f.placeholder}" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>`;
@@ -4126,22 +4157,32 @@
 </nav>`;
   }
 
-  // The owner form as collapsible sections. Each starts closed, says how many fields it holds, and can be opened on its own; a section holding a problem stays open so the problem cannot be hidden (decision owner-form-accordion).
+  // The owner form as collapsible sections. Each starts closed (the first is open) and can be opened on its own; a section holding a problem stays open so the problem cannot be hidden (decision owner-form-accordion).
   function ownerSectionsView(o) {
     const secs = [];
     ownerFields(o).forEach((f) => {
       if (f.kind === "heading") secs.push({ h: f, fields: [] });
       else if (secs.length) secs[secs.length - 1].fields.push(f);
     });
+    // Title and ownership percentage share the right-hand column of the grid, half each, beside the name (decision owner-form-three-sections).
+    const keyOf = (f) => f.id.replace(/^o\d+_/, "");
+    const gridView = (fields) => fields.map((f, i) => {
+      if (keyOf(f) === "pct" && fields[i - 1] && keyOf(fields[i - 1]) === "role") return "";
+      if (keyOf(f) === "role") {
+        const nx = fields[i + 1] && keyOf(fields[i + 1]) === "pct" ? fields[i + 1] : null;
+        return html`<div class="field-pair" data-key="pair-${f.id}">${fieldView(f)}${nx && fieldView(nx)}</div>`;
+      }
+      return fieldView(f);
+    });
     return html`<div class="owner-secs" data-key="secs-${o.id}">${secs.map((sec, idx) => {
       const hasErr = sec.fields.some((x) => ERR[x.id]);
-      // Until the applicant opens or closes a section it follows the default: the first is open, the rest are closed.
+      // Until the applicant opens or closes a section it follows the default: Personal details is open, the others are closed. One holding a problem stays open.
       const chosen = state.secOpen[sec.h.id];
       const closed = (chosen === undefined ? idx !== 0 : !chosen) && !hasErr;
       const toggle = () => setState((st) => ({ secOpen: Object.assign({}, st.secOpen, { [sec.h.id]: closed }) }));
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
-  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${sec.h.label}</span><span class="sec-count">${sec.fields.length === 1 ? "1 field" : sec.fields.length + " fields"}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
-  ${!closed && html`<div class="fields">${sec.fields.map(fieldView)}</div>`}
+  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${sec.h.label}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
+  ${!closed && html`<div class="fields">${gridView(sec.fields)}</div>`}
 </section>`;
     }) }</div>`;
   }
@@ -5020,11 +5061,6 @@ ${protoView()}`;
     // Progress rings fill clockwise by a CSS variable (decision step-percent-done).
     root.querySelectorAll("[data-ring]").forEach((el) => {
       el.style.setProperty("--ring", Math.max(0, Math.min(100, Number(el.getAttribute("data-ring")) || 0)));
-    });
-    // The filled part of each slider's track is a CSS variable, set here for the same reason (decision owner-share-slider).
-    root.querySelectorAll("input.slider").forEach((el) => {
-      const n = Math.max(0, Math.min(100, Number(el.value)));
-      el.style.setProperty("--fill", n + "%");
     });
   }
 
