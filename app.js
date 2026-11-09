@@ -2332,7 +2332,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Each open owner card ends with a Save button that saves the owner and closes the card; the open card has no purple outline",
-      "b": "An open owner card no longer gets the purple (brand) outline, because it is not a selected card in the way a radio card is; it keeps the same plain border as a closed one. At the bottom of every open owner card there is a Save button. In the real build it saves that owner to the back end, so the owner is kept even if the applicant leaves the onboarding flow before finishing the step. On screen it only shows the Saving then Saved tell in the progress column and closes the card, so the applicant knows that owner is done and can move to the next. Saving is not required: every owner is saved when the step is completed even if Save was never pressed on some of them. The Save button is not shown on the page an invited owner sees.",
+      "b": "An open owner card no longer gets the purple (brand) outline, because it is not a selected card in the way a radio card is; it keeps the same plain border as a closed one. At the bottom of every open owner card there is a Save button. In the real build it saves that owner to the back end, so the owner is kept even if the applicant leaves the onboarding flow before finishing the step. On screen it only shows the Saving then Saved tell in the progress column and closes the card, so the applicant knows that owner is done and can move to the next. Saving is not required: every owner is saved when the step is completed even if Save was never pressed on some of them. The Save button sits at the bottom left of the card, in line with the fields. The Save button is not shown on the page an invited owner sees.",
       "tradeoff": "The prototype already keeps what is typed as it is typed, so Save changes nothing in the data here; it exists to show the behaviour, and to give the applicant a clear sense of finishing one person. Save does not check the card, so an incomplete owner can be saved and closed, and the problems only appear when the applicant continues. Some applicants may think Save is required for every owner.",
       "by": "Ryan",
       "when": "2026-11-06"
@@ -2394,6 +2394,16 @@
       "t": "In Slice 1 the applicant answers a request for more information by replying to the email, and the waiting screen tells them so",
       "b": "Ops asks for more information by email. The applicant replies to that email, and its text and attachments appear in the Ops person's portal, so the applicant no longer sends anything from the screen. When Ops has asked, the Under review screen changes: the heading reads We need a little more from you, the active step in the timeline reads Waiting for your reply (We've emailed you what we need. Reply to that email, attaching any files, and we'll carry on the checks from there.), and the callout reads We've sent you an email asking for more information. Check your inbox and reply to it to speed things up. If you can't find it, look in your spam or junk folder. The browser tab title reads We've emailed you. The applicant who signs in while waiting therefore sees that an email is waiting for them and what to do with it. In Prototype options the link Returning, more info needed opens this screen. The earlier in-app More info needed screen, with its uploads, notes and request cards, is kept in the code and reached with the link More info needed in-app screen (not used in Slice 1) (address ?link=infoApp), in case the product changes. The address ?link=info now opens the waiting screen, not the in-app one.",
       "tradeoff": "The screen cannot say what was asked or why, since that is in the email, so an applicant who cannot find the email has nothing here to go on beyond the spam hint. Nothing on the screen confirms the reply arrived, and the prototype does not simulate the email or the reply. The applicant can no longer upload from the page, which suits Slice 1 but is slower for anyone who finds email awkward. The earlier decisions pend-reasons-as-requests, moreinfo-simple-trial and rfi-not-restart describe the in-app screen, which is no longer the default path.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "no-owners-summary-card",
+      "area": "Flow",
+      "where": "Step 2 · Owners",
+      "t": "The Owners with 25% or more summary card is removed from the owners step",
+      "b": "The card at the top of step 2 that read Owners with 25% or more, with the line Add everyone who owns 25% or more and a tag counting how many were listed so far (or All listed), is gone. Ryan's reason: it added nothing, because the owner cards below already show who has been added and the step already asks for every owner with 25% or more. The step now opens straight on the owner cards. The only part kept is the error that appears if the percentages entered add up to more than 100%, which shows in the same place without a card around it.",
+      "tradeoff": "The applicant no longer gets a running count or an All listed confirmation, so nothing on the page says when they have added everyone. This replaces the card described in ownership-bar.",
       "by": "Ryan",
       "when": "2026-11-09"
     }
@@ -3989,11 +3999,7 @@
       openOwner: id
     }); };
     const addLabel = isNonprofit() ? (v.owners.length ? "Add another director or trustee" : "Add a director or trustee") : (v.owners.length ? "Add another owner or director" : "Add an owner or director");
-    return html`${isCompany() && html`<section class="card" data-key="s2-total">
-  <div class="own-head"><h2 class="card-title" id="own-label">Owners with 25% or more${pin("ownership-bar")}</h2>${v.ownersAllListed ? html`<span class="chip chip--secure" role="status">${icon("check", 12, "i-b")}All listed</span>` : html`<span class="chip" role="status">${v.owners.length} listed so far</span>`}</div>
-  <p class="small-note">${v.ownershipNote}</p>
-  ${v.ownersOver100 && html`<div${ERR.ownership ? html` data-error="1"` : ""}>${errView("ownership")}</div>`}
-</section>`}
+    return html`${isCompany() && v.ownersOver100 && html`<div data-key="s2-total"${ERR.ownership ? html` data-error="1"` : ""}>${errView("ownership")}</div>`}
 <div class="stack" data-key="s2-owners">
   ${v.owners.map((o) => ownerView(o))}
   ${!isSole() && !v.owners.some((o) => o.self) && html`<button type="button" class="add-row" data-key="add-self" data-click="${on(addSelf)}">${icon("user", 16)}${isNonprofit() ? "Add myself as a director or trustee" : "Add myself as an owner"}</button>`}

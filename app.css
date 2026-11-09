@@ -294,7 +294,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .avatar { width: 32px; height: 32px; flex: none; border-radius: var(--radius-full); background: var(--color-background-brand-subtle); color: var(--color-text-link-hover); display: flex; align-items: center; justify-content: center; font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); }
 .person-name { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .person-meta { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
-.person-actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+.person-actions { display: flex; justify-content: flex-start; margin-top: 20px; }
 .person-body { padding: 4px 20px 20px; animation: xrise 200ms ease both; }
 .add-row { display: flex; align-items: center; justify-content: center; gap: var(--space-gap-related); padding: 15px; border: none; border-radius: var(--radius-default); background: transparent; box-shadow: inset 0 0 0 1px var(--color-border-default); color: var(--color-text-brand); font-size: var(--type-body-default-size); font-weight: var(--type-control-default-weight); cursor: pointer; }
 .add-row:hover { background: var(--color-background-brand-subtle); box-shadow: inset 0 0 0 1px var(--color-border-brand); }
