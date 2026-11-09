@@ -2546,6 +2546,26 @@
       "tradeoff": "Title and percentage are each only a quarter of the width of the form, so a long title such as Chief Executive Officer may be cut off in the box and the percentage box is wider than the three or four digits it needs. Personal details is the longest section, with seven fields, so the first screen of the card is taller than before.",
       "by": "Ryan",
       "when": "2026-11-09"
+    },
+    {
+      "id": "encrypted-tag-text-only",
+      "area": "Fields",
+      "where": "Field labels · Encrypted tag",
+      "t": "The Encrypted tag is purple text with a lock, with no background",
+      "b": "The Encrypted tag beside the label of an ID number, SSN or SIN and account number field is the lock icon and the word Encrypted in the brand purple, with no filled background and no padding. The filled pill made the label row taller than the label alone, which pushed the field away from its label.",
+      "tradeoff": "Without a fill the tag is quieter and may be read as part of the label rather than a marker.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "owner-nationality-dob-residence-row",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · Personal details",
+      "t": "Nationality takes half the row, with date of birth and country of residence a quarter each",
+      "b": "In Personal details the row under the name is Nationality on the left (half the width), then Date of birth and Country of residence side by side in the right-hand half (a quarter each). This is the same pattern as the row above it, where the name takes the left half and title and ownership percentage share the right half.",
+      "tradeoff": "Country of residence is a select that holds long country names, and at a quarter of the width a long name may be cut off in the box.",
+      "by": "Ryan",
+      "when": "2026-11-09"
     }
   ];
 
@@ -3339,8 +3359,8 @@
       // Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
       f("role", "Title / role", "text", { placeholder: "e.g. Director" }),
       isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "e.g. 40", hint: isSole() ? "" : "We only need owners with 25% or more." }),
-      f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
+      f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
       f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
       sub("id", "Their ID"),
@@ -4170,6 +4190,12 @@
       if (keyOf(f) === "pct" && fields[i - 1] && keyOf(fields[i - 1]) === "role") return "";
       if (keyOf(f) === "role") {
         const nx = fields[i + 1] && keyOf(fields[i + 1]) === "pct" ? fields[i + 1] : null;
+        return html`<div class="field-pair" data-key="pair-${f.id}">${fieldView(f)}${nx && fieldView(nx)}</div>`;
+      }
+      // Nationality takes the left half; date of birth and country of residence share the right half (decision owner-nationality-dob-residence-row).
+      if (keyOf(f) === "residence" && fields[i - 1] && keyOf(fields[i - 1]) === "dob") return "";
+      if (keyOf(f) === "dob") {
+        const nx = fields[i + 1] && keyOf(fields[i + 1]) === "residence" ? fields[i + 1] : null;
         return html`<div class="field-pair" data-key="pair-${f.id}">${fieldView(f)}${nx && fieldView(nx)}</div>`;
       }
       return fieldView(f);
