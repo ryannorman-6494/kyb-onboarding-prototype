@@ -285,6 +285,7 @@
     returning: "Returning, in progress",
     review: "Returning, under review",
     info: "Returning, more info needed",
+    infoApp: "More info needed in-app screen (not used in Slice 1)",
     approved: "Returning, approved"
   };
   const LINK_NEW = "New applicant";
@@ -301,11 +302,6 @@
   // line marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END, and the SIMPLE TRIAL rule in app.css. Nothing else depends on it.
   const MOREINFO_CARDS = "A card for each request"; // SIMPLE TRIAL
   const MOREINFO_SIMPLE = "Just uploads and notes"; // SIMPLE TRIAL
-  // TYPE UP TRIAL (decision type-asked-up-trial): a Prototype option that asks the specific type (company structure, or tax-exempt versus
-  // government) on the business type page, right under the card, instead of in step 1. To undo: delete every line marked TYPE UP TRIAL,
-  // the TYPE UP TRIAL block in bizTypeView, and the TYPE UP TRIAL rules in app.css. Nothing else depends on it.
-  const TYPEASK_STEP1 = "On step 1 (as built)"; // TYPE UP TRIAL
-  const TYPEASK_UP = "On the business type page"; // TYPE UP TRIAL
   // Where the whole prototype starts (decision login-default-start): the welcome email and login for a new Odin user by default,
   // or the existing-user email and business picker. The sample business is the Fields start as option, not a start.
   const START_LOGIN = "New Odin User";
@@ -318,7 +314,6 @@
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
       moreInfo: q.get("moreinfo") === "cards" ? MOREINFO_CARDS : MOREINFO_SIMPLE, // SIMPLE TRIAL
-      typeAsk: q.get("typeask") === "up" ? TYPEASK_UP : TYPEASK_STEP1, // TYPE UP TRIAL
       division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
@@ -332,7 +327,6 @@
     const q = new URLSearchParams();
     if (ctx.slice === SLICE_2) q.set("slice", "2");
     if (ctx.moreInfo === MOREINFO_CARDS) q.set("moreinfo", "cards"); // SIMPLE TRIAL
-    if (ctx.typeAsk === TYPEASK_UP) q.set("typeask", "up"); // TYPE UP TRIAL
     if (ctx.division === DIV_CLUBREADY) q.set("division", "clubready");
     if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
@@ -351,7 +345,6 @@
   const licWord = () => (isCa() ? "licence" : "license");
   // Invites, owner links and hand-offs to someone else exist in slice 2 only.
   const invitesOn = () => ctx.slice === SLICE_2;
-  const typeUp = () => ctx.typeAsk === TYPEASK_UP; // TYPE UP TRIAL
   // A division other than Standard opens the prototype on the one step it changes (step 6) with the sample business filled in.
   const divisionOn = () => ctx.division !== DIV_STANDARD;
 
@@ -359,7 +352,6 @@
     slice: [SLICE_1, SLICE_2],
     division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
     moreInfo: [MOREINFO_SIMPLE, MOREINFO_CARDS], // SIMPLE TRIAL
-    typeAsk: [TYPEASK_STEP1, TYPEASK_UP], // TYPE UP TRIAL
     start: [START_LOGIN, START_EXISTING],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
@@ -1578,9 +1570,9 @@
     {
       "id": "limits-from-entries",
       "area": "Fields",
-      "where": "Step 3 · How you take payments, the limits tick",
+      "where": "Step 3 · Your card volumes, the limits tick",
       "t": "The transaction limits come from the applicant's own answers, and the tick waits until they are filled in",
-      "b": "The limits under the tick on step 3 are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it.",
+      "b": "The limits under the tick on step 3 (moved into Your card volumes, see limits-ack-in-volumes) are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it.",
       "tradeoff": "The limits simply repeat what the applicant estimated, so a low guess becomes a low limit and Xplor still has to decide the real limits. Someone who corrects a figure has to tick again; that is deliberate, since the tick is about specific numbers.",
       "by": "Ryan",
       "when": "2026-10-22"
@@ -2130,7 +2122,7 @@
       "area": "Flow",
       "where": "Under review page",
       "t": "The under review page says questions arrive by email and are answered on the page, and names no vendor",
-      "b": "The line at the bottom of the under review card now reads \"If we have a question, we'll send you an email and you'll respond to us here.\" It used to say the question would appear on the page as one clear request, which left out how the applicant would know there was one. The email is what brings them back, and the page is where they answer. The Application received line also stops naming Trullio and says it was sent to our verification partner, matching the rest of the prototype's wording for the identity check.",
+      "b": "The line at the bottom of the under review card now reads \"If we have a question, we'll send you an email. Reply to it and we'll carry on from there.\" (Reworded 2026-11-09, see more-info-by-email: it used to say \"and you'll respond to us here\", when the applicant answered on the page.) It used to say the question would appear on the page as one clear request, which left out how the applicant would know there was one. The email is what brings them back and is also where they answer. The Application received line also stops naming Trullio and says it was sent to our verification partner, matching the rest of the prototype's wording for the identity check.",
       "tradeoff": "It promises an email for every question, so the More info needed email has to be sent whenever Ops asks for something (the template exists; nothing connects Ops picks to it yet). Step 7's What happens next panel and the why-we-ask notes still name Trullio; only the under review page was changed.",
       "by": "Ryan",
       "when": "2026-11-04"
@@ -2166,14 +2158,14 @@
       "when": "2026-11-05"
     },
     {
-      "id": "type-asked-up-trial",
+      "id": "type-asked-on-business-type-page",
       "area": "Flow",
       "where": "Business type page and step 1 · Registered details",
-      "t": "Trial: ask the specific type on the business type page, under the card, instead of in step 1",
-      "b": "A Prototype option, Specific type asked, switches between the build as it is (the company structure dropdown and the Tax-exempt or Government pills sit in step 1) and a trial where the same question is asked on the business type page. In the trial, the card for Company opens up when it is chosen and holds What kind of company is it? as a dropdown of the same structures inside it, the card for Non-profit or government opens up and holds What type of organization is it? as the two pills, and Individual / Sole proprietor asks nothing more. Continue stays off until the follow-up is answered. Step 1 then no longer shows the structure or the pills, so the page writes one ownership type value that maps straight to the nine ODIN types. Step 1's name, date and state fields close up into two columns. Built so Ryan can compare the two and then keep or delete it; it is not a decision to switch yet.",
-      "tradeoff": "In the trial the applicant answers the structure on the business type page, before step 1, and someone unsure whether they are an LLC or a private corporation has to decide without help. It is one engineering field instead of two answers that must be combined. To remove the trial, delete every line marked TYPE UP TRIAL in app.js and app.css. The question for engineering, whether the real registry lookup returns the entity type, no longer matters: the lookup was removed on 2026-11-05 (decision ein-in-registered-details), so the type is chosen or typed by the applicant either way.",
+      "t": "The specific type is asked on the business type page, under the chosen card, not in step 1",
+      "b": "Decided by Ryan on 2026-11-09 after comparing it with asking in step 1; it replaces the Specific type asked trial (type-asked-up-trial, 2026-11-05) and the Prototype option that switched between the two is removed. On the business type page the card for Company opens up when it is chosen and holds What kind of company is it? as a dropdown of the structures, the card for Non-profit or government opens up and holds What type of organization is it? as the two pills (Tax-exempt, Government body), and Individual / Sole proprietor asks nothing more. Continue stays off until the follow-up is answered. Step 1 no longer shows the structure or the pills, so the page writes one ownership type value that maps straight to the nine ODIN types, which is what engineering's ops tool uses. Step 1's name, date and state fields close up into two columns. The address ?typeask=up no longer does anything.",
+      "tradeoff": "The applicant answers the structure on the business type page, before step 1, and someone unsure whether they are an LLC or a private corporation has to decide without help; it is the same warning as the note under the list, that changing the type later loses what was entered. It is one engineering field instead of two answers that must be combined. The question for engineering, whether the real registry lookup returns the entity type, no longer matters: the lookup was removed on 2026-11-05 (decision ein-in-registered-details), so the type is chosen or typed by the applicant either way.",
       "by": "Ryan",
-      "when": "2026-11-05"
+      "when": "2026-11-09"
     },
     {
       "id": "mcc-from-division",
@@ -2265,17 +2257,7 @@
       "by": "Ryan",
       "when": "2026-11-05"
     },
-    {
-      "id": "website-required-with-none-box",
-      "area": "Flow",
-      "where": "Step 1 · How we reach you",
-      "t": "The website is required, and a box says there is none",
-      "b": "The primary website URL is now a required field. Under it, a box reads I don't have a website. Ticking it fills the website box with N/A and locks it; unticking clears it and unlocks it. This replaces the earlier optional website, where testers who had none pasted a Facebook link or other text to get on. A website typed without https:// still gets it added as the person leaves the box; N/A does not.",
-      "tradeoff": "An applicant with a Facebook page or a booking link can still paste it as the website. Underwriting gets N/A on file for a business with none, so it can tell that apart from a field left empty. Ops should say whether a missing website needs anything else from the applicant, such as a description of how they sell.",
-      "by": "Ryan",
-      "when": "2026-11-05"
-    },
-    {
+        {
       "id": "address-split-fields",
       "area": "Flow",
       "where": "Step 1 · Registered / legal address and Trading address; Step 2 · Home address",
@@ -2359,11 +2341,61 @@
       "id": "address-links-below-hint",
       "area": "Visual",
       "where": "Step 1 and Step 2 · Address questions",
-      "t": "Enter address manually and Clear and search again sit below the helper text, outside the input",
+      "t": "Clear and search again sits below the helper text, outside the input (Enter address manually has since moved, see address-search-layout)",
       "b": "On every address question the Enter address manually link, and the Clear and search again link once the address boxes are open, now come after the helper text rather than straight under the input. The helper text belongs to the input component; a link or button like these is a separate element and sits outside it, so it follows the helper text. Where an address question has no helper text the link sits directly under the input as before.",
       "tradeoff": "The link is a little further from the search box, and where the helper text is long it is pushed down the page, so someone could read past it. Under the open address boxes the helper text now sits above Clear and search again, rather than the link being the last thing in the group.",
       "by": "Ryan",
       "when": "2026-11-06"
+    },
+    {
+      "id": "address-search-layout",
+      "area": "Visual",
+      "where": "Step 1 and Step 2 · Address questions",
+      "t": "The address search has its icon on the left, and Enter address manually sits to the right of the box",
+      "b": "In the address search the magnifying-glass icon moves from the right end of the box to the left, beside the text the person types. The Enter address manually link moves from below the helper text to the right of the search box, on the same line, so the box and the way out of it are read together. On a narrow screen the link wraps to a line under the box. This replaces the placement in address-links-below-hint for Enter address manually only; Clear and search again, shown with the open address boxes, still follows the helper text.",
+      "tradeoff": "The search box is narrower by the width of the link. The link is now further from the helper text, so someone reading top to bottom meets the way out before the guidance. Two different positions for the two address links is less consistent than one.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "limits-ack-in-volumes",
+      "area": "Flow",
+      "where": "Step 3 · Your card volumes",
+      "t": "The limits tick moves into the card volumes section, under the numbers that set the limits",
+      "b": "The tick I've read the transaction and monthly limits for my business used to sit at the bottom of the How you'll appear to customers section, away from the numbers. It is now the last item in Your card volumes, directly under Estimated monthly card volume, Average transaction amount, Maximum single transaction and Card present %. It behaves as before (see limits-from-entries): greyed out until the monthly volume and maximum transaction are filled in, showing the two limits as the applicant types, and clearing if either number changes.",
+      "tradeoff": "The tick now follows a Card present % box that has nothing to do with the limits, so the applicant may think the percentage feeds them too. The reassurance line at the foot of the card (nothing breaks if you go over) now sits below the tick instead of the numbers.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "address-city-state-zip-one-line",
+      "area": "Visual",
+      "where": "Step 1 and Step 2 · Address questions",
+      "t": "City, state and ZIP code sit on one line, in that order",
+      "b": "In the open address boxes, City, State and ZIP code now share one row, in that order, like a US address written out. City takes half the row and State and ZIP code a quarter each. In Canada the same row reads City, Province, Postal code. Street address 1 and Street address 2 keep a full row each. On a narrow screen (under 560px) all the boxes stack, one to a row.",
+      "tradeoff": "The State and ZIP code boxes are narrow, so a long province or an unusual postal code has less room, and a long city name may be cut off in the City box. The state and province lists show full names, which fit at desktop width, but the longest names have little spare room.",
+      "by": "Ryan",
+      "when": "2026-11-06"
+    },
+    {
+      "id": "website-required-with-none-box",
+      "area": "Flow",
+      "where": "Step 1 · How we reach you",
+      "t": "The website is required, and a box says there is none",
+      "b": "The primary website URL is now a required field. Under it, a box reads I don't have a website. Ticking it fills the website box with N/A and locks it; unticking clears it and unlocks it. This replaces the earlier optional website, where testers who had none pasted a Facebook link or other text to get on. A website typed without https:// still gets it added as the person leaves the box; N/A does not. A later idea, to ask first whether the business sells or advertises online and only require the website on Yes, was tried on 2026-11-06 and reverted the same week: the website is mandatory for everyone.",
+      "tradeoff": "An applicant with a Facebook page or a booking link can still paste it as the website. Underwriting gets N/A on file for a business with none, so it can tell that apart from a field left empty. Ops should say whether a missing website needs anything else from the applicant, such as a description of how they sell.",
+      "by": "Ryan",
+      "when": "2026-11-05"
+    },
+    {
+      "id": "more-info-by-email",
+      "area": "Flow",
+      "where": "Under review screen · More info needed",
+      "t": "In Slice 1 the applicant answers a request for more information by replying to the email, and the waiting screen tells them so",
+      "b": "Ops asks for more information by email. The applicant replies to that email, and its text and attachments appear in the Ops person's portal, so the applicant no longer sends anything from the screen. When Ops has asked, the Under review screen changes: the heading reads We need a little more from you, the active step in the timeline reads Waiting for your reply (We've emailed you what we need. Reply to that email, attaching any files, and we'll carry on the checks from there.), and the callout reads We've sent you an email asking for more information. Check your inbox and reply to it to speed things up. If you can't find it, look in your spam or junk folder. The browser tab title reads We've emailed you. The applicant who signs in while waiting therefore sees that an email is waiting for them and what to do with it. In Prototype options the link Returning, more info needed opens this screen. The earlier in-app More info needed screen, with its uploads, notes and request cards, is kept in the code and reached with the link More info needed in-app screen (not used in Slice 1) (address ?link=infoApp), in case the product changes. The address ?link=info now opens the waiting screen, not the in-app one.",
+      "tradeoff": "The screen cannot say what was asked or why, since that is in the email, so an applicant who cannot find the email has nothing here to go on beyond the spam hint. Nothing on the screen confirms the reply arrived, and the prototype does not simulate the email or the reply. The applicant can no longer upload from the page, which suits Slice 1 but is slower for anyone who finds email awkward. The earlier decisions pend-reasons-as-requests, moreinfo-simple-trial and rfi-not-restart describe the in-app screen, which is no longer the default path.",
+      "by": "Ryan",
+      "when": "2026-11-09"
     }
   ];
 
@@ -2463,8 +2495,6 @@
   };
   const divisionMccs = () => { const codes = DIVISION_MCC[ctx.division] || DIVISION_MCC[DIV_STANDARD]; return MCC_LIST.filter((x) => codes.indexOf(x.code) > -1); };
   // Every word typed must appear in the code or title, so "bake" and "5462" both find bakeries. An empty search lists the whole division list.
-  // The value stored in the website answer when the applicant says they have no website.
-  const NO_WEBSITE = "N/A";
   // Address lookup stand-ins (fake address-lookup): a short fixed list per country. Typing three or more characters shows the addresses that contain every word typed; the real product would search a postal address service.
   const ADDRESS_STUBS = {
     "United States": ["123 Main St, Springfield, IL 62701", "123 Market St, San Francisco, CA 94105", "123 Congress Ave, Austin, TX 78701", "123 Peachtree St NE, Atlanta, GA 30303", "123 Broadway, New York, NY 10006", "1230 Pine St, Seattle, WA 98101", "418 SE Water Ave, Suite 210, Portland, OR 97214", "412 SW Alder St, Portland, OR 97204", "1200 Main St, Springfield, IL 62701", "88 Market St, San Francisco, CA 94105", "250 Elm Ave, Austin, TX 78701", "75 Lakeview Dr, Denver, CO 80202", "310 Pine St, Seattle, WA 98101", "9 Harbor Rd, Boston, MA 02110", "1500 Peachtree St NE, Atlanta, GA 30309", "4100 N Central Ave, Phoenix, AZ 85012"],
@@ -2515,7 +2545,7 @@
   }
 
   // Anyone opening the link as one of the Returning options has been in before: they have already set a password (decision returning-login-only).
-  const isReturning = () => [LINKS.returning, LINKS.review, LINKS.info, LINKS.approved].indexOf(ctx.link) > -1;
+  const isReturning = () => [LINKS.returning, LINKS.review, LINKS.info, LINKS.infoApp, LINKS.approved].indexOf(ctx.link) > -1;
   function startScreen() {
     if (ctx.start === START_LOGIN && isReturning()) return "login";
     return "email";
@@ -2573,6 +2603,8 @@
       w9Certify: false,
       w9Err: "",
       submittedAt: "",
+      // True when Ops has asked for more information by email, which changes the waiting screen (decision more-info-by-email).
+      askedMore: false,
       saveEmailErr: "",
       saveEmail: sample ? "finance@riversidepilates.com" : "",
 
@@ -2649,6 +2681,8 @@
     }
     return { a: a };
   });
+  // The value stored in the website answer when the applicant says they have no website.
+  const NO_WEBSITE = "N/A";
   // The transaction limits come from the step 3 answers: the biggest single sale is the per-transaction limit and the estimated monthly card volume is the monthly limit.
   function limitsFrom(a) {
     const num = (x) => parseFloat(String(x || "").replace(/,/g, ""));
@@ -2671,8 +2705,9 @@
       showToast("Welcome back. Your answers are saved.");
       return;
     }
-    const screen = ctx.link === LINKS.info ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
-    setState({ screen, submittedAt: "9:12 AM" });
+    // More info needed: in Slice 1 Ops asks by email, so the applicant sees the waiting screen with a note to check their inbox (decision more-info-by-email). The in-app screen is kept behind its own link.
+    const screen = ctx.link === LINKS.infoApp ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
+    setState({ screen, submittedAt: "9:12 AM", askedMore: ctx.link === LINKS.info });
   }
 
   // Login (decision login-default-start): a temporary password always forces a change, same as a real first sign-in
@@ -3143,8 +3178,6 @@
           // The EIN or business number is typed here like any other detail; nothing is looked up from it (decision ein-in-registered-details). A company or non-profit has to give one; a sole proprietor may not have one.
           isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "e.g. Riverside Pilates" }) : einField(ca),
           isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
-          isCompany() && !typeUp() ? fld("structure", "Business type / legal structure", "select", { placeholder: "Choose a structure", options: companyStructures() }) : null,
-          isNonprofit() && !typeUp() ? fld("structure", "Type of organization", "pills", { span: true, options: NONPROFIT_TYPES }) : null,
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ]),
@@ -3157,7 +3190,7 @@
           fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
           fld("email", isNonprofit() ? "Organization email address" : "Business email address", "text", { placeholder: isNonprofit() ? "hello@yourorganization.org" : "hello@yourbusiness.com" }),
           // The website is required. A business with none ticks the box, which fills the box with N/A and locks it (decision website-required-with-none-box).
-          fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", hint: "We take a look at the site to check " + (isNonprofit() ? "what you do" : "what you sell") + ". A live one speeds things up a lot." }),
+          fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", hint: "We take a look at the site to check " + (isNonprofit() ? "what you do" : "what you sell") + "." }),
           fld("noWebsite", "I don't have a website", "check", { span: true, optional: true })
         ]),
         card("s1-desc", isNonprofit() ? "What the organization does" : "What the business sells", "", [
@@ -3184,7 +3217,8 @@
           fld("monthlyVolume", "Estimated monthly card volume", "currency", { placeholder: "40,000" }),
           fld("avgTicket", "Average transaction amount", "currency", { placeholder: "38" }),
           fld("maxTicket", "Maximum single transaction", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your biggest single payment or donation, even if it only happens now and then." : "Your biggest single sale, even if it only happens now and then." }),
-          fld("cpSplit", "Card present %", "mono", { placeholder: "70", hint: "In person, on a card machine. Online, in-app and phone " + (isNonprofit() ? "payments" : "sales") + " count as the rest." })
+          fld("cpSplit", "Card present %", "mono", { placeholder: "70", hint: "In person, on a card machine. Online, in-app and phone " + (isNonprofit() ? "payments" : "sales") + " count as the rest." }),
+          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "$" + fmtMoney(limitsFrom(a).perTx) + " per transaction and $" + fmtMoney(limitsFrom(a).monthly) + " per month, based on what you entered above. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
         ], { pinId: "underwriting-plain", assurance: "If you go over one of these, nothing breaks. We'll have a quick word before we raise your limit." }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "Primary payment channel" : "Primary sales channel", "select", { placeholder: "Choose a channel", options: ["In-person", "Online", "In-person and online", "Mobile", "Phone / mail order (MOTO)"] }),
@@ -3205,7 +3239,6 @@
           fld("descriptor", "Billing descriptor", "descriptor", { span: true, hint: "This is what " + (isNonprofit() ? "the people paying you" : "your customers") + " will see on their statement. Use a name they'll recognize. It helps avoid “I don't know this charge” disputes." }),
           // Only someone arriving from an existing Xplor account has a platform to show; a new applicant would be asked about a product they may not use.
           isSample() ? fld("platform", "Platform", "text", { optional: true, hint: "Already filled in from your Xplor account." }) : null,
-          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "$" + fmtMoney(limitsFrom(a).perTx) + " per transaction and $" + fmtMoney(limitsFrom(a).monthly) + " per month, based on what you entered above. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " above to see your limits. You can tick this once you have." })
         ]),
         ca
           ? card("s3-ach", "Bank transfer volumes", "Only if you'll also take direct debits.", [
@@ -3575,9 +3608,9 @@
   <div class="addr-grid">
     ${cell("l1", "Street address 1", " addr-cell--wide")}
     ${cell("l2", "Street address 2 (optional)", " addr-cell--wide")}
-    ${cell("city", "City")}
-    <div class="addr-cell"><label class="field-label" for="${id}-region">${ca ? "Province" : "State"}</label><select class="input${parts.region === "" ? " is-unset" : ""}" id="${id}-region" data-input="${on((e) => setPart("region", e.target.value))}">${parts.region === "" && html`<option value="" selected>Choose one</option>`}${regions.map((r) => html`<option value="${r[0]}"${attr("selected", r[0] === parts.region)}>${r[1]}</option>`)}</select></div>
-    ${cell("postal", ca ? "Postal code" : "ZIP code")}
+    ${cell("city", "City", " addr-cell--city")}
+    <div class="addr-cell addr-cell--sm"><label class="field-label" for="${id}-region">${ca ? "Province" : "State"}</label><select class="input${parts.region === "" ? " is-unset" : ""}" id="${id}-region" data-input="${on((e) => setPart("region", e.target.value))}">${parts.region === "" && html`<option value="" selected>Choose one</option>`}${regions.map((r) => html`<option value="${r[0]}"${attr("selected", r[0] === parts.region)}>${r[1]}</option>`)}</select></div>
+    ${cell("postal", ca ? "Postal code" : "ZIP code", " addr-cell--sm")}
   </div>
 </div>`;
           after = html`<button type="button" class="btn-link addr-reset" data-click="${on(() => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: false }), addrParts: Object.assign({}, s.addrParts, { [f.id]: null }), addrQ: Object.assign({}, s.addrQ, { [f.id]: "" }) })); set(f.id, ""); })}">Clear and search again</button>`;
@@ -3594,14 +3627,15 @@
           };
           const typed = q.trim().length >= 3;
           const startManual = () => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: true }), addrOpen: "", addrIdx: -1 })); setTimeout(() => { const el = document.getElementById(id); if (el) el.focus(); }, 40); };
-          control = html`<div class="addr" data-key="addr-${f.id}"><div class="combo">
+          control = html`<div class="addr" data-key="addr-${f.id}"><div class="addr-search"><div class="combo combo--lead">
   <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${q}" placeholder="Start typing to search for the address" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => setState((s) => ({ addrQ: Object.assign({}, s.addrQ, { [f.id]: e.target.value }), addrOpen: f.id, addrIdx: -1 })))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
-  <span class="combo-chev" aria-hidden="true">${icon("search", 16)}</span>
+  <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
   ${open && typed && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb-addr">
     ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
   </ul>`}
+</div>
+  <button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button>
 </div></div>`;
-          after = html`<button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button>`;
         }
         break;
       }
@@ -3855,16 +3889,16 @@
     <p class="welcome-lede">Tell us how your business is set up. We'll only ask the questions that apply to you.</p>
     <div class="biz-list" role="radiogroup" aria-label="Business type">
       ${BIZ_TYPES.map((t) => {
-        // TYPE UP TRIAL: the selected Company or Non-profit card opens up and holds its follow-up question inside it.
+        // The selected Company or Non-profit card opens up and holds its follow-up question inside it (decision type-asked-on-business-type-page).
         const head = (cls) => html`<button type="button" class="biz-card${state.bizType === t.id ? " is-selected" : ""}${cls}" role="radio" aria-checked="${String(state.bizType === t.id)}" data-key="biz-${t.id}" data-click="${on(() => chooseBizType(t.id))}">
         <span class="biz-radio" aria-hidden="true"></span>
         <span><span class="biz-label">${t.label}</span><span class="biz-desc">${bizDesc(t)}</span></span>
       </button>`;
-        if (typeUp() && state.bizType === t.id && t.id === "company") return html`<div class="biz-open" data-key="biz-open-company">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-company">
+        if (state.bizType === t.id && t.id === "company") return html`<div class="biz-open" data-key="biz-open-company">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-company">
         <label class="field-label field-label--block" for="f-structure-up">What kind of company is it?${REQ}</label>
         <select class="input${state.a.structure === "" ? " is-unset" : ""}" id="f-structure-up" data-input="${on((e) => set("structure", e.target.value))}">${state.a.structure === "" && html`<option value="" selected>Choose a type</option>`}${companyStructures().map((op) => html`<option${attr("selected", op === state.a.structure)}>${op}</option>`)}</select>
       </div></div>`;
-        if (typeUp() && state.bizType === t.id && t.id === "non-profit") return html`<div class="biz-open" data-key="biz-open-nonprofit">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-nonprofit">
+        if (state.bizType === t.id && t.id === "non-profit") return html`<div class="biz-open" data-key="biz-open-nonprofit">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-nonprofit">
         <span class="field-label field-label--block" id="l-structure-up">What type of organization is it?${REQ}</span>
         <div class="yn yn--pills" role="group" aria-labelledby="l-structure-up">${NONPROFIT_TYPES.map((opt) => html`<button type="button" class="yn-btn" aria-pressed="${String(state.a.structure === opt)}" data-click="${on(() => set("structure", opt))}">${opt}</button>`)}</div>
       </div></div>`;
@@ -3874,7 +3908,7 @@
     <p class="small-note biz-warn" data-key="biz-warn">Choose carefully. If you carry on and later come back here to change your business type, anything you've entered will be lost.</p>
     <div class="actions">
       <button type="button" class="btn btn-outline btn-lg" data-click="${on(() => go("welcome", 1))}">${icon("chev-l", 17)}Back</button>
-      <button type="button" class="btn btn-primary btn-lg" ${state.bizType && (!typeUp() || isSole() || state.a.structure) ? "" : "disabled"} data-click="${on(() => state.bizType && (!typeUp() || isSole() || state.a.structure) && go("flow", 1))}">Continue${icon("arrow-r", 19)}</button>
+      <button type="button" class="btn btn-primary btn-lg" ${state.bizType && (isSole() || state.a.structure) ? "" : "disabled"} data-click="${on(() => state.bizType && (isSole() || state.a.structure) && go("flow", 1))}">Continue${icon("arrow-r", 19)}</button>
     </div>
   </div>
 </div>`;
@@ -4248,16 +4282,16 @@
   <div class="hero-head">
     <span class="hero-icon">${icon("clock", 20)}</span>
     <div>
-      <h1 class="hero-title">${waits.length ? "Thanks, we're waiting on " + waits.join(" and ") : "That's everything, thanks"}</h1>
+      <h1 class="hero-title">${state.askedMore ? "We need a little more from you" : waits.length ? "Thanks, we're waiting on " + waits.join(" and ") : "That's everything, thanks"}</h1>
       <p class="hero-sub">Submitted ${v.submittedWhen} · reference <span class="mono">#XP-40718</span></p>
     </div>
   </div>
   <ol class="timeline">
     <li class="tl-item"><span class="tl-dot tl-dot--done">${icon("check", 12, "i-bb")}</span><div class="tl-body"><div class="tl-title">Application received</div><div class="tl-note">${v.receivedNote}</div></div></li>
-    <li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote}</div></div></li>
+    ${state.askedMore ? html`<li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">Waiting for your reply</div><div class="tl-note">We've emailed you what we need. Reply to that email, attaching any files, and we'll carry on the checks from there.</div></div></li>` : html`<li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote}</div></div></li>`}
     <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">Usually within 2 hours${waits.length ? " of the last item arriving" : ""} · we'll email you</div></div></li>
   </ol>
-  ${waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, we'll send you an email and you'll respond to us here.</p>`}
+  ${state.askedMore ? html`<p class="hero-callout" data-key="asked-callout">We've sent you an email asking for more information. Check your inbox and reply to it to speed things up. If you can't find it, look in your spam or junk folder.</p>` : waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, we'll send you an email. Reply to it and we'll carry on from there.</p>`}
 </section>
 ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">${v.invitedOwners.map((o) => html`<section class="card card--p20 doc is-later" data-key="owner-wait-${o.id}">
   <div class="doc-row">
@@ -4632,7 +4666,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       const options = CONTEXT_OPTIONS[key];
       const pick = (e) => {
         setCtx({ [key]: options.indexOf(e.target.value) > -1 ? e.target.value : options[0] });
-        if (key === "data" || key === "link" || key === "start" || key === "slice" || key === "division" || key === "typeAsk") { restored = false; resetData(); }
+        if (key === "data" || key === "link" || key === "start" || key === "slice" || key === "division") { restored = false; resetData(); }
       };
       return html`<label><span class="field-label field-label--block">${label}${pinId && pin(pinId)}</span><select class="input" data-input="${on(pick)}">${options.map((op) => html`<option${attr("selected", ctx[key] === op)}>${op}</option>`)}</select></label>`;
     };
@@ -4644,10 +4678,9 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Region", "region")}
     ${select("Fields start as", "data")}
     ${select("Division", "division", "division-option")}
-    ${select("Specific type asked", "typeAsk", "type-asked-up-trial")}
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
     ${select("Link opened as", "link")}
-    ${(state.screen === "rfi" || ctx.link === LINKS.info) && html`<hr class="proto-rule">
+    ${(state.screen === "rfi" || ctx.link === LINKS.infoApp) && html`<hr class="proto-rule">
     ${select("More info needed screen", "moreInfo", "moreinfo-simple-trial")}
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
     ${ctx.moreInfo === MOREINFO_SIMPLE && html`<p class="proto-note">The simple screen ignores Ops picks. Pick the other layout to use them.</p>`}
@@ -4802,7 +4835,7 @@ ${protoView()}`;
         : state.screen === "welcome" ? "Business verification"
         : state.screen === "bizType" ? "Your business type"
         : state.screen === "invitee" ? "Owner details"
-        : state.screen === "approved" ? "Approved" : state.screen === "rfi" ? (ctx.moreInfo === MOREINFO_SIMPLE ? "Send us what we asked for" : pendTitle()) : "Under review") + " · Xplor Pay";
+        : state.screen === "approved" ? "Approved" : state.screen === "submitted" && state.askedMore ? "We've emailed you" : state.screen === "rfi" ? (ctx.moreInfo === MOREINFO_SIMPLE ? "Send us what we asked for" : pendTitle()) : "Under review") + " · Xplor Pay";
     }
     // Move focus into the dialog when it opens and back to the opener when it closes.
     if (state.saveOpen && !last.saveOpen) {
