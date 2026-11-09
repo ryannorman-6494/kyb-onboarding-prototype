@@ -2426,6 +2426,46 @@
       "tradeoff": "The difference between white and the page grey is very small, so it is a faint lift rather than a clear button. If it still reads as flat, the next step is a stronger outline, not a coloured fill.",
       "by": "Ryan",
       "when": "2026-11-09"
+    },
+    {
+      "id": "owner-share-slider",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · Ownership percentage",
+      "t": "Ownership percentage is a slider from 25% to 100% with a small box beside it, and the owner form is split into labelled chunks",
+      "b": "Ownership percentage is no longer a plain text box. It is a slider whose track runs from 0% at the left to 100% at the right, but the thumb cannot be dragged or keyed below 25%: the purple fill runs from the left end like any ordinary slider, nothing is greyed out, and the labels under it read 0%, 25% and 100%. Moving below 25 simply does nothing. and a small box to its left with a % sign. Dragging the slider fills the box, so the applicant can see exactly what the thumb is on, and typing in the box moves the slider, so a very specific value such as 33.3 can be keyed in. It is styled to look clean rather than native: a thin rounded track filled in the brand colour up to the thumb, a white round thumb with a hairline edge and soft shadow that grows slightly while dragged, and a focus ring for keyboard use. The slider stops at 25 because the product only asks for owners with 25% or more; if someone types less than 25 or more than 100 the box shows the same error as before and the slider rests at its nearest end. An owner with no percentage yet shows the slider at 25 and an empty box until one is chosen. The owner form is also split into more labelled chunks so it reads as short sections rather than one long list: About them (name and title side by side, then ownership), Personal details (date of birth, nationality, country of residence, home address, email, phone), Their ID, and Screening. Every field is shown from the start; nothing is hidden until an earlier part is finished.",
+      "tradeoff": "A slider is quick for a round number and slow for a precise one, so the box beside it carries the precision and the two must stay in step. Whole numbers are the natural stop for the slider; decimals only come from the box. The section headings make the card taller by a few lines, but each part is easier to find. Sole proprietors are shown the slider too, at 100, which is a control they have no reason to touch.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "currency-code-on-amounts",
+      "area": "Visual",
+      "where": "Every money amount field (step 3 card volumes, EFT or ACH volume)",
+      "t": "Money fields show the currency code, USD or CAD, as well as the dollar sign",
+      "b": "A dollar sign does not say which dollar, and the product serves both the US and Canada, so every amount field now ends with the currency code: USD for a United States application and CAD for a Canadian one. The field reads as three parts: the dollar sign, the amount, and the code in a small separate tab at the right end with a pale grey fill and a hairline divider, the way payment forms from Stripe and similar products show it. The numbers use equal-width digits so figures line up as they are typed. The code is fixed by the application's region and cannot be changed here. It applies to the estimated monthly card volume, average transaction amount, maximum single transaction and the monthly EFT or ACH volume.",
+      "tradeoff": "The code is the region's own currency only, so a business that takes payments in another currency has nowhere to say so. Amounts shown as plain text elsewhere (the limits card, the review summary) still use only the dollar sign.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "owner-form-no-progressive-disclosure",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards",
+      "t": "The long owner form is chunked into labelled sections, not revealed one section at a time",
+      "b": "The owner form is long by default, so we looked at breaking it up. One way was progressive disclosure: show the first section, and reveal the next only once the one before it is complete. We decided against it. Revealing sections in turn means a person has to finish one before they can see the next, which stops them filling in the details they have to hand right now and coming back to the rest later. That matters because applicants are often waiting on something, such as an ID number or a date of birth, and the flow now lets them save and continue with a step partly done (decision partial-steps-allowed). So every field stays on show from the start, and the form is chunked with labelled sections instead: About them, Personal details, Their ID and Screening (decisions owner-share-slider and owner-form-accordion). The ownership percentage became a slider to make that section lighter.",
+      "tradeoff": "All the fields are on the page at once, so the card is still tall, and a person who would have liked to be led through it one part at a time is not. The headings and the shorter percentage control help, but they do not shorten the form. If testing shows the length puts people off, other ways to cut it down that keep every field reachable are collapsible sections that all start open, or a sticky list of sections to jump between.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "owner-form-accordion",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards",
+      "t": "Each section of the owner form can be collapsed, and the contact details join Personal details",
+      "b": "The owner form is split into sections: About them, Personal details, Their ID and Screening. Each heading is now a button with a chevron that collapses or opens that section on its own, so a person can fold away the parts they are done with, or leave until later, and keep the card short. Every section starts open, so nothing is hidden by default and no section has to be finished before another is visible (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. The earlier How to reach them section is gone: email address and phone number now sit at the end of Personal details, after the home address.",
+      "tradeoff": "Sections open independently, so the card can still be as tall as before if nothing is collapsed, and this is not a strict accordion where opening one closes the rest. A collapsed section does not say whether it is complete, so a person can fold away something unfinished and forget it; the step's Partly done status and the final review are what catch that. Collapsed sections reset to open if the page is reloaded.",
+      "by": "Ryan",
+      "when": "2026-11-09"
     }
   ];
 
@@ -2614,6 +2654,8 @@
       openOwner: 1,
       // The furthest step the applicant has opened. Steps up to here can be returned to from the left column; later ones cannot (decision partial-steps-allowed).
       maxStep: 1,
+      // Owner form sections the applicant has collapsed, keyed by the section's heading id. All start open (decision owner-form-accordion).
+      secClosed: {},
       openCards: {},
       revealed: {},
       owners: freshOwners(),
@@ -3172,10 +3214,11 @@
     const sub = (key, label) => ({ id: p + "hdg_" + key, label: label, kind: "heading", required: false });
     return [
       sub("about", "About them"),
-      f("name", "Full legal name", "text", { span: true, placeholder: "As printed on their ID", hint: "Exactly as it appears on the ID you'll upload." }),
+      f("name", "Full legal name", "text", { placeholder: "As printed on their ID", hint: "Exactly as it appears on the ID you'll upload." }),
       // Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
       f("role", "Title / role", "text", { placeholder: "e.g. Director" }),
-      isNonprofit() ? null : f("pct", "Ownership percentage", "mono", { placeholder: "e.g. 60", hint: isSole() ? "" : "We only need owners with 25% or more." }),
+      isNonprofit() ? null : f("pct", "Ownership percentage", "slider", { span: true, hint: isSole() ? "" : "We only need owners with 25% or more." }),
+      sub("personal", "Personal details"),
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
@@ -3612,8 +3655,16 @@
 </div>`;
         break;
       }
+      case "slider": {
+        // A range from 25 to 100 with a small box beside it. Dragging fills the box; typing in the box moves the slider (decision owner-share-slider). The answer is one text value, so validation and the totals work as they did for a plain box.
+        const n = parseFloat(f.value);
+        const at = isFinite(n) ? Math.min(100, Math.max(25, n)) : 25; // the thumb never shows below 25
+        control = html`<div class="slider-row"><div class="affix slider-num"><input id="${id}" value="${f.value}" placeholder="25" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"><span class="affix-prefix" aria-hidden="true">%</span></div><div class="slider-track"><input type="range" class="slider" id="s-${f.id}" min="0" max="100" step="1" value="${String(at)}" aria-label="${f.label}"${described} data-input="${on((e) => { /* The track runs from 0, but the thumb will not rest below 25 (decision owner-share-slider). */ const v = Math.max(25, Number(e.target.value)); e.target.value = String(v); set(f.id, String(v)); })}"><div class="slider-scale" aria-hidden="true"><span>0%</span><span class="slider-scale-mid"><span>25%</span><span>100%</span></span></div></div></div>`;
+        break;
+      }
       case "currency":
-        control = html`<div class="affix"><span class="affix-prefix" aria-hidden="true">${f.prefix}</span><input id="${id}" value="${f.value}" placeholder="${f.placeholder}" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"></div>`;
+        // The dollar sign alone does not say which dollar, so the currency code closes the field (decision currency-code-on-amounts).
+        control = html`<div class="affix affix--money"><span class="affix-prefix" aria-hidden="true">${f.prefix}</span><input id="${id}" value="${f.value}" placeholder="${f.placeholder}" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>`;
         break;
       case "masked": {
         // A sensitive value shows only its last four characters once you leave the
@@ -3987,6 +4038,24 @@
 </nav>`;
   }
 
+  // The owner form as collapsible sections. Each starts open and can be closed on its own; a section holding a problem stays open so the problem cannot be hidden (decision owner-form-accordion).
+  function ownerSectionsView(o) {
+    const secs = [];
+    ownerFields(o).forEach((f) => {
+      if (f.kind === "heading") secs.push({ h: f, fields: [] });
+      else if (secs.length) secs[secs.length - 1].fields.push(f);
+    });
+    return html`<div class="owner-secs" data-key="secs-${o.id}">${secs.map((sec) => {
+      const hasErr = sec.fields.some((x) => ERR[x.id]);
+      const closed = !!state.secClosed[sec.h.id] && !hasErr;
+      const toggle = () => setState((st) => ({ secClosed: Object.assign({}, st.secClosed, { [sec.h.id]: !st.secClosed[sec.h.id] }) }));
+      return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
+  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span>${sec.h.label}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
+  ${!closed && html`<div class="fields">${sec.fields.map(fieldView)}</div>`}
+</section>`;
+    }) }</div>`;
+  }
+
   function ownerView(o, recipient) {
     const isOpen = state.openOwner === o.id;
     const toggle = () => setState({ openOwner: state.openOwner === o.id ? 0 : o.id });
@@ -4023,7 +4092,7 @@
     ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}Remove</button>`}
     ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
   </div>
-  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}<div class="fields">${ownerFields(o).map(fieldView)}</div>${!recipient && html`<div class="person-actions" data-key="owner-save"><button type="button" class="btn btn-primary btn-sm" data-click="${on(saveOwner)}">Save</button></div>`}</div>`}
+  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o)}${!recipient && html`<div class="person-actions" data-key="owner-save"><button type="button" class="btn btn-primary btn-sm" data-click="${on(saveOwner)}">Save</button></div>`}</div>`}
 </article>`;
   }
 
@@ -4856,6 +4925,11 @@ ${protoView()}`;
     root.querySelectorAll("[data-width]").forEach((el) => {
       const n = Math.max(0, Math.min(100, Number(el.getAttribute("data-width")) || 0));
       el.style.width = n + "%";
+    });
+    // The filled part of each slider's track is a CSS variable, set here for the same reason (decision owner-share-slider).
+    root.querySelectorAll("input.slider").forEach((el) => {
+      const n = Math.max(0, Math.min(100, Number(el.value)));
+      el.style.setProperty("--fill", n + "%");
     });
   }
 

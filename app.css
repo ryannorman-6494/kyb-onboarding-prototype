@@ -258,6 +258,9 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .affix input { flex: 1; min-width: 0; height: 100%; border: none; outline: none; background: transparent; font-size: var(--type-body-default-size); font-family: var(--font-mono); color: var(--color-text-secondary); }
 .affix input:focus { box-shadow: none; }
 .affix-prefix { font-size: var(--type-body-small-size); color: var(--color-text-subtle); font-family: var(--font-mono); }
+.affix--money { padding-right: 0; }
+.affix--money input { font-variant-numeric: tabular-nums; }
+.affix-code { align-self: stretch; display: flex; align-items: center; margin: 1px 1px 1px 0; padding: 0 12px; border-left: 1px solid var(--color-border-subtle); border-radius: 0 calc(var(--radius-default) - 1px) calc(var(--radius-default) - 1px) 0; background: var(--color-background-surface-sunken); color: var(--color-text-subtle); font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); letter-spacing: .06em; }
 .affix--secure { gap: var(--space-gap-related); }
 .affix--secure > .i { color: var(--color-text-brand); }
 .affix--secure input { letter-spacing: 0.06em; }
@@ -769,3 +772,32 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .biz-sub .small-note { margin-top: 8px; }
 @keyframes biz-sub-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .biz-sub { animation: none; } }
+
+/* Ownership percentage slider (decision owner-share-slider) */
+.slider-row { display: flex; align-items: flex-start; gap: 20px; }
+.slider-num { flex: none; width: 96px; }
+.slider-num .affix-prefix { order: 2; }
+.slider-track { flex: 1; min-width: 0; padding-top: calc((var(--size-control-large) - 20px) / 2); }
+.slider { --fill: 0%; display: block; width: 100%; height: 20px; margin: 0; padding: 0; background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none; outline: none; }
+.slider::-webkit-slider-runnable-track { height: 4px; border-radius: var(--radius-full); background: linear-gradient(90deg, var(--color-background-brand-default) var(--fill), var(--color-background-surface-track) var(--fill)); }
+.slider::-moz-range-track { height: 4px; border-radius: var(--radius-full); background: var(--color-background-surface-track); }
+.slider::-moz-range-progress { height: 4px; border-radius: var(--radius-full); background: var(--color-background-brand-default); }
+.slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; margin-top: -7px; border: none; border-radius: var(--radius-full); background: var(--color-background-surface-raised-1); box-shadow: 0 0 0 1px var(--color-border-default), var(--shadow-sm); transition: transform .12s ease, box-shadow .12s ease; }
+.slider::-moz-range-thumb { width: 18px; height: 18px; border: none; border-radius: var(--radius-full); background: var(--color-background-surface-raised-1); box-shadow: 0 0 0 1px var(--color-border-default), var(--shadow-sm); transition: transform .12s ease, box-shadow .12s ease; }
+.slider:hover::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--color-border-hover), var(--shadow-sm); }
+.slider:hover::-moz-range-thumb { box-shadow: 0 0 0 1px var(--color-border-hover), var(--shadow-sm); }
+.slider:active::-webkit-slider-thumb { transform: scale(1.12); }
+.slider:active::-moz-range-thumb { transform: scale(1.12); }
+.slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 1px var(--color-border-focus), 0 0 0 4px var(--component-input-focus-glow); }
+.slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 1px var(--color-border-focus), 0 0 0 4px var(--component-input-focus-glow); }
+.slider-scale { display: grid; grid-template-columns: 25fr 75fr; align-items: start; margin-top: 6px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); font-family: var(--font-mono); }
+.slider-scale-mid { display: flex; justify-content: space-between; flex: 1; margin-left: 4px; }
+
+/* Collapsible owner form sections (decision owner-form-accordion) */
+.owner-sec + .owner-sec { margin-top: 18px; padding-top: 4px; box-shadow: inset 0 1px 0 var(--color-border-subtle); }
+.sec-head { margin: 0; }
+.sec-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 0; border: none; border-radius: var(--radius-default); background: transparent; cursor: pointer; font: inherit; font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); letter-spacing: .04em; text-transform: uppercase; color: var(--color-text-subtle); text-align: left; }
+.sec-toggle:hover { color: var(--color-text-secondary); }
+.sec-chev { transition: transform 160ms ease; }
+.owner-sec:not(.is-open) .sec-chev { transform: rotate(-90deg); }
+.owner-sec .fields { margin-top: 6px; padding-bottom: 4px; }
