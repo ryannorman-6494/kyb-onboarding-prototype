@@ -808,7 +808,7 @@
       "area": "Flow",
       "where": "Every step",
       "t": "Save and continue stays disabled until the page is complete; each field flags its own problem when it is left",
-      "b": "Superseded for steps 1 to 6 on 2026-11-09 by partial-steps-allowed: those steps now save and continue even when incomplete, and only the final Submit for verification is held back. The button is disabled until every required field on the step is valid. The reason is never left to the button: a field shows its problem the moment the applicant clicks or tabs out of it, with a red border and a message under it, so a wrong date or an empty required answer is flagged where it happened. An owner whose fields have a problem carries a Needs a look badge in the header, so a collapsed owner cannot hide one.",
+      "b": "Superseded for steps 1 to 6 on 2026-11-09 by partial-steps-allowed and errors-only-for-bad-entries: those steps now save and continue even when incomplete, and a field left empty no longer shows an error when it is left; only the final Submit for verification is held back. The button is disabled until every required field on the step is valid. The reason is never left to the button: a field shows its problem the moment the applicant clicks or tabs out of it, with a red border and a message under it, so a wrong date or an empty required answer is flagged where it happened. An owner whose fields have a problem carries a Needs a look badge in the header, so a collapsed owner cannot hide one.",
       "tradeoff": "A field that was never visited gives no sign it is missing until the applicant scrolls to it, and the disabled button does not point to it. If testers get stuck on a skipped field, add a count of what is left near the button.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -2232,7 +2232,7 @@
       "area": "Layout",
       "where": "Every screen except the welcome email · top of the page",
       "t": "A thin top bar carries the logo and Save & Exit",
-      "b": "Every screen except the welcome email has a thin bar across the full width of the window, with the Xplor Pay logo at the left and a Save & Exit button at the right, lined up with the edges of the step content below. It stays in view as the page scrolls, and the progress list and the pinned step title sit under it. Save & Exit shows only where there is an application to save: the welcome page, the business type page and the seven steps. The sign-in screens, the business picker, the status screens and the invited owner's screens show the logo alone. Save & Exit replaces the Finish later button in the footer, so the footer now holds only Back and Save and continue. It opens the same dialog, which says the answers are saved and how to log back in. The logo that sat above the progress list moved into the bar.",
+      "b": "Every screen except the welcome email has a thin bar across the full width of the window, with the Xplor Pay logo at the left and a Save & Exit button at the right, lined up with the edges of the step content below. It stays in view as the page scrolls, and the progress list and the pinned step title sit under it. Save & Exit shows only where there is an application to save: the seven steps (changed on 2026-11-09 by save-exit-after-first-step: it no longer shows on the welcome page or the business type page). The sign-in screens, the business picker, the status screens and the invited owner's screens show the logo alone. Save & Exit replaces the Finish later button in the footer, so the footer now holds only Back and Save and continue. It opens the same dialog, which says the answers are saved and how to log back in. The logo that sat above the progress list moved into the bar.",
       "tradeoff": "The way out is at the top of the page while the footer holds the way forward, so someone who has scrolled to the bottom to stop has to look up for it. Nothing is lost by leaving, because answers already save as they are entered. The invited owner's screens have no Save & Exit even though their answers save too; that is open if Slice 2 needs one.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2412,7 +2412,7 @@
       "area": "Flow",
       "where": "Steps 1 to 6 · Save and continue, and the left column",
       "t": "Save and continue works on any step even if it is incomplete; a step left unfinished shows as Partly done",
-      "b": "Applicants may be waiting on a number, a document or a person, so steps 1 to 6 no longer hold Save and continue back until every required answer is in. The button is always on, and pressing it saves what is there and moves to the next step. The left column now says where each opened step stands: Done with a green tick when everything required is in, or Partly done in the warning colour when something is missing. There is no count or percentage for a step, only whether it is finished. Applicants can return to any step they have opened by choosing it in the left column or by pressing Back, and can fill the rest in then. Steps not yet opened cannot be chosen from the left column. On the last step's summary, each section shows a green tick circle only when its step is complete; a step that is only partly done shows a half-filled circle in the warning colour instead. The half circle is the whole icon, the same size as the tick circle, with nothing drawn inside it. Step names stay on one line: the left column is a little wider, and the Partly done label has no icon so it does not take up extra room. Fields still flag their own problem when the applicant leaves them, and their messages now say Fill this in to finish this step. The final step is different: Submit for verification stays off until every step is complete and the signature is typed, and its hover note lists each earlier step still only partly done as well as what is missing on the page.",
+      "b": "Applicants may be waiting on a number, a document or a person, so steps 1 to 6 no longer hold Save and continue back until every required answer is in. The button is always on, and pressing it saves what is there and moves to the next step. The left column now says where each opened step stands: Done with a green tick when everything required is in, or a percentage done when something is missing (changed on 2026-11-09 by step-percent-done: it first said Partly done in the warning colour, with no percentage). Applicants can return to any step they have opened by choosing it in the left column or by pressing Back, and can fill the rest in then. Steps not yet opened cannot be chosen from the left column. On the last step's summary, each section shows a green tick circle only when its step is complete; a step that is only partly done shows a half-filled circle in the warning colour instead. The link at the end of that row says Continue instead of Edit, since the applicant is finishing the step and not changing it (same screen and Save button as Edit). The half circle is the whole icon, the same size as the tick circle, with nothing drawn inside it. Step names stay on one line: the left column is a little wider, and the Partly done label has no icon so it does not take up extra room. Only a bad entry is flagged before the end (decision errors-only-for-bad-entries); a field left empty shows nothing. The final step is different: Submit for verification stays off until every step is complete and the signature is typed, and its hover note lists each earlier step still only partly done as well as what is missing on the page.",
       "tradeoff": "Someone can click through all six steps with nothing filled in and only find out what is missing at the end, so the applicant is not nudged to finish a step while the details are fresh. Partly done does not say what is missing, so they have to open the step to find out. The invited owner's own page still needs everything before Send my details.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2452,7 +2452,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "The long owner form is chunked into labelled sections, not revealed one section at a time",
-      "b": "The owner form is long by default, so we looked at breaking it up. One way was progressive disclosure: show the first section, and reveal the next only once the one before it is complete. We decided against it. Revealing sections in turn means a person has to finish one before they can see the next, which stops them filling in the details they have to hand right now and coming back to the rest later. That matters because applicants are often waiting on something, such as an ID number or a date of birth, and the flow now lets them save and continue with a step partly done (decision partial-steps-allowed). So every field stays on show from the start, and the form is chunked with labelled sections instead: About them, Personal details, Their ID and Screening (decisions owner-share-slider and owner-form-accordion). The ownership percentage became a slider to make that section lighter.",
+      "b": "The owner form is long by default, so we looked at breaking it up. One way was progressive disclosure: show the first section, and reveal the next only once the one before it is complete. We decided against it. Revealing sections in turn means a person has to finish one before they can see the next, which stops them filling in the details they have to hand right now and coming back to the rest later. That matters because applicants are often waiting on something, such as an ID number or a date of birth, and the flow now lets them save and continue with a step partly done (decision partial-steps-allowed). So every field stays reachable from the start, and the form is chunked with labelled sections instead: About them, Personal details, Their ID and Screening (decisions owner-share-slider and owner-form-accordion). The ownership percentage became a slider to make that section lighter.",
       "tradeoff": "All the fields are on the page at once, so the card is still tall, and a person who would have liked to be led through it one part at a time is not. The headings and the shorter percentage control help, but they do not shorten the form. If testing shows the length puts people off, other ways to cut it down that keep every field reachable are collapsible sections that all start open, or a sticky list of sections to jump between.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2462,8 +2462,48 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Each section of the owner form can be collapsed, and the contact details join Personal details",
-      "b": "The owner form is split into sections: About them, Personal details, Their ID and Screening. Each heading is now a button with a chevron that collapses or opens that section on its own, so a person can fold away the parts they are done with, or leave until later, and keep the card short. Every section starts open, so nothing is hidden by default and no section has to be finished before another is visible (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. The earlier How to reach them section is gone: email address and phone number now sit at the end of Personal details, after the home address.",
-      "tradeoff": "Sections open independently, so the card can still be as tall as before if nothing is collapsed, and this is not a strict accordion where opening one closes the rest. A collapsed section does not say whether it is complete, so a person can fold away something unfinished and forget it; the step's Partly done status and the final review are what catch that. Collapsed sections reset to open if the page is reloaded.",
+      "b": "The owner form is split into sections: About them, Personal details, Their ID and Screening. Each heading is now a button with a chevron that opens or closes that section on its own, and beside the name it says how many fields the section holds, for example 6 fields (an address counts as one field). The first section, About them, starts open and the other three start closed, so the card opens as one short section with three headings below it, and the applicant opens whichever they want, in any order. Closed is not locked: no section has to be finished before another can be opened, and every field is one click away (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. The earlier How to reach them section is gone: email address and phone number now sit at the end of Personal details, after the home address.",
+      "tradeoff": "Sections open independently, so the card can still grow as tall as before once everything is open, and this is not a strict accordion where opening one closes the rest. With most sections closed, nothing on the card shows what has been filled in there, only how many fields there are, so a person can skip a section and forget it; the step's Partly done status and the final review are what catch that. The count is of fields, not of fields still to fill. Sections go back to that first-open, rest-closed start if the page is reloaded.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "errors-only-for-bad-entries",
+      "area": "Flow",
+      "where": "Steps 1 to 6 · Save and continue, Save & Exit, and every field",
+      "t": "Only a wrong entry is an error before the final submit; an empty required field shows nothing, and a wrong entry stops the save and scrolls to it",
+      "b": "Required fields are only enforced at the very end, when the applicant submits, so leaving a field empty no longer shows a message when the applicant clicks into it and out again. A wrong entry still does: an answer that is there but not valid, such as an email without an at sign, a routing number that is not 9 digits, a phone number that is too short or a date in the wrong format. It shows when the field is left. Pressing Save and continue, or Save & Exit, with a wrong entry on the step does not save or move on: the page scrolls to the first field with a problem, puts the cursor in it, and the message stays until it is put right. Empty required answers never stop either button, and the step still shows as Partly done in the left column. On the final step, pressing Submit for verification still lists everything that is missing. Replaces the earlier behaviour (decision partial-steps-allowed, first version) where each empty field flagged itself when it was left.",
+      "tradeoff": "Someone who skips a required field gets no warning that it is needed until the left column says Partly done or they reach the final step, so a missed field can be found late. A wrong entry blocks saving, so a person who is waiting on the correct number cannot save a half-right one and has to clear the box to move on.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "step-percent-done",
+      "area": "Flow",
+      "where": "Left column, progress bar and the last step's summary",
+      "t": "A step that is not finished shows a ring and the percentage done, in the brand colour, and the progress bar follows",
+      "b": "Replaces Partly done and the warning colour. In the left column an opened step that is not finished reads, for example, a small ring and 15%; a finished one is a full ring and 100%. The ring is a thin circle that fills clockwise in green as the step fills in; the rest of the ring stays a light grey, and the percentage is in the normal primary text colour. Changed on 2026-11-09: the fill was first brand purple, and the words done and Done were dropped, so every opened step in the left column reads just a ring and its percentage, such as 15%, and a finished step is a full ring and 100%. A step's percentage is the share of the answers it needs that are in and valid: each required field, each required document, the owner list at step 2 and the three signature entries at step 7. It never shows 100 until the step has no problems at all, so a step with a wrong entry tops out at 99. Optional fields are not counted. The Your progress bar and its percentage at the top of the left column are now the average of the seven steps, where a step not yet opened counts as nothing, so the bar moves as answers go in and not only when a step is passed. On the last step's summary, a step that is not finished shows its ring in place of the green tick circle. Empty and unopened steps show no percentage until they are opened.",
+      "tradeoff": "Fields count equally, so one required document and one tick box weigh the same, and a step with few fields jumps in big steps (one of five answers is 20%). The percentage changes as the applicant types, so a number can move backwards when an entry is cleared or becomes invalid. Fields that only appear after an earlier answer add to the total once they appear, so a step can drop a few points when the applicant answers Yes to a question.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "save-exit-after-first-step",
+      "area": "Flow",
+      "where": "Top bar · Save & Exit",
+      "t": "Save & Exit only appears once the applicant has pressed Continue on the business type screen",
+      "b": "The button is not on the welcome page or the What type of business are you screen. It first appears on step 1, after the applicant has chosen a business type and pressed Continue, because that is the first point where anything has been entered that could be saved. From then on it stays in the top bar through step 7. The sign-in screens, status screens and the invited owner screens are unchanged, with the logo alone.",
+      "tradeoff": "Someone who has only picked a business type and wants to stop has nothing to save, so they just close the page and come back through the sign-in link. Nothing on those two screens tells them their choice is kept.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "stable-scrollbar-gutter",
+      "area": "Visual",
+      "where": "Every screen",
+      "t": "The page always reserves room for its scrollbar so the layout does not shift sideways between steps",
+      "b": "Choosing steps in the left column made the whole page nudge left and right, because a short step has no page scrollbar and a long one does, and the scrollbar takes about 15px of width when it appears. The page now always shows the scrollbar track (or reserves its space where scrollbars overlay), so the left column and the step content stay exactly where they are as the applicant moves between steps.",
+      "tradeoff": "On a short screen with little to scroll, an empty scrollbar track shows down the right edge where there was none. Where the system uses overlay scrollbars, as macOS does by default, nothing changes visually.",
       "by": "Ryan",
       "when": "2026-11-09"
     }
@@ -2654,8 +2694,8 @@
       openOwner: 1,
       // The furthest step the applicant has opened. Steps up to here can be returned to from the left column; later ones cannot (decision partial-steps-allowed).
       maxStep: 1,
-      // Owner form sections the applicant has collapsed, keyed by the section's heading id. All start open (decision owner-form-accordion).
-      secClosed: {},
+      // Owner form sections the applicant has opened, keyed by the section's heading id. The first starts open and the rest closed until chosen (decision owner-form-accordion).
+      secOpen: {},
       openCards: {},
       revealed: {},
       owners: freshOwners(),
@@ -2815,7 +2855,22 @@
   }
   // Steps 1 to 6 save and move on whether or not they are complete, because the applicant may be waiting on something (decision partial-steps-allowed). Only the final submit needs every step complete.
   const stepGaps = () => STEPS.filter((x) => x.n < 7 && Object.keys(stepErrors(x.n)).length > 0).map((x) => x.n);
+  // Save and continue and Save & Exit do not run while a field holds a bad entry: the page scrolls to the first one instead (decision errors-only-for-bad-entries).
+  // Returns true when it stopped. Missing answers never stop it.
+  let pendingScroll = false;
+  function blockedByProblems() {
+    const errs = stepErrors(state.step, true);
+    if (!Object.keys(errs).length) return false;
+    const owners = state.owners.filter((o) => Object.keys(errs).some((k) => k.indexOf("o" + o.id + "_") === 0));
+    pendingScroll = true;
+    setState({
+      tried: Object.assign({}, state.tried, { [state.step]: true }),
+      openOwner: owners.length ? owners[0].id : state.openOwner
+    });
+    return true;
+  }
   const next = () => {
+    if (state.step < 7 && blockedByProblems()) return;
     if (state.step < 7) { setState({ step: state.step + 1 }); return; }
     if (stepGaps().length) return;
     attempt(() => setState({ screen: "submitted", submittedAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) }));
@@ -2851,7 +2906,7 @@
   }
   const openHelp = () => setState({ helpOpen: true });
   const closeHelp = () => setState({ helpOpen: false });
-  const openSave = () => setState({ saveOpen: true });
+  const openSave = () => { if (state.screen !== "invitee" && blockedByProblems()) return; setState({ saveOpen: true }); };
   // An owner can be sent a link to fill in their own details (decision 69). A sent owner needs only a name and share from the applicant.
   const nowTime = () => new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   const openDelegate = (target) => { const o = state.owners.filter((x) => x.id === target)[0]; setState({ delegateOpen: true, delegateTarget: target, delegateEmail: (o && o.inviteEmail) || "", delegateErr: "" }); };
@@ -3005,7 +3060,7 @@
       return "That looks like a Social Security number, which we don't need here. " + (isCa() ? "A business number" : "An EIN") + " looks like " + (isCa() ? "123456789" : "12-3456789") + ". Not sure whether you have one? Use Get help and we'll talk it through.";
     }
     if (digitsOf(value).length !== 9) {
-      return "Enter all 9 digits of your " + (isCa() ? "business number" : "EIN") + ", for example " + (isCa() ? "123456789" : "12-3456789") + ". You've entered " + digitsOf(value).length + ".";
+      return "Enter all 9 digits of your " + (isCa() ? "business number" : "EIN") + ". You've entered " + digitsOf(value).length + ".";
     }
     return "";
   }
@@ -3057,9 +3112,24 @@
     return "";
   }
 
-  function stepErrors(step) {
+  // True when a required field has simply not been answered yet. That is not an error until the final submit (decision errors-only-for-bad-entries):
+  // only an answer that is there but wrong (a bad email, a short number) is a problem the applicant has to fix before saving.
+  function fieldMissing(f) {
+    if (!f.required || f.disabled) return false;
+    const v = f.value;
+    if (f.kind === "check") return v !== true;
+    if (f.kind === "yn" || f.kind === "pills" || f.kind === "select" || f.kind === "combo") return !v;
+    if (f.kind === "masked" && String(v).indexOf("•") > -1) return false;
+    if (f.kind === "address") { const p = addrOf(f.id, v); return !p.l1.trim() || !p.city.trim() || !p.region.trim() || !p.postal.trim(); }
+    return !String(v).trim();
+  }
+
+  // With problemsOnly, answers that are missing are left out and only bad entries come back.
+  function stepErrors(step, problemsOnly, tally) {
     const errs = {};
-    const add = (f) => { if (f) { const m = fieldError(f); if (m) errs[f.id] = m; } };
+    // tally, when given, counts the answers this step needs and how many are in (decision step-percent-done).
+    const unit = (needed, have) => { if (tally && needed) { tally.total++; if (have) tally.done++; } };
+    const add = (f) => { if (f && f.required && !f.disabled) unit(true, !fieldError(f)); if (f) { const m = fieldError(f); if (m && !(problemsOnly && fieldMissing(f))) errs[f.id] = m; } };
     const a = state.a;
     const owners = state.owners.map((o) => Object.assign({}, o, ownerInfo(o)));
 
@@ -3070,7 +3140,8 @@
       // Every owner has to be added. A pending owner needs everything; one who has been sent a link needs nothing from the applicant.
       state.owners.forEach((o) => { if (o.status === "pending") ownerFields(o).forEach(add); });
       const total = owners.reduce((x, o) => x + o.pct, 0);
-      if (!owners.length) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " to finish this step.";
+      unit(true, owners.length > 0);
+      if (!owners.length) { if (!problemsOnly) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " to finish this step."; }
       else if (!isCompany()) { /* ownership percentages only apply to companies */ }
       else if (total > 100) errs.ownership = "Ownership comes to more than 100%. Check each owner's percentage.";
     }
@@ -3078,21 +3149,31 @@
       // An invited owner is not asked for at step 2 (the applicant can carry on), but their details and ID are needed before step 6 and 7 can pass (decision invite-no-exemption).
       state.owners.forEach((o) => { if (o.status === "invited") ownerFields(o).forEach(add); });
       docListFor(owners, isCa()).forEach((d) => {
-        if (!d.skip && d.requirement === "Required" && doc(d.key).state !== "done") errs["doc_" + d.key] = "Add this file to finish this step.";
+        unit(!d.skip && d.requirement === "Required", doc(d.key).state === "done");
+        if (!problemsOnly && !d.skip && d.requirement === "Required" && doc(d.key).state !== "done") errs["doc_" + d.key] = "Add this file to finish this step.";
       });
     }
     if (step === 7) {
       cardsFor(7).forEach((c) => c && c.fields.forEach(add));
       const signatory = (a.signatoryName !== undefined ? a.signatoryName : (a.sigSame === "no" ? (a.sigName || "") : (ownerVal(state.owners[0] || {}, "name") || ""))).trim();
       const title = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((owners.filter((o) => o.self)[0] || state.owners[0]) || {}).role || ""));
-      if (!signatory) errs.signatoryName = "Enter the signatory's full legal name.";
-      if (!String(title).trim()) errs.signatoryTitle = "Enter the signatory's title.";
-      if (!state.sign.trim()) errs.sign = "Type your full legal name to sign.";
+      unit(true, !!signatory); unit(true, !!String(title).trim()); unit(true, !!state.sign.trim());
+      if (!signatory && !problemsOnly) errs.signatoryName = "Enter the signatory's full legal name.";
+      if (!String(title).trim() && !problemsOnly) errs.signatoryTitle = "Enter the signatory's title.";
+      if (!state.sign.trim()) { if (!problemsOnly) errs.sign = "Type your full legal name to sign."; }
       else if (signatory && state.sign.trim().replace(/\s+/g, " ").toLowerCase() !== signatory.replace(/\s+/g, " ").toLowerCase()) errs.sign = "This needs to match the signatory name above.";
     } else {
       cardsFor(step).forEach((c) => c && c.fields.forEach(add));
     }
     return errs;
+  }
+
+  // How much of a step is done, as a whole percent. It is the share of the answers the step needs that are in and valid, and only reaches 100 when the step has no problems at all.
+  function stepPct(step) {
+    const tally = { total: 0, done: 0 };
+    const errs = stepErrors(step, false, tally);
+    if (!Object.keys(errs).length) return 100;
+    return tally.total ? Math.min(99, Math.floor((tally.done / tally.total) * 100)) : 0;
   }
 
   // Errors on show for the current step. Empty until the first attempt, then
@@ -3432,7 +3513,8 @@
       const isStatus = ["submitted", "rfi", "approved"].indexOf(st.screen) > -1;
     const cur = STEPS[st.step - 1];
     const progStep = st.editing ? 7 : st.step;
-    const pct = isStatus ? 100 : Math.round(((progStep - 1) / 7) * 100);
+    // The bar is the average of the seven steps' own percentages; a step not yet opened counts as nothing (decision step-percent-done).
+    const pct = isStatus ? 100 : Math.round([1, 2, 3, 4, 5, 6, 7].reduce((x, n) => x + (n <= Math.max(st.maxStep, st.step) ? stepPct(n) : 0), 0) / 7);
     const owners = st.owners.map((o) => Object.assign({}, o, ownerInfo(o)));
     const ownedPct = owners.reduce((x, o) => x + o.pct, 0);
     // Nobody is owed after submit: step 6 and 7 do not pass until every owner's details and ID are in, including invited owners (decision invite-no-exemption).
@@ -3446,9 +3528,12 @@
     const errStep = isFlow ? st.step : (st.screen === "invitee" && st.inviteStep === 1 ? 2 : 0);
     const allErrs = errStep ? stepErrors(errStep) : {};
     ERR = {};
-    Object.keys(allErrs).forEach((k) => { if (st.tried[errStep] || st.touched[k]) ERR[k] = allErrs[k]; });
+    // A field left empty shows nothing: required answers are only enforced at the final submit. A bad entry shows once the field is left or a save is attempted.
+    // On the last step an attempt shows everything still needed.
+    const badOnes = errStep ? stepErrors(errStep, true) : {};
+    Object.keys(allErrs).forEach((k) => { if ((st.tried[errStep] && (errStep === 7 || badOnes[k])) || (st.touched[k] && badOnes[k])) ERR[k] = allErrs[k]; });
     // Steps 1 to 6 continue whether or not they are complete (decision partial-steps-allowed); only the final submit waits for every answer. The reasons
-    // are shown on the fields themselves, as each is left (see touched), not on the button.
+    // are shown on the fields themselves, as each is left (see touched), not on the button. Only bad entries are; missing answers are not.
     const stepComplete = !errStep || Object.keys(allErrs).length === 0;
     // What is still needed, in the applicant's own words, for the hover note on the disabled button (decision 78).
     const labelOf = { signatoryName: "Signatory name", signatoryTitle: "Signatory title", sign: "Your typed signature" };
@@ -3534,7 +3619,7 @@
         { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " uploaded"]; })(), step: 6 }
       ].map((r) => {
         const done = r.parts.filter(Boolean);
-        return { label: r.label, step: r.step, value: done.length ? done.join(" · ") : "Nothing filled in yet", empty: !done.length, partial: Object.keys(stepErrors(r.step)).length > 0 };
+        return { label: r.label, step: r.step, value: done.length ? done.join(" · ") : "Nothing filled in yet", empty: !done.length, partial: stepPct(r.step) < 100, pct: stepPct(r.step) };
       })
     };
   }
@@ -4009,6 +4094,9 @@
 </div>`;
   }
 
+  // A small ring that fills clockwise with how much of a step is done, in the brand colour. Its fill is set through the CSSOM in applyWidths.
+  const ringView = (p, big) => html`<span class="ring${big ? " ring--lg" : ""}" data-ring="${p}" aria-hidden="true"></span>`;
+
   function railView(v) {
     const ownerWaiting = (o) => o.status === "invited" && (ownerFields(o).some((f) => fieldError(f)) || doc("id_" + o.id).state !== "done");
     const waitingOn = state.owners.filter(ownerWaiting).length;
@@ -4020,9 +4108,9 @@
       }
       const reachable = state.editing ? s.n < 7 : s.n <= state.maxStep;
       if (reachable && s.n !== state.step) {
-        const partial = Object.keys(stepErrors(s.n)).length > 0;
+        const sp = stepPct(s.n);
         const sub = s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`;
-        return html`<li><button type="button" class="step ${partial ? "is-partial" : "is-done"}" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${sub}</span><span class="step-meta">${partial ? "Partly done" : html`${icon("check", 12)}Done`}</span></button></li>`;
+        return html`<li><button type="button" class="step is-opened" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${sub}</span><span class="step-meta">${ringView(sp)}<span class="step-pct">${sp}%</span></span></button></li>`;
       }
       if (s.n === state.step) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
@@ -4038,19 +4126,21 @@
 </nav>`;
   }
 
-  // The owner form as collapsible sections. Each starts open and can be closed on its own; a section holding a problem stays open so the problem cannot be hidden (decision owner-form-accordion).
+  // The owner form as collapsible sections. Each starts closed, says how many fields it holds, and can be opened on its own; a section holding a problem stays open so the problem cannot be hidden (decision owner-form-accordion).
   function ownerSectionsView(o) {
     const secs = [];
     ownerFields(o).forEach((f) => {
       if (f.kind === "heading") secs.push({ h: f, fields: [] });
       else if (secs.length) secs[secs.length - 1].fields.push(f);
     });
-    return html`<div class="owner-secs" data-key="secs-${o.id}">${secs.map((sec) => {
+    return html`<div class="owner-secs" data-key="secs-${o.id}">${secs.map((sec, idx) => {
       const hasErr = sec.fields.some((x) => ERR[x.id]);
-      const closed = !!state.secClosed[sec.h.id] && !hasErr;
-      const toggle = () => setState((st) => ({ secClosed: Object.assign({}, st.secClosed, { [sec.h.id]: !st.secClosed[sec.h.id] }) }));
+      // Until the applicant opens or closes a section it follows the default: the first is open, the rest are closed.
+      const chosen = state.secOpen[sec.h.id];
+      const closed = (chosen === undefined ? idx !== 0 : !chosen) && !hasErr;
+      const toggle = () => setState((st) => ({ secOpen: Object.assign({}, st.secOpen, { [sec.h.id]: closed }) }));
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
-  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span>${sec.h.label}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
+  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${sec.h.label}</span><span class="sec-count">${sec.fields.length === 1 ? "1 field" : sec.fields.length + " fields"}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
   ${!closed && html`<div class="fields">${sec.fields.map(fieldView)}</div>`}
 </section>`;
     }) }</div>`;
@@ -4316,9 +4406,9 @@
   function reviewView(v) {
     return html`<div class="summary" data-key="s7-summary">
   ${v.summary.map((r) => html`<div class="summary-row">
-    <span class="tick${r.partial ? " tick--partial" : ""}"${r.partial ? html` role="img" aria-label="Partly done"` : ""}>${r.partial ? "" : icon("check", 13, "i-b")}</span>
+    ${r.partial ? html`<span class="ring ring--lg" data-ring="${r.pct}" role="img" aria-label="${r.pct}% done"></span>` : html`<span class="tick">${icon("check", 13, "i-b")}</span>`}
     <div class="grow"><div class="summary-label">${r.label}</div><div class="summary-value" title="${r.value}">${r.value}</div></div>
-    <button type="button" class="btn-link btn-link--md" aria-label="Edit ${r.label}" data-click="${on(() => editFromReview(r.step))}">Edit</button>
+    <button type="button" class="btn-link btn-link--md" aria-label="${r.partial ? "Continue" : "Edit"} ${r.label}" data-click="${on(() => editFromReview(r.step))}">${r.partial ? "Continue" : "Edit"}</button>
   </div>`)}
 </div>`;
   }
@@ -4816,7 +4906,8 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
 
   // The thin top bar, full width of the window, on every screen except the welcome email (decision top-nav-save-exit). Save & Exit shows only while there is an application to save: the welcome page, the business type page and the seven steps.
   function topNavView(v) {
-    const canSave = v.isWelcome || v.isBizType || v.isFlow;
+    // Save & Exit appears once there is something to save: from the first step on, after Continue on the business type screen (decision save-exit-after-first-step).
+    const canSave = v.isFlow;
     // The bar is as wide as the content column of the screen under it: 560 for sign-in, 820 for the status screens, 1220 for the flow, 720 for the rest.
     // (A class sets the width, since the page's content security policy does not allow inline styles.)
     const navW = { login: 560, flow: 1220, submitted: 820, rfi: 820, approved: 820 }[state.screen] || 720;
@@ -4926,6 +5017,10 @@ ${protoView()}`;
       const n = Math.max(0, Math.min(100, Number(el.getAttribute("data-width")) || 0));
       el.style.width = n + "%";
     });
+    // Progress rings fill clockwise by a CSS variable (decision step-percent-done).
+    root.querySelectorAll("[data-ring]").forEach((el) => {
+      el.style.setProperty("--ring", Math.max(0, Math.min(100, Number(el.getAttribute("data-ring")) || 0)));
+    });
     // The filled part of each slider's track is a CSS variable, set here for the same reason (decision owner-share-slider).
     root.querySelectorAll("input.slider").forEach((el) => {
       const n = Math.max(0, Math.min(100, Number(el.value)));
@@ -4995,6 +5090,16 @@ ${protoView()}`;
       opener.focus();
     }
     last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, confirm: state.confirm, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, loginStage: state.loginStage };
+    // A save that was stopped by a bad entry takes the applicant to the first one (decision errors-only-for-bad-entries).
+    if (pendingScroll) {
+      pendingScroll = false;
+      const bad = root.querySelector("[data-error=\"1\"]");
+      if (bad) {
+        bad.scrollIntoView({ block: "center", behavior: "smooth" });
+        const input = bad.querySelector("input, select, textarea, button");
+        if (input && input.focus) input.focus({ preventScroll: true });
+      }
+    }
     const hot = state.comboOpen && document.querySelector(".combo-opt.is-active");
     if (hot && hot.scrollIntoView) hot.scrollIntoView({ block: "nearest" });
     // Hand over to enhance.js (animation layer).

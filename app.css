@@ -9,6 +9,8 @@
    "KYB Onboarding.dc.html" from Claude Design.
    ============================================================ */
 
+/* Reserve the page scrollbar space on every screen, so moving between a short step and a long one does not nudge everything sideways (decision stable-scrollbar-gutter). */
+html { scrollbar-gutter: stable; overflow-y: scroll; }
 body { background: var(--color-background-shell); color: var(--color-text-secondary); }
 a { color: var(--color-text-brand); }
 a:hover { color: var(--color-text-link-hover); }
@@ -127,7 +129,8 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .pill--warning { background: var(--color-background-warning-subtle); color: var(--color-text-warning); }
 
 .tick { width: 22px; height: 22px; flex: none; border-radius: var(--radius-full); background: var(--color-background-success-default); color: var(--color-icon-on-brand); display: flex; align-items: center; justify-content: center; }
-.tick--partial { background: linear-gradient(90deg, var(--color-background-warning-default) 50%, transparent 50%); box-shadow: inset 0 0 0 2px var(--color-background-warning-default); }
+.ring { width: 14px; height: 14px; flex: none; display: inline-block; border-radius: var(--radius-full); background: conic-gradient(var(--color-background-success-default) calc(var(--ring, 0) * 1%), var(--color-border-default) 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px)); }
+.ring--lg { width: 22px; height: 22px; -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 3.5px), #000 calc(100% - 3px)); mask: radial-gradient(farthest-side, transparent calc(100% - 3.5px), #000 calc(100% - 3px)); }
 
 /* ---------- Welcome ---------- */
 .welcome { flex: 1; display: flex; justify-content: center; padding: 56px 28px 80px; }
@@ -205,7 +208,7 @@ button.step:hover { background: var(--color-background-hover); }
 .step-meta { flex: none; white-space: nowrap; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .is-done .step-meta { display: inline-flex; align-items: center; gap: 3px; color: var(--color-text-success); font-weight: var(--type-control-default-weight); }
 .is-current .step-meta { color: var(--color-text-brand); }
-.is-partial .step-meta { display: inline-flex; align-items: center; gap: 5px; color: var(--color-text-warning); font-weight: var(--type-control-default-weight); }
+.is-opened .step-meta { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-primary); font-weight: var(--type-control-default-weight); }
 .rail-help { margin-top: 16px; }
 .btn-neutral.rail-help { background: var(--color-background-surface-raised-1); }
 .btn-neutral.rail-help:hover { background: var(--color-background-hover); }
@@ -801,3 +804,5 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .sec-chev { transition: transform 160ms ease; }
 .owner-sec:not(.is-open) .sec-chev { transform: rotate(-90deg); }
 .owner-sec .fields { margin-top: 6px; padding-bottom: 4px; }
+.sec-label { flex: none; }
+.sec-count { flex: 1; font-weight: var(--type-body-default-weight); letter-spacing: 0; text-transform: none; color: var(--color-text-subtle); }
