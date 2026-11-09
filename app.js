@@ -808,7 +808,7 @@
       "area": "Flow",
       "where": "Every step",
       "t": "Save and continue stays disabled until the page is complete; each field flags its own problem when it is left",
-      "b": "The button is disabled until every required field on the step is valid. The reason is never left to the button: a field shows its problem the moment the applicant clicks or tabs out of it, with a red border and a message under it, so a wrong date or an empty required answer is flagged where it happened. An owner whose fields have a problem carries a Needs a look badge in the header, so a collapsed owner cannot hide one.",
+      "b": "Superseded for steps 1 to 6 on 2026-11-09 by partial-steps-allowed: those steps now save and continue even when incomplete, and only the final Submit for verification is held back. The button is disabled until every required field on the step is valid. The reason is never left to the button: a field shows its problem the moment the applicant clicks or tabs out of it, with a red border and a message under it, so a wrong date or an empty required answer is flagged where it happened. An owner whose fields have a problem carries a Needs a look badge in the header, so a collapsed owner cannot hide one.",
       "tradeoff": "A field that was never visited gives no sign it is missing until the applicant scrolls to it, and the disabled button does not point to it. If testers get stuck on a skipped field, add a count of what is left near the button.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -1009,7 +1009,7 @@
       "area": "Flow",
       "where": "Every step · Save and continue",
       "t": "Hovering or focusing the disabled Save and continue lists what is still needed",
-      "b": "In the third persona run Maya left Phone blank on step 2, pressed a pale Save and continue twice, saw nothing happen and thought the page was broken. The button stays disabled, but hovering it, or tabbing to it, now opens a small note above it headed “Still needed to continue”, listing each missing item in the words of its field (for example “Business phone number”, “File: Government photo ID for Maya Chen”) or, for things that are not a field such as owner shares, the existing error sentence. It lists six at most and then “and N more”. Mouse-away, blur or Escape closes it. Nothing is shown on the page itself, no error appears on any field because of it and there is no count.",
+      "b": "Superseded for steps 1 to 6 on 2026-11-09 by partial-steps-allowed: those steps now save and continue even when incomplete, and only the final Submit for verification is held back. In the third persona run Maya left Phone blank on step 2, pressed a pale Save and continue twice, saw nothing happen and thought the page was broken. The button stays disabled, but hovering it, or tabbing to it, now opens a small note above it headed “Still needed to continue”, listing each missing item in the words of its field (for example “Business phone number”, “File: Government photo ID for Maya Chen”) or, for things that are not a field such as owner shares, the existing error sentence. It lists six at most and then “and N more”. Mouse-away, blur or Escape closes it. Nothing is shown on the page itself, no error appears on any field because of it and there is no count.",
       "tradeoff": "This keeps Ryan's earlier calls (the button stays disabled, no click-to-reveal errors, no count near the button) and adds only a hover note he chose on 2026-10-06 from three options. It is hidden until asked for, like the why-we-ask note, so someone who never hovers still sees a pale button that does nothing; on a touch screen there is no hover, and a tap on the disabled button does nothing. Clicking the disabled button still does not scroll to the empty field. Owner fields are prefixed with the owner's name, which reads oddly for “New owner”.",
       "by": "Ryan",
       "when": "2026-10-06"
@@ -1732,7 +1732,7 @@
       "area": "Step 2",
       "where": "Step 2 · Owners with 25% or more",
       "t": "No question about whether everyone is listed; Save and continue turns on once one owner is added",
-      "b": "The question Does anyone else own 25% or more? is removed (it was added on 2026-10-26 and moved under the owner cards earlier on 2026-10-27). Ryan's reason: the applicant has to add every owner with 25% or more anyway, so asking them to confirm they did adds nothing. Save and continue turns on once at least one owner is added and complete. Every owner must hold 25% or more (decision owner-share-minimum), so one owner added is one owner with 25% or more. The Owners with 25% or more card stays at the top with its N listed so far tag and the note Add everyone who owns 25% or more. It shows All listed only when the shares pass 75%, because then nobody else can hold 25% or more. A total over 100% still errors. Company only.",
+      "b": "Superseded for steps 1 to 6 on 2026-11-09 by partial-steps-allowed: those steps now save and continue even when incomplete, and only the final Submit for verification is held back. The question Does anyone else own 25% or more? is removed (it was added on 2026-10-26 and moved under the owner cards earlier on 2026-10-27). Ryan's reason: the applicant has to add every owner with 25% or more anyway, so asking them to confirm they did adds nothing. Save and continue turns on once at least one owner is added and complete. Every owner must hold 25% or more (decision owner-share-minimum), so one owner added is one owner with 25% or more. The Owners with 25% or more card stays at the top with its N listed so far tag and the note Add everyone who owns 25% or more. It shows All listed only when the shares pass 75%, because then nobody else can hold 25% or more. A total over 100% still errors. Company only.",
       "tradeoff": "Nothing asks whether a 25% owner is missing, so an applicant can stop at one owner when two exist. The question would not have caught that either, since a No can be untrue, and the signature at step 7 says the information is true. Compliance should confirm the form may rely on the applicant listing every 25% owner.",
       "by": "Ryan",
       "when": "2026-10-27"
@@ -2406,6 +2406,26 @@
       "tradeoff": "The applicant no longer gets a running count or an All listed confirmation, so nothing on the page says when they have added everyone. This replaces the card described in ownership-bar.",
       "by": "Ryan",
       "when": "2026-11-09"
+    },
+    {
+      "id": "partial-steps-allowed",
+      "area": "Flow",
+      "where": "Steps 1 to 6 · Save and continue, and the left column",
+      "t": "Save and continue works on any step even if it is incomplete; a step left unfinished shows as Partly done",
+      "b": "Applicants may be waiting on a number, a document or a person, so steps 1 to 6 no longer hold Save and continue back until every required answer is in. The button is always on, and pressing it saves what is there and moves to the next step. The left column now says where each opened step stands: Done with a green tick when everything required is in, or Partly done in the warning colour when something is missing. There is no count or percentage for a step, only whether it is finished. Applicants can return to any step they have opened by choosing it in the left column or by pressing Back, and can fill the rest in then. Steps not yet opened cannot be chosen from the left column. On the last step's summary, each section shows a green tick circle only when its step is complete; a step that is only partly done shows a half-filled circle in the warning colour instead. The half circle is the whole icon, the same size as the tick circle, with nothing drawn inside it. Step names stay on one line: the left column is a little wider, and the Partly done label has no icon so it does not take up extra room. Fields still flag their own problem when the applicant leaves them, and their messages now say Fill this in to finish this step. The final step is different: Submit for verification stays off until every step is complete and the signature is typed, and its hover note lists each earlier step still only partly done as well as what is missing on the page.",
+      "tradeoff": "Someone can click through all six steps with nothing filled in and only find out what is missing at the end, so the applicant is not nudged to finish a step while the details are fresh. Partly done does not say what is missing, so they have to open the step to find out. The invited owner's own page still needs everything before Send my details.",
+      "by": "Ryan",
+      "when": "2026-11-09"
+    },
+    {
+      "id": "add-row-raised-fill",
+      "area": "Visual",
+      "where": "Step 2 · Add myself as an owner, Add an owner",
+      "t": "The full-width add buttons have a white fill so they do not blend into the page",
+      "b": "The full-width buttons that add an owner (and the other add rows built the same way) had no fill, only a thin outline, so on the pale grey page they looked like part of the background. They now use the surface-raised-1 background token, the same white as the cards, so they lift off the page the way a card does. The outline is dashed (added 2026-11-09), to read as a place to add something rather than a finished box. The brand-coloured label and the purple-tinted hover are unchanged.",
+      "tradeoff": "The difference between white and the page grey is very small, so it is a faint lift rather than a clear button. If it still reads as flat, the next step is a stronger outline, not a coloured fill.",
+      "by": "Ryan",
+      "when": "2026-11-09"
     }
   ];
 
@@ -2592,6 +2612,8 @@
       addrManual: {},
       addrParts: {},
       openOwner: 1,
+      // The furthest step the applicant has opened. Steps up to here can be returned to from the left column; later ones cannot (decision partial-steps-allowed).
+      maxStep: 1,
       openCards: {},
       revealed: {},
       owners: freshOwners(),
@@ -2663,6 +2685,7 @@
   }
   function setState(patch) {
     Object.assign(state, typeof patch === "function" ? patch(state) : patch);
+    if (state.step > state.maxStep) state.maxStep = state.step;
     schedule();
   }
 
@@ -2748,9 +2771,15 @@
       openOwner: owners.length ? owners[0].id : state.openOwner
     });
   }
-  const next = () => attempt(() => (state.step >= 7 ? setState({ screen: "submitted", submittedAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) }) : setState({ step: state.step + 1 })));
+  // Steps 1 to 6 save and move on whether or not they are complete, because the applicant may be waiting on something (decision partial-steps-allowed). Only the final submit needs every step complete.
+  const stepGaps = () => STEPS.filter((x) => x.n < 7 && Object.keys(stepErrors(x.n)).length > 0).map((x) => x.n);
+  const next = () => {
+    if (state.step < 7) { setState({ step: state.step + 1 }); return; }
+    if (stepGaps().length) return;
+    attempt(() => setState({ screen: "submitted", submittedAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) }));
+  };
   const editFromReview = (step) => setState({ step, editing: true, saveOpen: false });
-  const saveEdit = () => attempt(() => setState({ step: 7, editing: false }));
+  const saveEdit = () => setState({ step: 7, editing: false });
   const back = () => (state.step <= 1 ? setState({ screen: "bizType" }) : setState({ step: state.step - 1 }));
 
   // Legal structure choices (decision company-structure-nine-types). Each maps to one ODIN ownership type; sole proprietor, tax-exempt and government come from the card and the pills.
@@ -2951,13 +2980,13 @@
     if (f.id === "ein" && !f.disabled && String(f.value).trim()) { const p = einProblem(f.value); if (p) return p; }
     if (!f.required || f.disabled) return "";
     const v = f.value;
-    if (f.kind === "check") return v === true ? "" : "Tick this to continue.";
+    if (f.kind === "check") return v === true ? "" : "Tick this to finish this step.";
     if (f.kind === "yn") return v ? "" : "Choose yes or no.";
     if (f.kind === "pills") return v ? "" : "Choose one.";
     if (f.kind === "select") return v ? "" : "Choose one.";
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
-    if (!String(v).trim()) return "Fill this in to continue.";
+    if (!String(v).trim()) return "Fill this in to finish this step.";
     const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
@@ -2999,7 +3028,7 @@
       // Every owner has to be added. A pending owner needs everything; one who has been sent a link needs nothing from the applicant.
       state.owners.forEach((o) => { if (o.status === "pending") ownerFields(o).forEach(add); });
       const total = owners.reduce((x, o) => x + o.pct, 0);
-      if (!owners.length) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " before you continue.";
+      if (!owners.length) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " to finish this step.";
       else if (!isCompany()) { /* ownership percentages only apply to companies */ }
       else if (total > 100) errs.ownership = "Ownership comes to more than 100%. Check each owner's percentage.";
     }
@@ -3007,7 +3036,7 @@
       // An invited owner is not asked for at step 2 (the applicant can carry on), but their details and ID are needed before step 6 and 7 can pass (decision invite-no-exemption).
       state.owners.forEach((o) => { if (o.status === "invited") ownerFields(o).forEach(add); });
       docListFor(owners, isCa()).forEach((d) => {
-        if (!d.skip && d.requirement === "Required" && doc(d.key).state !== "done") errs["doc_" + d.key] = "Add this file to continue.";
+        if (!d.skip && d.requirement === "Required" && doc(d.key).state !== "done") errs["doc_" + d.key] = "Add this file to finish this step.";
       });
     }
     if (step === 7) {
@@ -3375,7 +3404,7 @@
     const allErrs = errStep ? stepErrors(errStep) : {};
     ERR = {};
     Object.keys(allErrs).forEach((k) => { if (st.tried[errStep] || st.touched[k]) ERR[k] = allErrs[k]; });
-    // Save and continue stays disabled until every required answer on the page is valid. The reasons
+    // Steps 1 to 6 continue whether or not they are complete (decision partial-steps-allowed); only the final submit waits for every answer. The reasons
     // are shown on the fields themselves, as each is left (see touched), not on the button.
     const stepComplete = !errStep || Object.keys(allErrs).length === 0;
     // What is still needed, in the applicant's own words, for the hover note on the disabled button (decision 78).
@@ -3392,6 +3421,10 @@
       if (inv && errStep !== 2) { const n = String(ownerInfo(inv).name || "").trim(); m = "Waiting on " + (n && n !== "New owner" ? n : "your invited owner") + ": " + (k.indexOf("doc_") === 0 ? "photo ID" : "their details"); }
       if (missing.indexOf(m) < 0) missing.push(m);
     });
+    // On the final step, earlier steps left partly done hold the submit back and are named in the hover note.
+    const gaps = isFlow && st.step === 7 ? stepGaps() : [];
+    gaps.slice().reverse().forEach((n) => missing.unshift("Step " + n + ", " + stepName(STEPS[n - 1]) + ", is only partly done"));
+    const canNext = !isFlow ? stepComplete : (st.step === 7 ? stepComplete && gaps.length === 0 : true);
     // Step 7 signatory follows the step 2 answer unless edited on step 7.
     const selfOwner = owners.filter((o) => o.self)[0];
     const defaultSigner = a.sigSame === "no" ? (a.sigName || "") : (ownerVal(st.owners[0] || {}, "name") || "");
@@ -3430,6 +3463,7 @@
         7: "Check everything you've told us. When you sign, we send it all in one go."
       }[st.step],
       stepComplete: stepComplete,
+      canNext: canNext,
       missing: missing,
       nextLabel: st.step === 7 ? "Submit for verification" : "Save and continue",
       submitNote: "Straight away. Trullio, our verification partner, gets one complete package.",
@@ -3457,7 +3491,7 @@
         { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " uploaded"]; })(), step: 6 }
       ].map((r) => {
         const done = r.parts.filter(Boolean);
-        return { label: r.label, step: r.step, value: done.length ? done.join(" · ") : "Nothing filled in yet", empty: !done.length };
+        return { label: r.label, step: r.step, value: done.length ? done.join(" · ") : "Nothing filled in yet", empty: !done.length, partial: Object.keys(stepErrors(r.step)).length > 0 };
       })
     };
   }
@@ -3928,9 +3962,16 @@
     const ownerWaiting = (o) => o.status === "invited" && (ownerFields(o).some((f) => fieldError(f)) || doc("id_" + o.id).state !== "done");
     const waitingOn = state.owners.filter(ownerWaiting).length;
     const waitNote = waitingOn === 0 ? "" : waitingOn === 1 ? (isNonprofit() ? "Waiting on one person's details" : "Waiting on one owner's details") : "Waiting on " + waitingOn + (isNonprofit() ? " people's details" : " owners' details");
+    // A step the applicant has opened can be returned to, and says whether it is finished or only partly done. Steps not yet opened cannot be reached (decision partial-steps-allowed).
     const items = STEPS.map((s) => {
-      if (s.n < state.step || (state.editing && s.n !== state.step && s.n < 7)) {
-        return html`<li><button type="button" class="step is-done" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`}</span><span class="step-meta">${icon("check", 12)}Done</span></button></li>`;
+      if (s.n === state.step && !state.editing) {
+        return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
+      }
+      const reachable = state.editing ? s.n < 7 : s.n <= state.maxStep;
+      if (reachable && s.n !== state.step) {
+        const partial = Object.keys(stepErrors(s.n)).length > 0;
+        const sub = s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`;
+        return html`<li><button type="button" class="step ${partial ? "is-partial" : "is-done"}" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${sub}</span><span class="step-meta">${partial ? "Partly done" : html`${icon("check", 12)}Done`}</span></button></li>`;
       }
       if (s.n === state.step) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
@@ -4206,7 +4247,7 @@
   function reviewView(v) {
     return html`<div class="summary" data-key="s7-summary">
   ${v.summary.map((r) => html`<div class="summary-row">
-    <span class="tick">${icon("check", 13, "i-b")}</span>
+    <span class="tick${r.partial ? " tick--partial" : ""}"${r.partial ? html` role="img" aria-label="Partly done"` : ""}>${r.partial ? "" : icon("check", 13, "i-b")}</span>
     <div class="grow"><div class="summary-label">${r.label}</div><div class="summary-value" title="${r.value}">${r.value}</div></div>
     <button type="button" class="btn-link btn-link--md" aria-label="Edit ${r.label}" data-click="${on(() => editFromReview(r.step))}">Edit</button>
   </div>`)}
@@ -4236,10 +4277,10 @@
 
   // A disabled button cannot be hovered or focused, so it sits in a wrapper that can. The note names what is still needed.
   function gateView(v, btn) {
-    if (v.stepComplete || !v.missing.length) return btn;
+    if (v.canNext || !v.missing.length) return btn;
     const shown = v.missing.slice(0, 6);
     const more = v.missing.length - shown.length;
-    return html`<span class="gate" data-key="gate" tabindex="0" data-mouseenter="${on(() => setState({ nextTip: true }))}" data-mouseleave="${on(() => setState({ nextTip: false }))}" data-focus="${on(() => setState({ nextTip: true }))}" data-blur="${on(() => setState({ nextTip: false }))}">${btn}${state.nextTip && html`<span class="gate-pop" data-key="gate-pop" role="note"><span class="gate-pop-body"><span class="gate-head">Still needed to continue</span><ul class="gate-list">${shown.map((m) => html`<li>${m}</li>`)}${more > 0 && html`<li>and ${more} more</li>`}</ul>${v.missing.some((m) => m.indexOf("Waiting on ") === 0) && html`<span class="gate-foot">Fill it in yourself on the Owners step, or remove their access.</span>`}</span></span>`}</span>`;
+    return html`<span class="gate" data-key="gate" tabindex="0" data-mouseenter="${on(() => setState({ nextTip: true }))}" data-mouseleave="${on(() => setState({ nextTip: false }))}" data-focus="${on(() => setState({ nextTip: true }))}" data-blur="${on(() => setState({ nextTip: false }))}">${btn}${state.nextTip && html`<span class="gate-pop" data-key="gate-pop" role="note"><span class="gate-pop-body"><span class="gate-head">Still needed to submit</span><ul class="gate-list">${shown.map((m) => html`<li>${m}</li>`)}${more > 0 && html`<li>and ${more} more</li>`}</ul>${v.missing.some((m) => m.indexOf("Waiting on ") === 0) && html`<span class="gate-foot">Fill it in yourself on the Owners step, or remove their access.</span>`}</span></span>`}</span>`;
   }
 
   // The "why we ask" note for the step, shown as hoverable text at the end of the step's description (decision 73).
@@ -4267,13 +4308,13 @@
       ${step === 7 && reviewView(v)}
       ${v.cards.map(cardView)}
       ${step === 7 && signView(v)}
-      ${Object.keys(ERR).length > 0 && html`<p class="footer-error" data-key="err-summary" role="alert">${icon("alert", 16)}${Object.keys(ERR).length === 1 ? "One thing needs a look before you can continue." : Object.keys(ERR).length + " things need a look before you can continue."}</p>`}
+      ${step === 7 && Object.keys(ERR).length > 0 && html`<p class="footer-error" data-key="err-summary" role="alert">${icon("alert", 16)}${Object.keys(ERR).length === 1 ? "One thing needs a look before you can submit." : Object.keys(ERR).length + " things need a look before you can submit."}</p>`}
       <div class="footer" data-key="footer">
         ${state.editing ? html`<div class="footer-end" data-key="end">
-          ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" ${v.stepComplete ? "" : "disabled"} data-click="${on(saveEdit)}">Save</button>`)}
+          ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" data-click="${on(saveEdit)}">Save</button>`)}
         </div>` : html`${html`<button type="button" class="btn btn-neutral btn-lg back-btn" data-key="back" data-click="${on(back)}">${icon("chev-l", 17)}Back</button>`}
         <div class="footer-end" data-key="end">
-          ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" ${v.stepComplete ? "" : "disabled"} data-click="${on(next)}">${v.nextLabel}${icon("chev-r", 18)}</button>`)}
+          ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" ${v.canNext ? "" : "disabled"} data-click="${on(next)}">${v.nextLabel}${icon("chev-r", 18)}</button>`)}
         </div>`}
       </div>
     </main>

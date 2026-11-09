@@ -127,6 +127,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .pill--warning { background: var(--color-background-warning-subtle); color: var(--color-text-warning); }
 
 .tick { width: 22px; height: 22px; flex: none; border-radius: var(--radius-full); background: var(--color-background-success-default); color: var(--color-icon-on-brand); display: flex; align-items: center; justify-content: center; }
+.tick--partial { background: linear-gradient(90deg, var(--color-background-warning-default) 50%, transparent 50%); box-shadow: inset 0 0 0 2px var(--color-background-warning-default); }
 
 /* ---------- Welcome ---------- */
 .welcome { flex: 1; display: flex; justify-content: center; padding: 56px 28px 80px; }
@@ -179,7 +180,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .topnav-inner { width: 100%; max-width: var(--nav-w, 1220px); display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .topnav-logo { display: block; height: 24px; width: auto; }
 .flow { --flow-top: 40px; flex: 1; display: flex; justify-content: center; padding: var(--flow-top) 32px 80px; }
-.flow-grid { width: 100%; max-width: 1220px; display: grid; grid-template-columns: 268px minmax(0,1fr); gap: 64px; align-items: start; }
+.flow-grid { width: 100%; max-width: 1220px; display: grid; grid-template-columns: 280px minmax(0,1fr); gap: 56px; align-items: start; }
 
 /* rail */
 .rail { position: sticky; top: calc(var(--nav-h) + 40px); align-self: start; max-height: calc(100vh - var(--nav-h) - 80px); overflow-y: auto; }
@@ -199,11 +200,12 @@ button.step:hover { background: var(--color-background-hover); }
 .step.is-current { background: var(--color-background-brand-subtle); }
 .step-dot { width: 22px; height: 22px; flex: none; border-radius: var(--radius-full); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 1px var(--color-border-default); color: var(--color-text-subtle); display: flex; align-items: center; justify-content: center; font-size: var(--type-caption-default-size); font-weight: var(--type-control-default-weight); }
 .is-current .step-dot { background: var(--color-background-surface-raised-1); color: var(--color-text-brand); border: 1px solid var(--color-border-brand); box-shadow: none; font-weight: var(--type-control-bold-weight); animation: xpulse 2.4s ease-out infinite; }
-.step-label { flex: 1; min-width: 0; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
+.step-label { flex: 1; min-width: 0; white-space: nowrap; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 .is-current .step-label { font-weight: var(--type-control-bold-weight); color: var(--color-text-link-hover); }
-.step-meta { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
+.step-meta { flex: none; white-space: nowrap; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .is-done .step-meta { display: inline-flex; align-items: center; gap: 3px; color: var(--color-text-success); font-weight: var(--type-control-default-weight); }
 .is-current .step-meta { color: var(--color-text-brand); }
+.is-partial .step-meta { display: inline-flex; align-items: center; gap: 5px; color: var(--color-text-warning); font-weight: var(--type-control-default-weight); }
 .rail-help { margin-top: 16px; }
 .btn-neutral.rail-help { background: var(--color-background-surface-raised-1); }
 .btn-neutral.rail-help:hover { background: var(--color-background-hover); }
@@ -296,8 +298,8 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .person-meta { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .person-actions { display: flex; justify-content: flex-start; margin-top: 20px; }
 .person-body { padding: 4px 20px 20px; animation: xrise 200ms ease both; }
-.add-row { display: flex; align-items: center; justify-content: center; gap: var(--space-gap-related); padding: 15px; border: none; border-radius: var(--radius-default); background: transparent; box-shadow: inset 0 0 0 1px var(--color-border-default); color: var(--color-text-brand); font-size: var(--type-body-default-size); font-weight: var(--type-control-default-weight); cursor: pointer; }
-.add-row:hover { background: var(--color-background-brand-subtle); box-shadow: inset 0 0 0 1px var(--color-border-brand); }
+.add-row { display: flex; align-items: center; justify-content: center; gap: var(--space-gap-related); padding: 14px; border: 1px dashed var(--color-border-default); border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); color: var(--color-text-brand); font-size: var(--type-body-default-size); font-weight: var(--type-control-default-weight); cursor: pointer; }
+.add-row:hover { background: var(--color-background-brand-subtle); border-color: var(--color-border-brand); }
 
 /* ---------- Step 4: payout method ---------- */
 
@@ -443,7 +445,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 
 /* ---------- Narrower widths ---------- */
 @container content (max-width: 1099px) {
-  .flow-grid { grid-template-columns: 268px minmax(0,1fr); gap: 48px; }
+  .flow-grid { grid-template-columns: 280px minmax(0,1fr); gap: 48px; }
 }
 @container content (max-width: 759px) {
   .topnav--flow { --nav-pad: 20px; }
@@ -671,7 +673,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .masked-edit { -webkit-text-security: disc; }
 
 /* Step list: a short second line under a finished step, e.g. waiting on owner details. */
-.rail-sub { display: block; margin-top: 2px; font-size: var(--type-caption-default-size); font-weight: var(--type-body-default-weight); color: var(--color-text-brand); }
+.rail-sub { display: block; white-space: normal; margin-top: 2px; font-size: var(--type-caption-default-size); font-weight: var(--type-body-default-weight); color: var(--color-text-brand); }
 
 /* ---------- Check it's you ---------- */
 .entry-card { max-width: 560px; }
