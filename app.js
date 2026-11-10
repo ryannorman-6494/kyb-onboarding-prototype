@@ -858,7 +858,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner details",
       "t": "Offer back what step 1 already collected, and break each owner into three labelled groups",
-      "b": "Two testers typed their email, phone and address at step 1 and were asked for them again at step 2. The first owner's email and phone now start filled from step 1, a sole proprietor's home address from their business address, and the country of residence and ID from the region. All of it stays editable. The owner's roughly fifteen fields are grouped under About them, Their ID and Screening, so the page reads as three short jobs rather than one long form.",
+      "b": "Two testers typed their email, phone and address at step 1 and were asked for them again at step 2. The first owner's email and phone now start filled from step 1, a sole proprietor's home address from their business address, and the country of residence and ID from the region. All of it stays editable. The owner's roughly fifteen fields are grouped under About them, Identity verification and Screening, so the page reads as three short jobs rather than one long form.",
       "tradeoff": "A company's step 1 email and phone are business contacts and may not be the owner's own, so they are offered, not locked. A pre-filled country can be missed by someone who holds a different nationality; nationality is deliberately left blank.",
       "by": "Claude",
       "when": "2026-10-05"
@@ -2328,14 +2328,14 @@
       "when": "2026-11-06"
     },
     {
-      "id": "owner-save-button",
+      "id": "owner-done-button",
       "area": "Flow",
       "where": "Step 2 · Owner cards",
-      "t": "Each open owner card ends with a Save button that saves the owner and closes the card; the open card has no purple outline",
-      "b": "An open owner card no longer gets the purple (brand) outline, because it is not a selected card in the way a radio card is; it keeps the same plain border as a closed one. At the bottom of every open owner card there is a Save button. In the real build it saves that owner to the back end, so the owner is kept even if the applicant leaves the onboarding flow before finishing the step. On screen it only shows the Saving then Saved tell in the progress column and closes the card, so the applicant knows that owner is done and can move to the next. Saving is not required: every owner is saved when the step is completed even if Save was never pressed on some of them. The Save button sits at the bottom left of the card, in line with the fields. The Save button is not shown on the page an invited owner sees.",
-      "tradeoff": "The prototype already keeps what is typed as it is typed, so Save changes nothing in the data here; it exists to show the behaviour, and to give the applicant a clear sense of finishing one person. Save does not check the card, so an incomplete owner can be saved and closed, and the problems only appear when the applicant continues. Some applicants may think Save is required for every owner.",
+      "t": "Each open owner card ends with a secondary Done button that closes the card; progress is saved as the applicant goes",
+      "b": "At the bottom left of every open owner card there is a Done button, in the secondary (neutral) style rather than the purple primary style, so it does not compete with Save and continue. It only closes the card, so the applicant can see that person is finished and move to the next. It does not save anything: each field is saved as it is filled in, Save and continue and Save & Exit both keep every owner, and the Why we ask note says progress is saved after every field. It does not check the card, so an incomplete owner can be closed and the problems only appear when the applicant continues. An open owner card has no purple outline, because it is not a selected card in the way a radio card is; it keeps the same plain border as a closed one. The button is not shown on the page an invited owner sees. (It was a Save button, then Save owner, until 2026-11-10; it was renamed because a save button implied the owner would be lost without it, when saving a whole step is already possible at any point.)",
+      "tradeoff": "Done changes nothing in the data, so an applicant may wonder whether it saved. The page's Saved tell in the progress column covers this, but it no longer flashes on Done.",
       "by": "Ryan",
-      "when": "2026-11-06"
+"when": "2026-11-06"
     },
     {
       "id": "address-links-below-hint",
@@ -2432,7 +2432,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards · Ownership percentage",
       "t": "Superseded on 2026-11-09 by owner-slider-removed: ownership percentage is a plain box again. It was a slider from 25% to 100% with a small box beside it, and the owner form was split into labelled chunks",
-      "b": "Superseded: the slider was removed on 2026-11-09 (decision owner-slider-removed). Ownership percentage is no longer a plain text box. It is a slider whose track runs from 0% at the left to 100% at the right, but the thumb cannot be dragged or keyed below 25%: the purple fill runs from the left end like any ordinary slider, nothing is greyed out, and the labels under it read 0%, 25% and 100%. Moving below 25 simply does nothing. and a small box to its left with a % sign. Dragging the slider fills the box, so the applicant can see exactly what the thumb is on, and typing in the box moves the slider, so a very specific value such as 33.3 can be keyed in. It is styled to look clean rather than native: a thin rounded track filled in the brand colour up to the thumb, a white round thumb with a hairline edge and soft shadow that grows slightly while dragged, and a focus ring for keyboard use. The slider stops at 25 because the product only asks for owners with 25% or more; if someone types less than 25 or more than 100 the box shows the same error as before and the slider rests at its nearest end. An owner with no percentage yet shows the slider at 25 and an empty box until one is chosen. The owner form is also split into more labelled chunks so it reads as short sections rather than one long list: About them (name and title side by side, then ownership), Personal details (date of birth, nationality, country of residence, home address, email, phone), Their ID, and Screening. Every field is shown from the start; nothing is hidden until an earlier part is finished.",
+      "b": "Superseded: the slider was removed on 2026-11-09 (decision owner-slider-removed). Ownership percentage is no longer a plain text box. It is a slider whose track runs from 0% at the left to 100% at the right, but the thumb cannot be dragged or keyed below 25%: the purple fill runs from the left end like any ordinary slider, nothing is greyed out, and the labels under it read 0%, 25% and 100%. Moving below 25 simply does nothing. and a small box to its left with a % sign. Dragging the slider fills the box, so the applicant can see exactly what the thumb is on, and typing in the box moves the slider, so a very specific value such as 33.3 can be keyed in. It is styled to look clean rather than native: a thin rounded track filled in the brand colour up to the thumb, a white round thumb with a hairline edge and soft shadow that grows slightly while dragged, and a focus ring for keyboard use. The slider stops at 25 because the product only asks for owners with 25% or more; if someone types less than 25 or more than 100 the box shows the same error as before and the slider rests at its nearest end. An owner with no percentage yet shows the slider at 25 and an empty box until one is chosen. The owner form is also split into more labelled chunks so it reads as short sections rather than one long list: About them (name and title side by side, then ownership), Personal details (date of birth, nationality, country of residence, home address, email, phone), Identity verification, and Screening. Every field is shown from the start; nothing is hidden until an earlier part is finished.",
       "tradeoff": "A slider is quick for a round number and slow for a precise one, so the box beside it carries the precision and the two must stay in step. Whole numbers are the natural stop for the slider; decimals only come from the box. The section headings make the card taller by a few lines, but each part is easier to find. Sole proprietors are shown the slider too, at 100, which is a control they have no reason to touch.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2452,7 +2452,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "The long owner form is chunked into labelled sections, not revealed one section at a time",
-      "b": "The owner form is long by default, so we looked at breaking it up. One way was progressive disclosure: show the first section, and reveal the next only once the one before it is complete. We decided against it. Revealing sections in turn means a person has to finish one before they can see the next, which stops them filling in the details they have to hand right now and coming back to the rest later. That matters because applicants are often waiting on something, such as an ID number or a date of birth, and the flow now lets them save and continue with a step partly done (decision partial-steps-allowed). So every field stays reachable from the start, and the form is chunked with labelled sections instead: About them, Personal details, Their ID and Screening (decisions owner-share-slider and owner-form-accordion). The ownership percentage became a slider to make that section lighter.",
+      "b": "The owner form is long by default, so we looked at breaking it up. One way was progressive disclosure: show the first section, and reveal the next only once the one before it is complete. We decided against it. Revealing sections in turn means a person has to finish one before they can see the next, which stops them filling in the details they have to hand right now and coming back to the rest later. That matters because applicants are often waiting on something, such as an ID number or a date of birth, and the flow now lets them save and continue with a step partly done (decision partial-steps-allowed). So every field stays reachable from the start, and the form is chunked with labelled sections instead: About them, Personal details, Identity verification and Screening (decisions owner-share-slider and owner-form-accordion). The ownership percentage became a slider to make that section lighter.",
       "tradeoff": "All the fields are on the page at once, so the card is still tall, and a person who would have liked to be led through it one part at a time is not. The headings and the shorter percentage control help, but they do not shorten the form. If testing shows the length puts people off, other ways to cut it down that keep every field reachable are collapsible sections that all start open, or a sticky list of sections to jump between.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2462,7 +2462,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Each section of the owner form can be collapsed, and the contact details join Personal details",
-      "b": "The owner form is split into three sections (name, title and ownership percentage now sit inside Personal details, see owner-form-three-sections; on 2026-11-09 Their ID was put before How to reach them): Personal details, Their ID and How to reach them (which also holds the politically exposed person question, after the SSN or SIN; the Screening section was removed on 2026-11-09). Each heading is now a button with a chevron that opens or closes that section on its own. The heading is set as a section subtitle (16px, semibold) in the normal primary text colour, not small grey capitals, so each section is clearly labelled. It no longer says how many fields the section holds (a count, such as 6 fields, was shown beside the name until 2026-11-09). A small minutes badge was beside each title from 2026-11-09 and was removed the same day. The title sits centred between the dividers above and below it, with 20px of space either side and 24px of space between the last open section's fields and the next divider; the first heading sits 24px under the always-shown fields. This is more room than the first centred version, which felt squashed. Personal details starts open and the other two start closed (changed on 2026-11-09 by owner-form-three-sections; before that every section started closed), and the applicant opens whichever they want, in any order. Closed is not locked: no section has to be finished before another can be opened, and every field is one click away (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. Email address and phone number are back in their own How to reach them section, after Personal details (they were folded into Personal details from 2026-11-09 earlier the same day).",
+      "b": "Superseded on 2026-11-10 by owner-form-two-sections: there are now two sections, and email and phone sit in Personal details. The owner form is split into three sections (name, title and ownership percentage now sit inside Personal details, see owner-form-three-sections; on 2026-11-09 Identity verification was put before How to reach them): Personal details, Identity verification and How to reach them (which also holds the politically exposed person question, after the SSN or SIN; the Screening section was removed on 2026-11-09). Each heading is now a button with a chevron that opens or closes that section on its own. The heading is set as a section subtitle (16px, semibold) in the normal primary text colour, not small grey capitals, so each section is clearly labelled. It no longer says how many fields the section holds (a count, such as 6 fields, was shown beside the name until 2026-11-09). A small minutes badge was beside each title from 2026-11-09 and was removed the same day. The title sits centred between the dividers above and below it, with 20px of space either side and 24px of space between the last open section's fields and the next divider; the first heading sits 24px under the always-shown fields. This is more room than the first centred version, which felt squashed. Personal details starts open and the other two start closed (changed on 2026-11-09 by owner-form-three-sections; before that every section started closed), and the applicant opens whichever they want, in any order. Closed is not locked: no section has to be finished before another can be opened, and every field is one click away (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. Email address and phone number are back in their own How to reach them section, after Personal details (they were folded into Personal details from 2026-11-09 earlier the same day).",
       "tradeoff": "Sections open independently, so the card can still grow as tall as before once everything is open, and this is not a strict accordion where opening one closes the rest. With most sections closed, nothing on the card shows what has been filled in there, so a person can skip a section and forget it; the step's percentage done and the final review are what catch that. Sections go back to all closed if the page is reloaded.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2522,7 +2522,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards · Ownership percentage",
       "t": "Ownership percentage is a plain box again, and the first three owner fields sit above the sections with no heading",
-      "b": "Ryan judged the slider overkill, so ownership percentage goes back to a single text box with the placeholder e.g. 40 and, for everyone except a sole proprietor, the line We only need owners with 25% or more. Typing is the only way to set it, and the checks are unchanged: a number from 0 to 100, and 25 or more for an owner. The slider, its number box, the scale labels and the 25% stop are gone. At the same time the About them heading is removed: the owner's name, title and ownership percentage are always shown at the top of the card with no accordion heading, and only the sections below are accordions, in this order: Personal details (date of birth, nationality, country of residence, home address), How to reach them (email address, phone number), Their ID, which also holds the politically exposed person question after the SSN or SIN. All three start closed.",
+      "b": "Ryan judged the slider overkill, so ownership percentage goes back to a single text box with the placeholder e.g. 40 and, for everyone except a sole proprietor, the line We only need owners with 25% or more. Typing is the only way to set it, and the checks are unchanged: a number from 0 to 100, and 25 or more for an owner. The slider, its number box, the scale labels and the 25% stop are gone. At the same time the About them heading is removed: the owner's name, title and ownership percentage are always shown at the top of the card with no accordion heading, and only the sections below are accordions, in this order: Personal details (date of birth, nationality, country of residence, home address), How to reach them (email address, phone number), Identity verification, which also holds the politically exposed person question after the SSN or SIN. All three start closed.",
       "tradeoff": "A plain box gives no visual sense of how much of the business someone owns, and nothing stops a number below 25 being typed until the error shows. Name, title and ownership are now the only fields in the always-open part of the card, so every other detail needs a click to open, including contact details that used to be a quick scan.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2530,9 +2530,9 @@
     {
       "id": "pep-in-their-id",
       "area": "Flow",
-      "where": "Step 2 · Owner cards · Their ID",
-      "t": "The politically exposed person question sits in Their ID, after the SSN, and the Screening section is gone",
-      "b": "The Screening section, which held only the question Is this person a politically exposed person?, is removed. The question now sits at the end of Their ID, directly after the Social Security Number or SIN, in the same row of the form, in the right-hand column beside it (changed on 2026-11-09: it first took the full width on its own row). For a non-profit or government body, which is not asked for an SSN or SIN, it follows the ID issuing country. The owner form is therefore three accordions: Personal details, How to reach them and Their ID. The line under the question now stops after the examples of a senior public role (head of state, senior official, judge, senior military); the sentences Answering yes doesn't disqualify you and It adds one extra screening step are removed. The answer, its Yes and No pills and the rule that it must be answered before the final submit are unchanged.",
+      "where": "Step 2 · Owner cards · Identity verification",
+      "t": "The politically exposed person question sits in Identity verification, after the SSN, and the Screening section is gone",
+      "b": "Changed on 2026-11-10 (owner-form-two-sections): the question now takes its own full row below the SSN or SIN, and the owner form has two sections, not three. The Screening section, which held only the question Is this person a politically exposed person?, is removed. The question now sits at the end of Identity verification, directly after the Social Security Number or SIN, in the same row of the form, in the right-hand column beside it (changed on 2026-11-09: it first took the full width on its own row). For a non-profit or government body, which is not asked for an SSN or SIN, it follows the ID issuing country. The owner form is therefore three accordions: Personal details, How to reach them and Identity verification. The line under the question now stops after the examples of a senior public role (head of state, senior official, judge, senior military); the sentences Answering yes doesn't disqualify you and It adds one extra screening step are removed. The answer, its Yes and No pills and the rule that it must be answered before the final submit are unchanged.",
       "tradeoff": "Without the reassurance, someone who reads the examples and thinks of a relative or a local councillor may answer No to be safe, or hesitate over Yes, because nothing says that Yes is not a rejection. It is also now one of six questions in a section about ID documents, so it can read as part of the ID check and not as a separate screening question.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2542,20 +2542,20 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "The owner form is three accordions, and Personal details comes first, open, and holds the name, title and ownership percentage",
-      "b": "The always-shown fields at the top of the owner card are folded into a Personal details accordion, which is the first section and starts open. It holds, in this order: full legal name on the left, then title and ownership percentage side by side in the right-hand column, each taking half of it, then date of birth, nationality, country of residence and home address. The other two sections start closed: Their ID (including the politically exposed person question) and then How to reach them (email address, phone number), swapped into that order on 2026-11-09. The owner form is therefore three sections, and the card has no fields outside an accordion. Owner sections still open and close on their own, and a section holding a problem stays open. For a non-profit there is no ownership percentage, so the title takes the right-hand column alone. The always-open arrangement of name, title and percentage from owner-slider-removed is replaced by this.",
+      "b": "Changed on 2026-11-10 (owner-form-two-sections): the owner form is now two sections, Personal details (which also holds email and phone) and Identity verification; How to reach them is gone. The always-shown fields at the top of the owner card are folded into a Personal details accordion, which is the first section and starts open. It holds, in this order: full legal name on the left, then title and ownership percentage side by side in the right-hand column, each taking half of it, then date of birth, nationality, country of residence and home address. The other two sections start closed: Identity verification (including the politically exposed person question) and then How to reach them (email address, phone number), swapped into that order on 2026-11-09. The owner form is therefore three sections, and the card has no fields outside an accordion. Owner sections still open and close on their own, and a section holding a problem stays open. For a non-profit there is no ownership percentage, so the title takes the right-hand column alone. The always-open arrangement of name, title and percentage from owner-slider-removed is replaced by this.",
       "tradeoff": "Title and percentage are each only a quarter of the width of the form, so a long title such as Chief Executive Officer may be cut off in the box and the percentage box is wider than the three or four digits it needs. Personal details is the longest section, with seven fields, so the first screen of the card is taller than before.",
       "by": "Ryan",
       "when": "2026-11-09"
     },
     {
-      "id": "encrypted-tag-text-only",
+      "id": "encrypted-beside-why-we-ask",
       "area": "Fields",
-      "where": "Field labels · Encrypted tag",
-      "t": "The Encrypted tag is purple text with a lock, with no background",
-      "b": "The Encrypted tag beside the label of an ID number, SSN or SIN and account number field is the lock icon and the word Encrypted in the brand purple, with no filled background and no padding. The filled pill made the label row taller than the label alone, which pushed the field away from its label.",
-      "tradeoff": "Without a fill the tag is quieter and may be read as part of the label rather than a marker.",
+      "where": "Sensitive fields (ID number, SSN or SIN, account numbers) · under the field",
+      "t": "Encrypted sits beside Why we ask under the field, with a padlock, and opens a popover on hover",
+      "b": "The Encrypted marker is no longer a purple tag beside the label, which read as a link or button. It now sits under the field on the same line as Why we ask, set the same way: the same small text, the same colour and a padlock icon where Why we ask has the question icon. Hovering or focusing it opens a popover, like the one Why we ask has, explaining that the number is encrypted as it travels and while it is stored, that only the last four characters show once the applicant leaves the field, and that it goes to the verification partner to check who they are. On a field with no Why we ask, Encrypted sits there alone.",
+      "tradeoff": "The marker is further from the label, so it is less likely to be seen before the applicant types. Like Why we ask, it only explains on hover or focus, so it does little on a touch screen. The popover wording is a draft that security has not reviewed.",
       "by": "Ryan",
-      "when": "2026-11-09"
+      "when": "2026-11-10"
     },
     {
       "id": "owner-nationality-dob-residence-row",
@@ -2566,6 +2566,36 @@
       "tradeoff": "Country of residence is a select that holds long country names, and at a quarter of the width a long name may be cut off in the box.",
       "by": "Ryan",
       "when": "2026-11-09"
+    },
+    {
+      "id": "owner-form-two-sections",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards",
+      "t": "The owner form is two accordions: email and phone sit in Personal details, and the politically exposed person question sits below the SSN",
+      "b": "On 2026-11-10 the second section was renamed from Their ID to Identity verification, because Their ID was easy to miss as a heading and the section holds the ID details the check needs. The How to reach them accordion is removed. Email address and phone number are the last two fields of Personal details, after the home address, each taking half the width. The owner form is now two accordions: Personal details, open by default, and Identity verification. In Identity verification the politically exposed person question takes its own full row directly below the Social Security Number or SIN, which sits in the left half (for a non-profit or government body, which has no SSN or SIN, it follows the ID issuing country).",
+      "tradeoff": "Personal details is now the longest section, so the first screen of the card is taller. The question sits alone on a full row, so the SSN row has an empty right half.",
+      "by": "Ryan",
+      "when": "2026-11-10"
+    },
+    {
+      "id": "address-on-quarter-grid",
+      "area": "Fields",
+      "where": "Every address field",
+      "t": "Address search and street boxes run the full width, with the manual link below; the other address boxes sit on the quarter grid",
+      "b": "A card is a grid of four equal columns, so a field is a half or a quarter, with the same 16px gap everywhere. The address search box and the two street boxes run the full width. The Enter address manually link sits below the search box, left-aligned, in the same place the Clear and search again link sits once the parts are showing. The city takes two columns, with the state or province and the ZIP or postal code a quarter each.",
+      "tradeoff": "A full-width search box is wide for a short address. The link under the field adds a line of height to every address field.",
+      "by": "Ryan",
+      "when": "2026-11-10"
+    },
+    {
+      "id": "owner-avatar-person-icon",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · avatar circle",
+      "t": "A new owner's avatar shows a person icon until there is a name to take initials from",
+      "b": "The light purple circle at the left of an owner card shows the owner's initials once a name is typed. Until then, a newly added owner shows a person icon instead of a dash or question mark, so the circle reads as a person and not as a missing value.",
+      "tradeoff": "The icon and the initials are different shapes, so the circle changes from an icon to letters as soon as the first name is typed.",
+      "by": "Ryan",
+      "when": "2026-11-10"
     }
   ];
 
@@ -3363,7 +3393,10 @@
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
       f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
-      sub("id", "Their ID"),
+      // Email and phone close Personal details; there is no separate How to reach them section (decision owner-form-two-sections).
+      f("email", "Email address", "text", { placeholder: "name@example.com" }),
+      f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
+      sub("id", "Identity verification"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
       f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "As shown on the document", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
@@ -3374,12 +3407,11 @@
         placeholder: ca ? "000 000 000" : "000-00-0000",
         why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
       }),
+      // Full row, so it starts on a new line below the SSN or SIN (decision owner-form-two-sections).
       f("pep", "Is this person a politically exposed person?", "yn", {
+        span: true,
         hint: "A PEP holds, or has held, a senior public role: head of state, senior official, judge, senior military."
-      }),
-      sub("reach", "How to reach them"),
-      f("email", "Email address", "text", { placeholder: "name@example.com" }),
-      f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" })
+      })
     ];
   }
 
@@ -3740,12 +3772,17 @@
   // The asterisk is decorative; screen readers get the word.
   const REQ = html`<span class="req-star" aria-hidden="true">*</span><span class="sr-only"> (required)</span>`;
 
-  // "Why we ask" for a sensitive field: a question icon and label that open a popover on hover or focus, same pattern as the step-level note.
+  // Under a sensitive field: "Why we ask" (question icon) and "Encrypted" (padlock), side by side in the same style. Each opens a popover on hover or focus, same pattern as the step-level note (decisions field-why-popover, encrypted-beside-why-we-ask).
   function fieldWhyView(f) {
-    const open = () => setState({ fieldWhy: f.id });
-    const close = () => { if (state.fieldWhy === f.id) setState({ fieldWhy: "" }); };
-    return html`<span class="field-why" data-mouseenter="${on(open)}" data-mouseleave="${on(close)}"><button type="button" class="field-why-trigger" aria-expanded="${String(state.fieldWhy === f.id)}" data-click="${on(open)}" data-focus="${on(open)}" data-blur="${on(close)}">${icon("help", 14, "i-accent")}Why we ask</button>${state.fieldWhy === f.id && html`<span class="field-why-pop" role="note"><span class="field-why-body">${f.why}</span></span>`}</span>`;
+    const trig = (key, iconName, label, body) => {
+      const open = () => setState({ fieldWhy: key });
+      const close = () => { if (state.fieldWhy === key) setState({ fieldWhy: "" }); };
+      return html`<span class="field-why" data-key="${key}" data-mouseenter="${on(open)}" data-mouseleave="${on(close)}"><button type="button" class="field-why-trigger" aria-expanded="${String(state.fieldWhy === key)}" data-click="${on(open)}" data-focus="${on(open)}" data-blur="${on(close)}">${icon(iconName, 14, "i-accent")}${label}</button>${state.fieldWhy === key && html`<span class="field-why-pop" role="note"><span class="field-why-body">${body}</span></span>`}</span>`;
+    };
+    return html`<div class="field-meta">${f.why && trig(f.id, "help", "Why we ask", f.why)}${f.sensitive && trig(f.id + ":enc", "lock", "Encrypted", ENCRYPTED_NOTE)}</div>`;
   }
+  // Draft wording, not reviewed by security (see decision encrypted-beside-why-we-ask).
+  const ENCRYPTED_NOTE = "We encrypt this number as it travels and while it's stored. Once you leave the field only the last four characters show, and you can choose to show or hide the rest. It goes to Trullio, our verification partner, to check who you are.";
 
   function fieldView(f) {
     const id = "f-" + f.id;
@@ -3865,8 +3902,9 @@
     ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
   </ul>`}
 </div>
-  <button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button>
 </div></div>`;
+          // The manual link sits below the field, like Clear and search again (decision address-on-quarter-grid).
+          after = html`<button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button>`;
         }
         break;
       }
@@ -3878,10 +3916,10 @@
       ? html`<span class="field-label" id="l-${f.id}">${f.label}${f.required && REQ}</span>`
       : html`<label class="field-label" for="${id}">${f.label}${f.required && REQ}</label>`;
     return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}>
-  <div class="field-head">${label}${f.chip && html`<span class="chip">${f.chip}</span>`}${f.sensitive && html`<span class="chip chip--secure">${icon("lock", 10, "i-b")}Encrypted</span>`}</div>
+  <div class="field-head">${label}${f.chip && html`<span class="chip">${f.chip}</span>`}</div>
   ${control}
   ${errView(f.id)}
-  ${f.why && fieldWhyView(f)}
+  ${(f.why || f.sensitive) && fieldWhyView(f)}
   ${f.hint && html`<p class="field-hint" id="${hintId}">${f.hint}</p>`}
   ${after}
 </div>`;
@@ -4216,8 +4254,8 @@
   function ownerView(o, recipient) {
     const isOpen = state.openOwner === o.id;
     const toggle = () => setState({ openOwner: state.openOwner === o.id ? 0 : o.id });
-    // Save (decision owner-save-button): the owner is already kept as each field is committed, so this only shows the saving tell and closes the card.
-    const saveOwner = () => { pulseSave(); setState({ openOwner: 0 }); };
+    // Done (decision owner-done-button): the owner is already kept as each field is committed, so this only closes the card.
+    const closeOwner = () => setState({ openOwner: 0 });
     const nm = ownerInfo(o).name;
     const known = !!nm && nm !== "New owner";
     const invited = o.status === "invited";
@@ -4234,7 +4272,7 @@
     items.push({ label: "Remove owner", ic: "trash", danger: true, go: () => removeOwnerClick(o.id) });
     return html`<article class="person${isOpen ? " is-open" : ""}${menuOpen ? " has-menu" : ""}" data-key="owner-${o.id}">
   <div class="person-head">
-    <span class="avatar" aria-hidden="true">${o.initials}</span>
+    <span class="avatar" aria-hidden="true">${o.initials === "—" || o.initials === "?" ? icon("user", 16) : o.initials}</span>
     <div class="grow">
       <h3 class="person-name">${o.name}</h3>
       <div class="person-meta">${invited && !String(ownerVal(o, "name")).trim() ? "Waiting for their details" : (o.self ? "You · " : "") + (isSole() ? "Sole owner" : isNonprofit() ? o.role : fmtPct(o.pct) + "% · " + o.role)}</div>
@@ -4249,7 +4287,7 @@
     ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}Remove</button>`}
     ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
   </div>
-  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o)}${!recipient && html`<div class="person-actions" data-key="owner-save"><button type="button" class="btn btn-primary btn-sm" data-click="${on(saveOwner)}">Save</button></div>`}</div>`}
+  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o)}${!recipient && html`<div class="person-actions" data-key="owner-save"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(closeOwner)}">Done</button></div>`}</div>`}
 </article>`;
   }
 

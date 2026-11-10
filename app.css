@@ -241,7 +241,7 @@ button.step:hover { background: var(--color-background-hover); }
 .field-label { display: block; font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); color: var(--color-text-secondary); }
 .field-label--block { margin-bottom: 6px; }
 .chip { display: inline-flex; align-items: center; height: var(--size-control-small); font: var(--font-label-default); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); background: var(--color-background-neutral-default); color: var(--color-text-primary); }
-.chip--secure { gap: var(--space-gap-pair); height: auto; padding: 0; background: none; color: var(--color-text-brand); }
+.chip--secure { gap: var(--space-gap-pair); background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
 .chip--success { background: var(--color-background-success-subtle); color: var(--color-text-success); }
 .field-hint { font: var(--font-caption-default); color: var(--color-text-subtle); margin-top: var(--space-gap-related); }
 .field-hint a { text-decoration: underline; }
@@ -335,16 +335,15 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 
 /* Address: a search box, then one box for each part (decision address-split-fields). */
 .addr-manual, .addr-reset { display: inline-block; margin-top: 8px; font: var(--font-label-default); }
-.addr-search { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-.addr-search .combo { flex: 1 1 260px; min-width: 0; }
-.addr-search .addr-manual { margin-top: 0; white-space: nowrap; flex: none; }
-.addr-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+/* Four equal columns with the same 16px gap as the card grid, so the city, state and ZIP boxes land on the quarter lines; the search box and street boxes run the full width (decision address-on-quarter-grid). */
+.addr-search .combo { min-width: 0; }
+.addr-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 16px; }
 .addr-cell { min-width: 0; }
 .addr-cell--wide { grid-column: 1 / -1; }
 .addr-cell--city { grid-column: span 2; }
 .addr-cell--sm { grid-column: span 1; }
 .addr-cell .field-label { display: block; margin-bottom: 6px; }
-@media (max-width: 560px) { .addr-grid { grid-template-columns: minmax(0, 1fr); } .addr-cell--city, .addr-cell--sm { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .addr-grid { grid-template-columns: minmax(0, 1fr); } .addr-cell--wide, .addr-cell--city, .addr-cell--sm { grid-column: 1 / -1; } }
 
 /* ---------- Step 7: review + sign ---------- */
 .summary { background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
@@ -698,7 +697,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .s-contract { margin-bottom: 18px; }
 
 /* Why we ask on a sensitive field: icon + label, popover on hover. Popover text is body-small to match the step-level note. */
-.field-why { position: relative; display: inline-block; margin-top: var(--space-gap-related); }
+.field-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin-top: var(--space-gap-related); }
+.field-why { position: relative; display: inline-block; }
 .field-why-trigger { display: inline-flex; align-items: center; gap: 6px; padding: 0; border: none; background: transparent; color: var(--color-text-secondary); font: var(--font-caption-default); cursor: help; }
 .field-why-trigger:hover, .field-why-trigger:focus-visible { color: var(--color-text-brand); text-decoration: underline; text-underline-offset: 3px; }
 .field-why-pop { position: absolute; left: 0; top: 100%; z-index: 20; padding-top: 8px; width: 340px; max-width: 80vw; }
