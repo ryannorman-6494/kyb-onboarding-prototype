@@ -2548,13 +2548,13 @@
       "when": "2026-11-09"
     },
     {
-      "id": "encrypted-beside-why-we-ask",
+      "id": "encrypted-lock-tooltip",
       "area": "Fields",
-      "where": "Sensitive fields (ID number, SSN or SIN, account numbers) · under the field",
-      "t": "Encrypted sits beside Why we ask under the field, with a padlock, and opens a popover on hover",
-      "b": "The Encrypted marker is no longer a purple tag beside the label, which read as a link or button. It now sits under the field on the same line as Why we ask, set the same way: the same small text, the same colour and a padlock icon where Why we ask has the question icon. Hovering or focusing it opens a popover, like the one Why we ask has, explaining that the number is encrypted as it travels and while it is stored, that only the last four characters show once the applicant leaves the field, and that it goes to the verification partner to check who they are. On a field with no Why we ask, Encrypted sits there alone.",
-      "tradeoff": "The marker is further from the label, so it is less likely to be seen before the applicant types. Like Why we ask, it only explains on hover or focus, so it does little on a touch screen. The popover wording is a draft that security has not reviewed.",
-      "by": "Ryan",
+      "where": "Sensitive fields (ID number, SSN or SIN, account numbers) · padlock inside the field",
+      "t": "The padlock inside a sensitive field opens the Encrypted note on hover; there is no Encrypted label under the field",
+      "b": "A sensitive field already shows a padlock at the start of the box. That padlock is now the Encrypted marker: hovering or focusing it opens a popover, like the one Why we ask has, explaining that the number is encrypted as it travels and while it is stored, that only the last four characters show once the applicant leaves the field, and that it goes to the verification partner to check who they are. The Encrypted label under the field (briefly beside Why we ask) and the purple Encrypted tag before it are gone, so the helper area under the field holds only Why we ask where a field has one.",
+      "tradeoff": "Nothing on the page says Encrypted until someone hovers the padlock, so the reassurance is easy to miss, and on a touch screen there is no hover. The popover wording is a draft that security has not reviewed.",
+"by": "Ryan",
       "when": "2026-11-10"
     },
     {
@@ -2604,6 +2604,26 @@
       "t": "Each owner accordion heading starts with an icon: a person for Personal details, a shield for Identity verification",
       "b": "The heading of each owner accordion starts with a small icon in the secondary text colour, before its name, so the two sections are easy to tell apart and the second is harder to miss. Personal details uses the person icon and Identity verification uses the shield. The chevron stays at the far right.",
       "tradeoff": "A shield may read as a promise of security rather than as a sign that ID details are asked for here.",
+      "by": "Ryan",
+      "when": "2026-11-10"
+    },
+    {
+      "id": "owner-card-header-divider",
+      "area": "Flow",
+      "where": "Step 2 · Open owner card",
+      "t": "An open owner card has a divider between its title area and the Personal details accordion",
+      "b": "When an owner card is open, a thin divider in the subtle border colour sits between the title area (avatar, name, role and the Collapse and Remove buttons) and the first accordion, Personal details. It stops at the card's side padding, in line with the fields, and matches the dividers between the accordions, so the title reads as the card's header. A closed card has no divider.",
+      "tradeoff": "The divider does not reach the card's edges, so it reads as a rule inside the card more than as a header border.",
+      "by": "Ryan",
+      "when": "2026-11-10"
+    },
+    {
+      "id": "owner-card-padding-token",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards",
+      "t": "Every padding inside an owner card is the 24px card padding token",
+      "b": "The title area, the open body, the accordion headings, the space under each section's fields and the space above the Done button all use the same 24px card padding token as the other cards, in place of the 18px and 20px values they had, so the owner cards line up with the content around them and spacing changes in one place.",
+      "tradeoff": "An owner card is taller than before: each accordion heading has 24px above and below it, and the fields are 8px narrower in total, so a long country name in a quarter-width box has less room.",
       "by": "Ryan",
       "when": "2026-11-10"
     }
@@ -3789,9 +3809,9 @@
       const close = () => { if (state.fieldWhy === key) setState({ fieldWhy: "" }); };
       return html`<span class="field-why" data-key="${key}" data-mouseenter="${on(open)}" data-mouseleave="${on(close)}"><button type="button" class="field-why-trigger" aria-expanded="${String(state.fieldWhy === key)}" data-click="${on(open)}" data-focus="${on(open)}" data-blur="${on(close)}">${icon(iconName, 14, "i-accent")}${label}</button>${state.fieldWhy === key && html`<span class="field-why-pop" role="note"><span class="field-why-body">${body}</span></span>`}</span>`;
     };
-    return html`<div class="field-meta">${f.why && trig(f.id, "help", "Why we ask", f.why)}${f.sensitive && trig(f.id + ":enc", "lock", "Encrypted", ENCRYPTED_NOTE)}</div>`;
+    return html`<div class="field-meta">${f.why && trig(f.id, "help", "Why we ask", f.why)}</div>`;
   }
-  // Draft wording, not reviewed by security (see decision encrypted-beside-why-we-ask).
+  // Draft wording, not reviewed by security (see decision encrypted-lock-tooltip).
   const ENCRYPTED_NOTE = "We encrypt this number as it travels and while it's stored. Once you leave the field only the last four characters show, and you can choose to show or hide the rest. It goes to Trullio, our verification partner, to check who you are.";
 
   function fieldView(f) {
@@ -3857,7 +3877,12 @@
         // nothing to hide.
         const editing = f.revealed || f.focused || f.value === "";
         const dots = f.focused && !f.revealed && state.editMasked === f.id;
-        control = html`<div class="affix affix--secure">${icon("lock", 16)}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
+        const encKey = f.id + ":enc";
+        const encOpen = () => setState({ fieldWhy: encKey });
+        const encClose = () => { if (state.fieldWhy === encKey) setState({ fieldWhy: "" }); };
+        // The padlock inside the field opens the Encrypted note on hover or focus (decision encrypted-lock-tooltip).
+        const lock = html`<span class="lock-wrap" data-mouseenter="${on(encOpen)}" data-mouseleave="${on(encClose)}"><button type="button" class="lock-trigger" aria-label="Encrypted: what this means" aria-expanded="${String(state.fieldWhy === encKey)}" data-click="${on(encOpen)}" data-focus="${on(encOpen)}" data-blur="${on(encClose)}">${icon("lock", 16)}</button>${state.fieldWhy === encKey && html`<span class="field-why-pop lock-pop" role="note"><span class="field-why-body">${ENCRYPTED_NOTE}</span></span>`}</span>`;
+        control = html`<div class="affix affix--secure">${lock}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
         break;
       }
       case "long":
@@ -3929,7 +3954,7 @@
   <div class="field-head">${label}${f.chip && html`<span class="chip">${f.chip}</span>`}</div>
   ${control}
   ${errView(f.id)}
-  ${(f.why || f.sensitive) && fieldWhyView(f)}
+  ${f.why && fieldWhyView(f)}
   ${f.hint && html`<p class="field-hint" id="${hintId}">${f.hint}</p>`}
   ${after}
 </div>`;
