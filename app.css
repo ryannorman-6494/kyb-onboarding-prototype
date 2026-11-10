@@ -786,7 +786,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .sec-head { margin: 0; }
 .sec-toggle { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 8px; padding: 20px 0; border: none; border-radius: var(--radius-default); background: transparent; cursor: pointer; font: var(--font-section-subtitle); letter-spacing: var(--type-section-subtitle-letter-spacing); color: var(--color-text-primary); text-align: left; }
 .sec-toggle:hover .sec-chev { color: var(--color-text-primary); }
+.sec-icon { color: var(--color-text-secondary); flex: none; }
 .sec-chev { transition: transform 160ms ease; }
 .owner-sec:not(.is-open) .sec-chev { transform: rotate(-90deg); }
 .owner-sec .fields { margin-top: 4px; padding-bottom: 24px; }
-.sec-label { flex: 1; }
+.sec-label { flex: 1; display: flex; align-items: center; gap: 10px; }

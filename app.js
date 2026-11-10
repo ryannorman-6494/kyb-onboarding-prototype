@@ -2596,6 +2596,16 @@
       "tradeoff": "The icon and the initials are different shapes, so the circle changes from an icon to letters as soon as the first name is typed.",
       "by": "Ryan",
       "when": "2026-11-10"
+    },
+    {
+      "id": "owner-section-icons",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · accordion headings",
+      "t": "Each owner accordion heading starts with an icon: a person for Personal details, a shield for Identity verification",
+      "b": "The heading of each owner accordion starts with a small icon in the secondary text colour, before its name, so the two sections are easy to tell apart and the second is harder to miss. Personal details uses the person icon and Identity verification uses the shield. The chevron stays at the far right.",
+      "tradeoff": "A shield may read as a promise of security rather than as a sign that ID details are asked for here.",
+      "by": "Ryan",
+      "when": "2026-11-10"
     }
   ];
 
@@ -4245,7 +4255,7 @@
       const closed = (chosen === undefined ? idx !== 0 : !chosen) && !hasErr;
       const toggle = () => setState((st) => ({ secOpen: Object.assign({}, st.secOpen, { [sec.h.id]: closed }) }));
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
-  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${sec.h.label}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
+  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
   ${!closed && html`<div class="fields">${gridView(sec.fields)}</div>`}
 </section>`;
     }) }</div>`;
