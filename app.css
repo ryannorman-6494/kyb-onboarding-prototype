@@ -796,3 +796,15 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .owner-sec:not(.is-open) .sec-chev { transform: rotate(-90deg); }
 .owner-sec .fields { margin-top: 0; padding-bottom: var(--space-padding-hero); }
 .sec-label { flex: 1; display: flex; align-items: center; gap: 10px; }
+
+/* Owner card header (decision owner-card-click-to-open): the whole header opens and closes the card, so it shows a pointer. Remove is the Atlas tertiary negative button (no fill, error text, subtle error fill on hover or press), and the chevron-only toggle sits at the far right and turns over when the card is open. */
+.person-head { cursor: pointer; }
+.btn-tertiary-negative { background: transparent; border-color: transparent; color: var(--color-text-error); box-shadow: none; }
+.btn-tertiary-negative:hover { background: var(--color-background-error-subtle); }
+.btn-tertiary-negative:active { background: var(--color-background-error-subtle); color: var(--color-background-error-active); }
+.person-chev { transition: transform 160ms ease; }
+.person.is-open .person-chev { transform: rotate(180deg); }
+/* Chevron hierarchy (decision owner-card-click-to-open): the card's chevron is the bigger, darker one and the section chevrons inside it are smaller and lighter. The card's button is pulled 8px into its padding so its 20px icon is centred on the same vertical line as the 16px section chevrons below (both 32px in from the card's right edge). */
+.person-chev-btn { color: var(--color-icon-primary); margin-right: -8px; }
+.sec-chev { color: var(--color-icon-secondary); }
+.sec-toggle:hover .sec-chev { color: var(--color-icon-primary); }

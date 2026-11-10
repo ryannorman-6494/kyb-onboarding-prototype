@@ -969,7 +969,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Owner card buttons are plain until hovered, and an owner can be removed",
-      "b": "The Open/Collapse button on an owner card no longer has a grey background; it turns grey only on hover. The new Remove button beside it uses the same plain style and carries a trash-can icon. Remove deletes the owner and what was typed for them, and is not shown to a sole proprietor, whose only owner is themselves.",
+      "b": "Superseded by owner-card-click-to-open for the Open/Collapse button and the Remove button's look. Still true: Remove deletes the owner and what was typed for them, and is not shown to a sole proprietor, whose only owner is themselves.",
       "tradeoff": "Plain buttons are less obviously buttons until hovered. Remove acts at once with a toast and no confirmation or undo, so a filled-in card can be lost by a misclick.",
       "by": "Ryan",
       "when": "2026-10-06"
@@ -2372,7 +2372,7 @@
       "area": "Visual",
       "where": "Step 1 and Step 2 · Address questions",
       "t": "City, state and ZIP code sit on one line, in that order",
-      "b": "In the open address boxes, City, State and ZIP code now share one row, in that order, like a US address written out. City takes half the row and State and ZIP code a quarter each. In Canada the same row reads City, Province, Postal code. Street address 1 and Street address 2 keep a full row each. On a narrow screen (under 560px) all the boxes stack, one to a row.",
+      "b": "In the open address boxes, City, State and ZIP code now share one row, in that order, like a US address written out. Ryan structured it this way because that is how a US address is typically structured, so the form matches the applicant's mental model. City takes half the row and State and ZIP code a quarter each. In Canada the same row reads City, Province, Postal code. Street address 1 and Street address 2 keep a full row each. On a narrow screen (under 560px) all the boxes stack, one to a row.",
       "tradeoff": "The State and ZIP code boxes are narrow, so a long province or an unusual postal code has less room, and a long city name may be cut off in the City box. The state and province lists show full names, which fit at desktop width, but the longest names have little spare room.",
       "by": "Ryan",
       "when": "2026-11-06"
@@ -2612,7 +2612,7 @@
       "area": "Flow",
       "where": "Step 2 · Open owner card",
       "t": "An open owner card has a divider between its title area and the Personal details accordion",
-      "b": "When an owner card is open, a thin divider in the subtle border colour sits between the title area (avatar, name, role and the Collapse and Remove buttons) and the first accordion, Personal details. It stops at the card's side padding, in line with the fields, and matches the dividers between the accordions, so the title reads as the card's header. A closed card has no divider.",
+      "b": "When an owner card is open, a thin divider in the subtle border colour sits between the title area (avatar, name, role, Remove and the chevron) and the first accordion, Personal details. It stops at the card's side padding, in line with the fields, and matches the dividers between the accordions, so the title reads as the card's header. A closed card has no divider.",
       "tradeoff": "The divider does not reach the card's edges, so it reads as a rule inside the card more than as a header border.",
       "by": "Ryan",
       "when": "2026-11-10"
@@ -2634,6 +2634,16 @@
       "t": "A step you have moved past keeps its percentage ring when you return to it",
       "b": "In the step list, a step shows its minutes estimate until the applicant has been past it. Once they move on to a later step, its ring and percentage stay, and they are still there when the applicant clicks back to it, instead of the minutes coming back. The ring on the step being worked on updates as they fill it in. A step the applicant is on for the first time, and steps not yet reached, still show minutes.",
       "tradeoff": "The step the applicant is currently on shows a ring on one visit and minutes on another, depending on whether they have been past it, which is a small inconsistency in the list.",
+      "by": "Ryan",
+      "when": "2026-11-10"
+    },
+    {
+      "id": "owner-card-click-to-open",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards",
+      "t": "The whole owner card header opens and closes it, with a chevron only and a tertiary negative Remove",
+      "b": "Clicking anywhere in an owner card's header (avatar, name, role line or empty space) opens or closes the card, and the header shows a pointer. The Open and Collapse words are gone: the toggle is a single chevron icon at the far right that turns over when the card is open, and it keeps a label (Open or Collapse, with the owner's name) for screen readers. The card's chevron is the more prominent one (20px, primary icon colour) and the chevrons on the sections inside the card are smaller and lighter (16px, secondary icon colour, primary on hover), with both centred on the same vertical line. Remove now comes before the chevron, so the chevron is the last thing on the row, and it is the Atlas tertiary negative button: no fill, error-coloured text and trash icon, and a subtle error-coloured fill on hover or press. Clicking Remove removes the owner and does not also open or close the card.",
+      "tradeoff": "A clickable header makes a stray click anywhere on it open the card. Remove sits right beside the large click target and still acts at once with no confirmation or undo, so a misclick can lose a filled-in card. The chevron alone says less than the words did.",
       "by": "Ryan",
       "when": "2026-11-10"
     }
@@ -4318,7 +4328,7 @@
     if (items.length) items.push({ sep: true });
     items.push({ label: "Remove owner", ic: "trash", danger: true, go: () => removeOwnerClick(o.id) });
     return html`<article class="person${isOpen ? " is-open" : ""}${menuOpen ? " has-menu" : ""}" data-key="owner-${o.id}">
-  <div class="person-head">
+  <div class="person-head" data-click="${on(toggle)}">
     <span class="avatar" aria-hidden="true">${o.initials === "—" || o.initials === "?" ? icon("user", 16) : o.initials}</span>
     <div class="grow">
       <h3 class="person-name">${o.name}</h3>
@@ -4330,9 +4340,9 @@
     ${!recipient && invited && o.received && html`<span class="pill pill--positive">${icon("check", 13, "i-b")}Details received${o.receivedAt ? " · " + o.receivedAt : ""}</span>`}
     ${!recipient && o.status === "pending" && o.revoked && html`<span class="pill pill--neutral">Access removed</span>`}
     ${!recipient && invitesOn() && o.status === "pending" && !isSole() && !o.self && html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => openDelegate(o.id))}">${icon("mail", 14)}${o.revoked ? "Send a new invite" : "Send invite"}</button>`}
-    <button type="button" class="btn btn-xs person-toggle" aria-expanded="${String(isOpen)}" data-click="${on(toggle)}">${isOpen ? "Collapse" : "Open"}${icon("chev-d", 14)}</button>
-    ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs person-toggle" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}Remove</button>`}
+    ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs btn-tertiary-negative" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}Remove</button>`}
     ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
+    <button type="button" class="icon-btn person-chev-btn" aria-expanded="${String(isOpen)}" aria-label="${isOpen ? "Collapse" : "Open"} ${known ? nm : "this owner"}" data-click="${on(toggle)}">${icon("chev-d", 20, "person-chev")}</button>
   </div>
   ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o)}${!recipient && html`<div class="person-actions" data-key="owner-save"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(closeOwner)}">Done</button></div>`}</div>`}
 </article>`;
