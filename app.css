@@ -208,6 +208,7 @@ button.step:hover { background: var(--color-background-hover); }
 .step-meta { flex: none; white-space: nowrap; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .is-done .step-meta { display: inline-flex; align-items: center; gap: 3px; color: var(--color-text-success); font-weight: var(--type-control-default-weight); }
 .is-current .step-meta { color: var(--color-text-brand); }
+.is-current .step-meta--pct { display: inline-flex; align-items: center; gap: 6px; font-weight: var(--type-control-default-weight); }
 .is-opened .step-meta { display: inline-flex; align-items: center; gap: 6px; color: var(--color-text-primary); font-weight: var(--type-control-default-weight); }
 .rail-help { margin-top: 16px; }
 .btn-neutral.rail-help { background: var(--color-background-surface-raised-1); }
@@ -266,10 +267,11 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .affix--money input { font-variant-numeric: tabular-nums; }
 .affix-code { align-self: stretch; display: flex; align-items: center; margin: 1px 1px 1px 0; padding: 0 12px; border-left: 1px solid var(--color-border-subtle); border-radius: 0 calc(var(--radius-default) - 1px) calc(var(--radius-default) - 1px) 0; background: var(--color-background-surface-sunken); color: var(--color-text-subtle); font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); letter-spacing: .06em; }
 .affix--secure { gap: var(--space-gap-related); }
+.affix--secure input { letter-spacing: 0.06em; }
 .affix--secure .lock-wrap { position: relative; display: inline-flex; flex: none; }
 .lock-trigger { display: inline-flex; padding: 0; border: none; background: transparent; cursor: help; color: var(--color-text-brand); }
 .lock-pop { top: 100%; padding-top: 20px; }
-.affix--secure input { letter-spacing: 0.06em; }
+
 .affix--secure input[readonly] { cursor: default; }
 
 /* Yes / No as two separate selectable pills (the original look; replaces the Segmented control). The chosen pill keeps a 2px brand ring. */

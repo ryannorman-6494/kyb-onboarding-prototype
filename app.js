@@ -2626,6 +2626,16 @@
       "tradeoff": "An owner card is taller than before: each accordion heading has 24px above and below it, and the fields are 8px narrower in total, so a long country name in a quarter-width box has less room.",
       "by": "Ryan",
       "when": "2026-11-10"
+    },
+    {
+      "id": "step-ring-stays-on-return",
+      "area": "Flow",
+      "where": "Progress column · step list",
+      "t": "A step you have moved past keeps its percentage ring when you return to it",
+      "b": "In the step list, a step shows its minutes estimate until the applicant has been past it. Once they move on to a later step, its ring and percentage stay, and they are still there when the applicant clicks back to it, instead of the minutes coming back. The ring on the step being worked on updates as they fill it in. A step the applicant is on for the first time, and steps not yet reached, still show minutes.",
+      "tradeoff": "The step the applicant is currently on shows a ring on one visit and minutes on another, depending on whether they have been past it, which is a small inconsistency in the list.",
+      "by": "Ryan",
+      "when": "2026-11-10"
     }
   ];
 
@@ -4226,9 +4236,11 @@
     const waitingOn = state.owners.filter(ownerWaiting).length;
     const waitNote = waitingOn === 0 ? "" : waitingOn === 1 ? (isNonprofit() ? "Waiting on one person's details" : "Waiting on one owner's details") : "Waiting on " + waitingOn + (isNonprofit() ? " people's details" : " owners' details");
     // A step the applicant has opened can be returned to, and says whether it is finished or only partly done. Steps not yet opened cannot be reached (decision partial-steps-allowed).
+    // A step the applicant has already moved past keeps its percentage ring when they come back to it, in place of the minutes estimate (decision step-ring-stays-on-return).
+    const currentMeta = (s) => s.n < state.maxStep ? html`<span class="step-meta step-meta--pct">${ringView(stepPct(s.n))}<span class="step-pct">${stepPct(s.n)}%</span></span>` : html`<span class="step-meta">${s.time}</span>`;
     const items = STEPS.map((s) => {
       if (s.n === state.step && !state.editing) {
-        return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
+        return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span>${currentMeta(s)}</div></li>`;
       }
       const reachable = state.editing ? s.n < 7 : s.n <= state.maxStep;
       if (reachable && s.n !== state.step) {
@@ -4237,7 +4249,7 @@
         return html`<li><button type="button" class="step is-opened" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${sub}</span><span class="step-meta">${ringView(sp)}<span class="step-pct">${sp}%</span></span></button></li>`;
       }
       if (s.n === state.step) {
-        return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
+        return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span>${currentMeta(s)}</div></li>`;
       }
       return html`<li><div class="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
     });
