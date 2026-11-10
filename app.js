@@ -2482,7 +2482,7 @@
       "area": "Flow",
       "where": "Left column, progress bar and the last step's summary",
       "t": "A step that is not finished shows a ring and the percentage done, in the brand colour, and the progress bar follows",
-      "b": "Replaces Partly done and the warning colour. In the left column an opened step that is not finished reads, for example, a small ring and 15%; a finished one is a full ring and 100%. The ring is a thin circle that fills clockwise in green as the step fills in; the rest of the ring stays a light grey, and the percentage is in the normal primary text colour. Changed on 2026-11-09: the fill was first brand purple, and the words done and Done were dropped, so every opened step in the left column reads just a ring and its percentage, such as 15%, and a finished step is a full ring and 100%. A step's percentage is the share of the answers it needs that are in and valid: each required field, each required document, the owner list at step 2 and the three signature entries at step 7. It never shows 100 until the step has no problems at all, so a step with a wrong entry tops out at 99. Optional fields are not counted. The Your progress bar and its percentage at the top of the left column are now the average of the seven steps, where a step not yet opened counts as nothing, so the bar moves as answers go in and not only when a step is passed. On the last step's summary, a step that is not finished shows its ring in place of the green tick circle. Empty and unopened steps show no percentage until they are opened.",
+      "b": "Replaces Partly done and the warning colour. In the left column an opened step that is not finished reads, for example, a small ring and 15%; a finished one is a full ring and 100%. The ring is a thin circle that fills clockwise in green as the step fills in; the rest of the ring stays a light grey, and the percentage is in the normal primary text colour. Changed on 2026-11-09: the fill was first brand purple, and the words done and Done were dropped, so every opened step in the left column reads just a ring and its percentage, such as 15%, and a finished step is a full ring and 100%. A step's percentage is the share of the answers it needs that are in and valid: each required field, each required document, the owner list at step 2 and the three signature entries at step 7. It never shows 100 until the step has no problems at all, so a step with a wrong entry tops out at 99. Optional fields are not counted. The Your progress bar and its percentage at the top of the left column are now the average of the seven steps, where a step not yet opened counts as nothing, so the bar moves as answers go in and not only when a step is passed. Updated 2026-11-10: a finished step reads a green tick and the word Done, as it used to, instead of a full ring and 100% (see step-done-tick). On the last step's summary, a step that is not finished shows its ring in place of the green tick circle. Empty and unopened steps show no percentage until they are opened.",
       "tradeoff": "Fields count equally, so one required document and one tick box weigh the same, and a step with few fields jumps in big steps (one of five answers is 20%). The percentage changes as the applicant types, so a number can move backwards when an entry is cleared or becomes invalid. Fields that only appear after an earlier answer add to the total once they appear, so a step can drop a few points when the applicant answers Yes to a question.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2644,6 +2644,16 @@
       "t": "The whole owner card header opens and closes it, with a chevron only and a tertiary negative Remove",
       "b": "Clicking anywhere in an owner card's header (avatar, name, role line or empty space) opens or closes the card, and the header shows a pointer. The Open and Collapse words are gone: the toggle is a single chevron icon at the far right that turns over when the card is open, and it keeps a label (Open or Collapse, with the owner's name) for screen readers. The card's chevron is the more prominent one (20px, primary icon colour) and the chevrons on the sections inside the card are smaller and lighter (16px, secondary icon colour, primary on hover), with both centred on the same vertical line. Remove now comes before the chevron, so the chevron is the last thing on the row, and it is the Atlas tertiary negative button: no fill, error-coloured text and trash icon, and a subtle error-coloured fill on hover or press. Clicking Remove removes the owner and does not also open or close the card.",
       "tradeoff": "A clickable header makes a stray click anywhere on it open the card. Remove sits right beside the large click target and still acts at once with no confirmation or undo, so a misclick can lose a filled-in card. The chevron alone says less than the words did.",
+      "by": "Ryan",
+      "when": "2026-11-10"
+    },
+    {
+      "id": "step-done-tick",
+      "area": "Flow",
+      "where": "Left column · step list",
+      "t": "A finished step reads a green tick and Done, and the progress bar has rounded ends",
+      "b": "In the step list, a step at 100% shows a green check mark and the word Done, as it did before percentages were added, in place of a full ring and 100%. Steps that are not finished still show the ring and percentage, and steps not yet reached still show minutes. The Your progress bar at the top of the left column has the same pill shape on its fill as on its empty track: both use a corner radius of half the bar's height, so the filled end is rounded rather than square.",
+      "tradeoff": "Done and a percentage are two different ways of saying how far along a step is, so a list of steps now mixes ticks, rings and minutes. A step that drops below 100 (an entry cleared or made invalid) swaps its tick back to a ring.",
       "by": "Ryan",
       "when": "2026-11-10"
     }
@@ -4247,7 +4257,9 @@
     const waitNote = waitingOn === 0 ? "" : waitingOn === 1 ? (isNonprofit() ? "Waiting on one person's details" : "Waiting on one owner's details") : "Waiting on " + waitingOn + (isNonprofit() ? " people's details" : " owners' details");
     // A step the applicant has opened can be returned to, and says whether it is finished or only partly done. Steps not yet opened cannot be reached (decision partial-steps-allowed).
     // A step the applicant has already moved past keeps its percentage ring when they come back to it, in place of the minutes estimate (decision step-ring-stays-on-return).
-    const currentMeta = (s) => s.n < state.maxStep ? html`<span class="step-meta step-meta--pct">${ringView(stepPct(s.n))}<span class="step-pct">${stepPct(s.n)}%</span></span>` : html`<span class="step-meta">${s.time}</span>`;
+    // A finished step reads a green tick and Done in place of the ring and 100% (decision step-done-tick).
+    const doneMeta = html`<span class="step-meta step-meta--done">${icon("check", 14, "i-b")}Done</span>`;
+    const currentMeta = (s) => s.n < state.maxStep ? (stepPct(s.n) >= 100 ? doneMeta : html`<span class="step-meta step-meta--pct">${ringView(stepPct(s.n))}<span class="step-pct">${stepPct(s.n)}%</span></span>`) : html`<span class="step-meta">${s.time}</span>`;
     const items = STEPS.map((s) => {
       if (s.n === state.step && !state.editing) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span>${currentMeta(s)}</div></li>`;
@@ -4256,7 +4268,7 @@
       if (reachable && s.n !== state.step) {
         const sp = stepPct(s.n);
         const sub = s.n === 2 && waitNote && html`<span class="rail-sub" data-key="step2-waiting">${waitNote}</span>`;
-        return html`<li><button type="button" class="step is-opened" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${sub}</span><span class="step-meta">${ringView(sp)}<span class="step-pct">${sp}%</span></span></button></li>`;
+        return html`<li><button type="button" class="step is-opened" data-click="${on(() => setState({ step: s.n }))}"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}${sub}</span>${sp >= 100 ? doneMeta : html`<span class="step-meta">${ringView(sp)}<span class="step-pct">${sp}%</span></span>`}</button></li>`;
       }
       if (s.n === state.step) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span>${currentMeta(s)}</div></li>`;

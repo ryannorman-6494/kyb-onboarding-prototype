@@ -190,8 +190,8 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .progress-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px; }
 .progress-title { font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .progress-pct { font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-success); }
-.meter { height: 5px; border-radius: var(--radius-full); background: var(--color-background-neutral-default); margin-bottom: 6px; }
-.meter-fill { display: block; height: 5px; border-radius: var(--radius-full); background: var(--color-background-success-default); transition: width 240ms ease; }
+.meter { height: 5px; border-radius: 2.5px; overflow: hidden; background: var(--color-background-neutral-default); margin-bottom: 6px; }
+.meter-fill { display: block; height: 5px; border-radius: 2.5px; background: var(--color-background-success-default); transition: width 240ms ease; }
 .progress-note { display: flex; align-items: center; gap: 6px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); margin-bottom: 16px; }
 .save-tell { display: inline-flex; align-items: center; gap: 3px; font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-success); }
 .save-tell.is-saving { color: var(--color-text-subtle); }
@@ -808,3 +808,6 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .person-chev-btn { color: var(--color-icon-primary); margin-right: -8px; }
 .sec-chev { color: var(--color-icon-secondary); }
 .sec-toggle:hover .sec-chev { color: var(--color-icon-primary); }
+
+/* A finished step reads a green tick and Done (decision step-done-tick). */
+.step .step-meta--done { display: inline-flex; align-items: center; gap: 3px; color: var(--color-text-success); font-weight: var(--type-control-default-weight); }
