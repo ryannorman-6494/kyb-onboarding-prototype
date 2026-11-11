@@ -122,6 +122,11 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .callout--positive > .i { margin-top: 0; color: var(--color-icon-success); }
 .callout--warning { background: var(--color-background-warning-subtle); color: var(--color-text-primary); }
 .callout--warning > .i { color: var(--color-icon-warning); }
+.callout--error { background: var(--color-background-error-subtle); color: var(--color-text-primary); }
+.callout--error > .i { color: var(--color-icon-error); }
+.doc-fail { margin-top: 0; grid-column: 1 / -1; align-items: center; flex-wrap: wrap; }
+.doc-fail-text { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.doc-fail-actions { display: flex; gap: 16px; flex: none; margin-left: auto; }
 
 .pill { display: inline-flex; align-items: center; gap: var(--space-gap-pair); height: var(--size-control-small); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); flex: none; }
 .pill--lg { gap: var(--space-gap-related); }

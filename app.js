@@ -2137,7 +2137,7 @@
       "area": "Visual",
       "where": "Step 6 · Supporting documents",
       "t": "The Required badge on a document is the warning colour, and turns into a green Uploaded badge once a file is in",
-      "b": "On each document row the Required badge, beside the title, is the warning colour (light warning background, warning text) instead of grey, to show the file has to be added before the applicant can continue. When a file has been added, that same badge turns green and reads Checked, with a tick. Changed 2026-11-11: it has no tick and reads the number of files in, such as 1 uploaded or 2 uploaded, so the applicant can see how many files the row holds. It replaces the Checked pill that used to sit at the top right of the row, so a finished row has no badge on the right at all. While a file is uploading or being read, the busy pill still shows on the right. A document that is Not needed stays grey.",
+      "b": "On each document row the Required badge, beside the title, is the warning colour (light warning background, warning text) instead of grey, to show the file has to be added before the applicant can continue. When a file has been added, that same badge turns green and reads Checked, with a tick. Changed 2026-11-11: it has no tick and reads the number of files in, such as 1 uploaded or 2 uploaded, so the applicant can see how many files the row holds. It replaces the Checked pill that used to sit at the top right of the row, so a finished row has no badge on the right at all. While a file is uploading or being read, the busy pill still shows on the right. A document that is Not needed stays grey. Superseded in part on 2026-11-11 by no-uploaded-badge: the green Uploaded badge is gone. The Required badge simply disappears once a file is in.",
       "tradeoff": "Several orange badges at once on an empty step make the page look more urgent than it is, and the warning colour is also the one used for caution elsewhere, so it can read as a problem rather than a to-do. A finished row no longer says Required anywhere, so the badge stops telling the applicant the file was mandatory; the green tick says it is dealt with.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2697,7 +2697,7 @@
       "area": "Copy",
       "where": "Step 3 · Maximum single transaction",
       "t": "The maximum single transaction is a hard block, and step 3 says so",
-      "b": "Ryan: any transaction over the maximum single transaction value is blocked. Two places now say it. The hint under the field reads We block any single sale above this amount (any single payment above it for a non-profit), and the hint under the limits tick reads We block any single transaction over $X. Your monthly limit is $Y. Both are based on what you entered above. Ask us any time to raise them. This is why the earlier line saying that going over a limit breaks nothing was removed (see card-history-in-volumes). Nothing is said about what happens when the monthly limit is passed, because only the single transaction value has been called a hard block.",
+      "b": "Ryan: any transaction over the maximum single transaction value is blocked. Two places now say it. The hint under the field reads We block any single sale above this amount (any single payment above it for a non-profit), and the hint under the limits tick reads We block any single transaction over $X. Your monthly limit is $Y. Both are based on what you entered above. Ask us any time to raise them. This is why the earlier line saying that going over a limit breaks nothing was removed (see card-history-in-volumes). Nothing is said about what happens when the monthly limit is passed, because only the single transaction value has been called a hard block. Update, 2026-11-11: Ryan removed the sentence We block any single sale above this amount. from the hint under the field, and the sentence We block any single transaction over $X. from the limits tick (see max-ticket-block-text-removed). The block itself is not changed; it is no longer said on the page.",
       "tradeoff": "An applicant who sets the maximum low to look safe will have real sales declined, so the warning may push people to enter a higher number than they need, which sits against the honest estimates the section asks for (underwriting-plain). Exactly how the block is explained to an applicant is for product and risk to confirm.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -2859,6 +2859,36 @@
       "t": "No note under the signature",
       "b": "Ryan: the note under the signature (By signing, you agree to sign electronically. You confirm that you're authorized to sign for this business, and that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5.) is removed. Sign it off now ends with the signature box and its Upload image of signature and Clear buttons. Ryan gave no reason.",
       "tradeoff": "Nothing on the page now says the signer is confirming their authority to sign, that the information is true, or that they agree to sign electronically; the e-sign and authority ticks were removed earlier the same day. Compliance and legal have not said whether the two ticks for the documents are enough on their own.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "max-ticket-block-text-removed",
+      "area": "Step 3",
+      "where": "Step 3 · Your card volumes",
+      "t": "The page no longer says a transaction over the maximum is blocked",
+      "b": "Ryan: remove the line We block any single sale above this amount. (any single payment, for a non-profit) from the hint under Maximum single transaction, and remove We block any single transaction over $X. from the text under the limits tick box. The hint under the field now stops after Your biggest single sale, even if it only happens now and then. The tick's text reads Your monthly limit is $Y, based on what you entered above. Ask us any time to raise it. Ryan gave no reason, and the box's label still says transaction and monthly limits.",
+      "tradeoff": "The applicant is no longer told that a sale above their maximum single transaction is blocked, so the first they hear of it could be a declined sale. The tick still says they have read their limits, but the per-transaction limit is no longer shown anywhere on the page. I reworded the monthly sentence so it no longer says both.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "no-uploaded-badge",
+      "area": "Visual",
+      "where": "Step 6 · Supporting documents",
+      "t": "A document row shows no badge once a file is uploaded; the Required badge just goes",
+      "b": "Ryan: remove the 1 uploaded badge. When something is uploaded, the Required badge is removed and nothing replaces it. The uploaded file tiles under the row, and the row's border, already say it is done. A row with no file keeps its Required or Optional badge; a row whose only file failed keeps it too.",
+      "tradeoff": "A row with no badge looks the same as a row that never needed one, so the applicant reads that it is done only from the file tile below it. The count of files in the row is no longer in the badge.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "upload-failure-callout",
+      "area": "Step 6",
+      "where": "Step 6 · Supporting documents",
+      "t": "A file that fails to upload shows an error callout where the uploaded file tile would be",
+      "b": "Ryan: add an error state for a file that fails to upload, using the error callout in place of the uploaded file area. In a document row the file tile is replaced by a full-width red-tinted callout with an alert icon: the file name in bold, then didn't upload. Check the file and try again., with Try again (adds the same file again) and Remove links. A failed file does not count as uploaded, so the row keeps its Required badge, step 6 is not complete and the document error still applies. Other files in the same row are unaffected, and a row with one good file and one failed file is done. In the prototype nothing really fails: a Make the next file upload fail box in Prototype options (on the steps) makes the next added file fail once, and Try again then succeeds. It applies to the document rows on step 6, not to the file box on More info needed. The callout is a new red variant of the existing callout, which until now had info, positive and warning styles. The wording is my draft.",
+      "tradeoff": "The message does not say why it failed (type, size, connection), because nothing here reads the file and the real reasons are not known; the real product would know and should say. Try again does not re-open a file chooser in the prototype, it just adds the same canned file.",
       "by": "Ryan",
       "when": "2026-11-11"
     }
@@ -3049,6 +3079,8 @@
       revealed: {},
       owners: freshOwners(),
       docs: {},
+      // Prototype only: when true the next file added on step 6 fails to upload (decision upload-failure-callout).
+      failNextUpload: false,
       // What the applicant has answered on the More info needed screen, keyed by pend reason id (decision pend-reasons-as-requests).
       rfi: {},
       // The owner a person-level request is about, picked by Ops in Prototype options (0 = the applicant).
@@ -3353,15 +3385,18 @@
     openCards: Object.assign({}, s.openCards, { [key]: !(s.openCards[key] === undefined ? dflt : s.openCards[key]) })
   }));
   // A document row holds a list of files, and any number can be added (decision document-add-file-grid). A row counts as done once one file has finished uploading.
-  const doc = (key) => { const d = state.docs[key]; const files = d && d.files ? d.files : []; const ready = files.filter((f) => !f.busy); return { files: files, state: ready.length ? "done" : files.length ? "uploading" : "idle", file: ready.length ? ready[0].name : "" }; };
+  const doc = (key) => { const d = state.docs[key]; const files = d && d.files ? d.files : []; const ready = files.filter((f) => !f.busy && !f.failed); return { files: files, state: ready.length ? "done" : files.some((f) => f.busy) ? "uploading" : files.length ? "failed" : "idle", file: ready.length ? ready[0].name : "" }; };
   const setDocFiles = (key, fn) => setState((s) => ({ docs: Object.assign({}, s.docs, { [key]: { files: fn((s.docs[key] && s.docs[key].files) || []) } }) }));
   // Simulated upload: no file picker opens and no file is read. The file shows as uploading for a moment, then as uploaded.
   function upload(key, file) {
     const have = doc(key).files.map((f) => f.name);
     let i = 1, name = file;
     while (have.indexOf(name) > -1) { i++; name = file.replace(/(\.[a-z0-9]+)?$/i, "-" + i + "$1"); }
+    // With the Prototype options box ticked, this one upload fails once and the box clears itself.
+    const fail = state.failNextUpload === true;
+    if (fail) setState({ failNextUpload: false });
     setDocFiles(key, (fs) => fs.concat([{ name: name, busy: true }]));
-    setTimeout(() => setDocFiles(key, (fs) => fs.map((f) => (f.name === name ? { name: name, busy: false } : f))), 1400);
+    setTimeout(() => setDocFiles(key, (fs) => fs.map((f) => (f.name === name ? { name: name, busy: false, failed: fail } : f))), 1400);
   }
 
   // ---------------------------------------------------------------------------
@@ -3764,11 +3799,11 @@
           fld("monthlyVolume", "Estimated monthly card volume", "currency", { placeholder: "40,000", annual: true }),
           fld("cpSplit", "Card present %", "mono", { placeholder: "70", tall: true, hint: "In person, on a card machine." }),
           fld("avgTicket", "Average transaction amount", "currency", { placeholder: "38" }),
-          fld("maxTicket", "Maximum single transaction", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your biggest single payment or donation, even if it only happens now and then. We block any single payment above this amount." : "Your biggest single sale, even if it only happens now and then. We block any single sale above this amount." }),
+          fld("maxTicket", "Maximum single transaction", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your biggest single payment or donation, even if it only happens now and then." : "Your biggest single sale, even if it only happens now and then." }),
           fld("prior", "Have you accepted card payments before?", "yn", { span: true }),
           a.prior === "yes" ? fld("priorName", "Prior processor name", "text", { conditional: true, placeholder: "e.g. Square, Stripe" }) : null,
           a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null,
-          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "We block any single transaction over $" + fmtMoney(limitsFrom(a).perTx) + ". Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + ". Both are based on what you entered above. Ask us any time to raise them." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
+          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + ", based on what you entered above. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
         ], { pinId: "underwriting-plain" }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "Primary payment channel" : "Primary sales channel", "select", { placeholder: "Choose a channel", options: ["In-person", "Online", "In-person and online", "Mobile", "Phone / mail order (MOTO)"] }),
@@ -4556,10 +4591,16 @@
 </div>`;
   }
 
+  // A file that did not upload: the error callout takes the place of the file tile (decision upload-failure-callout). Try again adds the same file once more; Remove clears it.
+  function failedFileView(d, f) {
+    const drop = () => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name));
+    return html`<div class="callout callout--error doc-fail" role="alert" data-key="file-${f.name}">${icon("alert", 16)}<span class="doc-fail-text"><strong>${f.name}</strong> didn't upload. Check the file and try again.</span><span class="doc-fail-actions"><button type="button" class="btn-link" aria-label="Try ${f.name} again" data-click="${on(() => { drop(); upload(d.key, d.file); })}">Try again</button><button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(drop)}">Remove</button></span></div>`;
+  }
+
   function docView(d) {
     const s = d.skip ? "skipped" : doc(d.key).state;
     const cur = doc(d.key);
-    const cls = s === "done" ? " is-done" : s === "skipped" ? " is-skipped" : s === "idle" ? "" : " is-busy";
+    const cls = s === "done" ? " is-done" : s === "skipped" ? " is-skipped" : s === "idle" || s === "failed" ? "" : " is-busy";
     // The button stays on every row, so any number of files can be added.
     let action;
     if (s === "skipped") action = html`<span class="state-pill state-pill--muted">Not needed</span>`;
@@ -4568,14 +4609,14 @@
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="req req--done">${cur.files.filter((x) => !x.busy).length || 1} uploaded</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? "" : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
       ${d.why && fieldWhyView({ id: "doc_" + d.key, why: d.why })}
       ${errView("doc_" + d.key)}
     </div>
     ${action}
   </div>
-  ${cur.files.length > 0 && html`<div class="doc-files" data-key="files-${d.key}">${cur.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name" title="${f.name}">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name)))}">Remove</button>`}</div>`)}</div>`}
+  ${cur.files.length > 0 && html`<div class="doc-files" data-key="files-${d.key}">${cur.files.map((f) => f.failed ? failedFileView(d, f) : html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name" title="${f.name}">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name)))}">Remove</button>`}</div>`)}</div>`}
 </article>`;
   }
 
@@ -5257,6 +5298,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     <div class="proto-sub">Owner links</div>
     ${state.owners.some((o) => o.status === "invited") ? state.owners.filter((o) => o.status === "invited").map((o) => html`<button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => { setState({ protoOpen: false }); previewInvitee(o.id); })}">Sign in as ${ownerInfo(o).name === "New owner" ? o.inviteEmail : ownerInfo(o).name}</button>`) : html`<p class="proto-note">Send an owner an invite in step 2, then sign in as them here.</p>`}
     ${state.screen === "flow" && (state.step === 2 || state.step === 6) && state.owners.some((o) => o.status === "invited") && html`<button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(simulateEdit)}">Simulate: ${ownerInfo(state.owners.filter((o) => o.status === "invited")[0]).name === "New owner" ? "your invited person" : ownerInfo(state.owners.filter((o) => o.status === "invited")[0]).name} edits their details</button>`}`}
+    ${state.screen === "flow" && html`<label class="proto-check" data-key="fail-upload"><input type="checkbox"${attr("checked", state.failNextUpload === true)} data-change="${on((e) => setState({ failNextUpload: e.target.checked }))}">Make the next file upload fail</label>`}
     <hr class="proto-rule">
     <label class="proto-check"><input type="checkbox"${attr("checked", ctx.showNotes)} data-change="${on((e) => setCtx({ showNotes: e.target.checked }))}">Design decisions</label>
     <button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => setState({ notesListOpen: true }))}">${icon("pen", 13)}Read all ${DECISIONS.length}</button>
