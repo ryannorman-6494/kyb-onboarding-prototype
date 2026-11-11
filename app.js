@@ -519,7 +519,7 @@
       "area": "Copy",
       "where": "More info needed",
       "t": "An information request is framed as one item, not a restarted application",
-      "b": "The screen leads with what still passed, names the one thing to fix, and says the checks resume where they stopped. Standard RFI emails read like a rejection and lose applicants who had nearly finished.",
+      "b": "The screen leads with what still passed, names the one thing to fix, and says the checks resume where they stopped. Standard RFI emails read like a rejection and lose applicants who had nearly finished. Update 2026-11-11: the line under the title no longer ends with a time estimate; it stops at “exactly where they left off”. Ryan asked for “usually within the hour” to be removed and gave no reason.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -2317,7 +2317,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Each open owner card ends with a secondary Done button that closes the card; progress is saved as the applicant goes",
-      "b": "At the bottom left of every open owner card there is a Done button, in the secondary (neutral) style rather than the purple primary style, so it does not compete with Save and continue. It only closes the card, so the applicant can see that person is finished and move to the next. It does not save anything: each field is saved as it is filled in, Save and continue and Save & Exit both keep every owner, and the Why we ask note says progress is saved after every field. It does not check the card, so an incomplete owner can be closed and the problems only appear when the applicant continues. An open owner card has no purple outline, because it is not a selected card in the way a radio card is; it keeps the same plain border as a closed one. The button is not shown on the page an invited owner sees. (It was a Save button, then Save owner, until 2026-11-10; it was renamed because a save button implied the owner would be lost without it, when saving a whole step is already possible at any point.)",
+      "b": "At the bottom left of every open owner card there is a Done button, in the secondary (neutral) style rather than the purple primary style, so it does not compete with Save and continue. It only closes the card, so the applicant can see that person is finished and move to the next. It does not save anything: each field is saved as it is filled in, Save and continue and Save & Exit both keep every owner, and the Why we ask note says progress is saved after every field. It does not check the card, so an incomplete owner can be closed and the problems only appear when the applicant continues. An open owner card has no purple outline, because it is not a selected card in the way a radio card is; it keeps the same plain border as a closed one. The button is not shown on the page an invited owner sees. (It was a Save button, then Save owner, until 2026-11-10; it was renamed because a save button implied the owner would be lost without it, when saving a whole step is already possible at any point.) Update 2026-11-11: this button no longer sits at the bottom of the full card; each section has its own Done (see section-done-buttons), and the one in the last section closes the card.",
       "tradeoff": "Done changes nothing in the data, so an applicant may wonder whether it saved. The page's Saved tell in the progress column covers this, but it no longer flashes on Done.",
       "by": "Ryan",
 "when": "2026-11-06"
@@ -2917,8 +2917,28 @@
       "area": "Step 2",
       "where": "Step 2 · Owner cards · section headings",
       "t": "Each owner section heading shows where it stands: Not started, N of M done, then a green tick",
-      "b": "Ryan: the Identity verification section is required but easy to pass by, so each section heading (Personal details and Identity verification) now shows its state beside the title, not beside the chevron (moved there on 2026-11-11 at Ryan's request, having first been at the right), whether the section is open or closed. Until the applicant has entered something in it (or nothing valid is in, on a listed owner) it reads Not started in the warning colour; starting values such as Director and 10%, or a country filled in for them, do not count as a start on an owner they added. Once some of the required answers are in it reads, for example, 3 of 6 done in the purple (brand) colour. When all are in it is replaced by a green tick circle (the same one the review summary uses), with Complete for screen readers. The count is the required answers that are filled in and valid out of the required answers in that section; optional boxes (the middle name) and the SSN tick are not counted, and a non-profit has no SSN or ownership percentage so its counts are smaller. Ryan chose this from four options and dropped the word Required from the chip. Nothing is blocked or opened for the applicant: an empty required field still shows no error (errors-only-for-bad-entries), and the sections still open and close on their own.",
+      "b": "Ryan: the Identity verification section is required but easy to pass by, so each section heading (Personal details and Identity verification) now shows its state beside the title, not beside the chevron (moved there on 2026-11-11 at Ryan's request, having first been at the right), whether the section is open or closed. Until the applicant has entered something in it (or nothing valid is in, on a listed owner) it reads Not started in the warning colour; starting values such as Director and 10%, or a country filled in for them, do not count as a start on an owner they added. Once some of the required answers are in it reads, for example, 3 of 6 done in the purple (brand) colour. When all are in it is replaced by a green tick circle (the same one the review summary uses), with Complete for screen readers. The count is the required answers that are filled in and valid out of the required answers in that section; optional boxes (the middle name) and the SSN tick are not counted, and a non-profit has no SSN or ownership percentage so its counts are smaller. Ryan chose this from four options and dropped the word Required from the chip. Nothing is blocked or opened for the applicant: an empty required field still shows no error (errors-only-for-bad-entries), and the sections still open and close on their own. Superseded in part, 2026-11-11: prefilled values now count, and the Not started exception for added owners is gone (see status-chip-counts-prefilled).",
       "tradeoff": "A section that holds a wrong entry counts it as not done but does not say so in the chip; the existing Needs a look pill on the owner row and the error under the field do that. A section starts in the warning colour on every empty owner card, so a new card shows two warning chips at once, which makes an empty card look more urgent than the form means it to. The earlier count and minutes badges were removed on 2026-11-09 as noise; this chip is different because it changes with progress, but it is on both headings all the time.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "section-done-buttons",
+      "area": "Step 2",
+      "where": "Step 2 · Owner cards · sections",
+      "t": "Each owner section ends with a Done button: Personal details moves on to Identity verification, and Identity verification closes the owner card",
+      "b": "Ryan asked for a secondary Done button at the foot of every open section in an owner card. In Personal details it closes that section and opens Identity verification. In Identity verification it closes the whole owner card. The Done button that used to sit at the bottom of the full card is removed. Like the old one, Done saves and checks nothing: each field is kept as it is filled in, so an incomplete section can be closed and any problem only shows when the applicant continues. A section the applicant opened by hand and a section forced open by a shown error both get the button. On the page an invited owner sees there is no card to close, so the last section has no Done there; the first still moves on to the next section. Ryan gave no reason beyond the request; the flow reads as a guided walk through the form, one section at a time. Supersedes the position of the Done button in owner-done-button.",
+      "tradeoff": "The card's Done is now only reachable from the last section, so an applicant who opens just Personal details has to use the card header to close it, and an applicant who opens Identity verification first sees Done close the card without ever visiting Personal details (the status chip still says Not started). Nothing in the prototype yet says the order is required.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "status-chip-counts-prefilled",
+      "area": "Step 2",
+      "where": "Step 2 · Owner cards · section headings, owner row",
+      "t": "Prefilled owner fields count in the section chip; a new owner starts with only an ownership share filled in (100 for the first owner, then what is left) and reads 1 of 10 done; the owner row's Remove button is just a trash can",
+      "b": "Ryan: any field that starts prefilled is counted by the section status chip, so an owner added with Add myself starts partly done (5 of 10 done in Personal details and 1 of 6 in Identity verification) because the title, ownership percentage, email, phone and the two countries are already in. Before this, a section on any added owner read Not started until the applicant typed something, even with those values in. A new owner added with Add another owner or director has one prefilled field, an ownership percentage (it first started empty on 2026-11-11, then Ryan asked for 100, then agreed to go back to the share still unaccounted for, never below 25, so the first owner gets 100 and later ones get what is left), so its Personal details reads 1 of 10 done and Identity verification reads Not started. Title and both countries start empty, so its row reads that share with no title until one is entered. A non-profit has no ownership percentage, so its new owner still reads Not started. Add myself keeps its prefilled values (decision owner-share-minimum still sets its percentage). Also on 2026-11-11, Ryan removed the word Remove from the Remove button on an owner row: it is a trash can icon only, with the owner's name kept as its accessible label. Supersedes the added-owner exception in section-status-chip.",
+      "tradeoff": "A trash can with no word is less obvious than a labelled button, and it sits beside the open and close chevron, so an applicant could press it by mistake; the confirmation dialog that follows is the safeguard. A new owner now has an empty title, so the applicant types it, where before they only edited a suggested Director. Because the share is the amount left, a company already at 100% or more gives a new owner 25, so the total can still pass 100% and the Ownership comes to more than 100% message can show when the applicant continues (Ryan's call, no reason given beyond wanting 1 of 10 at the start).",
       "by": "Ryan",
       "when": "2026-11-11"
     }
@@ -4533,7 +4553,7 @@
   }
 
   // The owner form as collapsible sections. Each starts closed (the first is open) and can be opened on its own; a section holding a problem stays open so the problem cannot be hidden (decision owner-form-accordion).
-  function ownerSectionsView(o) {
+  function ownerSectionsView(o, recipient, closeOwner) {
     const secs = [];
     ownerFields(o).forEach((f) => {
       if (f.kind === "heading") secs.push({ h: f, fields: [] });
@@ -4560,12 +4580,19 @@
       // Where the section stands (decision section-status-chip): the required answers that are in and valid, out of all it needs. Optional boxes are not counted.
       const need = sec.fields.filter((x) => x.required && x.kind !== "heading");
       const have = need.filter((x) => !fieldError(x)).length;
-      // On an owner the applicant added, starting values such as Director and 10% or the country do not count as a start: the section reads Not started until the applicant has entered something in it.
-      const entered = sec.fields.some((x) => state.a[x.id] !== undefined);
-      const status = !need.length ? "" : have === need.length ? html`<span class="tick sec-tick">${icon("check", 13, "i-b")}<span class="sr-only">Complete</span></span>` : have === 0 || (o.added && !entered) ? html`<span class="pill pill--warning sec-status">Not started</span>` : html`<span class="pill pill--brand sec-status">${have} of ${need.length} done</span>`;
+      // Prefilled values count like typed ones (decision status-chip-counts-prefilled): Add myself starts partly done, and a new owner has only the 100% ownership percentage prefilled, so it reads 1 of 10 done (the percentage is the share still unaccounted for, never below 25, and 100 for the first owner).
+      const status = !need.length ? "" : have === need.length ? html`<span class="tick sec-tick">${icon("check", 13, "i-b")}<span class="sr-only">Complete</span></span>` : have === 0 ? html`<span class="pill pill--warning sec-status">Not started</span>` : html`<span class="pill pill--brand sec-status">${have} of ${need.length} done</span>`;
+      // Done at the foot of each section (decision section-done-buttons): on every section but the last it closes this one and opens the next; on the last it closes the whole owner card. Nothing is saved or checked, since each field is kept as it is filled in. The invited owner's own page has no card to close, so its last section has no button.
+      const last = idx === secs.length - 1;
+      const doneClick = () => {
+        if (last) { closeOwner(); return; }
+        const nextId = secs[idx + 1].h.id;
+        setState((st) => ({ secOpen: Object.assign({}, st.secOpen, { [sec.h.id]: false, [nextId]: true }) }));
+      };
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
   <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}${status}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
   ${!closed && html`<div class="fields">${gridView(sec.fields)}</div>`}
+  ${!closed && !(recipient && last) && html`<div class="sec-actions" data-key="done-${sec.h.id}"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(doneClick)}">Done</button></div>`}
 </section>`;
     }) }</div>`;
   }
@@ -4573,7 +4600,7 @@
   function ownerView(o, recipient) {
     const isOpen = state.openOwner === o.id;
     const toggle = () => setState({ openOwner: state.openOwner === o.id ? 0 : o.id });
-    // Done (decision owner-done-button): the owner is already kept as each field is committed, so this only closes the card.
+    // Done (decisions owner-done-button, section-done-buttons): the owner is already kept as each field is committed, so this only closes the card.
     const closeOwner = () => setState({ openOwner: 0 });
     const nm = ownerInfo(o).name;
     const known = !!nm && nm !== "New owner";
@@ -4594,7 +4621,7 @@
     <span class="avatar" aria-hidden="true">${o.initials === "—" || o.initials === "?" ? icon("user", 16) : o.initials}</span>
     <div class="grow">
       <h3 class="person-name">${o.name}</h3>
-      <div class="person-meta">${invited && !String(ownerVal(o, "name")).trim() ? "Waiting for their details" : (o.self ? "You · " : "") + (isSole() ? "Sole owner" : isNonprofit() ? o.role : fmtPct(o.pct) + "% · " + o.role)}</div>
+      <div class="person-meta">${invited && !String(ownerVal(o, "name")).trim() ? "Waiting for their details" : (o.self ? "You · " : "") + (isSole() ? "Sole owner" : isNonprofit() ? o.role : [o.pct > 0 ? fmtPct(o.pct) + "%" : "", o.role].filter(Boolean).join(" · "))}</div>
     </div>
     ${!recipient && Object.keys(ERR).some((k) => k.indexOf("o" + o.id + "_") === 0) && html`<span class="pill pill--danger">${icon("alert", 13)}Needs a look</span>`}
     ${!recipient && invited && !o.signedIn && html`<span class="pill pill--warning">${icon("clock", 13)}Invited · ${o.inviteEmail || "filling in their own details"}</span>`}
@@ -4602,19 +4629,19 @@
     ${!recipient && invited && o.received && html`<span class="pill pill--positive">${icon("check", 13, "i-b")}Details received${o.receivedAt ? " · " + o.receivedAt : ""}</span>`}
     ${!recipient && o.status === "pending" && o.revoked && html`<span class="pill pill--neutral">Access removed</span>`}
     ${!recipient && invitesOn() && o.status === "pending" && !isSole() && !o.self && html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => openDelegate(o.id))}">${icon("mail", 14)}${o.revoked ? "Send a new invite" : "Send invite"}</button>`}
-    ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs btn-tertiary-negative" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}Remove</button>`}
+    ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs btn-tertiary-negative btn-icon-only" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}</button>`}
     ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
     <button type="button" class="icon-btn person-chev-btn" aria-expanded="${String(isOpen)}" aria-label="${isOpen ? "Collapse" : "Open"} ${known ? nm : "this owner"}" data-click="${on(toggle)}">${icon("chev-d", 20, "person-chev")}</button>
   </div>
-  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o)}${!recipient && html`<div class="person-actions" data-key="owner-save"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(closeOwner)}">Done</button></div>`}</div>`}
+  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o, recipient, closeOwner)}</div>`}
 </article>`;
   }
 
   function step2View(v) {
-    // A new owner starts at the share still unaccounted for, but never below 25 (decision owner-share-minimum).
+    // Add myself starts at the share still unaccounted for, but never below 25 (decision owner-share-minimum). A plain new owner starts with the same share and nothing else (decision status-chip-counts-prefilled).
     const shareLeft = () => Math.max(25, 100 - v.owners.reduce((x, o) => x + o.pct, 0));
     const addOwner = () => { const id = Date.now(); setState({
-      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isCompany() ? shareLeft() : 10, role: "Director", status: "pending", self: false, added: true }]),
+      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isCompany() ? shareLeft() : 100, role: "", status: "pending", self: false, added: true }]),
       openOwner: id
     }); };
     // "Add myself": the applicant is often the owner too. It fills in what step 1 already gave (email, phone), a sensible title, and the share still unaccounted for (never below 25). Nothing else is guessed, and every field stays editable.
@@ -5113,7 +5140,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const ready = list.some(pendHas) && list.every((r) => rfiOf(r.id).files.every((f) => !f.busy));
     return html`<header data-key="rfi-head">
   <h1 class="step-title">${pendTitle()}${pin("rfi-not-restart")}</h1>
-  <p class="step-sub">${list.length === 1 ? "You're not back at the start. Fix this item and the checks carry on exactly where they left off, usually within the hour." : "You're not back at the start. Fix these and the checks carry on exactly where they left off, usually within the hour."}</p>
+  <p class="step-sub">${list.length === 1 ? "You're not back at the start. Fix this item and the checks carry on exactly where they left off." : "You're not back at the start. Fix these and the checks carry on exactly where they left off."}</p>
 </header>
 <div class="stack" data-key="rfi-cards">${list.map((r) => pendCardView(r))}</div>
 <div class="rfi-actions" data-key="rfi-actions">
