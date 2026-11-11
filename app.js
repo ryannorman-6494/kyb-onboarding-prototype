@@ -75,13 +75,12 @@
   //   note     an optional extra line under the list
   //   slice    "2" when only the invite build offers the reason (Slice 1 cannot collect a second person's details; decision pend-cosigner-slice-2)
   //   person   true when the request is about one owner; {name} and {first} in the text become that person
-  //   respond  how the business answers: "upload", "fields" (write an answer), "confirm", "cosigner" or "none"
-  //   cta      the button label (upload, confirm, cosigner)
   //   file     the made-up file name an upload shows
-  //   fields   for "fields": { key, label, ph, area, req, from }; from pre-fills from a step 3 answer
+  // Every reason is answered the same way, with a document upload and a message box, and nothing on the card is required or checked
+  // (decision more-info-one-response). What each reason asks for is said in its own wording; the answer is read by a person.
   const PEND_REASONS = [
     {
-      id: "banking", name: "Banking Verification", respond: "upload", cta: "Choose file", file: "bank-verification.pdf",
+      id: "banking", name: "Banking Verification", file: "bank-verification.pdf",
       title: "Confirm your bank account",
       why: "We need to check that the payout account you gave us belongs to your business, so we pay the right place.",
       lead: "Either of these works",
@@ -91,7 +90,7 @@
       ]
     },
     {
-      id: "ownership", name: "Business Ownership Verification", respond: "upload", cta: "Choose file", file: "ownership-document.pdf",
+      id: "ownership", name: "Business Ownership Verification", file: "ownership-document.pdf",
       title: "Show how you're linked to the business",
       why: "We need a document that connects you to the business, so we know who owns it and who can sign for it.",
       lead: "Any one of these works. It needs to show the business's legal name and your name.",
@@ -104,7 +103,7 @@
       ]
     },
     {
-      id: "financial", name: "Financial Exposure Risk", respond: "upload", cta: "Choose file", file: "financial-records.pdf",
+      id: "financial", name: "Financial Exposure Risk", file: "financial-records.pdf",
       title: "Share your financial records",
       why: "We need to see how your business is doing financially before we can approve it.",
       lead: "Send at least one of these",
@@ -116,18 +115,14 @@
       note: "No audited statements, or fewer than 6 months of processing? Tell us. We can accept those in some cases."
     },
     {
-      id: "delivery", name: "Future Delivery Risk", respond: "fields",
+      id: "delivery", name: "Future Delivery Risk",
       title: "Tell us when customers get what they pay for",
       why: "When customers pay before they receive your product or service, we need to know how long that gap lasts.",
       lead: "Tell us two things",
-      accept: ["How far in advance you take deposits", "How long it takes from the first payment to delivery"],
-      fields: [
-        { key: "advance", label: "How far in advance do customers pay a deposit?", ph: "For example, 2 weeks before the event", req: true },
-        { key: "timeline", label: "How long from the first payment to delivery?", ph: "For example, 3 to 4 weeks", req: true }
-      ]
+      accept: ["How far in advance you take deposits", "How long it takes from the first payment to delivery"]
     },
     {
-      id: "kyb", name: "KYB Verification", respond: "upload", cta: "Choose file", file: "business-registration.pdf",
+      id: "kyb", name: "KYB Verification", file: "business-registration.pdf",
       title: "Prove your business is registered",
       why: "We need an official document that shows your business is registered under the name you gave us.",
       lead: "Any one of these works. It needs to show your legal business name.",
@@ -135,7 +130,7 @@
       note: "Other documents are accepted only in some cases, such as a utility bill with the owner's name at the business address, a bill of sale or purchase agreement, or other state or federal filings. If you don't have one of the documents above, tell us."
     },
     {
-      id: "shipping", name: "Shipping & Product Validation", respond: "upload", cta: "Choose file", file: "product-evidence.pdf",
+      id: "shipping", name: "Shipping & Product Validation", file: "product-evidence.pdf",
       title: "Show how you get products to customers",
       why: "We need to see that you have the products you sell and a way to deliver them.",
       lead: "Send at least one of these",
@@ -147,58 +142,56 @@
       ]
     },
     {
-      id: "kyc", person: true, name: "KYC Verification", respond: "upload", cta: "Choose file", file: "photo-id.pdf",
+      id: "kyc", person: true, name: "KYC Verification", file: "photo-id.pdf",
       title: "Confirm {first}'s identity",
       why: "We need to check who {name} is before we can approve the application.",
       lead: "Any one of these works. The copy needs to be clear and easy to read.",
       accept: ["Their current driver's license or government-issued ID", "Their current, unexpired U.S. passport", "Their Social Security card"]
     },
     {
-      id: "freeze", person: true, name: "Credit Freeze", respond: "confirm", cta: "I've removed the freeze",
+      id: "freeze", person: true, name: "Credit Freeze",
       title: "Remove the freeze on {first}'s credit report",
       why: "A security freeze blocks the credit check we need to run on {name} before we can approve the application.",
       lead: "What to do",
       accept: ["Remove the security freeze on {first}'s credit report at Experian, TransUnion and Equifax", "Then tell us here, and we'll carry on with the check"]
     },
     {
-      id: "alert", person: true, name: "Credit Security Alert", respond: "none",
+      id: "alert", person: true, name: "Credit Security Alert",
       title: "A quick chat with our underwriting team",
       why: "A security alert on {name}'s credit report means we need to talk with them before we can go on.",
       lead: "What happens next",
       accept: ["There's nothing for you to send", "Our underwriting team will get in touch with {first}"]
     },
     {
-      id: "cosigner", slice: "2", person: true, name: "Insufficient Credit", respond: "cosigner", cta: "Add a co-signer",
+      id: "cosigner", slice: "2", person: true, name: "Insufficient Credit",
       title: "Add a co-signer",
       why: "The credit history we found for {name} isn't enough for us to approve the application, so we need a co-signer.",
       lead: "What we need for your co-signer",
       accept: ["Their full legal name, address, date of birth and phone number", "Their Social Security number", "Their signature on the merchant agreement"]
     },
     {
-      id: "product", name: "Product/Services Description", respond: "fields",
+      id: "product", name: "Product/Services Description",
       title: "Tell us more about what you sell",
       why: "We need more detail about your products or services to understand your business.",
       lead: "Tell us",
-      accept: ["The types of products you sell or the services you offer, in more detail than you gave us"],
-      fields: [{ key: "detail", label: "What do you sell?", ph: "For example, group Pilates classes, private sessions, and mats and clothing at the front desk", area: true, req: true }]
+      accept: ["The types of products you sell or the services you offer, in more detail than you gave us"]
     },
     {
-      id: "duplicate", name: "Duplicate Account", respond: "fields",
+      id: "duplicate", name: "Duplicate Account",
       title: "Tell us why you need another account",
       why: "We found an open processing account linked to you or your business.",
       lead: "Tell us",
-      accept: ["Why your business needs an additional account"],
-      fields: [{ key: "reason", label: "Why do you need another account?", ph: "For example, this account is for our second location", area: true, req: true }]
+      accept: ["Why your business needs an additional account"]
     },
     {
-      id: "tin", name: "TIN Verification", respond: "upload", cta: "Choose file", file: "tax-id-document.pdf",
+      id: "tin", name: "TIN Verification", file: "tax-id-document.pdf",
       title: "Confirm your tax ID",
       why: "We need one more document to confirm your tax ID number.",
       lead: "Either of these works",
       accept: ["Your IRS Form SS-4 filing", "A 1099-K from your previous processor"]
     },
     {
-      id: "firearms", name: "Firearms Due Diligence", respond: "upload", cta: "Choose file", file: "firearms-documents.pdf",
+      id: "firearms", name: "Firearms Due Diligence", file: "firearms-documents.pdf",
       title: "Send your firearms documents",
       why: "Selling firearms means extra checks, and some documents our sporting goods policy asks for are missing or incomplete.",
       lead: "Documents we often find missing",
@@ -212,7 +205,7 @@
       note: "These are examples. Our sporting goods policy has the full list."
     },
     {
-      id: "cbd", name: "CBD Due Diligence", respond: "upload", cta: "Choose file", file: "cbd-documents.pdf",
+      id: "cbd", name: "CBD Due Diligence", file: "cbd-documents.pdf",
       title: "Send your CBD documents",
       why: "Selling CBD means extra checks, and some documents our CBD policy asks for are missing or incomplete.",
       lead: "Documents we often find missing",
@@ -225,28 +218,21 @@
       note: "These are examples. Our CBD policy has the full list."
     },
     {
-      id: "volume", name: "Avg Ticket/Volume Thresholds", respond: "fields",
+      id: "volume", name: "Avg Ticket/Volume Thresholds",
       title: "Check your sales numbers",
       why: "Your average sale, highest sale and monthly volume don't match up, so we need you to confirm them.",
       lead: "Confirm or correct your numbers, and tell us how you worked them out",
-      accept: ["Your average transaction amount, your maximum single transaction and your monthly card volume", "A short note on why those numbers are right"],
-      fields: [
-        { key: "avg", label: "Average transaction amount", ph: "38", from: "avgTicket", req: true },
-        { key: "max", label: "Maximum single transaction", ph: "1,200", from: "maxTicket", req: true },
-        { key: "monthly", label: "Estimated monthly card volume", ph: "40,000", from: "monthlyVolume", req: true },
-        { key: "why", label: "How did you work these out?", ph: "For example, our busiest month last year, plus the new location", area: true, req: true }
-      ]
+      accept: ["Your average transaction amount, your maximum single transaction and your monthly card volume", "A short note on why those numbers are right"]
     },
     {
-      id: "url", name: "Missing URL (website)", respond: "fields",
+      id: "url", name: "Missing URL (website)",
       title: "Add your website address",
       why: "We need to see your website to check what you sell.",
       lead: "Tell us",
-      accept: ["The address of your website"],
-      fields: [{ key: "url", label: "Website address", ph: "https://", req: true }]
+      accept: ["The address of your website"]
     },
     {
-      id: "website", name: "Incomplete Website", respond: "confirm", cta: "I've updated my website",
+      id: "website", name: "Incomplete Website",
       title: "Update your website",
       why: "We looked at your website and found things to fix before we can approve it.",
       lead: "Things to check",
@@ -259,7 +245,7 @@
       ]
     },
     {
-      id: "nonprofit", name: "Non-Profit Documents", respond: "upload", cta: "Choose file", file: "nonprofit-status.pdf",
+      id: "nonprofit", name: "Non-Profit Documents", file: "nonprofit-status.pdf",
       title: "Send your nonprofit paperwork",
       why: "We need proof of your nonprofit status.",
       lead: "What we need",
@@ -285,7 +271,6 @@
     returning: "Returning, in progress",
     review: "Returning, under review",
     info: "Returning, more info needed",
-    infoApp: "More info needed in-app screen (not used in Slice 1)",
     approved: "Returning, approved"
   };
   const LINK_NEW = "New applicant";
@@ -313,7 +298,7 @@
     const q = new URLSearchParams(location.search);
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
-      moreInfo: q.get("moreinfo") === "cards" ? MOREINFO_CARDS : MOREINFO_SIMPLE, // SIMPLE TRIAL
+      moreInfo: q.get("moreinfo") === "simple" ? MOREINFO_SIMPLE : MOREINFO_CARDS, // SIMPLE TRIAL
       division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
@@ -326,7 +311,7 @@
   function writeContext() {
     const q = new URLSearchParams();
     if (ctx.slice === SLICE_2) q.set("slice", "2");
-    if (ctx.moreInfo === MOREINFO_CARDS) q.set("moreinfo", "cards"); // SIMPLE TRIAL
+    if (ctx.moreInfo === MOREINFO_SIMPLE) q.set("moreinfo", "simple"); // SIMPLE TRIAL
     if (ctx.division === DIV_CLUBREADY) q.set("division", "clubready");
     if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
@@ -351,7 +336,7 @@
   const CONTEXT_OPTIONS = {
     slice: [SLICE_1, SLICE_2],
     division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
-    moreInfo: [MOREINFO_SIMPLE, MOREINFO_CARDS], // SIMPLE TRIAL
+    moreInfo: [MOREINFO_CARDS, MOREINFO_SIMPLE], // SIMPLE TRIAL
     start: [START_LOGIN, START_EXISTING],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
@@ -467,7 +452,7 @@
       "area": "Trust",
       "where": "Step 2 · Owners & signatory",
       "t": "Say in step 2 that nothing is binding until step 7",
-      "b": "Being asked who will sign, five steps before signing, reads as a commitment. The card says outright that the signature happens at the end and nothing before it binds anyone.",
+      "b": "Being asked who will sign, five steps before signing, reads as a commitment. The card says outright that the signature happens at the end and nothing before it binds anyone. Update, 2026-11-11: the signature now happens at the end of step 6, not step 7 (see sign-on-step-6), so the card's line now says You'll sign at step 6. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -476,7 +461,7 @@
       "area": "Copy",
       "where": "Step 3 · How you take payments",
       "t": "Underwriting questions in plain English, with “best guesses are fine” said first",
-      "b": "Volume questions read as a test people can fail, so they stall on them or inflate them. Stating up front that estimates are expected, that they set limits rather than rates, and that going over one changes nothing, removes the reason to stall.",
+      "b": "Volume questions read as a test people can fail, so they stall on them or inflate them. Stating up front that estimates are expected, that they set limits rather than rates, and that going over one changes nothing, removes the reason to stall. Update, 2026-11-11 (Ryan): the line under the numbers saying that going over one of the limits breaks nothing has been removed from Your card volumes, because the maximum single transaction is now a hard block (see max-ticket-hard-block). The title, the “Best guesses are fine” line and the plain wording of the questions stay; only the promise that going over changes nothing is withdrawn.",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -485,7 +470,7 @@
       "area": "Visual",
       "where": "Step 3 · How you take payments",
       "t": "Preview the billing descriptor on a mock statement, in context",
-      "b": "The descriptor is shown on a statement extract between two ordinary transactions, because the thing that matters is whether a customer recognizes it in a list, not whether it looks right on its own. The sheet's own heading carries the explanation (“How this looks on your customer's statement”), so there is no separate caption above it. Anything past the card networks' 22-character limit is struck through rather than blocked, so a paste still shows you exactly what you would lose.",
+      "b": "The descriptor is shown on a statement extract between two ordinary transactions, because the thing that matters is whether a customer recognizes it in a list, not whether it looks right on its own. The sheet's own heading carries the explanation (“How this looks on your customer's statement”), so there is no separate caption above it. Anything past the card networks' 22-character limit is struck through rather than blocked, so a paste still shows you exactly what you would lose. Parked on 2026-11-11: the whole How you'll appear section was taken out of step 3 (see descriptor-section-parked). Ryan wants to use it somewhere else later; its spec and code are in parked/billing-descriptor.md.",
       "tradeoff": "It's a mock statement, so it implies a formatting fidelity real issuers don't all share.",
       "by": "Ryan",
       "when": "2026-09-30"
@@ -635,7 +620,7 @@
       "area": "Trust",
       "where": "Step 7",
       "t": "Every document can be opened before its checkbox",
-      "b": "A “Read these before you accept” card lists the three agreements and any files uploaded in step 6, each with a View button that opens it in a reader. The agreement, rates and privacy checkboxes also carry their own View button beside them, and a Viewed mark appears once something has been opened. Accepting is not blocked on viewing.",
+      "b": "A “Read these before you accept” card lists the three agreements and any files uploaded in step 6, each with a View button that opens it in a reader. The agreement, rates and privacy checkboxes also carry their own View button beside them, and a Viewed mark appears once something has been opened. Accepting is not blocked on viewing. Superseded in part on 2026-11-11 by sign-on-step-6 and terms-view-only: the documents are now read at the end of step 6, and the agreement and privacy checkboxes are gone, so the View buttons stand on their own rows. The Viewed mark stays. Nothing is gated on viewing. Update, 2026-11-11 (later): the two documents are opened through links in their tick boxes in the Sign it off card (terms-as-signing-checkboxes). The Viewed mark is gone. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
       "tradeoff": "Gating the checkboxes on having opened each document would be stronger evidence of consent, but it punishes people who already know the terms. The Viewed mark gives the audit trail without the friction.",
       "by": "Ryan",
       "when": "2026-10-02"
@@ -768,7 +753,7 @@
       "area": "Trust",
       "where": "Step 6 · Supporting documents",
       "t": "The W-9 is shown to be read and signed, not marked signed",
-      "b": "The W-9 row said “give it a read and sign” but its only button produced a file already “signed by” the applicant with a tax number matching step 1, though the sole-proprietor tester had given no tax number and signed nothing. The row now offers Review and sign (a form filled from the applicant's own answers, a certification tick and a typed name that must match step 2) or Upload your own. With no EIN, a company can't sign here and is told why; a sole proprietor's number is their SSN from step 2, which is not repeated on screen. Read-backs for the other documents only say “matches step N” when there is a value to match.",
+      "b": "The W-9 row said “give it a read and sign” but its only button produced a file already “signed by” the applicant with a tax number matching step 1, though the sole-proprietor tester had given no tax number and signed nothing. The row now offers Review and sign (a form filled from the applicant's own answers, a certification tick and a typed name that must match step 2) or Upload your own. With no EIN, a company can't sign here and is told why; a sole proprietor's number is their SSN from step 2, which is not repeated on screen. Read-backs for the other documents only say “matches step N” when there is a value to match. Superseded on 2026-11-11 by w9-upload-only: the Review and sign button, the on-screen form and the typed signature are gone. The W-9 is an upload like the other documents.",
       "tradeoff": "More steps than a one-click “checked”. The form text is sample text until legal provides the real one, and the e-signature step is simulated.",
       "by": "Claude",
       "when": "2026-10-05"
@@ -828,7 +813,7 @@
       "area": "Flow",
       "where": "Step 3 · Your card volumes",
       "t": "Ask for the card-present share only; card not present is whatever is left",
-      "b": "Card present and card not present were two boxes that had to add up to 100, so the second could only ever repeat or contradict the first. Step 3 now asks for card present alone and its hint says online, in-app and phone sales count as the rest. The “need to add up to 100%” error went with it, because it can no longer happen.",
+      "b": "Card present and card not present were two boxes that had to add up to 100, so the second could only ever repeat or contradict the first. Step 3 now asks for card present alone and its hint says online, in-app and phone sales count as the rest. The “need to add up to 100%” error went with it, because it can no longer happen. Update, 2026-11-11 (Ryan): the sentence saying online, in-app and phone sales count as the rest has been removed from the hint. It now reads only In person, on a card machine. (see volume-fields-reordered).",
       "tradeoff": "If underwriting wants the card-not-present figure typed in as its own answer, it is now derived (100 minus card present) rather than entered. Ops should confirm that is acceptable.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -1050,7 +1035,7 @@
       "area": "Flow",
       "where": "Step 3 · Processing history, step 5 · Declarations",
       "t": "Being terminated by a processor is asked once, in step 5",
-      "b": "Step 3 asked “Has a processor ever terminated you?” (with a “which processor, when, and why” box) and step 5 asked “Has a merchant account of yours been terminated?” (with “Processor, date and reason”). In the third persona run the tester noticed the repeat. Ryan chose to keep the step 5 declaration and remove the step 3 question and its follow-up, and with them the card note “A past termination isn't an automatic no…”, which no longer had a question to sit beside. Step 3's processing history is now whether they have accepted cards before and, if so, the prior processor and chargeback ratio.",
+      "b": "Step 3 asked “Has a processor ever terminated you?” (with a “which processor, when, and why” box) and step 5 asked “Has a merchant account of yours been terminated?” (with “Processor, date and reason”). In the third persona run the tester noticed the repeat. Ryan chose to keep the step 5 declaration and remove the step 3 question and its follow-up, and with them the card note “A past termination isn't an automatic no…”, which no longer had a question to sit beside. Step 3's processing history is now whether they have accepted cards before and, if so, the prior processor and chargeback ratio. Update, 2026-11-11: the Processing history section no longer exists; its question about accepting cards before moved into Your card volumes (see card-history-in-volumes).",
       "tradeoff": "The step 3 note was reassurance given right where an applicant might hesitate; step 5 has its own (“Saying yes to any of these won't stop your application”), but it comes later and is about all the declarations. If ops want termination known before the statement is requested, the order would need another look.",
       "by": "Ryan",
       "when": "2026-10-06"
@@ -1200,7 +1185,7 @@
       "area": "Flow",
       "where": "Step 7 · Sign it off",
       "t": "Signatory title fills from the first owner even when added with the plain button",
-      "b": "The step 7 signatory title now fills from the first owner's title when no owner is marked as the applicant, the same way the signatory name already follows the first owner. An owner added with the plain “Add an owner or director” button therefore carries their title (“Director” until edited) into step 7 instead of leaving the field empty; “Add myself” is unchanged and still gives “Owner / CEO”.",
+      "b": "The step 7 signatory title now fills from the first owner's title when no owner is marked as the applicant, the same way the signatory name already follows the first owner. An owner added with the plain “Add an owner or director” button therefore carries their title (“Director” until edited) into step 7 instead of leaving the field empty; “Add myself” is unchanged and still gives “Owner / CEO”. Update, 2026-11-11: the Sign it off card is now at the end of step 6, not step 7 (sign-on-step-6). The fallback behaves the same. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
       "tradeoff": "The default “Director” is a placeholder, not a fact: a signer who is the owner must still change it, and it is now prefilled where before it forced a deliberate entry. The field stays editable and required.",
       "by": "Ryan",
       "when": "2026-10-12"
@@ -1210,7 +1195,7 @@
       "area": "Flow",
       "where": "Step 7 · Review and sign",
       "t": "Final step drops the rates tick and collapses “What happens next”",
-      "b": "Rates and the fee schedule are already agreed before this flow starts, so the final step no longer asks for an “I accept the rates and fee schedule” tick. “What happens next” below the signature is now a collapsed bar that opens on click, so nothing competes with signing, which is the one action that matters on this step.",
+      "b": "Rates and the fee schedule are already agreed before this flow starts, so the final step no longer asks for an “I accept the rates and fee schedule” tick. “What happens next” below the signature is now a collapsed bar that opens on click, so nothing competes with signing, which is the one action that matters on this step. Update, 2026-11-11: signing moved to step 6 (sign-on-step-6). The final step is now Review and submit, with the summary and the collapsed What happens next bar. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
       "tradeoff": "Applicants who would have used the rates line to double-check pricing now have to find it elsewhere; the fee schedule is still reachable from the agreement link. The three-step “what happens next” reassurance is one click further away, so some may submit without reading it.",
       "by": "Ryan",
       "when": "2026-10-12"
@@ -1572,7 +1557,7 @@
       "area": "Fields",
       "where": "Step 3 · Your card volumes, the limits tick",
       "t": "The transaction limits come from the applicant's own answers, and the tick waits until they are filled in",
-      "b": "The limits under the tick on step 3 (moved into Your card volumes, see limits-ack-in-volumes) are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it.",
+      "b": "The limits under the tick on step 3 (moved into Your card volumes, see limits-ack-in-volumes) are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it. Update, 2026-11-11: the hint under the tick now reads “We block any single transaction over $X. Your monthly limit is $Y. Both are based on what you entered above. Ask us any time to raise them.” (see max-ticket-hard-block).",
       "tradeoff": "The limits simply repeat what the applicant estimated, so a low guess becomes a low limit and Xplor still has to decide the real limits. Someone who corrects a figure has to tick again; that is deliberate, since the tick is about specific numbers.",
       "by": "Ryan",
       "when": "2026-10-22"
@@ -1682,7 +1667,7 @@
       "area": "Trust",
       "where": "Step 7 · What you're agreeing to",
       "t": "The acknowledgements and authorizations are written into the one merchant agreement the applicant reads at step 7",
-      "b": "A sub-merchant form Ryan shared has six acknowledgement points and ten authorization points. They are terms and conditions, so they sit inside the merchant services agreement that the first tick at step 7 opens, not as extra ticks. The privacy policy and terms of service stay a separate document and tick. They are being added in three groups: (1) debit and recovery rights, done on 2026-10-26: collecting fees, recovering chargebacks, refunds and returns, a reserve, withholding funds under a lawful order, and moving billed amounts to settle; (2) authority and data, done on 2026-10-26: opening the merchant account with a processor, using your information and cardholder data to provide the service, signing and acting for you, reaching your payout account, and the power of attorney statement; (3) truth and binding terms, done on 2026-10-26: the application can be rejected in underwriting but binds once accepted, the referenced documents are part of the agreement, and the service depends on paying fees and following the terms and privacy policy. The statement that the information is true is not in the agreement but sits under the typed signature (see truth-tick).",
+      "b": "A sub-merchant form Ryan shared has six acknowledgement points and ten authorization points. They are terms and conditions, so they sit inside the merchant services agreement that the first tick at step 7 opens, not as extra ticks. The privacy policy and terms of service stay a separate document and tick. They are being added in three groups: (1) debit and recovery rights, done on 2026-10-26: collecting fees, recovering chargebacks, refunds and returns, a reserve, withholding funds under a lawful order, and moving billed amounts to settle; (2) authority and data, done on 2026-10-26: opening the merchant account with a processor, using your information and cardholder data to provide the service, signing and acting for you, reaching your payout account, and the power of attorney statement; (3) truth and binding terms, done on 2026-10-26: the application can be rejected in underwriting but binds once accepted, the referenced documents are part of the agreement, and the service depends on paying fees and following the terms and privacy policy. The statement that the information is true is not in the agreement but sits under the typed signature (see truth-tick). Update, 2026-11-11: the ticks are gone (see terms-view-only). The merchant services agreement is opened with its View button at step 6, and typing the name under it is the acceptance. The wording of the agreement itself is unchanged. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
       "tradeoff": "A long agreement behind one tick is easy to accept without reading. The wording is a sample drafted from the form's points, not legal text, and needs legal or compliance to replace it. Three clauses are marked for legal review: acting for the merchant in any other action it reasonably considers necessary, the irrevocable power of attorney (both give Xplor wide, hard-to-undo authority), and as they may be revised from time to time in section 8, which lets the terms change without a new acceptance. It is not known whether this agreement is the sub-merchant agreement itself or who the named facilitator is.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1692,7 +1677,7 @@
       "area": "Trust",
       "where": "Step 7 · document viewer",
       "t": "The agreement and privacy documents can be downloaded from the viewer",
-      "b": "The document viewer has a Download button beside Close, so the applicant can send the terms to a legal team before signing. In the prototype it saves the sample text as a plain text file. The real product would give the same versioned PDF the viewer shows.",
+      "b": "The document viewer has a Download button beside Close, so the applicant can send the terms to a legal team before signing. In the prototype it saves the sample text as a plain text file. The real product would give the same versioned PDF the viewer shows. Update, 2026-11-11: the viewer is now opened from the View buttons at step 6 (sign-on-step-6). The Download button is unchanged. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
       "tradeoff": "Nothing records that the applicant downloaded it, and the real PDF has to match the version they go on to accept.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1712,7 +1697,7 @@
       "area": "Step 2",
       "where": "Step 7 · signing",
       "t": "One owner signs for the business; the other 25% owners do not sign",
-      "b": "ClubReady's request says each owner with 25% or more must sign the sub-merchant application. Ryan has decided that only one owner needs to sign, so the prototype keeps what it already does: the person filling in the form signs once at step 7 (decision invitee-own-card-only, and Slice 1 has no invites). No change to the flow. The 75% rule still lists owners until three quarters is accounted for, which may miss a 25% owner; that is about who is listed, not who signs.",
+      "b": "ClubReady's request says each owner with 25% or more must sign the sub-merchant application. Ryan has decided that only one owner needs to sign, so the prototype keeps what it already does: the person filling in the form signs once at step 7 (decision invitee-own-card-only, and Slice 1 has no invites). No change to the flow. The 75% rule still lists owners until three quarters is accounted for, which may miss a 25% owner; that is about who is listed, not who signs. Update, 2026-11-11: the one signature is now given at the end of step 6, not step 7 (sign-on-step-6). Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
       "tradeoff": "Xplor Pay takes one signature where ClubReady's own request asks for one from every 25% owner. If compliance or the ClubReady division later says otherwise, Slice 1 (one person, no invites) cannot collect more, and step 7 would need a signature per owner, which the invite-era decisions ruled out. The answer is Ryan's; no source document.",
       "by": "Ryan",
       "when": "2026-10-27"
@@ -1762,7 +1747,7 @@
       "area": "Step 3",
       "where": "Step 3 · Billing descriptor (undecided)",
       "t": "Whether to collect a billing descriptor phone number is TBD",
-      "b": "ClubReady's request list asks for a billing descriptor phone number, the contact number shown on a customer's bank or card statement. Step 3 asks for the descriptor name only, and the step 1 phone number is for account notices. Ryan said on 2026-10-26 to leave it for now and keep it as TBD, so nothing changes.",
+      "b": "ClubReady's request list asks for a billing descriptor phone number, the contact number shown on a customer's bank or card statement. Step 3 asks for the descriptor name only, and the step 1 phone number is for account notices. Ryan said on 2026-10-26 to leave it for now and keep it as TBD, so nothing changes. Parked on 2026-11-11: the whole How you'll appear section was taken out of step 3 (see descriptor-section-parked). Ryan wants to use it somewhere else later; its spec and code are in parked/billing-descriptor.md.",
       "tradeoff": "If it is needed later it is one more field on step 3, and the statement preview would show it.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1772,7 +1757,7 @@
       "area": "Trust",
       "where": "Step 7 · Sign it off",
       "t": "The statement that the information is true sits under the typed signature, not in a tick",
-      "b": "From the sub-merchant form's acknowledgements, the statement that all the information given is true and accurate to the best of the signer's knowledge sits in the Sign it off card, under the Type your full legal name box: By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5. Typing the name is the act that confirms it. It was first built as its own fifth tick on step 7 (2026-10-26); Ryan folded it into the signature line the same day, because five ticks was a lot and it echoed the step 5 declarations. The other acknowledgement points are agreement section 8.",
+      "b": "From the sub-merchant form's acknowledgements, the statement that all the information given is true and accurate to the best of the signer's knowledge sits in the Sign it off card, under the Type your full legal name box: By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5. Typing the name is the act that confirms it. It was first built as its own fifth tick on step 7 (2026-10-26); Ryan folded it into the signature line the same day, because five ticks was a lot and it echoed the step 5 declarations. The other acknowledgement points are agreement section 8. Update, 2026-11-11: the statement now sits under the typed signature at step 6 (sign-on-step-6) and also says the signer agrees to the documents above, agrees to sign electronically and is authorized to sign for the business, because the ticks that used to say those things were removed. Update, 2026-11-11: the signature is now drawn or uploaded, not typed (signature-draw-or-upload). The note under it now reads By signing, you agree to sign electronically, confirms authority to sign for the business and that the information is true, and no longer mentions the documents, which have their own tick boxes. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7. Update, 2026-11-11 (later): the note under the signature was removed (see sign-note-removed). Nothing on the page now says the information is true.",
       "tradeoff": "It is easier to skip than a tick: the text is a small note, and the form's action is typing a name rather than agreeing to the sentence. The note must sit next to the box so it is read at the moment of signing. Whether Xplor wants the confirmation recorded as its own timestamped event is not decided.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1782,7 +1767,7 @@
       "area": "Flow",
       "where": "More info needed",
       "t": "Each reason Ops picks becomes one request card",
-      "b": "An Ops user picks one or more pend reasons from the underwriting guide. The More info needed screen shows one card per reason, and the email to the applicant says the same thing. Every card has the same four parts: a short title, a plain-language line on why we need it, the documents or answers we will accept, and how to respond. The response is one of four things: upload a document, write an answer (one or more fields), tell us it is done (remove a credit freeze, fix the website), or add a co-signer. Every upload card also has an optional Add a note for our team box, so the applicant can explain a missing document or say what a file shows; it is never required and does not count towards Done. Its label says (optional) outright, an exception to no-optional-tag, because on a card full of required requests an unmarked box does not read as optional. A card for a reason with nothing to send (a credit security alert, where underwriting calls the applicant) says so. The heading counts the cards (One thing to fix, Two things to fix). The reassurance that the applicant is not back at the start stays as the lede (decision rfi-not-restart). The reasons, their order of detail and what resolves each one come from the Xplor Underwriting Guide, Pend Reasons and Documentation Requirements; all 19 reasons are in the prototype and Ops picks them in Prototype options. The guide says at least one resolution document or response is needed for each reason, so a list of accepted documents reads as Any one of these works unless it says otherwise.",
+      "b": "An Ops user picks one or more pend reasons from the underwriting guide. The More info needed screen shows one card per reason, and the email to the applicant says the same thing. Every card has the same four parts: a short title, a plain-language line on why we need it, the documents or answers we will accept, and how to respond. The response is one of four things: upload a document, write an answer (one or more fields), tell us it is done (remove a credit freeze, fix the website), or add a co-signer. Every upload card also has an optional Add a note for our team box, so the applicant can explain a missing document or say what a file shows; it is never required and does not count towards Done. Its label says (optional) outright, an exception to no-optional-tag, because on a card full of required requests an unmarked box does not read as optional. A card for a reason with nothing to send (a credit security alert, where underwriting calls the applicant) says so. The heading counts the cards (One thing to fix, Two things to fix). The reassurance that the applicant is not back at the start stays as the lede (decision rfi-not-restart). The reasons, their order of detail and what resolves each one come from the Xplor Underwriting Guide, Pend Reasons and Documentation Requirements; all 19 reasons are in the prototype and Ops picks them in Prototype options. The guide says at least one resolution document or response is needed for each reason, so a list of accepted documents reads as Any one of these works unless it says otherwise. Superseded in part, 2026-11-11: the four ways of responding (upload, write an answer, tell us when it is done, add a co-signer) are gone. Every card has the same file and message boxes and nothing on it is required (see more-info-one-response).",
       "tradeoff": "The plain-language wording is my draft from the guide, not approved copy; ops and compliance should confirm it, especially Credit Freeze, Credit Security Alert and Insufficient Credit. The guide is marked Xplor Technologies - Restricted, and this wording sits in the prototype that is published on GitHub Pages: check with Xplor before the next deploy. Ryan confirmed the guide applies to the United States and Canada alike, so the cards read the same in both regions, including the US document names (Social Security card, SS-4, 1099-K, 501(c)(3)) and routing number. The old hard-coded request (a bank letter address that did not match the registered address) is gone.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1813,7 +1798,7 @@
       "where": "More info needed",
       "slice": "1",
       "t": "Add a co-signer is Slice 2 only; Slice 1 does not offer Insufficient Credit",
-      "b": "The Insufficient Credit reason asks for a co-signer: a second person whose full legal name, address, date of birth, phone number and Social Security number are collected, and who signs the merchant agreement. Slice 1 is one person with no way to add or invite anyone else, and Ryan does not think Slice 1 can collect another person's details. So the Add a co-signer request belongs to Slice 2 (`?slice=2`). In Slice 1 the reason is not in the Ops picks list in Prototype options, and if Ops had picked only that reason the screen shows the default request instead. In Slice 2 it works as before: the card button only marks the request done and shows a toast that a form would open (fake pend-cosigner).",
+      "b": "The Insufficient Credit reason asks for a co-signer: a second person whose full legal name, address, date of birth, phone number and Social Security number are collected, and who signs the merchant agreement. Slice 1 is one person with no way to add or invite anyone else, and Ryan does not think Slice 1 can collect another person's details. So the Add a co-signer request belongs to Slice 2 (`?slice=2`). In Slice 1 the reason is not in the Ops picks list in Prototype options, and if Ops had picked only that reason the screen shows the default request instead. In Slice 2 it works as before: the card button only marks the request done and shows a toast that a form would open (fake pend-cosigner). Update, 2026-11-11: the in-app screen is now the Slice 1 screen and Slice 2 uses the email, so the Insufficient Credit reason is not shown on the in-app screen in either slice. Its card is now the same file and message boxes as every other reason, which would mean asking for a Social Security number in a free text box, so it stays hidden until the co-signer flow is decided.",
       "tradeoff": "In Slice 1 an applicant whose credit is not enough has no way to resolve it on this screen. Risk ops need to be told this is not in Slice 1 and say what happens instead (for example underwriting contacts the applicant, or the application is declined). The co-signer flow itself (a form here or an invite to the co-signer) is still undecided for Slice 2.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1873,7 +1858,7 @@
       "area": "Flow",
       "where": "More info needed (trial)",
       "t": "More info needed is only a place to send documents and notes",
-      "b": "The simplest build, now the default (Ryan, after trying it). Prototype options (on the More info needed screen) has a More info needed screen select: Just uploads and notes (the default) or A card for each request (the earlier build, kept for now as a prototype option; address ?moreinfo=cards). The simple screen drops every title, reason and list of what is needed, because the email the applicant receives says what is needed and why. It shows a short heading and sentence, then a card with a Message for our team box (not marked optional, because an applicant may send only a message) above a Choose file button, so an applicant can send a message, a file, or both. An Add a document button below adds another card of the same kind, for as many documents as they have; in the real product it opens the file picker, so in the prototype the new card arrives with its file already uploaded. A card can be removed once there is more than one, with a trash icon in the top right corner of the card on the same line as the message box, which takes the rest of the width. Send to our team is on once any card has a file or a message and nothing is still uploading. The reasons Ops picks are not used. An engineer needs one component: a repeating row of a file and a note. The add button has a plus symbol, and there is no Email us button, so Send to our team is the only action.",
+      "b": "The simplest build, now the default (Ryan, after trying it). Prototype options (on the More info needed screen) has a More info needed screen select: Just uploads and notes (the default) or A card for each request (the earlier build, kept for now as a prototype option; address ?moreinfo=cards). The simple screen drops every title, reason and list of what is needed, because the email the applicant receives says what is needed and why. It shows a short heading and sentence, then a card with a Message for our team box (not marked optional, because an applicant may send only a message) above a Choose file button, so an applicant can send a message, a file, or both. An Add a document button below adds another card of the same kind, for as many documents as they have; in the real product it opens the file picker, so in the prototype the new card arrives with its file already uploaded. A card can be removed once there is more than one, with a trash icon in the top right corner of the card on the same line as the message box, which takes the rest of the width. Send to our team is on once any card has a file or a message and nothing is still uploading. The reasons Ops picks are not used. An engineer needs one component: a repeating row of a file and a note. The add button has a plus symbol, and there is no Email us button, so Send to our team is the only action. Update, 2026-11-11: the default is now A card for each request, with each reason's own wording and the same file and message boxes on every card (see more-info-one-response). Just uploads and notes remains as an option (address ?moreinfo=simple).",
       "tradeoff": "Nothing on the screen tells the applicant what to send or why, so it depends on the email being clear and to hand. A message alone is enough to send, so an applicant who has nothing to upload (for example a request to update their website, or to remove a credit freeze) can just explain. Nothing checks that the right documents were sent. The earlier card layout stays in the code for now. To remove this screen and go back to the cards, delete the lines marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END in app.js, the SIMPLE TRIAL rule in app.css, and this decision.",
       "by": "Ryan",
       "when": "2026-10-27"
@@ -2032,7 +2017,7 @@
       "area": "Copy",
       "where": "Step 3, Billing descriptor",
       "t": "The billing descriptor placeholder starts with \"e.g.\" so it does not read as a typed value",
-      "b": "The empty billing descriptor box suggests the business name in capitals. It now reads \"e.g. RIVERSIDE PILATES\" instead of the bare name, because the placeholder grey is dark enough that the bare name looked like something the applicant had already typed. The grey is unchanged: Atlas has no placeholder token and a lighter colour would fail contrast.",
+      "b": "The empty billing descriptor box suggests the business name in capitals. It now reads \"e.g. RIVERSIDE PILATES\" instead of the bare name, because the placeholder grey is dark enough that the bare name looked like something the applicant had already typed. The grey is unchanged: Atlas has no placeholder token and a lighter colour would fail contrast. Parked on 2026-11-11: the whole How you'll appear section was taken out of step 3 (see descriptor-section-parked). Ryan wants to use it somewhere else later; its spec and code are in parked/billing-descriptor.md.",
       "tradeoff": "The \"e.g.\" adds four characters before the suggestion, which shortens how much of a long name shows in the box before it is cut off.",
       "by": "Ryan",
       "when": "2026-11-04"
@@ -2052,7 +2037,7 @@
       "area": "Flow",
       "where": "Step 3, Billing descriptor character count",
       "t": "The descriptor character count uses the Atlas warning text colour",
-      "b": "The count under the statement preview turns to the warning text colour from 19 characters, and stays that colour, bolder, past 22, when the card network cuts the rest. It used the raw orange-700 palette colour before; the semantic token has the same value, so nothing looks different. Going over cuts the text but does not block Save and continue, so it is a warning and not an error.",
+      "b": "The count under the statement preview turns to the warning text colour from 19 characters, and stays that colour, bolder, past 22, when the card network cuts the rest. It used the raw orange-700 palette colour before; the semantic token has the same value, so nothing looks different. Going over cuts the text but does not block Save and continue, so it is a warning and not an error. Parked on 2026-11-11: the whole How you'll appear section was taken out of step 3 (see descriptor-section-parked). Ryan wants to use it somewhere else later; its spec and code are in parked/billing-descriptor.md.",
       "tradeoff": "Near and over share one colour, so the only signal that text is now being cut is the heavier weight and the struck-through characters in the preview.",
       "by": "Ryan",
       "when": "2026-11-04"
@@ -2362,7 +2347,7 @@
       "area": "Flow",
       "where": "Step 3 · Your card volumes",
       "t": "The limits tick moves into the card volumes section, under the numbers that set the limits",
-      "b": "The tick I've read the transaction and monthly limits for my business used to sit at the bottom of the How you'll appear to customers section, away from the numbers. It is now the last item in Your card volumes, directly under Estimated monthly card volume, Average transaction amount, Maximum single transaction and Card present %. It behaves as before (see limits-from-entries): greyed out until the monthly volume and maximum transaction are filled in, showing the two limits as the applicant types, and clearing if either number changes.",
+      "b": "The tick I've read the transaction and monthly limits for my business used to sit at the bottom of the How you'll appear to customers section, away from the numbers. It is now the last item in Your card volumes, directly under Estimated monthly card volume, Average transaction amount, Maximum single transaction and Card present %. It behaves as before (see limits-from-entries): greyed out until the monthly volume and maximum transaction are filled in, showing the two limits as the applicant types, and clearing if either number changes. Update, 2026-11-11: Have you accepted card payments before? and its follow-ups now sit in this section too, above the tick, so the tick is still the last item (see card-history-in-volumes).",
       "tradeoff": "The tick now follows a Card present % box that has nothing to do with the limits, so the applicant may think the percentage feeds them too. The reassurance line at the foot of the card (nothing breaks if you go over) now sits below the tick instead of the numbers.",
       "by": "Ryan",
       "when": "2026-11-06"
@@ -2391,8 +2376,8 @@
       "id": "more-info-by-email",
       "area": "Flow",
       "where": "Under review screen · More info needed",
-      "t": "In Slice 1 the applicant answers a request for more information by replying to the email, and the waiting screen tells them so",
-      "b": "Ops asks for more information by email. The applicant replies to that email, and its text and attachments appear in the Ops person's portal, so the applicant no longer sends anything from the screen. When Ops has asked, the Under review screen changes: the heading reads We need a little more from you, the active step in the timeline reads Waiting for your reply (We've emailed you what we need. Reply to that email, attaching any files, and we'll carry on the checks from there.), and the callout reads We've sent you an email asking for more information. Check your inbox and reply to it to speed things up. If you can't find it, look in your spam or junk folder. The browser tab title reads We've emailed you. The applicant who signs in while waiting therefore sees that an email is waiting for them and what to do with it. In Prototype options the link Returning, more info needed opens this screen. The earlier in-app More info needed screen, with its uploads, notes and request cards, is kept in the code and reached with the link More info needed in-app screen (not used in Slice 1) (address ?link=infoApp), in case the product changes. The address ?link=info now opens the waiting screen, not the in-app one.",
+      "t": "In Slice 2 the applicant answers a request for more information by replying to the email, and the waiting screen tells them so",
+      "b": "Ops asks for more information by email. The applicant replies to that email, and its text and attachments appear in the Ops person's portal, so the applicant no longer sends anything from the screen. When Ops has asked, the Under review screen changes: the heading reads We need a little more from you, the active step in the timeline reads Waiting for your reply (We've emailed you what we need. Reply to that email, attaching any files, and we'll carry on the checks from there.), and the callout reads We've sent you an email asking for more information. Check your inbox and reply to it to speed things up. If you can't find it, look in your spam or junk folder. The browser tab title reads We've emailed you. The applicant who signs in while waiting therefore sees that an email is waiting for them and what to do with it. In Prototype options the link Returning, more info needed opens this screen. The earlier in-app More info needed screen, with its uploads, notes and request cards, is kept in the code and reached with the link More info needed in-app screen (not used in Slice 1) (address ?link=infoApp), in case the product changes. The address ?link=info now opens the waiting screen, not the in-app one. Superseded in part, 2026-11-11: this is now the Slice 2 behaviour, and Slice 1 shows the in-app screen (see more-info-slice-swap). The separate in-app link (?link=infoApp) is gone; ?link=info shows whichever screen the slice calls for.",
       "tradeoff": "The screen cannot say what was asked or why, since that is in the email, so an applicant who cannot find the email has nothing here to go on beyond the spam hint. Nothing on the screen confirms the reply arrived, and the prototype does not simulate the email or the reply. The applicant can no longer upload from the page, which suits Slice 1 but is slower for anyone who finds email awkward. The earlier decisions pend-reasons-as-requests, moreinfo-simple-trial and rfi-not-restart describe the in-app screen, which is no longer the default path.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2542,7 +2527,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "The owner form is three accordions, and Personal details comes first, open, and holds the name, title and ownership percentage",
-      "b": "Changed on 2026-11-10 (owner-form-two-sections): the owner form is now two sections, Personal details (which also holds email and phone) and Identity verification; How to reach them is gone. The always-shown fields at the top of the owner card are folded into a Personal details accordion, which is the first section and starts open. It holds, in this order: full legal name on the left, then title and ownership percentage side by side in the right-hand column, each taking half of it, then date of birth, nationality, country of residence and home address. The other two sections start closed: Identity verification (including the politically exposed person question) and then How to reach them (email address, phone number), swapped into that order on 2026-11-09. The owner form is therefore three sections, and the card has no fields outside an accordion. Owner sections still open and close on their own, and a section holding a problem stays open. For a non-profit there is no ownership percentage, so the title takes the right-hand column alone. The always-open arrangement of name, title and percentage from owner-slider-removed is replaced by this.",
+      "b": "Changed on 2026-11-10 (owner-form-two-sections): the owner form is now two sections, Personal details (which also holds email and phone) and Identity verification; How to reach them is gone. The always-shown fields at the top of the owner card are folded into a Personal details accordion, which is the first section and starts open. It holds, in this order: full legal name on the left, then title and ownership percentage side by side in the right-hand column, each taking half of it, then date of birth, nationality, country of residence and home address. The other two sections start closed: Identity verification (including the politically exposed person question) and then How to reach them (email address, phone number), swapped into that order on 2026-11-09. The owner form is therefore three sections, and the card has no fields outside an accordion. Owner sections still open and close on their own, and a section holding a problem stays open. For a non-profit there is no ownership percentage, so the title takes the right-hand column alone. The always-open arrangement of name, title and percentage from owner-slider-removed is replaced by this. Update, 2026-11-11: the name is now three boxes (first, middle and last) in a row of four with the title, and ownership percentage starts the second row (see owner-name-three-fields).",
       "tradeoff": "Title and percentage are each only a quarter of the width of the form, so a long title such as Chief Executive Officer may be cut off in the box and the percentage box is wider than the three or four digits it needs. Personal details is the longest section, with seven fields, so the first screen of the card is taller than before.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2562,7 +2547,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards · Personal details",
       "t": "Nationality takes half the row, with date of birth and country of residence a quarter each",
-      "b": "In Personal details the row under the name is Nationality on the left (half the width), then Date of birth and Country of residence side by side in the right-hand half (a quarter each). This is the same pattern as the row above it, where the name takes the left half and title and ownership percentage share the right half.",
+      "b": "In Personal details the row under the name is Nationality on the left (half the width), then Date of birth and Country of residence side by side in the right-hand half (a quarter each). This is the same pattern as the row above it, where the name takes the left half and title and ownership percentage share the right half. Superseded, 2026-11-11: Personal details now runs in two rows of four equal boxes (see owner-name-three-fields). Nationality, date of birth and country of residence are a quarter each, in the second row after ownership percentage. Superseded again, 2026-11-11 (owner-personal-details-grouped): date of birth, nationality and country of residence are a row of three, in that order.",
       "tradeoff": "Country of residence is a select that holds long country names, and at a quarter of the width a long name may be cut off in the box.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2676,6 +2661,206 @@
       "tradeoff": "Sign out is the primary button, so an applicant who only wanted to see that their answers are saved could sign themselves out by habit. Signing out ends the session but the dialog still says to log back in with the link in the welcome email, which has not been confirmed as how returning users sign in.",
       "by": "Ryan",
       "when": "2026-11-11"
+    },
+    {
+      "id": "more-info-slice-swap",
+      "area": "Flow",
+      "where": "More info needed (Slice 1 and Slice 2)",
+      "t": "Slice 1 answers a request for more information on a screen in the product; Slice 2 answers it by email",
+      "b": "The two ways of asking for more information have swapped slices. In Slice 1 the link Returning, more info needed, and signing in while Ops is waiting on information, opens the screen in the product with a card for each request, where the applicant uploads files, writes a message and sends it to our team. In Slice 2 Ops asks by email: the applicant sees the waiting screen, which says we've emailed you, and replies to that email. The link Returning, more info needed shows whichever one the Slice option calls for, so the separate in-app link and its address (?link=infoApp) are gone. The Ops picks list and the More info needed screen layout choice in Prototype options show only while the in-app screen is open, which is Slice 1.",
+      "tradeoff": "The email in Slice 2 still has to carry the detail the in-app screen shows, and nothing connects what Ops picks to the email (see more-info-by-email). Slice 1 now needs a screen that receives files and messages, which is more to build in Slice 1 than an email reply was.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "more-info-one-response",
+      "area": "Flow",
+      "where": "More info needed",
+      "t": "Every request for more information has the same file upload and message box, and nothing on it is required",
+      "b": "On the in-app More info needed screen every reason keeps its own title, its line on why we need it and its list of what we accept, but all of them are answered the same way: a Choose file button (Add another file once there is one) and a Message for our team box. Cards such as the website address, check your sales numbers, tell us when customers get what they pay for, remove the credit freeze and update your website no longer have their own fields or buttons. No card shows a Required, Write an answer or Done badge, nothing is pre-filled from step 3, and nothing is checked. Send to our team is on once any card has a file or a message and nothing is still uploading. Ryan's reason: Trullio does not check this information again, a person only reviews it, so a text box is enough, even for a request such as Enter your website. The message box label has no (optional) tag any more, because nothing around it is required.",
+      "tradeoff": "An applicant can send without answering every card, and the screen will not say that a request was left unanswered, so Ops has to read the messages and files against what they asked. Typed answers are free text, so Ops cannot rely on a number or a web address arriving in a usable format. The credit freeze and website cards no longer have a button to say the job is done, so the applicant has to say so in the message.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "card-history-in-volumes",
+      "area": "Flow",
+      "where": "Step 3 · Your card volumes",
+      "t": "Have you accepted card payments before? moves into Your card volumes, and the callout and the Processing history section are removed",
+      "b": "The line under the card volume numbers (If you go over one of these, nothing breaks. We'll have a quick word before we raise your limit.) is gone. The question Have you accepted card payments before?, with its prior processor and chargeback ratio follow-ups, moves out of its own Processing history section into Your card volumes, below Card present % and above the limits tick. The Processing history section no longer exists.",
+      "tradeoff": "Your card volumes is now a longer section, and a question about history sits among questions about amounts. The note on the section title (underwriting-plain) stays, but the reassurance it described is partly withdrawn (see max-ticket-hard-block).",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "max-ticket-hard-block",
+      "area": "Copy",
+      "where": "Step 3 · Maximum single transaction",
+      "t": "The maximum single transaction is a hard block, and step 3 says so",
+      "b": "Ryan: any transaction over the maximum single transaction value is blocked. Two places now say it. The hint under the field reads We block any single sale above this amount (any single payment above it for a non-profit), and the hint under the limits tick reads We block any single transaction over $X. Your monthly limit is $Y. Both are based on what you entered above. Ask us any time to raise them. This is why the earlier line saying that going over a limit breaks nothing was removed (see card-history-in-volumes). Nothing is said about what happens when the monthly limit is passed, because only the single transaction value has been called a hard block.",
+      "tradeoff": "An applicant who sets the maximum low to look safe will have real sales declined, so the warning may push people to enter a higher number than they need, which sits against the honest estimates the section asks for (underwriting-plain). Exactly how the block is explained to an applicant is for product and risk to confirm.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "yearly-volume-shown",
+      "area": "Visual",
+      "where": "Step 3 · Your card volumes",
+      "t": "A yearly card volume sits beside the monthly figure, calculated and not editable",
+      "b": "Next to Estimated monthly card volume is a Yearly card volume box that shows the monthly amount times 12, with the currency code like every other amount. It cannot be clicked, focused or typed in, it has a grey fill to say so, and it is blank until a monthly amount is entered. The monthly and yearly boxes each take a quarter of the form's width and sit in the left half of the row, with Average transaction amount taking the right half (25 / 25 / 50). It is for demonstration, as Ryan put it: it is not stored, not sent and not reviewed. Below about 1200px wide the three labels in the row reserve two lines so the boxes line up, and on a very narrow screen the two boxes stack. Update, 2026-11-11: Average transaction amount no longer takes the right half beside the pair. The row now ends with Card present % in the right half, and Average transaction amount and Maximum single transaction share the second row (see volume-fields-reordered).",
+      "tradeoff": "At a quarter of the form the boxes are narrow, so an amount of seven or more digits is clipped with an ellipsis in the yearly box and scrolls in the monthly one. Because nothing carries the yearly figure forward, if it is wanted in the product, the field and who sees it need deciding.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "owner-name-three-fields",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · Personal details",
+      "t": "An owner's name is three boxes, and Personal details runs in two rows of four",
+      "b": "The one Full legal name box is replaced by First name, Middle name and Last name. First name and last name are required; middle name is not. The top row of Personal details is First name, Middle name, Last name and Title / role, a quarter of the form each, and the second row is Ownership percentage, Nationality, Date of birth and Country of residence. For a non-profit there is no ownership percentage, so the second row has three boxes. Everything that showed the full name (the card heading, the initials, the review list, the signatory default and the owner named on a request for more information) shows the three parts joined with spaces, so a middle name appears when one is entered. The sample owners are split the same way (Dana, R., Whitfield), and a sole proprietor's name from step 1 is split into first and last. On a screen narrower than about 900px the boxes go two across, and on a phone one across. The hint Exactly as it appears on the ID you'll upload. sits under First name. Update, 2026-11-11: the rows are regrouped (see owner-personal-details-grouped). The name is a row of three, and title no longer sits beside it. Update, 2026-11-11: Ryan asked for the hint under First name, Exactly as it appears on the ID you'll upload., to be removed. No reason was given. The placeholder As printed on their ID stays.",
+      "tradeoff": "At a quarter of the form a long first or last name, or a long country name, may be cut off in its box. Splitting a single name into three guesses where the middle name starts: a sole proprietor whose step 1 name has two surnames will see the first surname in the middle box until they correct it. The hint and the 25% note under ownership percentage wrap to two or three lines in a narrow box. Whether the three parts go to the verification partner as separate fields is for engineering to confirm.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "volume-fields-reordered",
+      "area": "Flow",
+      "where": "Step 3 · Your card volumes",
+      "t": "Card present % ends the top row, and average and maximum transaction share the second row",
+      "b": "Your card volumes now reads in two rows. The top row is Estimated monthly card volume, Yearly card volume and Card present %, in the 25 / 25 / 50 split. The second row is Average transaction amount on the left and Maximum single transaction on the right. The Card present % hint lost its second sentence, Online, in-app and phone sales count as the rest., and now reads In person, on a card machine.",
+      "tradeoff": "With that sentence gone, nothing on the page says what happens to the share that is not in person, so an applicant may not know whether online and phone sales are meant to be left out. The remaining hint is also shorter than the others in the section.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "ach-volume-defaults-zero",
+      "area": "Flow",
+      "where": "Step 3 · Bank transfer volumes",
+      "t": "The monthly ACH or EFT volume starts at 0 and goes back to 0 if it is emptied",
+      "b": "The Estimated monthly ACH volume (EFT in Canada) box is optional but starts with 0 in it, because the back end needs a valid value. If the applicant clears it and leaves the box, it fills with 0 again, so the stored answer is never empty. Typing an amount replaces it. The card stays collapsed by default, so most applicants never see the 0.",
+      "tradeoff": "A 0 already in the box reads as an answer, so an applicant who does take bank transfers may leave it at 0 without noticing it is there; Ryan's reason is that the back end needs a value. The prototype does not send anything, so this only shows the behaviour.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "owner-personal-details-grouped",
+      "area": "Flow",
+      "where": "Step 2 · Owner cards · Personal details",
+      "t": "Personal details read in rows that each hold one idea: name, role, facts about the person, then contact",
+      "b": "Ryan asked for the field structure to make more sense. Personal details is now: First name, Middle name and Last name in a row of three; Title / role and Ownership percentage in a row of two (title alone, at half width, for a non-profit, which has no percentage); Date of birth, Nationality and Country of residence in a row of three; Home address across the full width; then Email address and Phone number in a row of two. Before, the title sat beside the name and the percentage beside nationality, which mixed what a person does in the business with who they are. The business facts now sit together, directly under the name, matching the card heading (60% · Owner / CEO), and the identity facts sit together. Rows of two and three give wider boxes than the quarter-width boxes before, so long names, titles and country names are cut off less. Below about 560px the rows of three go one across, and below about 420px the rows of two do too. Identity verification is unchanged. Update, 2026-11-11 (Ryan): rows of two boxes at half width looked odd beside rows of three, so every row now sits on thirds. Title and ownership percentage fill the first two thirds, and so do email and phone (see owner-form-thirds).",
+      "tradeoff": "The name now sits above ownership percentage, so for a sole proprietor, whose title and 100% are already filled in, the second row is two boxes nobody needs to change. The hint under First name and the 25% note under ownership percentage still make their rows a little uneven. A separate Role in the business section was considered and not built, because it would add a click for every owner.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "owner-form-thirds",
+      "area": "Visual",
+      "where": "Step 2 · Owner cards",
+      "t": "Every owner form row sits on a grid of thirds, and a row of two fills the first two thirds",
+      "b": "Ryan: some rows at 50 / 50 and others at 33 / 33 / 33 looked odd, so everything is kept aligned on thirds. In Personal details: First, Middle and Last name; Title / role and Ownership percentage (first two thirds, third empty); Date of birth, Nationality and Country of residence; Home address full width, with City, State or Province and ZIP or postal code a third each; Email address and Phone number (first two thirds). In Identity verification: Government ID type, ID number and expiry date; ID issuing country and SSN or SIN (first two thirds); the politically exposed person question full width. A row that is not full leaves its last third empty and the next row starts on a new line. The left edges line up at every row. Below about 560px every box goes one across. The home address in an owner card uses thirds for city, state and ZIP; addresses elsewhere (step 1) keep their quarter lines. Update, 2026-11-11 (Ryan): the Identity verification rows changed. They are now Government ID type and ID number; then ID expiry date and ID issuing country; then Social Security Number (or SIN) on a row of its own; then the politically exposed person question. Ryan asked for this, so Identity verification on thirds is no longer an assumption (see owner-address-two-thirds for the address).",
+      "tradeoff": "Empty thirds leave gaps at the end of the title and percentage row, the email and phone row, and the ID country and SSN row, which can read as something missing. Identity verification was not part of the request; it was put on thirds so the two sections of the card match, and can go back to halves if Ryan prefers. For a non-profit, with no percentage or SIN, the title and the ID issuing country sit alone in their rows.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "owner-address-two-thirds",
+      "area": "Visual",
+      "where": "Step 2 · Owner cards · Home address",
+      "t": "In an owner card the address search box and the street boxes are two thirds wide",
+      "b": "Ryan: in an owner card the Home address search box is two thirds of the form wide, the width of the first two columns of thirds. Once an address is picked or entered by hand, Street address 1 and Street address 2 are two thirds wide too, and City, State or Province and ZIP or postal code stay a third each. Below about 560px they go full width. Addresses outside an owner card (step 1) keep their full-width boxes. Measured at 1280 wide: the form is 817px, the search box and the street boxes are 539px, and each of the three boxes below is 262px.",
+      "tradeoff": "The street boxes end a third short of the right edge while city, state and ZIP reach it, so the address block has a ragged right edge. The address search is also narrower than before, so a long street name in the search box has less room.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "no-ssn-tick",
+      "area": "Step 2",
+      "where": "Step 2 · Owner cards · Identity verification",
+      "t": "A tick under the SSN or SIN says the person has none, and fills the box with zeros",
+      "b": "Ryan: under the Social Security Number (or SIN) box in an owner card, a tick box reads This person doesn't have an SSN (SIN for Canada). Ticking it fills the box with all zeros (000-00-0000, or 000 000 000 for a SIN) and locks it, with no Show button, the same way the website box locks to N/A when I don't have a website is ticked. Unticking clears the box and unlocks it, so the person can type a number. The tick is optional and is not shown for a non-profit or government body, which are not asked for the number (nonprofit-no-national-id). It sits above the politically exposed person question. Only zeros are ever stored in the box, never a real number.",
+      "tradeoff": "Zeros in an SSN box can look like a real answer to anything that reads the form later. The tick is kept as its own answer so the two cases can be told apart, but whether Trullio or Ops accept an owner with no SSN, and what they need instead, is not confirmed. The earlier hint about an ITIN (in the why note under the box) is still there for someone who has a different number.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "sign-on-step-6",
+      "area": "Flow",
+      "where": "Step 6 · Documents & signature; step 7 · Review & submit",
+      "t": "Signing is the end of step 6, straight after the documents are uploaded; step 7 is review and submit",
+      "b": "Ryan: signing should appear on step 6, so the applicant uploads their documents and then signs it off. Step 6 now ends with a What you're agreeing to card (the documents to read) and the Sign it off card (signatory name, title and the typed signature, which has to match the signatory name). Step 6 is named Documents & signature in the left column and titled Add your documents, then sign. Step 7 is named Review & submit and holds the summary, the collapsed What happens next bar and the Submit for verification button; its summary row for step 6 reads Documents & signature and says who has signed, and the signatory line left the Owners row. A step 6 left without a signature counts as unfinished like any other step, so it holds Submit back and is named in its hover note (partial-steps-allowed); a typed name that does not match shows its error as soon as it is left. The copy elsewhere that said you'd sign at step 7 now says step 6. Update, 2026-11-11: the What you're agreeing to card is no longer separate; its two tick boxes sit inside Sign it off (terms-as-signing-checkboxes), and the typed signature is replaced by a drawn or uploaded signature (signature-draw-or-upload). Step 6 now ends with the one Sign it off card. Superseded on 2026-11-11 (later) by sign-back-on-step-7: Ryan moved signing back to step 7 the same day. Step 6 is Supporting documents again and step 7 is Agreement & submit.",
+      "tradeoff": "Step 6 is now the longest step, and someone who skips a document can still sign it, so the signature no longer says the application is complete; the summary on step 7 has to carry that. The review step no longer ends with the act of signing, so the last thing the applicant does before Submit is read the summary and not commit. Whether Xplor wants the signature recorded after the review, as it was, is not decided.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "terms-view-only",
+      "area": "Trust",
+      "where": "Step 6 · What you're agreeing to",
+      "t": "The agreements can be read but there are no tick boxes; typing the name is the agreement to all of it",
+      "b": "Ryan: the checkboxes are all unnecessary. The applicant can view the documents, and signing means they agree to everything. The What you're agreeing to card is two rows, the merchant services agreement (No minimum term and no exit fee.) and the privacy policy and terms of service, each with a View button and a Viewed mark once opened. The four ticks that were on step 7 (accept the agreement, accept the privacy policy and terms, agree to sign electronically, confirm authority to sign for the business) are gone. The line under the typed signature now says that by typing their name the signer agrees to the documents above and to sign electronically, confirms they are authorized to sign for the business (or are signing for their own business) and confirms the information is true and accurate to the best of their knowledge, including the step 5 declarations. Superseded on 2026-11-11 by terms-as-signing-checkboxes: Ryan changed his mind within the day. The two documents come back as tick boxes inside the Sign it off card, with the document names as links. Also superseded by sign-back-on-step-7 for where the signing card is.",
+      "tradeoff": "One typed name stands in for four separate acknowledgements, so nothing records which part was read or that authority to sign was confirmed on its own. The statement is a small note and is easier to skip than a tick. Compliance and legal have not confirmed that a single typed signature is enough for the electronic signing consent and the authority confirmation, and the authority confirmation used to be recorded with a timestamp for the audit trail.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "terms-as-signing-checkboxes",
+      "area": "Trust",
+      "where": "Step 6 · Sign it off",
+      "t": "The two documents are tick boxes inside the signing card, each with the document name as a link",
+      "b": "Ryan: what you're agreeing to moves into the signing section as checkboxes, with a simple hyperlink in the checkbox text to view the document. Sign it off now holds the signatory name and title, a What you're agreeing to heading with two required tick boxes (I accept the Xplor Pay merchant services agreement; I accept the privacy policy and terms of service), then the signature. The document name in each box is a link that opens the same reader as before without toggling the box. The separate What you're agreeing to card and its View buttons are gone. The e-sign tick and the authority tick stay removed: the note under the signature says that by signing the person agrees to sign electronically and confirms they are authorized to sign for the business. An untick shows Tick this to sign. when the applicant tries to submit; nothing requires the documents to have been opened. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
+      "tradeoff": "Two ticks are back after Ryan removed them earlier the same day (terms-view-only), so there is the friction of two clicks to be able to sign. Ticking does not prove either document was read, since the link is optional. Only the two documents get a tick; whether the e-sign consent and the authority confirmation need their own ticks or are covered by the note is for compliance and legal to confirm.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "signature-draw-or-upload",
+      "area": "Flow",
+      "where": "Step 6 · Sign it off",
+      "t": "The signature is drawn in a full-width box, or uploaded as an image",
+      "b": "Ryan: the Type your legal name to sign box is replaced by a signature box that works like an e-signature product: a full-width white box, four times as wide as it is tall, where the signer draws with a mouse, finger or stylus. Sign here shows inside it until something is drawn. An optional Upload image of signature button, beside a Clear link, lets them add a PNG or JPG instead; it is drawn into the same box, drawing over it replaces it, and Clear empties the box. Only a PNG or JPG under 2 MB is accepted; anything else says Choose a PNG or JPG image. or Choose an image smaller than 2 MB. The signature is required (Draw your signature, or upload an image of it.). The signatory name and title stay as typed boxes, and the old rule that the typed name had to match the signatory name is gone, because nothing is typed. The image is read in the browser and not sent anywhere. Drawn strokes are kept as relative points so the signature redraws at any box size. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
+      "tradeoff": "The drawn box cannot be used from a keyboard, so a person who cannot draw has only the upload route. Nothing checks that the drawing is a real signature, or that it matches the signatory, as the typed name used to. An uploaded image could be anyone's signature. Legal and compliance have not confirmed that a drawn or uploaded image counts as the signature for this agreement.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "sign-back-on-step-7",
+      "area": "Flow",
+      "where": "Step 7 · Sign it off",
+      "t": "Signing is back on step 7, the last thing the applicant does before Submit",
+      "b": "Ryan: the Sign it off section moves back into step 7, because it should be the last thing they do. Step 7 is the summary of every step, then Sign it off (signatory name and title, the two document tick boxes with links, the drawn or uploaded signature), then the collapsed What happens next bar and Submit for verification. Step 6 is Supporting documents again, with only the file cards, and the rail names are back to Supporting documents and Agreement & submit. The signature check is on step 7 again, so it holds Submit back directly and not through an unfinished step 6. The signatory's name shows on the Owners row of the summary again, and the copy that said you'd sign at step 6 says step 7. This undoes the placement in sign-on-step-6 (2026-11-11); the tick boxes and the drawn signature from terms-as-signing-checkboxes and signature-draw-or-upload stay.",
+      "tradeoff": "The applicant signs after the summary and not before it, so the signature covers answers they have just reviewed, which is the point. Step 7 is the longest screen again. A summary row cannot show the signature as done, because the signature sits below it on the same screen.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "w9-upload-only",
+      "area": "Trust",
+      "where": "Step 6 · Supporting documents · W-9",
+      "t": "The W-9 is only an upload; there is no Review and sign button",
+      "b": "Ryan: the W-9 tax certification is just an upload. The Review and sign button is gone from the row, along with the on-screen W-9 filled from the applicant's answers, its certification tick and its typed-name signature. The row has the same Add file button as every other document and its line reads Upload your signed Form W-9. The row is still required for a US company or non-profit, and a sole proprietor's rules are unchanged.",
+      "tradeoff": "The applicant has to find and sign a W-9 themselves, where before the form came filled in from their answers. A W-9 that arrives unsigned or filled in wrongly is caught only after upload, if at all, since nothing here reads the file.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "descriptor-section-parked",
+      "area": "Step 3",
+      "where": "Step 3 · Your card volumes",
+      "t": "The How you'll appear section (billing descriptor and statement preview) is taken out of the flow and parked",
+      "b": "Ryan: remove the How you'll appear section, but remember it, because he'd like to use it somewhere else in future. The card (billing descriptor box, live statement preview, 22-character counter, and the sample-only Platform field) is no longer on step 3, so the applicant is not asked for a descriptor in onboarding. Its spec, its code and its styles are kept in parked/billing-descriptor.md, and the four descriptor decisions stay in the register marked parked.",
+      "tradeoff": "Nothing in onboarding now collects what appears on a customer's statement, so something else has to (a later settings screen, or Ops) or a default has to be used. This register does not say which. The field spreadsheets, the usability kit's fakes and the older persona findings still mention the descriptor.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "sign-note-removed",
+      "area": "Trust",
+      "where": "Step 7 · Sign it off",
+      "t": "No note under the signature",
+      "b": "Ryan: the note under the signature (By signing, you agree to sign electronically. You confirm that you're authorized to sign for this business, and that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5.) is removed. Sign it off now ends with the signature box and its Upload image of signature and Clear buttons. Ryan gave no reason.",
+      "tradeoff": "Nothing on the page now says the signer is confirming their authority to sign, that the information is true, or that they agree to sign electronically; the e-sign and authority ticks were removed earlier the same day. Compliance and legal have not said whether the two ticks for the documents are enough on their own.",
+      "by": "Ryan",
+      "when": "2026-11-11"
     }
   ];
 
@@ -2711,18 +2896,13 @@
     channel: "", goods: "", recurring: "", trial: "", marketplace: "",
     international: "", countries: "", refundPolicy: "",
     prior: "", priorName: "", priorCbRatio: "",
-    achVolume: "", descriptor: "",
-    // Comes from the Xplor account rather than being typed, so it's filled in
-    // even on an empty run — the hint on the field says as much.
-    platform: "Xplor Studio",
+    achVolume: "0",
     velocityAck: false,
     bankName: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
     institution: "", transit: "",
     legalProceedings: "", legalProceedingsWhy: "", priorTermination: "", priorTerminationWhy: "",
     taxLiens: "", taxLiensWhy: "", msb: "",
     matchConsent: false, ofacAck: false,
-    acceptAgreement: false, acceptPrivacy: false, acceptEsign: false,
-    signAuthority: false
   };
 
   // Canada's made-up business is a corporation, so its name ends Inc. rather than LLC (decision ca-no-llc-structure).
@@ -2754,7 +2934,6 @@
     recurring: "yes", trial: "no", marketplace: "no", international: "no",
     refundPolicy: "riversidepilates.com/refunds",
     prior: "no",
-    descriptor: "RIVERSIDE PILATES",
     velocityAck: true,
     bankName: "Umpqua Bank", accountHolder: "Riverside Pilates LLC",
     accountType: "Business checking", routing: "323075880",
@@ -2825,7 +3004,7 @@
   }
 
   // Anyone opening the link as one of the Returning options has been in before: they have already set a password (decision returning-login-only).
-  const isReturning = () => [LINKS.returning, LINKS.review, LINKS.info, LINKS.infoApp, LINKS.approved].indexOf(ctx.link) > -1;
+  const isReturning = () => [LINKS.returning, LINKS.review, LINKS.info, LINKS.approved].indexOf(ctx.link) > -1;
   function startScreen() {
     if (ctx.start === START_LOGIN && isReturning()) return "login";
     return "email";
@@ -2882,10 +3061,11 @@
       // True while someone is fixing one section from the final review. Progress
       // stays where it was and the footer collapses to a single Save.
       editing: false,
+      // The signature: empty, drawn in the box (strokes kept as 0 to 1 points so it redraws at any size) or an uploaded image (decision signature-draw-or-upload).
       sign: "",
-      w9Name: "",
-      w9Certify: false,
-      w9Err: "",
+      signStrokes: [],
+      signImgName: "",
+      signErr: "",
       submittedAt: "",
       // True when Ops has asked for more information by email, which changes the waiting screen (decision more-info-by-email).
       askedMore: false,
@@ -2959,6 +3139,12 @@
     const a = Object.assign({}, s.a, { [id]: v });
     // Ticking "I don't have a website" fills the website with N/A and locks it; unticking clears it again (decision website-required-with-none-box).
     if (id === "noWebsite") a.website = v === true ? NO_WEBSITE : (s.a.website === NO_WEBSITE ? "" : s.a.website);
+    // Ticking "This person doesn't have an SSN" fills that owner's SSN or SIN with zeros and locks it; unticking clears it (decision no-ssn-tick). Only zeros are ever stored, never a real number.
+    const ni = /^(o\d+_)noNatId$/.exec(id);
+    if (ni) {
+      const key = ni[1] + "natId", zeros = noNatIdValue();
+      a[key] = v === true ? zeros : (s.a[key] === zeros ? "" : s.a[key]);
+    }
     // The limits tick is about the numbers shown from these two answers, so it clears when either limit changes, or is emptied (decision limits-from-entries). Compared as numbers, so 40000 and 40,000 count as the same.
     if (id === "monthlyVolume" || id === "maxTicket") {
       const before = limitsFrom(s.a), after = limitsFrom(a);
@@ -2968,6 +3154,8 @@
   });
   // The value stored in the website answer when the applicant says they have no website.
   const NO_WEBSITE = "N/A";
+  // The value stored in an owner's SSN or SIN answer when they have none: all zeros in the usual layout for the country.
+  const noNatIdValue = () => (isCa() ? "000 000 000" : "000-00-0000");
   // The transaction limits come from the step 3 answers: the biggest single sale is the per-transaction limit and the estimated monthly card volume is the monthly limit.
   function limitsFrom(a) {
     const num = (x) => parseFloat(String(x || "").replace(/,/g, ""));
@@ -2990,9 +3178,10 @@
       showToast("Welcome back. Your answers are saved.");
       return;
     }
-    // More info needed: in Slice 1 Ops asks by email, so the applicant sees the waiting screen with a note to check their inbox (decision more-info-by-email). The in-app screen is kept behind its own link.
-    const screen = ctx.link === LINKS.infoApp ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
-    setState({ screen, submittedAt: "9:12 AM", askedMore: ctx.link === LINKS.info });
+    // More info needed: in Slice 1 the applicant answers on a screen in the product; in Slice 2 Ops asks by email, so the applicant sees the waiting screen with a note to check their inbox (decisions more-info-by-email, more-info-slice-swap).
+    const asked = ctx.link === LINKS.info;
+    const screen = asked && !invitesOn() ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
+    setState({ screen, submittedAt: "9:12 AM", askedMore: asked && invitesOn() });
   }
 
   // Login (decision login-default-start): a temporary password always forces a change, same as a real first sign-in
@@ -3325,18 +3514,19 @@
         if (!problemsOnly && !d.skip && d.requirement === "Required" && doc(d.key).state !== "done") errs["doc_" + d.key] = "Add this file to finish this step.";
       });
     }
+    // Signing is the last thing on the last step (decision sign-back-on-step-7): the signatory's name and title, the two document ticks and a signature.
     if (step === 7) {
-      cardsFor(7).forEach((c) => c && c.fields.forEach(add));
       const signatory = (a.signatoryName !== undefined ? a.signatoryName : (a.sigSame === "no" ? (a.sigName || "") : (ownerVal(state.owners[0] || {}, "name") || ""))).trim();
       const title = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((owners.filter((o) => o.self)[0] || state.owners[0]) || {}).role || ""));
-      unit(true, !!signatory); unit(true, !!String(title).trim()); unit(true, !!state.sign.trim());
+      unit(true, !!signatory); unit(true, !!String(title).trim()); unit(true, state.sign !== "");
+      unit(true, a.acceptAgreement === true); unit(true, a.acceptPrivacy === true);
       if (!signatory && !problemsOnly) errs.signatoryName = "Enter the signatory's full legal name.";
       if (!String(title).trim() && !problemsOnly) errs.signatoryTitle = "Enter the signatory's title.";
-      if (!state.sign.trim()) { if (!problemsOnly) errs.sign = "Type your full legal name to sign."; }
-      else if (signatory && state.sign.trim().replace(/\s+/g, " ").toLowerCase() !== signatory.replace(/\s+/g, " ").toLowerCase()) errs.sign = "This needs to match the signatory name above.";
-    } else {
-      cardsFor(step).forEach((c) => c && c.fields.forEach(add));
+      if (a.acceptAgreement !== true && !problemsOnly) errs.acceptAgreement = "Tick this to sign.";
+      if (a.acceptPrivacy !== true && !problemsOnly) errs.acceptPrivacy = "Tick this to sign.";
+      if (state.sign === "" && !problemsOnly) errs.sign = "Draw your signature, or upload an image of it.";
     }
+    cardsFor(step).forEach((c) => c && c.fields.forEach(add));
     return errs;
   }
 
@@ -3353,7 +3543,16 @@
   let ERR = {};
   const errView = (key) => ERR[key] && html`<p class="field-error" role="alert">${ERR[key]}</p>`;
 
+  // The three name boxes start from the one name the seed data and a sole proprietor's step 1 name give: first word, last word, anything between.
+  function splitName(full) {
+    const t = String(full || "").trim().split(/\s+/).filter(Boolean);
+    return { first: t[0] || "", middle: t.length > 2 ? t.slice(1, -1).join(" ") : "", last: t.length > 1 ? t[t.length - 1] : "" };
+  }
   function ownerDefaults(o) {
+    const d = ownerDefaultsBase(o);
+    return Object.assign(d, splitName(d.name));
+  }
+  function ownerDefaultsBase(o) {
     const country = isCa() ? "Canada" : "United States";
     const base = { role: o.role, pct: o.pct ? String(o.pct) : "", nationality: "", residence: "", idType: "", idCountry: "" };
     if (o.added || !isSample()) {
@@ -3378,6 +3577,8 @@
     });
   }
   function ownerVal(o, key) {
+    // The full name is built from the first, middle and last name boxes (decision owner-name-three-fields), so everything that reads "name" keeps working.
+    if (key === "name") return ["first", "middle", "last"].map((k) => String(ownerVal(o, k) || "").trim()).filter(Boolean).join(" ");
     const v = state.a["o" + o.id + "_" + key];
     return v !== undefined ? v : ownerDefaults(o)[key];
   }
@@ -3421,6 +3622,10 @@
       // A text box that shows a fixed value and cannot be typed in (the website box once "I don't have a website" is ticked).
       locked: o.locked !== undefined,
       span: !!o.span,
+      annual: !!o.annual,
+      // An optional amount that is stored as 0 when left empty (the ACH or EFT volume; decision ach-volume-defaults-zero).
+      zero: !!o.zero,
+      tall: !!o.tall,
       unsure: !!o.unsure,
       // No "Optional" tag: a field without the red asterisk is optional (decision 96).
       chip: "",
@@ -3467,12 +3672,16 @@
     const sub = (key, label) => ({ id: p + "hdg_" + key, label: label, kind: "heading", required: false });
     return [
       sub("personal", "Personal details"),
-      f("name", "Full legal name", "text", { placeholder: "As printed on their ID", hint: "Exactly as it appears on the ID you'll upload." }),
-      // Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
+      // First and last name are required, the middle name is not (decision owner-name-three-fields). Together they are the name on the ID.
+      f("first", "First name", "text", { placeholder: "As printed on their ID" }),
+      f("middle", "Middle name", "text", { optional: true, placeholder: "If on their ID" }),
+      f("last", "Last name", "text", { placeholder: "As printed on their ID" }),
+      // Their place in the business: title, then ownership percentage (decision owner-personal-details-grouped). Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
       f("role", "Title / role", "text", { placeholder: "e.g. Director" }),
       isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "e.g. 40", hint: isSole() ? "" : "We only need owners with 25% or more." }),
-      f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
+      // Facts about the person.
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
+      f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
       f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
       f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
       // Email and phone close Personal details; there is no separate How to reach them section (decision owner-form-two-sections).
@@ -3484,11 +3693,14 @@
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: countries() }),
       // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
+      // Ticking the box under it fills the number with zeros and locks it, like the website box (decision no-ssn-tick). The locked value is never real PII, only zeros.
       isNonprofit() ? null : f("natId", ca ? "Social Insurance Number (SIN)" : "Social Security Number (SSN)", "masked", {
         sensitive: true,
+        locked: ownerVal(o, "noNatId") === true ? noNatIdValue() : undefined,
         placeholder: ca ? "000 000 000" : "000-00-0000",
         why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
       }),
+      isNonprofit() ? null : f("noNatId", ca ? "This person doesn't have a SIN" : "This person doesn't have an SSN", "check", { span: true, optional: true, dflt: false }),
       // Full row, so it starts on a new line below the SSN or SIN (decision owner-form-two-sections).
       f("pep", "Is this person a politically exposed person?", "yn", {
         span: true,
@@ -3519,7 +3731,7 @@
         card("s1-addr", "Addresses", "", [
           fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
           fld("tradingSame", "Is that also where you operate?", "yn", { span: true }),
-          a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh(), hint: "Where you actually trade. We use it for your statement descriptor and to send any card machines." }) : null
+          a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh(), hint: "Where you actually trade. We use it to send any card machines." }) : null
         ]),
         card("s1-contact", "How we reach you", isNonprofit() ? "For account notices and questions from the people paying you. We won't add you to any marketing." : "For account notices and customer queries. We won't add you to any marketing.", [
           fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
@@ -3549,12 +3761,15 @@
     if (step === 3) {
       return [
         card("s3-vol", "Your card volumes", "Best guesses are fine. These set your limits, not your rate.", [
-          fld("monthlyVolume", "Estimated monthly card volume", "currency", { placeholder: "40,000" }),
+          fld("monthlyVolume", "Estimated monthly card volume", "currency", { placeholder: "40,000", annual: true }),
+          fld("cpSplit", "Card present %", "mono", { placeholder: "70", tall: true, hint: "In person, on a card machine." }),
           fld("avgTicket", "Average transaction amount", "currency", { placeholder: "38" }),
-          fld("maxTicket", "Maximum single transaction", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your biggest single payment or donation, even if it only happens now and then." : "Your biggest single sale, even if it only happens now and then." }),
-          fld("cpSplit", "Card present %", "mono", { placeholder: "70", hint: "In person, on a card machine. Online, in-app and phone " + (isNonprofit() ? "payments" : "sales") + " count as the rest." }),
-          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "$" + fmtMoney(limitsFrom(a).perTx) + " per transaction and $" + fmtMoney(limitsFrom(a).monthly) + " per month, based on what you entered above. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
-        ], { pinId: "underwriting-plain", assurance: "If you go over one of these, nothing breaks. We'll have a quick word before we raise your limit." }),
+          fld("maxTicket", "Maximum single transaction", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your biggest single payment or donation, even if it only happens now and then. We block any single payment above this amount." : "Your biggest single sale, even if it only happens now and then. We block any single sale above this amount." }),
+          fld("prior", "Have you accepted card payments before?", "yn", { span: true }),
+          a.prior === "yes" ? fld("priorName", "Prior processor name", "text", { conditional: true, placeholder: "e.g. Square, Stripe" }) : null,
+          a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null,
+          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "We block any single transaction over $" + fmtMoney(limitsFrom(a).perTx) + ". Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + ". Both are based on what you entered above. Ask us any time to raise them." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
+        ], { pinId: "underwriting-plain" }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "Primary payment channel" : "Primary sales channel", "select", { placeholder: "Choose a channel", options: ["In-person", "Online", "In-person and online", "Mobile", "Phone / mail order (MOTO)"] }),
           fld("goods", isNonprofit() ? "What people pay or give for" : "Type of goods or services", "select", { placeholder: "Choose a type", options: isNonprofit() ? ["Donations", "Tickets and events", "Memberships and subscriptions", "Services", "Physical goods", "Mixed"] : ["Services", "Services and subscriptions", "Physical goods", "Digital goods", "Mixed"] }),
@@ -3565,22 +3780,12 @@
           a.international === "yes" ? fld("countries", isNonprofit() ? "Countries payments come from" : "Countries sold to", "text", { conditional: true, placeholder: "e.g. Canada, United Kingdom" }) : null,
           fld("refundPolicy", "Refund / return policy URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org/refunds" : "yourbusiness.com/refunds", hint: "A clear policy helps with chargebacks. Leave it blank if you don't have one." })
         ]),
-        card("s3-hist", "Processing history", "", [
-          fld("prior", "Have you accepted card payments before?", "yn", { span: true }),
-          a.prior === "yes" ? fld("priorName", "Prior processor name", "text", { conditional: true, placeholder: "e.g. Square, Stripe" }) : null,
-          a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null,
-        ]),
-        card("s3-payfac", isNonprofit() ? "How you'll appear on statements" : "How you'll appear to customers", "", [
-          fld("descriptor", "Billing descriptor", "descriptor", { span: true, hint: "This is what " + (isNonprofit() ? "the people paying you" : "your customers") + " will see on their statement. Use a name they'll recognize. It helps avoid “I don't know this charge” disputes." }),
-          // Only someone arriving from an existing Xplor account has a platform to show; a new applicant would be asked about a product they may not use.
-          isSample() ? fld("platform", "Platform", "text", { optional: true, hint: "Already filled in from your Xplor account." }) : null,
-        ]),
         ca
           ? card("s3-ach", "Bank transfer volumes", "Only if you'll also take direct debits.", [
-              fld("achVolume", "Estimated monthly EFT volume", "currency", { optional: true, placeholder: "10,000" })
+              fld("achVolume", "Estimated monthly EFT volume", "currency", { optional: true, zero: true, placeholder: "10,000" })
             ], { collapsible: true })
           : card("s3-ach", "Bank transfer volumes", "Only if you'll also take ACH payments.", [
-              fld("achVolume", "Estimated monthly ACH volume", "currency", { optional: true, placeholder: "10,000" })
+              fld("achVolume", "Estimated monthly ACH volume", "currency", { optional: true, zero: true, placeholder: "10,000" })
             ], { collapsible: true })
       ];
     }
@@ -3625,16 +3830,6 @@
         ], { assurance: ca ? "This is a consent, not a credit check. It doesn't touch your personal credit score." : "These are consents, not credit checks. Neither one touches your personal credit score." })
       ];
     }
-    if (step === 7) {
-      return [
-        card("s7-terms", "What you're agreeing to", "", [
-          fld("acceptAgreement", "I accept the Xplor Pay merchant services agreement", "check", { span: true, viewKey: "agreement", hint: "No minimum term and no exit fee." }),
-          fld("acceptPrivacy", "I accept the privacy policy and terms of service", "check", { span: true, viewKey: "privacy" }),
-          fld("acceptEsign", "I agree to sign electronically", "check", { span: true, hint: "We need this before a typed signature counts." }),
-          fld("signAuthority", isSole() ? "I confirm I'm signing for my own business" : "I confirm I'm authorized to sign for " + a.legalName, "check", { span: true, hint: "Recorded with a timestamp for the audit trail." })
-        ])
-      ];
-    }
     return [];
   }
 
@@ -3665,7 +3860,7 @@
     if (ca && !(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "bn", title: "CRA business number confirmation", requirement: "Required", hint: "Any one of these: your CRA business registration confirmation, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter from your CRA My Business Account, or articles of incorporation showing your business number.", file: "cra-bn-confirmation.pdf" });
     if (!ca) {
       if (!(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: "Required", hint: "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf" });
-      list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Review it and sign here, or upload your own signed copy.", file: "w9-uploaded.pdf" });
+      list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
     }
     if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf" });
     // Division rows (decisions clubready-lease-by-division, club-essentials-financial-history). Wording is a draft, not approved copy.
@@ -3708,7 +3903,7 @@
     // are shown on the fields themselves, as each is left (see touched), not on the button. Only bad entries are; missing answers are not.
     const stepComplete = !errStep || Object.keys(allErrs).length === 0;
     // What is still needed, in the applicant's own words, for the hover note on the disabled button (decision 78).
-    const labelOf = { signatoryName: "Signatory name", signatoryTitle: "Signatory title", sign: "Your typed signature" };
+    const labelOf = { signatoryName: "Signatory name", signatoryTitle: "Signatory title", sign: "Your signature", acceptAgreement: "Accept the merchant services agreement", acceptPrivacy: "Accept the privacy policy and terms of service" };
     cards.forEach((c) => c.fields.forEach((f) => { labelOf[f.id] = f.label; }));
     if (errStep === 2) st.owners.forEach((o) => { const n = String(ownerInfo(o).name || "").trim(); ownerFields(o).forEach((f) => { labelOf[f.id] = (n && n !== "New owner" ? n : "Owner") + ": " + f.label; }); });
     docList.forEach((d) => { labelOf["doc_" + d.key] = "File: " + d.title; });
@@ -3725,14 +3920,13 @@
     const gaps = isFlow && st.step === 7 ? stepGaps() : [];
     gaps.slice().reverse().forEach((n) => missing.unshift("Step " + n + ", " + stepName(STEPS[n - 1]) + ", is only partly done"));
     const canNext = !isFlow ? stepComplete : (st.step === 7 ? stepComplete && gaps.length === 0 : true);
-    // Step 7 signatory follows the step 2 answer unless edited on step 7.
+    // The signatory follows the step 2 answer unless edited on step 7.
     const selfOwner = owners.filter((o) => o.self)[0];
     const defaultSigner = a.sigSame === "no" ? (a.sigName || "") : (ownerVal(st.owners[0] || {}, "name") || "");
     const signatoryName = a.signatoryName !== undefined ? a.signatoryName : defaultSigner;
     const signatoryTitle = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((selfOwner || st.owners[0]) || {}).role || ""));
-    // "Signed by" is only true once the typed signature matches the signatory.
-    const sigNorm = (t) => String(t).trim().replace(/\s+/g, " ").toLowerCase();
-    const signedNow = !!signatoryName.trim() && sigNorm(st.sign) === sigNorm(signatoryName);
+    // "Signed by" is only true once a signature has been drawn or uploaded.
+    const signedNow = !!signatoryName.trim() && st.sign !== "";
 
     return {
       ca, isWelcome, isBizType, isFlow, isStatus, cur, pct, owners, cards, docList,
@@ -3805,52 +3999,6 @@
     return typeof s === "string" && s.length > 4 ? s.slice(0, s.length - 4).replace(/[^ ]/g, "•") + s.slice(-4) : s;
   }
 
-  // Card networks truncate the billing descriptor at 22 characters, so that's
-  // the limit the preview shows rather than a house style choice.
-  const DESCRIPTOR_MAX = 22;
-
-  // Live mock of a customer's bank statement. The descriptor the merchant is
-  // typing sits between two everyday transactions, because what matters is
-  // whether it's recognizable in a list, not on its own.
-  function descriptorView(f, id, onInput) {
-    const typed = String(f.value || "").toUpperCase();
-    const shown = typed.slice(0, DESCRIPTOR_MAX);
-    const over = typed.slice(DESCRIPTOR_MAX);
-    const empty = shown.trim() === "";
-    const a = state.a;
-    const ca = isCa();
-    const neighbours = ca
-      ? [["SAVE-ON-FOODS #0412 VANCOUVER BC", "$41.65"], ["COMPASS CARD VANCOUVER BC", "$3.35"]]
-      : [["SAFEWAY #1423 PORTLAND OR", "$64.18"], ["TRIMET TICKET PORTLAND OR", "$2.80"]];
-    const amount = "$" + (a.avgTicket || "38") + ".00";
-    const countCls = typed.length > DESCRIPTOR_MAX ? " is-over" : typed.length > DESCRIPTOR_MAX - 4 ? " is-near" : "";
-    const countText = typed.length > DESCRIPTOR_MAX
-      ? typed.length + " characters — the last " + over.length + " will be cut off"
-      : typed.length + " of " + DESCRIPTOR_MAX + " characters";
-
-    const row = (desc, amt) => html`<div class="stmt-row"><span class="stmt-desc">${desc}</span><span class="stmt-amt">${amt}</span></div>`;
-
-    return html`<div class="span-2" data-key="${f.id}">
-  <div class="field-head"><label class="field-label" for="${id}">${f.label}${f.required && REQ}</label></div>
-  <input class="input mono" id="${id}" value="${f.value}" placeholder="e.g. ${(a.dba || a.legalName || "Your trading name").toUpperCase()}" autocomplete="off" spellcheck="false" aria-describedby="h-${f.id}" data-input="${onInput}">
-  <p class="field-hint" id="h-${f.id}">${f.hint}</p>
-  <figure class="stmt">
-    <div class="stmt-sheet">
-      <div class="stmt-head"><span>How this looks on ${isNonprofit() ? "a supporter's" : "your customer's"} statement${pin("descriptor-preview")}</span><span>Amount</span></div>
-      ${row(neighbours[0][0], neighbours[0][1])}
-      <div class="stmt-row stmt-row--live">
-        <span class="stmt-desc stmt-desc--live">${empty
-          ? html`<span class="stmt-ghost">YOUR DESCRIPTOR</span>`
-          : html`${shown}${over && html`<span class="stmt-cut">${over}</span>`}`}</span>
-        <span class="stmt-amt">${amount}</span>
-      </div>
-      ${row(neighbours[1][0], neighbours[1][1])}
-    </div>
-    <p class="stmt-count${countCls}" role="status">${countText}</p>
-  </figure>
-</div>`;
-  }
-
   // The asterisk is decorative; screen readers get the word.
   const REQ = html`<span class="req-star" aria-hidden="true">*</span><span class="sr-only"> (required)</span>`;
 
@@ -3868,7 +4016,17 @@
 
   function fieldView(f) {
     const id = "f-" + f.id;
-    const wrap = f.span ? "span-2" : "";
+    // The monthly card volume sits beside a calculated yearly figure that cannot be clicked or typed in (decision yearly-volume-shown).
+    // Together they fill the left half of the row, a quarter of the form each, and the average transaction amount takes the right half.
+    if (f.annual) {
+      const monthly = parseFloat(String(f.value).replace(/,/g, ""));
+      const yearly = monthly > 0 ? fmtMoney(String(Math.round(monthly * 12 * 100) / 100)) : "";
+      return html`<div class="field-pair field-pair--vol" data-key="${f.id}-pair">${fieldView(Object.assign({}, f, { annual: false }))}<div data-key="${f.id}-yearly">
+  <div class="field-head"><span class="field-label" id="l-${f.id}-yearly">Yearly card volume</span></div>
+  <div class="affix affix--money affix--static" role="group" aria-labelledby="l-${f.id}-yearly"><span class="affix-prefix" aria-hidden="true">$</span><span class="affix-value">${yearly}</span><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>
+</div></div>`;
+    }
+    const wrap = (f.span ? "span-2" : "") + (f.tall ? " field--tall" : "");
     // Every control writes straight into state; values are escaped on the way
     // back out by html``, so typed markup is shown as text and never run.
     const onInput = on((e) => set(f.id, isDateKey(f.id) ? formatDateInput(e.target.value) : e.target.value));
@@ -3881,8 +4039,6 @@
     }
 
     if (f.kind === "heading") return html`<h3 class="fields-sub span-2" data-key="${f.id}">${f.label}</h3>`;
-
-    if (f.kind === "descriptor") return descriptorView(f, id, onInput);
 
     const hintId = f.hint ? "h-" + f.id : "";
     const described = hintId ? html` aria-describedby="${hintId}"` : "";
@@ -3919,7 +4075,7 @@
       }
       case "currency":
         // The dollar sign alone does not say which dollar, so the currency code closes the field (decision currency-code-on-amounts).
-        control = html`<div class="affix affix--money"><span class="affix-prefix" aria-hidden="true">${f.prefix}</span><input id="${id}" value="${f.value}" placeholder="${f.placeholder}" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>`;
+        control = html`<div class="affix affix--money"><span class="affix-prefix" aria-hidden="true">${f.prefix}</span><input id="${id}" value="${f.value}" placeholder="${f.placeholder}" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"${f.zero ? html` data-blur="${on((e) => { if (!String(e.target.value).trim()) set(f.id, "0"); })}"` : ""}><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>`;
         break;
       case "masked": {
         // A sensitive value shows only its last four characters once you leave the
@@ -3927,14 +4083,15 @@
         // dots until you press "Show".
         // The first time a value is typed it is plain, and an empty field has
         // nothing to hide.
-        const editing = f.revealed || f.focused || f.value === "";
+        // A locked value (the zeros after "doesn't have an SSN" is ticked) is shown in full, read-only, with no Show button.
+        const editing = f.locked || f.revealed || f.focused || f.value === "";
         const dots = f.focused && !f.revealed && state.editMasked === f.id;
         const encKey = f.id + ":enc";
         const encOpen = () => setState({ fieldWhy: encKey });
         const encClose = () => { if (state.fieldWhy === encKey) setState({ fieldWhy: "" }); };
         // The padlock inside the field opens the Encrypted note on hover or focus (decision encrypted-lock-tooltip).
         const lock = html`<span class="lock-wrap" data-mouseenter="${on(encOpen)}" data-mouseleave="${on(encClose)}"><button type="button" class="lock-trigger" aria-label="Encrypted: what this means" aria-expanded="${String(state.fieldWhy === encKey)}" data-click="${on(encOpen)}" data-focus="${on(encOpen)}" data-blur="${on(encClose)}">${icon("lock", 16)}</button>${state.fieldWhy === encKey && html`<span class="field-why-pop lock-pop" role="note"><span class="field-why-body">${ENCRYPTED_NOTE}</span></span>`}</span>`;
-        control = html`<div class="affix affix--secure">${lock}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
+        control = html`<div class="affix affix--secure">${lock}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${attr("disabled", f.locked)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && !f.locked && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
         break;
       }
       case "long":
@@ -4313,19 +4470,15 @@
       if (f.kind === "heading") secs.push({ h: f, fields: [] });
       else if (secs.length) secs[secs.length - 1].fields.push(f);
     });
-    // Title and ownership percentage share the right-hand column of the grid, half each, beside the name (decision owner-form-three-sections).
+    // Every owner field sits on a grid of thirds (decision owner-form-thirds). Each row holds one idea; a row with two boxes fills the first two thirds and the next row starts on a new line. The address and the yes / no question take the full width.
     const keyOf = (f) => f.id.replace(/^o\d+_/, "");
-    const gridView = (fields) => fields.map((f, i) => {
-      if (keyOf(f) === "pct" && fields[i - 1] && keyOf(fields[i - 1]) === "role") return "";
-      if (keyOf(f) === "role") {
-        const nx = fields[i + 1] && keyOf(fields[i + 1]) === "pct" ? fields[i + 1] : null;
-        return html`<div class="field-pair" data-key="pair-${f.id}">${fieldView(f)}${nx && fieldView(nx)}</div>`;
-      }
-      // Nationality takes the left half; date of birth and country of residence share the right half (decision owner-nationality-dob-residence-row).
-      if (keyOf(f) === "residence" && fields[i - 1] && keyOf(fields[i - 1]) === "dob") return "";
-      if (keyOf(f) === "dob") {
-        const nx = fields[i + 1] && keyOf(fields[i + 1]) === "residence" ? fields[i + 1] : null;
-        return html`<div class="field-pair" data-key="pair-${f.id}">${fieldView(f)}${nx && fieldView(nx)}</div>`;
+    const ROWS = [["first", "middle", "last"], ["role", "pct"], ["dob", "nationality", "residence"], ["email", "phone"], ["idType", "idNumber"], ["idExpiry", "idCountry"], ["natId"]];
+    const gridView = (fields) => fields.map((f) => {
+      const k = keyOf(f);
+      const row = ROWS.filter((r) => r.indexOf(k) > -1)[0];
+      if (row) {
+        const inRow = fields.filter((x) => row.indexOf(keyOf(x)) > -1);
+        return f === inRow[0] ? html`<div class="span-2 fields-row" data-key="row-${f.id}">${inRow.map(fieldView)}</div>` : "";
       }
       return fieldView(f);
     });
@@ -4407,10 +4560,9 @@
     const s = d.skip ? "skipped" : doc(d.key).state;
     const cur = doc(d.key);
     const cls = s === "done" ? " is-done" : s === "skipped" ? " is-skipped" : s === "idle" ? "" : " is-busy";
-    // The button stays on every row, so any number of files can be added. The W-9 also keeps its sign-on-screen option until a file is in.
+    // The button stays on every row, so any number of files can be added.
     let action;
     if (s === "skipped") action = html`<span class="state-pill state-pill--muted">Not needed</span>`;
-    else if (d.key === "w9" && s === "idle") action = html`<div class="doc-actions"><button type="button" class="btn btn-primary btn-sm" aria-label="Review and sign ${d.title}" data-click="${on(() => openDoc("w9"))}">${icon("pen", 15)}Review and sign</button><button type="button" class="btn btn-outline btn-sm" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}">${icon("upload", 15)}Add file</button></div>`;
     else action = html`<button type="button" class="btn btn-outline btn-sm" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}">${icon("upload", 15)}Add file</button>`;
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
@@ -4433,7 +4585,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Documents to read before accepting (step 7)
+  // Documents to read before signing (step 7)
   // ---------------------------------------------------------------------------
 
   // Sample text for the prototype; the real documents come from legal.
@@ -4483,7 +4635,7 @@
   function openDoc(key) {
     setState((s) => ({ viewDoc: key, viewed: Object.assign({}, s.viewed, { [key]: true }) }));
   }
-  const closeDoc = () => setState({ viewDoc: "", w9Err: "" });
+  const closeDoc = () => setState({ viewDoc: "" });
 
   // Download (decision terms-download): saves the sample text as a plain text file so it can go to a legal team. The real
   // product would hand over the same versioned PDF the viewer shows.
@@ -4503,74 +4655,9 @@
     showToast("Downloaded " + d.title);
   }
 
-  // What the W-9 shows comes from the applicant's own answers; nothing is invented.
-  function w9Info() {
-    const a = state.a;
-    const owners = state.owners.map((o) => Object.assign({}, o, ownerInfo(o)));
-    const signer = ((owners.filter((o) => o.self)[0] || owners[0] || {}).name || "").trim();
-    const ein = digitsOf(state.a.ein);
-    const hasEin = ein.length === 9;
-    return {
-      signer, hasEin, last4: ein.slice(-4),
-      name: isSole() ? (a.legalName || signer) : a.legalName,
-      business: a.dba, classification: a.structure, address: a.regAddress,
-      tin: hasEin ? "EIN ending " + ein.slice(-4) : isSole() ? "Your SSN, as you entered it in step 2 (not shown here)" : "",
-      canSign: hasEin || isSole()
-    };
-  }
   const SAVE_EMAIL_OK = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-  function signW9() {
-    const w = w9Info();
-    const norm = (t) => String(t).trim().replace(/\s+/g, " ").toLowerCase();
-    if (!w.signer) { setState({ w9Err: "Add your name in step 2 first, then come back to sign." }); return; }
-    if (!state.w9Certify) { setState({ w9Err: "Tick the certification to sign." }); return; }
-    if (norm(state.w9Name) !== norm(w.signer)) { setState({ w9Err: "Type your full legal name exactly as it appears in step 2." }); return; }
-    const when = new Date().toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
-    setState({ viewDoc: "", w9Err: "", w9Name: "", w9Certify: false });
-    setDocFiles("w9", () => [{ name: "Form W-9 · signed here", busy: false }]);
-  }
-
-  function w9DialogView() {
-    const w = w9Info();
-    const row = (label, value) => html`<div><h3 class="docv-h">${label}</h3><p class="docv-p">${value || "Not filled in"}</p></div>`;
-    return html`<div class="backdrop" data-key="doc-view">
-  <div class="dialog dialog--wide" role="dialog" aria-modal="true" aria-labelledby="docv-title">
-    <div class="dialog-head">
-      <span class="icon-tile icon-tile--neutral">${icon("file", 18)}</span>
-      <div class="grow">
-        <h2 class="dialog-title" id="docv-title">Form W-9: tax certification</h2>
-        <p class="dialog-sub">Filled in from your answers. Check it, then sign.</p>
-      </div>
-      <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDoc)}">${icon("x", 16)}</button>
-    </div>
-    <div class="docv-paper" tabindex="0" role="document" aria-label="Form W-9">
-      ${row("Name", w.name)}
-      ${w.business && row("Business name, if different", w.business)}
-      ${row("Federal tax classification", w.classification)}
-      ${row("Address", w.address)}
-      ${row("Taxpayer identification number", w.tin || "Not provided yet")}
-      <div><h3 class="docv-h">Certification</h3><p class="docv-p">Under penalties of perjury, I certify that the taxpayer identification number shown on this form is correct and that I am a U.S. person for tax purposes.</p></div>
-    </div>
-    ${w.canSign ? html`<div class="w9-sign">
-      <label class="check"><input type="checkbox" id="f-w9certify"${attr("checked", state.w9Certify === true)} data-change="${on((e) => setState({ w9Certify: e.target.checked, w9Err: "" }))}"><span><span class="check-label">I've read this and certify it is correct</span></span></label>
-      <div${state.w9Err && /legal name/.test(state.w9Err) ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-w9name">Type your full legal name to sign</label>
-      <input class="input sign-input" id="f-w9name" value="${state.w9Name}" placeholder="${w.signer || "Your full legal name"}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ w9Name: e.target.value, w9Err: "" }))}" data-blur="${on(() => { const w = w9Info(); const norm = (t) => String(t).trim().replace(/\s+/g, " ").toLowerCase(); if (state.w9Name.trim() && w.signer && norm(state.w9Name) !== norm(w.signer)) setState({ w9Err: "Type your full legal name exactly as it appears in step 2." }); })}"></div>
-      ${state.w9Err && html`<p class="field-error" role="alert">${state.w9Err}</p>`}
-    </div>` : html`<div class="w9-sign"><p class="field-error" role="alert">A W-9 needs your EIN, and we don't have one yet. Add it in step 1, or close this and upload your own signed copy.</p></div>`}
-    <div class="docv-foot">
-      <span class="small-note">Prototype preview: sample text, not the real form.</span>
-      <span class="w9-actions">
-        <button type="button" class="btn btn-neutral btn-md" data-click="${on(closeDoc)}">Cancel</button>
-        ${w.canSign && html`<button type="button" class="btn btn-primary btn-md" data-click="${on(signW9)}">Sign</button>`}
-      </span>
-    </div>
-  </div>
-</div>`;
-  }
-
   function docViewerView(v) {
     const key = state.viewDoc;
-    if (key === "w9") return w9DialogView();
     const a = AGREEMENTS[key];
     if (!a) return "";
     const title = a.title;
@@ -4609,18 +4696,124 @@
 </div>`;
   }
 
+  // The last part of step 7 (decisions sign-back-on-step-7, terms-as-signing-checkboxes, signature-draw-or-upload). The two documents are read through links in their checkboxes; the signature is drawn in the box or uploaded as an image.
   function signView(v) {
+    const link = (key, text) => html`<button type="button" class="btn-link check-link" data-click="${on(() => openDoc(key))}">${text}</button>`;
+    // A tick box whose text holds a link. A button inside a label is interactive content, so pressing the link opens the document and does not toggle the box.
+    const tick = (id, lead, key, text) => html`<div${ERR[id] ? html` data-error="1"` : ""} data-key="${id}"><label class="check"><input type="checkbox" id="f-${id}"${attr("checked", state.a[id] === true)} data-change="${on((e) => set(id, e.target.checked))}"><span><span class="check-label">${lead}${link(key, text)}${REQ}</span></span></label>${errView(id)}</div>`;
     return html`<section class="card" data-key="s7-sign">
   <h2 class="card-title sign-title">Sign it off${pin("sign-last")}</h2>
   <div class="fields fields--sign">
     <div${ERR.signatoryName ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryName">Authorized signatory name${REQ}</label><input class="input" id="f-signatoryName" value="${v.signatoryName}" placeholder="As printed on your ID" data-input="${on((e) => set("signatoryName", e.target.value))}">${errView("signatoryName")}</div>
     <div${ERR.signatoryTitle ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryTitle">Title${REQ}</label><input class="input" id="f-signatoryTitle" value="${v.signatoryTitle}" placeholder="e.g. Owner / CEO" data-input="${on((e) => set("signatoryTitle", e.target.value))}">${errView("signatoryTitle")}</div>
   </div>
-  <div${ERR.sign ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-sign">Type your full legal name to sign${REQ}</label>
-  <input class="input sign-input" id="f-sign" value="${state.sign}" placeholder="${v.signatoryName || "Your full legal name"}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ sign: e.target.value }))}">${errView("sign")}
-  <p class="small-note sign-truth">By typing your name, you confirm that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5.</p></div>
-</section>
-<section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
+  <h3 class="fields-sub sign-sub">What you're agreeing to${pin("read-before-accept")}</h3>
+  <div class="sign-checks">
+    ${tick("acceptAgreement", "I accept the ", "agreement", "Xplor Pay merchant services agreement")}
+    ${tick("acceptPrivacy", "I accept the ", "privacy", "privacy policy and terms of service")}
+  </div>
+  <div class="sig"${ERR.sign ? html` data-error="1"` : ""} data-key="sig">
+    <span class="field-label field-label--block" id="sig-label">Your signature${REQ}</span>
+    <div class="sig-pad-wrap">
+      <canvas id="sig-pad" class="sig-pad" width="1200" height="300" role="img" aria-labelledby="sig-label" aria-describedby="sig-help"></canvas>
+      ${state.sign === "" && html`<span class="sig-ph" aria-hidden="true">Sign here</span>`}
+    </div>
+    <p class="sig-help small-note" id="sig-help">Draw your signature in the box with a mouse, finger or stylus.${state.sign === "image" && state.signImgName ? " Using the image " + state.signImgName + "." : ""}</p>
+    <div class="sig-actions">
+      <button type="button" class="btn btn-outline btn-sm" data-click="${on(() => { const i = document.getElementById("sig-file"); if (i) i.click(); })}">${icon("upload", 15)}Upload image of signature</button>
+      <input type="file" id="sig-file" class="sr-only" accept="image/png,image/jpeg" tabindex="-1" aria-label="Upload image of signature">
+      ${state.sign !== "" && html`<button type="button" class="btn-link" data-click="${on(clearSignature)}">Clear</button>`}
+    </div>
+    ${state.signErr && html`<p class="field-error" role="alert">${state.signErr}</p>`}
+    ${errView("sign")}
+  </div>
+</section>`;
+  }
+
+  // ---- The signature box ----
+  // An uploaded image is decoded in the browser and drawn onto the same canvas; it never leaves the page.
+  let sigBitmap = null;
+  const SIG_MAX_BYTES = 2 * 1024 * 1024;
+  function clearSignature() {
+    sigBitmap = null;
+    setState({ sign: "", signStrokes: [], signImgName: "", signErr: "" });
+  }
+  function paintSignature(c) {
+    const ctx = c.getContext("2d");
+    ctx.clearRect(0, 0, c.width, c.height);
+    if (state.sign === "image" && sigBitmap) {
+      // Fit the whole image inside the box, centred, without stretching it.
+      const k = Math.min(c.width / sigBitmap.width, c.height / sigBitmap.height);
+      const w = sigBitmap.width * k, h = sigBitmap.height * k;
+      ctx.drawImage(sigBitmap, (c.width - w) / 2, (c.height - h) / 2, w, h);
+      return;
+    }
+    state.signStrokes.forEach((st) => drawStroke(c, st));
+  }
+  function drawStroke(c, pts) {
+    const ctx = c.getContext("2d");
+    ctx.strokeStyle = getComputedStyle(c).color;
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    if (pts.length === 1) { ctx.beginPath(); ctx.arc(pts[0][0] * c.width, pts[0][1] * c.height, 2, 0, Math.PI * 2); ctx.fill(); return; }
+    ctx.beginPath();
+    pts.forEach((p, i) => { if (i) ctx.lineTo(p[0] * c.width, p[1] * c.height); else ctx.moveTo(p[0] * c.width, p[1] * c.height); });
+    ctx.stroke();
+  }
+  // Called after every render. The canvas keeps its size attributes, so the morph keeps the element; its listeners are attached once per element.
+  function initSignature() {
+    const c = document.getElementById("sig-pad");
+    if (!c) return;
+    paintSignature(c);
+    if (!c._sigInit) {
+      c._sigInit = true;
+      let cur = null;
+      const at = (e) => { const r = c.getBoundingClientRect(); return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))]; };
+      c.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        c.setPointerCapture(e.pointerId);
+        // Drawing over an uploaded image replaces it.
+        if (state.sign === "image") { sigBitmap = null; state.sign = ""; state.signStrokes = []; paintSignature(c); }
+        cur = [at(e)];
+        drawStroke(c, cur);
+      });
+      c.addEventListener("pointermove", (e) => {
+        if (!cur) return;
+        cur.push(at(e));
+        drawStroke(c, cur.slice(-2));
+      });
+      const end = () => {
+        if (!cur) return;
+        const done = cur; cur = null;
+        setState((st) => ({ sign: "drawn", signStrokes: st.signStrokes.concat([done]), signImgName: "", signErr: "" }));
+      };
+      c.addEventListener("pointerup", end);
+      c.addEventListener("pointercancel", end);
+    }
+    const fi = document.getElementById("sig-file");
+    if (fi && !fi._sigInit) {
+      fi._sigInit = true;
+      fi.addEventListener("change", async () => {
+        const file = fi.files && fi.files[0];
+        fi.value = "";
+        if (!file) return;
+        // Input handling: only a PNG or JPG under 2 MB is accepted, by the type the browser reports. The file is decoded locally and never sent anywhere.
+        if (!/^image\/(png|jpeg)$/.test(file.type)) { setState({ signErr: "Choose a PNG or JPG image." }); return; }
+        if (file.size > SIG_MAX_BYTES) { setState({ signErr: "Choose an image smaller than 2 MB." }); return; }
+        try {
+          sigBitmap = await createImageBitmap(file);
+          setState({ sign: "image", signStrokes: [], signImgName: file.name, signErr: "" });
+        } catch (err) {
+          setState({ signErr: "We couldn't read that image. Try another one." });
+        }
+      });
+    }
+  }
+
+  // What happens after Submit, on the last step.
+
+  function nextView(v) {
+    return html`<section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
   <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
   ${state.nextOpen && html`<ol class="next-grid" id="next-body">
     <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trullio</div><div class="next-body">${v.submitNote}</div></div></li>
@@ -4663,6 +4856,7 @@
       ${step === 7 && reviewView(v)}
       ${v.cards.map(cardView)}
       ${step === 7 && signView(v)}
+      ${step === 7 && nextView(v)}
       ${step === 7 && Object.keys(ERR).length > 0 && html`<p class="footer-error" data-key="err-summary" role="alert">${icon("alert", 16)}${Object.keys(ERR).length === 1 ? "One thing needs a look before you can submit." : Object.keys(ERR).length + " things need a look before you can submit."}</p>`}
       <div class="footer" data-key="footer">
         ${state.editing ? html`<div class="footer-end" data-key="end">
@@ -4712,25 +4906,17 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   // ---------------------------------------------------------------------------
 
   // The reasons Ops picked, in catalogue order. What the applicant has answered lives in state.rfi, keyed by reason id:
-  // { files: [{ name, busy }], vals: { fieldKey: text }, done: boolean }.
+  // { files: [{ name, busy }], vals: { note: text } }.
   // Slice 1 does not offer the reasons marked slice "2". If Ops had only picked those, the screen falls back to the default request.
   const pendAvailable = () => PEND_REASONS.filter((r) => r.slice !== "2" || invitesOn());
   const pendReasons = () => {
     const picked = pendAvailable().filter((r) => ctx.pend.indexOf(r.id) > -1);
     return picked.length ? picked : PEND_REASONS.filter((r) => PEND_DEFAULT.indexOf(r.id) > -1);
   };
-  const rfiOf = (id) => state.rfi[id] || { files: [], vals: {}, done: false };
-  const setRfi = (id, patch) => setState((s) => ({ rfi: Object.assign({}, s.rfi, { [id]: Object.assign({ files: [], vals: {}, done: false }, s.rfi[id], patch) }) }));
-  // A field shows what was typed; before that, the step 3 answer it checks (the sales numbers), or nothing.
-  const pendVal = (r, f) => { const v = rfiOf(r.id).vals[f.key]; return v === undefined ? (f.from ? state.a[f.from] || "" : "") : v; };
-  // A request is answered when it has what it asks for: a file that finished uploading, every required field, or a tap on the button.
-  function pendDone(r) {
-    const c = rfiOf(r.id);
-    if (r.respond === "upload") return c.files.length > 0 && c.files.every((f) => !f.busy);
-    if (r.respond === "fields") return r.fields.every((f) => !f.req || String(pendVal(r, f)).trim() !== "");
-    if (r.respond === "confirm" || r.respond === "cosigner") return c.done;
-    return true;
-  }
+  const rfiOf = (id) => state.rfi[id] || { files: [], vals: {} };
+  const setRfi = (id, patch) => setState((s) => ({ rfi: Object.assign({}, s.rfi, { [id]: Object.assign({ files: [], vals: {} }, s.rfi[id], patch) }) }));
+  // A request has an answer when it has a file or a message. Nothing on a card is required (decision more-info-one-response).
+  const pendHas = (r) => { const c = rfiOf(r.id); return c.files.length > 0 || String(c.vals.note || "").trim() !== ""; };
   // Who a person-level request is about (a reason with person: true): the owner Ops picked in Prototype options, else the
   // applicant, else the first named owner. With no owner named yet (an empty run) it falls back to the sample applicant.
   function pendPerson() {
@@ -4742,7 +4928,6 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   const pendText = (r, t0) => { const t = t0.replace(/licen[cs]e/g, licWord()); if (!r.person) return t; const p = pendPerson(); return t.split("{name}").join(p.name).split("{first}").join(p.first); };
   const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
   function pendTitle() { const n = pendReasons().length; return n === 1 ? "One thing to fix" : (NUMBER_WORDS[n] || String(n)) + " things to fix"; }
-  const PEND_HOW = { upload: "Upload a document", fields: "Write an answer", confirm: "Tell us when it's done", cosigner: "Add a co-signer", none: "Nothing to send" };
 
   // Ops picks the reasons in Prototype options. At least one stays picked.
   function togglePend(id, checked) {
@@ -4768,41 +4953,22 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     showToast("Thanks. We've got it and the checks are running again.");
   }
 
+  // Every reason is answered the same way: any files, and a message for the team. Neither is required, and nothing is checked.
   function pendRespondView(r) {
     const c = rfiOf(r.id);
-    if (r.respond === "upload") {
-      return html`<div class="pend-respond" data-key="resp-${r.id}">
+    return html`<div class="pend-respond" data-key="resp-${r.id}">
   ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
-  <button type="button" class="btn btn-outline btn-sm" data-click="${on(() => pendAddFile(r))}">${icon("upload", 15)}${c.files.length ? "Add another file" : r.cta}</button>
-  <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">Add a note for our team<span class="pend-opt"> (optional)</span></label><textarea class="input" id="pend-${r.id}-note" rows="3" placeholder="For example, why a document is missing, or what a file shows" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
+  <div class="pend-field" data-key="file-btn-${r.id}"><button type="button" class="btn btn-outline btn-sm" data-click="${on(() => pendAddFile(r))}">${icon("upload", 15)}${c.files.length ? "Add another file" : "Choose file"}</button></div>
+  <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">Message for our team</label><textarea class="input" id="pend-${r.id}-note" rows="3" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
 </div>`;
-    }
-    if (r.respond === "fields") {
-      return html`<div class="pend-respond" data-key="resp-${r.id}">${r.fields.map((f) => {
-        const id = "pend-" + r.id + "-" + f.key;
-        const val = pendVal(r, f);
-        const typed = on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { [f.key]: e.target.value }) }));
-        return html`<div class="pend-field" data-key="fld-${id}"><label class="field-label field-label--block" for="${id}">${f.label}${f.req && REQ}</label>${f.area ? html`<textarea class="input" id="${id}" rows="3" placeholder="${f.ph}" data-input="${typed}">${val}</textarea>` : html`<input class="input" id="${id}" value="${val}" placeholder="${f.ph}" autocomplete="off" data-input="${typed}">`}</div>`;
-      })}
-  ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
-  <div class="pend-field" data-key="optdoc-${r.id}"><button type="button" class="btn btn-outline btn-sm" data-click="${on(() => pendAddFile(r))}">${icon("upload", 15)}${c.files.length ? "Add another document" : "Add a document (optional)"}</button></div>
-</div>`;
-    }
-    if (r.respond === "confirm" || r.respond === "cosigner") {
-      return c.done
-        ? html`<div class="pend-respond" data-key="resp-${r.id}"><div class="pend-done">${icon("check", 15, "i-ok")}<span>${r.respond === "cosigner" ? "Co-signer added" : "Marked as done"}</span><button type="button" class="btn-link" data-click="${on(() => setRfi(r.id, { done: false }))}">Undo</button></div></div>`
-        : html`<div class="pend-respond" data-key="resp-${r.id}"><button type="button" class="btn btn-outline btn-sm" data-click="${on(() => { setRfi(r.id, { done: true }); if (r.respond === "cosigner") showToast("Prototype: this would open a form for your co-signer's details."); })}">${icon(r.respond === "cosigner" ? "plus" : "check", 15)}${r.cta}</button></div>`;
-    }
-    return "";
   }
 
-  // One request: a short title, why we need it, what we'll accept, and how to answer (decision pend-reasons-as-requests).
+  // One request: a short title, why we need it, what we'll accept, then the same file and message boxes (decisions pend-reasons-as-requests, more-info-one-response).
   function pendCardView(r) {
-    const done = pendDone(r) && r.respond !== "none";
-    return html`<section class="card card--p20 pend${done ? " is-done" : ""}" data-key="pend-${r.id}">
+    return html`<section class="card card--p20 pend" data-key="pend-${r.id}">
   <div class="doc-row">
     <div class="grow">
-      <div class="doc-titlebar"><h2 class="rfi-title">${pendText(r, r.title)}</h2>${done ? html`<span class="state-pill state-pill--done">${icon("check", 14, "i-b")}Done</span>` : html`<span class="req">${PEND_HOW[r.respond]}</span>`}</div>
+      <div class="doc-titlebar"><h2 class="rfi-title">${pendText(r, r.title)}</h2></div>
       <p class="rfi-body">${pendText(r, r.why)}</p>
       <div class="pend-accept">
         <h3 class="pend-h">${r.lead}</h3>
@@ -4863,8 +5029,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   function rfiView() {
     if (ctx.moreInfo === MOREINFO_SIMPLE) return rfiSimpleView(); // SIMPLE TRIAL
     const list = pendReasons();
-    const needsSend = list.some((r) => r.respond !== "none");
-    const ready = list.every((r) => pendDone(r));
+    const ready = list.some(pendHas) && list.every((r) => rfiOf(r.id).files.every((f) => !f.busy));
     return html`<header data-key="rfi-head">
   <h1 class="step-title">${pendTitle()}${pin("rfi-not-restart")}</h1>
   <p class="step-sub">${list.length === 1 ? "You're not back at the start. Fix this item and the checks carry on exactly where they left off, usually within the hour." : "You're not back at the start. Fix these and the checks carry on exactly where they left off, usually within the hour."}</p>
@@ -4873,9 +5038,9 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 <div class="rfi-actions" data-key="rfi-actions">
   <div class="btn-row">
     <button type="button" class="btn btn-neutral btn-md btn-tight" data-click="${on(() => showToast("Prototype: email isn't simulated."))}">Email us</button>
-    ${needsSend && html`<button type="button" class="btn btn-primary btn-md"${attr("disabled", !ready)} data-click="${on(sendPend)}">Send to our team</button>`}
+    <button type="button" class="btn btn-primary btn-md"${attr("disabled", !ready)} data-click="${on(sendPend)}">Send to our team</button>
   </div>
-  ${needsSend && !ready && html`<p class="pend-hint">Finish each request above to send.</p>`}
+  ${!ready && html`<p class="pend-hint">Add a file or write a message to send.</p>`}
 </div>`;
   }
 
@@ -5082,10 +5247,10 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Division", "division", "division-option")}
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
     ${select("Link opened as", "link")}
-    ${(state.screen === "rfi" || ctx.link === LINKS.infoApp) && html`<hr class="proto-rule">
+    ${state.screen === "rfi" && html`<hr class="proto-rule">
     ${select("More info needed screen", "moreInfo", "moreinfo-simple-trial")}
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
-    ${ctx.moreInfo === MOREINFO_SIMPLE && html`<p class="proto-note">The simple screen ignores Ops picks. Pick the other layout to use them.</p>`}
+    ${ctx.moreInfo === MOREINFO_SIMPLE && html`<p class="proto-note">The bare screen ignores Ops picks. Pick A card for each request to use them.</p>`}
     <div class="proto-pend" data-key="pend-list">${pendAvailable().map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
     ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<label data-key="pend-for"><span class="field-label field-label--block">Request is about</span><select class="input" data-input="${on((e) => setState({ pendFor: Number(e.target.value) }))}">${state.owners.map((o) => html`<option value="${o.id}"${attr("selected", pendPerson().id === o.id)}>${ownerInfo(o).name}</option>`)}</select></label>`}`}
     ${invitesOn() && html`<hr class="proto-rule">
@@ -5229,6 +5394,7 @@ ${protoView()}`;
     tpl.innerHTML = appView().s;
     morphChildren(root, tpl.content);
     applyWidths();
+    initSignature();
 
     // The "someone else updated this step" note goes once the applicant leaves the step.
     if (state.stepEdit && (state.screen !== "flow" || state.step !== state.stepEdit.step)) state.stepEdit = null;

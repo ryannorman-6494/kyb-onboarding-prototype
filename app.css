@@ -356,7 +356,6 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .summary-value { font-size: var(--type-body-small-size); color: var(--color-text-subtle); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sign-title { margin-bottom: 16px; }
 .sign-input { max-width: 420px; height: 52px; padding: 0 16px; font-size: 22px; font-style: italic; color: var(--color-text-primary); }
-.sign-truth { margin-top: 8px; }
 .next-panel { margin-top: var(--space-gap-related); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 1px var(--color-border-default); border-radius: var(--radius-large); padding: var(--space-padding-surface) var(--space-padding-hero); color: var(--color-text-primary); }
 .next-head { font: var(--font-section-subtitle); letter-spacing: var(--type-section-subtitle-letter-spacing); margin: 0; }
 .next-panel.is-open { padding-bottom: var(--space-padding-hero); }
@@ -469,27 +468,6 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
   .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .welcome-title { font-size: 32px; }
 }
-
-/* ---------- Statement descriptor preview ---------- */
-/* Shows the typed descriptor sitting between two everyday transactions, so it
-   reads the way a customer would actually meet it. */
-.stmt { margin: 14px 0 0; }
-.stmt-cap { display: flex; align-items: center; gap: 6px; font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); letter-spacing: 0.03em; text-transform: uppercase; color: var(--color-text-subtle); margin-bottom: 8px; }
-.stmt-cap > .i { color: var(--color-text-brand); }
-.stmt-sheet { border-radius: var(--radius-default); overflow: hidden; background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 1px var(--color-border-default); }
-.stmt-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 14px; background: var(--color-background-shell); border-bottom: 1px solid var(--color-border-default); font-size: var(--type-caption-default-size); font-weight: var(--type-control-default-weight); color: var(--color-text-subtle); }
-.stmt-row { display: flex; align-items: center; justify-content: space-between; gap: var(--space-gap-group); padding: 10px 14px; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
-.stmt-row + .stmt-row { border-top: 1px solid var(--color-border-subtle); }
-.stmt-desc { font-family: var(--font-mono); letter-spacing: 0.02em; min-width: 0; overflow-wrap: anywhere; }
-.stmt-amt { font-family: var(--font-mono); flex: none; }
-.stmt-row--live { background: var(--color-background-brand-subtle); color: var(--color-text-primary); }
-.stmt-desc--live { font-weight: var(--type-control-bold-weight); color: var(--color-text-link-hover); }
-.stmt-ghost { font-weight: var(--type-body-default-weight); color: var(--color-text-subtle); }
-/* Anything past 22 characters is what the card network drops. */
-.stmt-cut { color: var(--color-text-subtle); text-decoration: line-through; }
-.stmt-count { margin-top: 7px; font-size: var(--type-caption-default-size); font-variant-numeric: tabular-nums; color: var(--color-text-subtle); }
-.stmt-count.is-near { color: var(--color-text-warning); }
-.stmt-count.is-over { color: var(--color-text-warning); font-weight: var(--type-control-default-weight); }
 
 /* ---------- Design decision annotations ---------- */
 /* Off by default; the markers only render when "Design decisions" is on in the
@@ -608,9 +586,6 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .biz-desc { display: block; font-size: var(--type-body-small-size); line-height: 1.45; color: var(--color-text-subtle); }
 
 /* W-9 review and sign (step 6) */
-.doc-actions { display: flex; gap: var(--space-gap-related); flex-wrap: wrap; justify-content: flex-end; }
-.w9-sign { display: flex; flex-direction: column; gap: 12px; padding: 0 24px 16px; }
-.w9-actions { display: flex; gap: var(--space-gap-related); }
 
 .footer-hint { margin: 0; text-align: right; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 /* Success toast, top right. Fades itself out at the end of its 4.5 seconds; app.js removes it then. */
@@ -811,3 +786,39 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 /* A finished step reads a green tick and Done (decision step-done-tick). */
 .step .step-meta--done { display: inline-flex; align-items: center; gap: 3px; color: var(--color-text-success); font-weight: var(--type-control-default-weight); }
+
+/* Monthly and yearly card volume share the left half of the row, a quarter of the form each (decision yearly-volume-shown). */
+.field-pair--vol { align-items: start; }
+.affix--static { background: var(--color-background-surface-sunken); pointer-events: none; cursor: default; }
+.affix--static:hover { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); }
+.affix--static .affix-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: var(--type-body-default-size); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+/* Below about 1200px the monthly label wraps in its quarter-width column, so the three labels in that row reserve two lines and the boxes line up. A tighter box keeps six-figure amounts readable. */
+@media (max-width: 1200px) { .field-pair--vol .field-head, .field--tall .field-head { min-height: 2lh; align-items: flex-start; } }
+.field-pair--vol .affix { gap: 4px; padding-left: 10px; }
+.field-pair--vol .affix-code { padding: 0 8px; }
+@media (max-width: 420px) { .field-pair--vol { grid-template-columns: minmax(0,1fr); } .field-pair--vol .field-head { min-height: 0; } }
+
+/* Owner form: every row sits on a grid of thirds, and a row with two boxes fills the first two thirds (decision owner-form-thirds). One box across on a narrow screen. */
+.fields-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px 16px; align-items: start; }
+@media (max-width: 560px) { .fields-row { grid-template-columns: minmax(0,1fr); } }
+/* In an owner card the home address uses the same thirds as every other row: city, state and ZIP or postal code are a third each (decision owner-form-thirds). Other addresses keep their quarter lines. */
+.owner-sec .addr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.owner-sec .addr-cell--city, .owner-sec .addr-cell--sm { grid-column: span 1; }
+@media (max-width: 560px) { .owner-sec .addr-grid { grid-template-columns: minmax(0, 1fr); } .owner-sec .addr-cell--city, .owner-sec .addr-cell--sm { grid-column: 1 / -1; } }
+/* In an owner card the address search box and the two street boxes are two thirds wide, the width of the first two columns (decision owner-address-two-thirds). City, state and ZIP stay a third each. */
+.owner-sec .addr-search { max-width: calc((200% - 16px) / 3); }
+.owner-sec .addr-cell--wide { grid-column: span 2; }
+@media (max-width: 560px) { .owner-sec .addr-search { max-width: none; } .owner-sec .addr-cell--wide { grid-column: 1 / -1; } }
+
+
+/* Step 6, Sign it off (decisions terms-as-signing-checkboxes and signature-draw-or-upload). */
+.sign-sub { margin-top: 4px; }
+.sign-checks { display: flex; flex-direction: column; gap: 4px; margin: 12px 0 20px; }
+.check-link { font-size: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.sig-pad-wrap { position: relative; }
+.sig-pad { display: block; width: 100%; height: auto; aspect-ratio: 4 / 1; box-sizing: border-box; color: var(--color-text-primary); background: var(--color-background-surface-raised-1); border: var(--border-default) solid var(--color-border-strong); border-radius: var(--radius-default); touch-action: none; cursor: crosshair; }
+.sig-pad:hover { border-color: var(--color-border-brand); }
+.sig-ph { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--color-text-subtle); pointer-events: none; font-size: var(--type-body-default-size); }
+.sig-help { margin-top: 8px; }
+.sig-actions { display: flex; align-items: center; gap: 16px; margin-top: 12px; }
+[data-error] .sig-pad { border-color: var(--color-border-error); }
