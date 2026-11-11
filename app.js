@@ -2988,10 +2988,77 @@
       "tradeoff": "Typing more does not reliably find the business: Trulioo's own page says businesses can share a name and it returns a duplicate count (the example shows 57), so the list can hold several identical names and only the address tells them apart. The applicant could pick the wrong one, and the name and address are filled in from it. There is no state or city box, so a common name cannot be narrowed except by reading addresses. Trulioo's page does not say how well it covers small businesses, sole proprietors or Canada, whether it returns an incorporation date, structure or EIN, or what each search costs, so none of those are assumed, and whether this is better than typing everything in depends on the answers. The real search needs a call from our back end with Trulioo credentials, never from the page. This partly reverses the removal in ein-in-registered-details, which closed by saying an address prefill could come back if Trullio could return a reliable match. Hiding the sections means an applicant who already has everything to hand must still pick or press the manual link before they see a field, one extra step for them, and anyone who does not notice the manual link may think the form is only the search.",
       "by": "Ryan",
       "when": "2026-11-11"
+    },
+    {
+      "id": "decisions-list-shows-kept-only",
+      "area": "Flow",
+      "where": "Prototype options",
+      "t": "The Design decisions pins and Read all list show only the decisions that remain after the requirements review",
+      "b": "Ryan: the design decisions still showing in the prototype should be only the remaining ones after the slim down. The 134 items cut or folded in REQUIREMENTS-DRAFT.md no longer get a pin on screen and are left out of the Read all list and its count; REQ-154 (marked Revisit) and the decisions added after the review still show. Numbers stay each entry's place in the register, so a pin matches its REQ number in the requirements draft and the numbers have gaps. The cut ones are listed in CUT_DECISIONS in app.js. A decision added later shows until a review cuts it, and it needs adding to CUT_DECISIONS if the review cuts it. Ryan gave no other reason.",
+      "tradeoff": "The register in app.js and DESIGN-DECISIONS.md still hold every entry, because they are the archive that answers why it is like this, so the screen and the register no longer agree on the count. CUT_DECISIONS has to be kept in step with the review by hand.",
+      "by": "Ryan",
+      "when": "2026-11-11"
     }
   ];
 
   /* DECISIONS:END */
+
+  // Decisions cut or folded into another item in the requirements review
+  // (REQUIREMENTS-DRAFT.md, finished 2026-11-11). They stay in DECISIONS above as
+  // the archive that answers "why is it like this?" (and in DESIGN-DECISIONS.md),
+  // but the prototype's pins and its "Read all" list skip them, so the screen shows
+  // only the decisions that remain after the slim down. A decision added later
+  // shows until a review cuts it. Numbers are still each entry's place in DECISIONS,
+  // so a pin matches its REQ number in the requirements draft.
+  const CUT_DECISIONS = [
+    "welcome-delegate", "welcome-actions", "welcome-four-cards",
+    "welcome-phone-partner", "info-popover-hover", "sales-intake-first",
+    "login-default-start", "sales-prefill", "sales-contract-upload",
+    "welcome-needs-one-card", "welcome-plain-icons", "no-mcc-picker",
+    "category-editable", "category-is-mcc", "ca-no-llc-structure",
+    "tax-exempt-pill-label", "mcc-no-help-link", "address-links-below-hint",
+    "address-search-layout", "address-city-state-zip-one-line", "owner-self-serve",
+    "ownership-bar", "sign-last", "step2-prefill-sections",
+    "owner-actions-menu", "invite-email-change", "invite-owners-only",
+    "invite-email-checks", "ca-sample-data-canadian", "sole-owner-title-share",
+    "no-owners-summary-card", "add-row-raised-fill", "owner-share-slider",
+    "owner-form-accordion", "owner-slider-removed", "pep-in-their-id",
+    "owner-form-three-sections", "owner-nationality-dob-residence-row", "owner-avatar-person-icon",
+    "owner-section-icons", "owner-card-header-divider", "owner-card-padding-token",
+    "owner-personal-details-grouped", "owner-form-thirds", "owner-address-two-thirds",
+    "section-done-buttons", "status-chip-counts-prefilled", "descriptor-preview",
+    "descriptor-phone-tbd", "descriptor-placeholder-example", "ca-statement-neighbours-vancouver",
+    "descriptor-count-warning-token", "layout-shift-accepted", "pos-terminal-field-removed",
+    "limits-ack-in-volumes", "card-history-in-volumes", "volume-fields-reordered",
+    "max-ticket-block-text-removed", "w9-review-and-sign", "step-6-and-pci-tidy",
+    "club-essentials-financial-history", "required-badge-warning", "read-before-accept",
+    "next-steps-panel", "status-screens-polish", "truth-tick",
+    "sign-on-step-6", "terms-view-only", "success-toasts",
+    "soft-card-shadows", "confirmation-id-status", "approved-says-approved",
+    "approved-add-merchant", "no-jump-bar", "approved-welcome",
+    "status-optical-centre", "approval-time-confirmed", "pend-reasons-as-requests",
+    "pend-send-once", "pend-reasons-open", "pend-note-cards-optional-upload",
+    "moreinfo-simple-trial", "email-logo-above-card", "review-screen-email-then-respond",
+    "top-nav-follows-content-column", "more-info-by-email", "tokenized-ids",
+    "no-field-count", "spacing-air", "roboto",
+    "nothing-claimed-early", "full-width-description", "shape-language",
+    "collapse-toggle", "persona-test-fixes", "validate-on-continue",
+    "continue-disabled-until-complete", "no-if-applicable-tag", "nonprofit-wording-steps-3-6",
+    "nonprofit-wording-leftovers", "disabled-button-says-whats-missing", "quiet-help-and-empty-owners",
+    "back-button-white", "no-optional-tag", "atlas-sync-2",
+    "secondary-button-no-bevel", "input-border-neutral-300", "tone-of-voice-pass",
+    "yn-common-defaults", "yes-first-defaults", "static-cards-flat",
+    "concurrent-edit-notice", "rail-quiet-step-markers", "step-header-fixed",
+    "nonprofit-includes-government", "step-eyebrow-subtle", "sign-in-centred",
+    "ca-company-card-no-llc", "sole-proprietor-card-wording", "dialogs-close-on-outside-click",
+    "help-no-chat", "step-time-in-rail-only", "save-exit-after-first-step",
+    "stable-scrollbar-gutter", "checkbox-no-grey-box", "step-ring-stays-on-return",
+    "step-done-tick", "checkbox-tick-centred", "tick-beside-field",
+    "field-helper-text-trims", "start-as-option", "sales-form-removed",
+    "sample-not-a-start", "division-option"
+  ];
+  const decisionShown = (id) => CUT_DECISIONS.indexOf(id) < 0;
+  const shownDecisionCount = () => DECISIONS.filter((d) => decisionShown(d.id)).length;
 
   const decisionIndex = (id) => {
     for (let i = 0; i < DECISIONS.length; i++) if (DECISIONS[i].id === id) return i;
@@ -4445,7 +4512,7 @@
   function pin(id) {
     if (!ctx.showNotes) return "";
     const i = decisionIndex(id);
-    if (i < 0) return "";
+    if (i < 0 || !decisionShown(id)) return "";
     const d = DECISIONS[i];
     const isOpen = state.openNote === id;
     const toggle = () => setState({ openNote: isOpen ? "" : id });
@@ -4464,6 +4531,7 @@
   function notesListView() {
     const groups = [];
     DECISIONS.forEach((d, i) => {
+      if (!decisionShown(d.id)) return;
       let g = groups.filter((x) => x.where === d.where)[0];
       if (!g) { g = { where: d.where, items: [] }; groups.push(g); }
       g.items.push({ d: d, n: i + 1 });
@@ -4473,7 +4541,7 @@
     <div class="dialog-head">
       <div class="grow">
         <h2 class="dialog-title" id="notes-title">Design decisions</h2>
-        <p class="dialog-sub">${DECISIONS.length} recorded. Numbers match the markers on the screen.</p>
+        <p class="dialog-sub">${shownDecisionCount()} recorded. Numbers match the markers on the screen.</p>
       </div>
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(() => setState({ notesListOpen: false }))}">${icon("x", 16)}</button>
     </div>
@@ -5553,7 +5621,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${state.screen === "flow" && html`<label class="proto-check" data-key="fail-upload"><input type="checkbox"${attr("checked", state.failNextUpload === true)} data-change="${on((e) => setState({ failNextUpload: e.target.checked }))}">Make the next file upload fail</label>`}
     <hr class="proto-rule">
     <label class="proto-check"><input type="checkbox"${attr("checked", ctx.showNotes)} data-change="${on((e) => setCtx({ showNotes: e.target.checked }))}">Design decisions</label>
-    <button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => setState({ notesListOpen: true }))}">${icon("pen", 13)}Read all ${DECISIONS.length}</button>
+    <button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => setState({ notesListOpen: true }))}">${icon("pen", 13)}Read all ${shownDecisionCount()}</button>
   </div>`}
   <button type="button" class="proto-toggle" data-key="toggle" aria-expanded="${String(state.protoOpen)}" data-click="${on(() => setState({ protoOpen: !state.protoOpen }))}">${icon("settings", 14)}Prototype options</button>
 </div>`;
