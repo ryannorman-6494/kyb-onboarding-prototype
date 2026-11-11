@@ -1100,7 +1100,7 @@
       "area": "Trust",
       "where": "Save & Exit (top bar)",
       "t": "Tell people how to come back: log in again and carry on where they left off",
-      "b": "Answers save as people go, and signing in again reopens the last saved state. The Save & Exit dialog says that in one line at the top (Log back in any time with the link in your welcome email, and you'll carry on where you left off), with no link of its own and no code. In Slice 1 it then just has a Close button; Slice 2 also offers the separate hand-off to someone else. Rewritten 2026-10-28 (Ryan) because the one-time-code screen is gone and the Invitations PRD uses ODIN sign-in; before that the line said to come back with the link in the email and a code.",
+      "b": "Answers save as people go, and signing in again reopens the last saved state. The Save & Exit dialog says that in one line at the top (Log back in any time with the link in your welcome email, and you'll carry on where you left off), with no link of its own and no code. In Slice 1 it then has a Close button and a Sign out button (see save-exit-sign-out); Slice 2 also offers the separate hand-off to someone else. Rewritten 2026-10-28 (Ryan) because the one-time-code screen is gone and the Invitations PRD uses ODIN sign-in; before that the line said to come back with the link in the email and a code.",
       "tradeoff": "The line points to the link in the welcome email, which Ryan chose on 2026-11-04 although nobody has confirmed it is how returning users sign in (a bookmark or an ODIN address may be the real route). An applicant who deleted the email has no other pointer. The 7 days on the Slice 2 hand-off link is our own assumption; the magic link spike does not cover hand-off links at all, so whether they exist and how they work is a question for the team.",
       "by": "Ryan",
       "when": "2026-10-07"
@@ -2666,6 +2666,16 @@
       "tradeoff": "The tick is drawn with CSS borders rather than the Atlas check icon, so it is centred by eye and measurement, not by the design system; if Atlas changes the checkbox, this should follow it.",
       "by": "Ryan",
       "when": "2026-11-11"
+    },
+    {
+      "id": "save-exit-sign-out",
+      "area": "Flow",
+      "where": "Save & Exit dialog",
+      "t": "Save & Exit ends with a Sign out button, because pressing it means the applicant is leaving",
+      "b": "The Save & Exit dialog has two buttons at the bottom. Close, in the secondary style, shuts the dialog and leaves the applicant where they were. Sign out, in the primary style, takes them to the sign-in screen with the password box cleared. Pressing Save & Exit says the applicant wants to leave the onboarding journey, so the dialog makes the leaving real instead of only confirming that answers are saved. Nothing is lost by signing out: every answer is already saved, and signing in again reopens the last saved state. The two buttons show in both slices; in Slice 2 they sit under the hand-off form.",
+      "tradeoff": "Sign out is the primary button, so an applicant who only wanted to see that their answers are saved could sign themselves out by habit. Signing out ends the session but the dialog still says to log back in with the link in the welcome email, which has not been confirmed as how returning users sign in.",
+      "by": "Ryan",
+      "when": "2026-11-11"
     }
   ];
 
@@ -3143,6 +3153,8 @@
   const leaveInvitee = () => { const r = state.returnTo || { screen: "flow", step: 2 }; setState({ screen: r.screen, step: r.step, returnTo: null }); };
   const finishInvitee = () => setState({ inviteStep: 2, owners: state.owners.map((x) => (x.id === state.inviteOwner ? Object.assign({}, x, { received: true, receivedAt: nowTime() }) : x)) });
   const closeSave = () => setState({ saveOpen: false });
+  // Save & Exit means the applicant is leaving, so the dialog's primary button signs them out: back to the sign-in screen with the password cleared. Their answers are already saved (decision save-exit-sign-out).
+  const signOut = () => setState({ screen: "login", loginStage: "credentials", loginErr: "", loginPassword: "", saveOpen: false });
   const toggleReveal = (id) => setState((s) => ({ revealed: Object.assign({}, s.revealed, { [id]: !s.revealed[id] }) }));
   function cardOpen(key, dflt) {
     const v = state.openCards[key];
@@ -4926,7 +4938,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${state.saveEmailErr && html`<p class="field-error" role="alert">${state.saveEmailErr}</p>`}
     <p class="dialog-foot">${icon("lock", 14)}The link expires in 7 days and only works for that email address.${pin("save-link-scope")}</p>
     `}
-    ${!invitesOn() && html`<div class="dialog-actions"><button type="button" class="btn btn-primary btn-md" data-click="${on(closeSave)}">Close</button></div>`}
+    <div class="dialog-actions"><button type="button" class="btn btn-neutral btn-md" data-click="${on(closeSave)}">Close</button><button type="button" class="btn btn-primary btn-md" data-click="${on(signOut)}">Sign out</button></div>
   </div>
 </div>`;
   }
