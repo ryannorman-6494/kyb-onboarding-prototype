@@ -2367,7 +2367,7 @@
       "area": "Flow",
       "where": "Step 1 · How we reach you",
       "t": "The website is required, and a box says there is none",
-      "b": "The primary website URL is now a required field. Under it, a box reads I don't have a website. Ticking it fills the website box with N/A and locks it; unticking clears it and unlocks it. This replaces the earlier optional website, where testers who had none pasted a Facebook link or other text to get on. A website typed without https:// still gets it added as the person leaves the box; N/A does not. The helper line under the box (We take a look at the site to check what you sell) was removed on 2026-11-11. A later idea, to ask first whether the business sells or advertises online and only require the website on Yes, was tried on 2026-11-06 and reverted the same week: the website is mandatory for everyone.",
+      "b": "The primary website URL is now a required field. Under it, a box reads I don't have a website. Ticking it fills the website box with N/A and locks it; unticking clears it and unlocks it. This replaces the earlier optional website, where testers who had none pasted a Facebook link or other text to get on. A website typed without https:// still gets it added as the person leaves the box; N/A does not. The helper line under the box (We take a look at the site to check what you sell) was removed on 2026-11-11. A later idea, to ask first whether the business sells or advertises online and only require the website on Yes, was tried on 2026-11-06 and reverted the same week: the website is mandatory for everyone. Update, 2026-11-11 (later): the I don't have a website tick now sits in line to the right of the website box, not below it (see tick-beside-field).",
       "tradeoff": "An applicant with a Facebook page or a booking link can still paste it as the website. Underwriting gets N/A on file for a business with none, so it can tell that apart from a field left empty. Ops should say whether a missing website needs anything else from the applicant, such as a description of how they sell.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2447,7 +2447,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "Each section of the owner form can be collapsed, and the contact details join Personal details",
-      "b": "Superseded on 2026-11-10 by owner-form-two-sections: there are now two sections, and email and phone sit in Personal details. The owner form is split into three sections (name, title and ownership percentage now sit inside Personal details, see owner-form-three-sections; on 2026-11-09 Identity verification was put before How to reach them): Personal details, Identity verification and How to reach them (which also holds the politically exposed person question, after the SSN or SIN; the Screening section was removed on 2026-11-09). Each heading is now a button with a chevron that opens or closes that section on its own. The heading is set as a section subtitle (16px, semibold) in the normal primary text colour, not small grey capitals, so each section is clearly labelled. It no longer says how many fields the section holds (a count, such as 6 fields, was shown beside the name until 2026-11-09). A small minutes badge was beside each title from 2026-11-09 and was removed the same day. The title sits centred between the dividers above and below it, with 20px of space either side and 24px of space between the last open section's fields and the next divider; the first heading sits 24px under the always-shown fields. This is more room than the first centred version, which felt squashed. Personal details starts open and the other two start closed (changed on 2026-11-09 by owner-form-three-sections; before that every section started closed), and the applicant opens whichever they want, in any order. Closed is not locked: no section has to be finished before another can be opened, and every field is one click away (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. Email address and phone number are back in their own How to reach them section, after Personal details (they were folded into Personal details from 2026-11-09 earlier the same day).",
+      "b": "Superseded on 2026-11-10 by owner-form-two-sections: there are now two sections, and email and phone sit in Personal details. The owner form is split into three sections (name, title and ownership percentage now sit inside Personal details, see owner-form-three-sections; on 2026-11-09 Identity verification was put before How to reach them): Personal details, Identity verification and How to reach them (which also holds the politically exposed person question, after the SSN or SIN; the Screening section was removed on 2026-11-09). Each heading is now a button with a chevron that opens or closes that section on its own. The heading is set as a section subtitle (16px, semibold) in the normal primary text colour, not small grey capitals, so each section is clearly labelled. It no longer says how many fields the section holds (a count, such as 6 fields, was shown beside the name until 2026-11-09). A small minutes badge was beside each title from 2026-11-09 and was removed the same day. The title sits centred between the dividers above and below it, with 20px of space either side and 24px of space between the last open section's fields and the next divider; the first heading sits 24px under the always-shown fields. This is more room than the first centred version, which felt squashed. Personal details starts open and the other two start closed (changed on 2026-11-09 by owner-form-three-sections; before that every section started closed), and the applicant opens whichever they want, in any order. Closed is not locked: no section has to be finished before another can be opened, and every field is one click away (decision owner-form-no-progressive-disclosure). A section that holds a problem the applicant has been shown stays open and cannot be collapsed until it is fixed. Email address and phone number are back in their own How to reach them section, after Personal details (they were folded into Personal details from 2026-11-09 earlier the same day). Update, 2026-11-11 (later): each section heading now carries a status chip (see section-status-chip). The earlier field count and minutes badge stay removed.",
       "tradeoff": "Sections open independently, so the card can still grow as tall as before once everything is open, and this is not a strict accordion where opening one closes the rest. With most sections closed, nothing on the card shows what has been filled in there, so a person can skip a section and forget it; the step's percentage done and the final review are what catch that. Sections go back to all closed if the page is reloaded.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2767,7 +2767,7 @@
       "area": "Visual",
       "where": "Step 2 · Owner cards · Home address",
       "t": "In an owner card the address search box and the street boxes are two thirds wide",
-      "b": "Ryan: in an owner card the Home address search box is two thirds of the form wide, the width of the first two columns of thirds. Once an address is picked or entered by hand, Street address 1 and Street address 2 are two thirds wide too, and City, State or Province and ZIP or postal code stay a third each. Below about 560px they go full width. Addresses outside an owner card (step 1) keep their full-width boxes. Measured at 1280 wide: the form is 817px, the search box and the street boxes are 539px, and each of the three boxes below is 262px.",
+      "b": "Ryan: in an owner card the Home address search box is two thirds of the form wide, the width of the first two columns of thirds. Once an address is picked or entered by hand, Street address 1 and Street address 2 are two thirds wide too, and City, State or Province and ZIP or postal code stay a third each. Below about 560px they go full width. Addresses outside an owner card (step 1) keep their full-width boxes. Measured at 1280 wide: the form is 817px, the search box and the street boxes are 539px, and each of the three boxes below is 262px. Update, 2026-11-11 (later): Ryan asked for City to sit on the same row as State and ZIP, so that row spans all three thirds. The Street address 2 box had been leaving City beside it in the third column of its row, which pushed State and ZIP to the next row; City now always starts a new row.",
       "tradeoff": "The street boxes end a third short of the right edge while city, state and ZIP reach it, so the address block has a ragged right edge. The address search is also narrower than before, so a long street name in the search box has less room.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -2777,7 +2777,7 @@
       "area": "Step 2",
       "where": "Step 2 · Owner cards · Identity verification",
       "t": "A tick under the SSN or SIN says the person has none, and fills the box with zeros",
-      "b": "Ryan: under the Social Security Number (or SIN) box in an owner card, a tick box reads This person doesn't have an SSN (SIN for Canada). Ticking it fills the box with all zeros (000-00-0000, or 000 000 000 for a SIN) and locks it, with no Show button, the same way the website box locks to N/A when I don't have a website is ticked. Unticking clears the box and unlocks it, so the person can type a number. The tick is optional and is not shown for a non-profit or government body, which are not asked for the number (nonprofit-no-national-id). It sits above the politically exposed person question. Only zeros are ever stored in the box, never a real number.",
+      "b": "Ryan: under the Social Security Number (or SIN) box in an owner card, a tick box reads This person doesn't have an SSN (SIN for Canada). Ticking it fills the box with all zeros (000-00-0000, or 000 000 000 for a SIN) and locks it, with no Show button, the same way the website box locks to N/A when I don't have a website is ticked. Unticking clears the box and unlocks it, so the person can type a number. The tick is optional and is not shown for a non-profit or government body, which are not asked for the number (nonprofit-no-national-id). It sits above the politically exposed person question. Only zeros are ever stored in the box, never a real number. Update, 2026-11-11 (later): the tick now sits in line to the right of the box, and a locked box looks disabled like the website box (see tick-beside-field).",
       "tradeoff": "Zeros in an SSN box can look like a real answer to anything that reads the form later. The tick is kept as its own answer so the two cases can be told apart, but whether Trullio or Ops accept an owner with no SSN, and what they need instead, is not confirmed. The earlier hint about an ITIN (in the why note under the box) is still there for someone who has a different number.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -2889,6 +2889,36 @@
       "t": "A file that fails to upload shows an error callout where the uploaded file tile would be",
       "b": "Ryan: add an error state for a file that fails to upload, using the error callout in place of the uploaded file area. In a document row the file tile is replaced by a full-width red-tinted callout with an alert icon: the file name in bold, then didn't upload. Check the file and try again., with Try again (adds the same file again) and Remove links. A failed file does not count as uploaded, so the row keeps its Required badge, step 6 is not complete and the document error still applies. Other files in the same row are unaffected, and a row with one good file and one failed file is done. In the prototype nothing really fails: a Make the next file upload fail box in Prototype options (on the steps) makes the next added file fail once, and Try again then succeeds. It applies to the document rows on step 6, not to the file box on More info needed. The callout is a new red variant of the existing callout, which until now had info, positive and warning styles. The wording is my draft.",
       "tradeoff": "The message does not say why it failed (type, size, connection), because nothing here reads the file and the real reasons are not known; the real product would know and should say. Try again does not re-open a file chooser in the prototype, it just adds the same canned file.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "tick-beside-field",
+      "area": "Visual",
+      "where": "Step 1 · Website; step 2 · Owner cards · SSN or SIN",
+      "t": "The I don't have one tick sits in line to the right of the box, and a locked SSN looks disabled like the website box",
+      "b": "Ryan: for both the website box and the SSN or SIN box, the tick box (I don't have a website; This person doesn't have an SSN) moves to the right of the box, in line with it, not below it. The website box fills the row up to the tick. In an owner card the SSN or SIN field takes two thirds of the form: the box is the first third and the tick sits in the second. Ticking the SSN tick now gives the same look as the website tick: the box greys out with the disabled text colour and its border, shows the zeros, and its padlock goes grey too; the cursor is not-allowed.",
+      "tradeoff": "In an owner card the tick text can wrap to two lines on a narrower window, and on a phone the tick drops back under the box. A tick sitting beside the box is easier to miss than one under it for someone scanning down the form.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "field-helper-text-trims",
+      "area": "Copy",
+      "where": "Step 1 · Trading address; step 2 · Owner cards · Middle name",
+      "t": "No hint under the trading address and no placeholder in the middle name box",
+      "b": "Ryan: remove the hint under Trading / physical address (Where you actually trade. We use it to send any card machines.) and the placeholder in the owner's Middle name box (If on their ID). Both boxes are now empty and plain. Ryan gave no reason; the first line was already trimmed earlier the same day after the statement descriptor went (descriptor-section-parked).",
+      "tradeoff": "Nothing now tells the applicant that a trading address is where card machines are sent, and a middle name box with no placeholder relies on its Optional state to say it can be left empty.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "section-status-chip",
+      "area": "Step 2",
+      "where": "Step 2 · Owner cards · section headings",
+      "t": "Each owner section heading shows where it stands: Not started, N of M done, then a green tick",
+      "b": "Ryan: the Identity verification section is required but easy to pass by, so each section heading (Personal details and Identity verification) now shows its state beside the title, not beside the chevron (moved there on 2026-11-11 at Ryan's request, having first been at the right), whether the section is open or closed. Until the applicant has entered something in it (or nothing valid is in, on a listed owner) it reads Not started in the warning colour; starting values such as Director and 10%, or a country filled in for them, do not count as a start on an owner they added. Once some of the required answers are in it reads, for example, 3 of 6 done in the purple (brand) colour. When all are in it is replaced by a green tick circle (the same one the review summary uses), with Complete for screen readers. The count is the required answers that are filled in and valid out of the required answers in that section; optional boxes (the middle name) and the SSN tick are not counted, and a non-profit has no SSN or ownership percentage so its counts are smaller. Ryan chose this from four options and dropped the word Required from the chip. Nothing is blocked or opened for the applicant: an empty required field still shows no error (errors-only-for-bad-entries), and the sections still open and close on their own.",
+      "tradeoff": "A section that holds a wrong entry counts it as not done but does not say so in the chip; the existing Needs a look pill on the owner row and the error under the field do that. A section starts in the warning colour on every empty owner card, so a new card shows two warning chips at once, which makes an empty card look more urgent than the form means it to. The earlier count and minutes badges were removed on 2026-11-09 as noise; this chip is different because it changes with progress, but it is on both headings all the time.",
       "by": "Ryan",
       "when": "2026-11-11"
     }
@@ -3661,6 +3691,9 @@
       // An optional amount that is stored as 0 when left empty (the ACH or EFT volume; decision ach-volume-defaults-zero).
       zero: !!o.zero,
       tall: !!o.tall,
+      // A tick box shown in line, to the right of the box (the website and SSN boxes; decision tick-beside-field). tickHalf gives the box half the width and the tick the other half.
+      tick: o.tick || null,
+      tickHalf: !!o.tickHalf,
       unsure: !!o.unsure,
       // No "Optional" tag: a field without the red asterisk is optional (decision 96).
       chip: "",
@@ -3709,7 +3742,7 @@
       sub("personal", "Personal details"),
       // First and last name are required, the middle name is not (decision owner-name-three-fields). Together they are the name on the ID.
       f("first", "First name", "text", { placeholder: "As printed on their ID" }),
-      f("middle", "Middle name", "text", { optional: true, placeholder: "If on their ID" }),
+      f("middle", "Middle name", "text", { optional: true }),
       f("last", "Last name", "text", { placeholder: "As printed on their ID" }),
       // Their place in the business: title, then ownership percentage (decision owner-personal-details-grouped). Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
       f("role", "Title / role", "text", { placeholder: "e.g. Director" }),
@@ -3732,10 +3765,12 @@
       isNonprofit() ? null : f("natId", ca ? "Social Insurance Number (SIN)" : "Social Security Number (SSN)", "masked", {
         sensitive: true,
         locked: ownerVal(o, "noNatId") === true ? noNatIdValue() : undefined,
+        // Two thirds wide, the box taking half of it and the tick the other half (decision tick-beside-field).
+        span: true, tickHalf: true,
+        tick: f("noNatId", ca ? "This person doesn't have a SIN" : "This person doesn't have an SSN", "check", { optional: true, dflt: false }),
         placeholder: ca ? "000 000 000" : "000-00-0000",
         why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
       }),
-      isNonprofit() ? null : f("noNatId", ca ? "This person doesn't have a SIN" : "This person doesn't have an SSN", "check", { span: true, optional: true, dflt: false }),
       // Full row, so it starts on a new line below the SSN or SIN (decision owner-form-two-sections).
       f("pep", "Is this person a politically exposed person?", "yn", {
         span: true,
@@ -3766,14 +3801,13 @@
         card("s1-addr", "Addresses", "", [
           fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
           fld("tradingSame", "Is that also where you operate?", "yn", { span: true }),
-          a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh(), hint: "Where you actually trade. We use it to send any card machines." }) : null
+          a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh() }) : null
         ]),
         card("s1-contact", "How we reach you", isNonprofit() ? "For account notices and questions from the people paying you. We won't add you to any marketing." : "For account notices and customer queries. We won't add you to any marketing.", [
           fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
           fld("email", isNonprofit() ? "Organization email address" : "Business email address", "text", { placeholder: isNonprofit() ? "hello@yourorganization.org" : "hello@yourbusiness.com" }),
           // The website is required. A business with none ticks the box, which fills the box with N/A and locks it (decision website-required-with-none-box).
-          fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com" }),
-          fld("noWebsite", "I don't have a website", "check", { span: true, optional: true })
+          fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", tick: fld("noWebsite", "I don't have a website", "check", { optional: true }) })
         ]),
         card("s1-desc", isNonprofit() ? "What the organization does" : "What the business sells", "", [
           // The list holds only the codes set up for the applicant's division (decision mcc-from-division).
@@ -4126,7 +4160,7 @@
         const encClose = () => { if (state.fieldWhy === encKey) setState({ fieldWhy: "" }); };
         // The padlock inside the field opens the Encrypted note on hover or focus (decision encrypted-lock-tooltip).
         const lock = html`<span class="lock-wrap" data-mouseenter="${on(encOpen)}" data-mouseleave="${on(encClose)}"><button type="button" class="lock-trigger" aria-label="Encrypted: what this means" aria-expanded="${String(state.fieldWhy === encKey)}" data-click="${on(encOpen)}" data-focus="${on(encOpen)}" data-blur="${on(encClose)}">${icon("lock", 16)}</button>${state.fieldWhy === encKey && html`<span class="field-why-pop lock-pop" role="note"><span class="field-why-body">${ENCRYPTED_NOTE}</span></span>`}</span>`;
-        control = html`<div class="affix affix--secure">${lock}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${attr("disabled", f.locked)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && !f.locked && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
+        control = html`<div class="affix affix--secure${f.locked ? " is-locked" : ""}">${lock}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${attr("disabled", f.locked)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && !f.locked && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
         break;
       }
       case "long":
@@ -4196,7 +4230,7 @@
       : html`<label class="field-label" for="${id}">${f.label}${f.required && REQ}</label>`;
     return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}>
   <div class="field-head">${label}${f.chip && html`<span class="chip">${f.chip}</span>`}</div>
-  ${control}
+  ${f.tick ? html`<div class="control-row${f.tickHalf ? " control-row--half" : ""}">${control}${fieldView(f.tick)}</div>` : control}
   ${errView(f.id)}
   ${f.why && fieldWhyView(f)}
   ${f.hint && html`<p class="field-hint" id="${hintId}">${f.hint}</p>`}
@@ -4523,8 +4557,14 @@
       const chosen = state.secOpen[sec.h.id];
       const closed = (chosen === undefined ? idx !== 0 : !chosen) && !hasErr;
       const toggle = () => setState((st) => ({ secOpen: Object.assign({}, st.secOpen, { [sec.h.id]: closed }) }));
+      // Where the section stands (decision section-status-chip): the required answers that are in and valid, out of all it needs. Optional boxes are not counted.
+      const need = sec.fields.filter((x) => x.required && x.kind !== "heading");
+      const have = need.filter((x) => !fieldError(x)).length;
+      // On an owner the applicant added, starting values such as Director and 10% or the country do not count as a start: the section reads Not started until the applicant has entered something in it.
+      const entered = sec.fields.some((x) => state.a[x.id] !== undefined);
+      const status = !need.length ? "" : have === need.length ? html`<span class="tick sec-tick">${icon("check", 13, "i-b")}<span class="sr-only">Complete</span></span>` : have === 0 || (o.added && !entered) ? html`<span class="pill pill--warning sec-status">Not started</span>` : html`<span class="pill pill--brand sec-status">${have} of ${need.length} done</span>`;
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
-  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
+  <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}${status}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
   ${!closed && html`<div class="fields">${gridView(sec.fields)}</div>`}
 </section>`;
     }) }</div>`;

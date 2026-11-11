@@ -808,7 +808,9 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 @media (max-width: 560px) { .fields-row { grid-template-columns: minmax(0,1fr); } }
 /* In an owner card the home address uses the same thirds as every other row: city, state and ZIP or postal code are a third each (decision owner-form-thirds). Other addresses keep their quarter lines. */
 .owner-sec .addr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.owner-sec .addr-cell--city, .owner-sec .addr-cell--sm { grid-column: span 1; }
+.owner-sec .addr-cell--sm { grid-column: span 1; }
+/* City always starts a new row, so city, state and ZIP share one row across all three thirds (decision owner-address-two-thirds). */
+.owner-sec .addr-cell--city { grid-column: 1 / span 1; }
 @media (max-width: 560px) { .owner-sec .addr-grid { grid-template-columns: minmax(0, 1fr); } .owner-sec .addr-cell--city, .owner-sec .addr-cell--sm { grid-column: 1 / -1; } }
 /* In an owner card the address search box and the two street boxes are two thirds wide, the width of the first two columns (decision owner-address-two-thirds). City, state and ZIP stay a third each. */
 .owner-sec .addr-search { max-width: calc((200% - 16px) / 3); }
@@ -827,3 +829,20 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .sig-help { margin-top: 8px; }
 .sig-actions { display: flex; align-items: center; gap: 16px; margin-top: 12px; }
 [data-error] .sig-pad { border-color: var(--color-border-error); }
+
+/* A tick box in line to the right of a field (decision tick-beside-field). */
+.control-row { display: flex; align-items: center; gap: 16px; }
+.control-row > :first-child { flex: 1 1 0; min-width: 0; }
+.control-row .check { padding: 0; }
+.control-row--half > :first-child { flex: 0 0 calc(50% - 8px); }
+.control-row--half > :last-child { flex: 1 1 0; min-width: 0; }
+@media (max-width: 560px) { .control-row { flex-wrap: wrap; gap: 8px; } .control-row > :first-child, .control-row--half > :first-child { flex: 1 1 100%; } }
+/* A locked SSN or SIN box looks like the disabled website box. */
+.affix.is-locked, .affix.is-locked:hover { background: var(--color-background-disabled); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default); cursor: not-allowed; }
+.affix.is-locked input { color: var(--color-text-disabled); cursor: not-allowed; -webkit-text-fill-color: var(--color-text-disabled); }
+.affix.is-locked .lock-trigger { color: var(--color-icon-disabled); }
+
+/* Section status chip on an owner card heading (decision section-status-chip). */
+.pill--brand { background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
+.sec-status { flex: none; }
+.sec-tick { flex: none; }
