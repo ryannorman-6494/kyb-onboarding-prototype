@@ -2887,8 +2887,8 @@
       "area": "Step 6",
       "where": "Step 6 · Supporting documents",
       "t": "A file that fails to upload shows an error callout where the uploaded file tile would be",
-      "b": "Ryan: add an error state for a file that fails to upload, using the error callout in place of the uploaded file area. In a document row the file tile is replaced by a full-width red-tinted callout with an alert icon: the file name in bold, then didn't upload. Check the file and try again., with Try again (adds the same file again) and Remove links. A failed file does not count as uploaded, so the row keeps its Required badge, step 6 is not complete and the document error still applies. Other files in the same row are unaffected, and a row with one good file and one failed file is done. In the prototype nothing really fails: a Make the next file upload fail box in Prototype options (on the steps) makes the next added file fail once, and Try again then succeeds. It applies to the document rows on step 6, not to the file box on More info needed. The callout is a new red variant of the existing callout, which until now had info, positive and warning styles. The wording is my draft.",
-      "tradeoff": "The message does not say why it failed (type, size, connection), because nothing here reads the file and the real reasons are not known; the real product would know and should say. Try again does not re-open a file chooser in the prototype, it just adds the same canned file.",
+      "b": "Ryan: add an error state for a file that fails to upload, using the error callout in place of the uploaded file area. In a document row the file tile is replaced by a full-width red-tinted callout with an alert icon: the file name in bold, then didn't upload. Check the file and try again., with Try again (adds the same file again) and Remove links. A failed file does not count as uploaded, so the row keeps its Required badge, step 6 is not complete and the document error still applies. Other files in the same row are unaffected, and a row with one good file and one failed file is done. In the prototype nothing really fails: a Make the next file upload fail box in Prototype options (on the steps) makes the next added file fail once, and Try again then succeeds. It applies to the document rows on step 6, not to the file box on More info needed. The callout is a new red variant of the existing callout, which until now had info, positive and warning styles. The wording is my draft. Update, 2026-11-11: Ryan removed the Try again and Remove links, so the callout shows the message only. Adding another file with Add file is the retry, and it clears the failed file from that row; the failed callout has no way to be dismissed on its own.",
+      "tradeoff": "The message does not say why it failed (type, size, connection), because nothing here reads the file and the real reasons are not known; the real product would know and should say. Try again does not re-open a file chooser in the prototype, it just adds the same canned file. (Superseded 2026-11-11: there is no Try again now; Add file does it.)",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -2939,6 +2939,26 @@
       "t": "Prefilled owner fields count in the section chip; a new owner starts with only an ownership share filled in (100 for the first owner, then what is left) and reads 1 of 10 done; the owner row's Remove button is just a trash can",
       "b": "Ryan: any field that starts prefilled is counted by the section status chip, so an owner added with Add myself starts partly done (5 of 10 done in Personal details and 1 of 6 in Identity verification) because the title, ownership percentage, email, phone and the two countries are already in. Before this, a section on any added owner read Not started until the applicant typed something, even with those values in. A new owner added with Add another owner or director has one prefilled field, an ownership percentage (it first started empty on 2026-11-11, then Ryan asked for 100, then agreed to go back to the share still unaccounted for, never below 25, so the first owner gets 100 and later ones get what is left), so its Personal details reads 1 of 10 done and Identity verification reads Not started. Title and both countries start empty, so its row reads that share with no title until one is entered. A non-profit has no ownership percentage, so its new owner still reads Not started. Add myself keeps its prefilled values (decision owner-share-minimum still sets its percentage). Also on 2026-11-11, Ryan removed the word Remove from the Remove button on an owner row: it is a trash can icon only, with the owner's name kept as its accessible label. Supersedes the added-owner exception in section-status-chip.",
       "tradeoff": "A trash can with no word is less obvious than a labelled button, and it sits beside the open and close chevron, so an applicant could press it by mistake; the confirmation dialog that follows is the safeguard. A new owner now has an empty title, so the applicant types it, where before they only edited a suggested Director. Because the share is the amount left, a company already at 100% or more gives a new owner 25, so the total can still pass 100% and the Ownership comes to more than 100% message can show when the applicant continues (Ryan's call, no reason given beyond wanting 1 of 10 at the start).",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "summary-counts-only",
+      "area": "Flow",
+      "where": "Step 7 · Summary rows",
+      "t": "Each summary row on the last step says only how many answers are in, such as 10 of 10 done, and no longer repeats what was entered",
+      "b": "Ryan: the supporting text under each title in the step 7 summary was lengthy, and trying to note everything entered is silly, so each row now reads just N of M done. The count is the same tally that drives the step's percentage (decision step-percent-done): the required answers that are in and valid out of the required answers the step needs, which includes each required document and the owner list. A step with no problems reads every answer as done, so a finished step reads, for example, 10 of 10 done. A step that is not finished still shows its ring and a Continue link; a finished one shows the green tick and an Edit link. The business name, owners and percentages, volumes, bank name, declarations and document counts that the rows used to list are gone from this screen.",
+      "tradeoff": "The applicant can no longer check their answers at a glance on the last screen before signing; they have to open a section with Edit to see what they entered. A count such as 10 of 10 done says nothing about whether the answers are right. Optional answers are not counted, so a row can read complete while optional boxes are empty.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "biz-card-selected-fill",
+      "area": "Visual",
+      "where": "Business type page · Radio cards",
+      "t": "The selected business type card has a very faint purple fill as well as its purple outline",
+      "b": "Ryan: when a radio card on the business type page is selected it gets the very faint purple background (the brand subtle colour, the same one the current step in the left column uses), in addition to the 2px brand outline and the filled radio dot it already had. Unselected cards keep the raised white fill.",
+      "tradeoff": "Ryan gave no reason beyond the request. The fill is very faint, so on a low-contrast screen the outline and the dot still carry the selected state.",
       "by": "Ryan",
       "when": "2026-11-11"
     }
@@ -3439,13 +3459,14 @@
   const setDocFiles = (key, fn) => setState((s) => ({ docs: Object.assign({}, s.docs, { [key]: { files: fn((s.docs[key] && s.docs[key].files) || []) } }) }));
   // Simulated upload: no file picker opens and no file is read. The file shows as uploading for a moment, then as uploaded.
   function upload(key, file) {
-    const have = doc(key).files.map((f) => f.name);
+    // A failed file has no buttons, so adding another file is the retry and clears the old failure from the row (decision upload-failure-callout).
+    const have = doc(key).files.filter((f) => !f.failed).map((f) => f.name);
     let i = 1, name = file;
     while (have.indexOf(name) > -1) { i++; name = file.replace(/(\.[a-z0-9]+)?$/i, "-" + i + "$1"); }
     // With the Prototype options box ticked, this one upload fails once and the box clears itself.
     const fail = state.failNextUpload === true;
     if (fail) setState({ failNextUpload: false });
-    setDocFiles(key, (fs) => fs.concat([{ name: name, busy: true }]));
+    setDocFiles(key, (fs) => fs.filter((f) => !f.failed).concat([{ name: name, busy: true }]));
     setTimeout(() => setDocFiles(key, (fs) => fs.map((f) => (f.name === name ? { name: name, busy: false, failed: fail } : f))), 1400);
   }
 
@@ -3621,6 +3642,13 @@
     const errs = stepErrors(step, false, tally);
     if (!Object.keys(errs).length) return 100;
     return tally.total ? Math.min(99, Math.floor((tally.done / tally.total) * 100)) : 0;
+  }
+
+  // The same tally as stepPct, as counts: how many answers the step needs and how many are in. A step with no problems reports every answer as done (decision summary-counts-only).
+  function stepCount(step) {
+    const tally = { total: 0, done: 0 };
+    const complete = !Object.keys(stepErrors(step, false, tally)).length;
+    return { total: tally.total, done: complete ? tally.total : tally.done, complete };
   }
 
   // Errors on show for the current step. Empty until the first attempt, then
@@ -4065,16 +4093,17 @@
       submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
       checkNote: "Checking " + [!isSole() && "your " + orgWord() + " details", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
       receivedNote: st.submittedAt ? "Sent to our verification partner at " + st.submittedAt : "Sent to our verification partner",
+      // Each row on the last step says only how many answers are in, "N of M done" (decision summary-counts-only).
       summary: [
-        { label: isNonprofit() ? "Organization & address" : "Business & address", parts: [a.legalName, isSole() && a.dba && "trading as " + a.dba, a.structure, a.ein && (ca ? "BN " + digitsOf(a.ein) : "EIN ••••" + digitsOf(a.ein).slice(-4)), a.regAddress], step: 1 },
-        { label: step2Name(), parts: [owners.map((o) => isCompany() ? o.name + " " + fmtPct(o.pct) + "%" : o.name).join(" · "), owners.some((o) => o.status === "invited") && owners.filter((o) => o.status === "invited").length + " invited", signatoryName && (signedNow ? "signed by " : "signatory: ") + signatoryName], step: 2 },
-        { label: "How you take payments", parts: [a.monthlyVolume && "$" + fmtMoney(a.monthlyVolume) + "/mo", a.avgTicket && "avg $" + fmtMoney(a.avgTicket), a.cpSplit && a.cpSplit + "% card present", a.goods && a.goods.toLowerCase()], step: 3 },
-        { label: "Payout account", parts: [a.bankName, a.accountType && a.accountType.toLowerCase()], step: 4 },
-        { label: "Compliance declarations", parts: [declarationsSummary(a, ca), (a.matchConsent && (ca || a.ofacAck)) && "consents given"], step: 5 },
-        { label: "Supporting documents", parts: (() => { const need = docList.filter((d) => !d.skip); return [need.length + " needed", need.filter((d) => doc(d.key).state === "done").length + " uploaded"]; })(), step: 6 }
+        { label: isNonprofit() ? "Organization & address" : "Business & address", step: 1 },
+        { label: step2Name(), step: 2 },
+        { label: "How you take payments", step: 3 },
+        { label: "Payout account", step: 4 },
+        { label: "Compliance declarations", step: 5 },
+        { label: "Supporting documents", step: 6 }
       ].map((r) => {
-        const done = r.parts.filter(Boolean);
-        return { label: r.label, step: r.step, value: done.length ? done.join(" · ") : "Nothing filled in yet", empty: !done.length, partial: stepPct(r.step) < 100, pct: stepPct(r.step) };
+        const c = stepCount(r.step);
+        return { label: r.label, step: r.step, value: c.done + " of " + c.total + " done", partial: !c.complete, pct: stepPct(r.step) };
       })
     };
   }
@@ -4658,10 +4687,9 @@
 </div>`;
   }
 
-  // A file that did not upload: the error callout takes the place of the file tile (decision upload-failure-callout). Try again adds the same file once more; Remove clears it.
+  // A file that did not upload: the error callout takes the place of the file tile, with no buttons of its own (decision upload-failure-callout). The applicant uses Add file on the row to try again.
   function failedFileView(d, f) {
-    const drop = () => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name));
-    return html`<div class="callout callout--error doc-fail" role="alert" data-key="file-${f.name}">${icon("alert", 16)}<span class="doc-fail-text"><strong>${f.name}</strong> didn't upload. Check the file and try again.</span><span class="doc-fail-actions"><button type="button" class="btn-link" aria-label="Try ${f.name} again" data-click="${on(() => { drop(); upload(d.key, d.file); })}">Try again</button><button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(drop)}">Remove</button></span></div>`;
+    return html`<div class="callout callout--error doc-fail" role="alert" data-key="file-${f.name}">${icon("alert", 16)}<span class="doc-fail-text"><strong>${f.name}</strong> didn't upload. Check the file and try again.</span></div>`;
   }
 
   function docView(d) {

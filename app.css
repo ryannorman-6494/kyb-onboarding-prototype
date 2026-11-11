@@ -126,7 +126,6 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .callout--error > .i { color: var(--color-icon-error); }
 .doc-fail { margin-top: 0; grid-column: 1 / -1; align-items: center; flex-wrap: wrap; }
 .doc-fail-text { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
-.doc-fail-actions { display: flex; gap: 16px; flex: none; margin-left: auto; }
 
 .pill { display: inline-flex; align-items: center; gap: var(--space-gap-pair); height: var(--size-control-small); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); flex: none; }
 .pill--lg { gap: var(--space-gap-related); }
@@ -582,7 +581,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .biz-warn { margin-bottom: 36px; }
 .biz-card { display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left; border: none; cursor: pointer; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); padding: 16px 18px; box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift); transition: box-shadow 0.15s; }
 .biz-card:hover { box-shadow: inset 0 0 0 1px var(--color-border-brand), var(--lift); }
-.biz-card.is-selected { box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
+.biz-card.is-selected { background: var(--color-background-brand-subtle); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
 .biz-radio { flex: none; width: 18px; height: 18px; margin-top: 2px; border-radius: var(--radius-full); box-shadow: inset 0 0 0 2px var(--color-border-default); display: flex; align-items: center; justify-content: center; }
 .biz-card.is-selected .biz-radio { box-shadow: inset 0 0 0 2px var(--color-border-brand); }
 .biz-card.is-selected .biz-radio::after { content: ""; width: 8px; height: 8px; border-radius: var(--radius-full); background: var(--color-background-brand-default); }
@@ -754,7 +753,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 /* Step 4: the optional extra bank account link sits quietly under the card, as text rather than a button. */
 
 /* The selected business type card opens up and holds its follow-up question (decision type-asked-on-business-type-page). */
-.biz-open { background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
+.biz-open { background: var(--color-background-brand-subtle); border-radius: var(--radius-default); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
 .biz-open .biz-head.biz-card { background: transparent; box-shadow: none; border-radius: var(--radius-default) var(--radius-default) 0 0; }
 .biz-sub { padding: 0 18px 20px 50px; animation: biz-sub-in 200ms ease-out; }
 .biz-sub .input { max-width: 420px; }
