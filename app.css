@@ -333,12 +333,32 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .doc-file { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-default); background: var(--color-background-shell); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .doc-file-name { font-size: var(--type-caption-default-size); font-family: var(--font-mono); color: var(--color-text-secondary); }
 .doc-file .btn-link { margin-left: auto; }
-/* Uploaded files sit two to a row under the document, and fill the next row as more are added (decision document-add-file-grid). */
-.doc-files { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
-.doc-files .doc-file { margin-top: 0; flex-wrap: nowrap; min-width: 0; }
+/* Step 6 documents are cards in two columns (decision document-drop-zone). Each card is three rows: the text, the drop zone, the uploaded files.
+   The rows are shared with the card beside it (subgrid), so two cards in a row keep their drop zones level whatever their text or files. */
+.doc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-gap-group); align-items: stretch; }
+.doc-grid > .doc { display: flex; flex-direction: column; min-width: 0; }
+@supports (grid-template-rows: subgrid) {
+  .doc-grid > .doc { display: grid; grid-row: span 3; grid-template-rows: subgrid; row-gap: 0; }
+}
+@media (max-width: 720px) { .doc-grid { grid-template-columns: minmax(0, 1fr); } }
+.doc-grid .doc-row { flex-wrap: wrap; align-content: flex-start; }
+.doc-grid .doc-row .grow { flex: 1 1 160px; min-width: 0; }
+
+/* The drop zone is twice the height of an uploaded file's tile (--doc-tile-h). */
+.doc-files, .dropzone { --doc-tile-h: 56px; }
+.dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: calc(2 * var(--doc-tile-h)); margin-top: 16px; padding: 14px 16px; border: 1.5px dashed var(--color-border-default); border-radius: var(--radius-default); background: transparent; cursor: pointer; text-align: center; transition: background-color 0.15s, border-color 0.15s; }
+.dz-icon { width: 34px; height: 34px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; background: var(--color-background-brand-subtle); color: var(--color-text-brand); transition: transform 0.15s; }
+.dz-text { font-size: var(--type-body-small-size); color: var(--color-text-secondary); }
+.dz-link { color: var(--color-text-brand); font-weight: var(--type-control-bold-weight); text-decoration: underline; text-underline-offset: 2px; }
+.dropzone:hover, .dropzone.is-over { background: var(--color-background-brand-subtle); border-color: var(--color-border-brand); }
+.dropzone.is-over .dz-icon { transform: translateY(-3px) scale(1.08); background: var(--color-background-brand-default); color: var(--color-icon-on-brand); }
+.doc[data-error] .dropzone { border-color: var(--color-border-error); }
+@media (prefers-reduced-motion: reduce) { .dropzone, .dz-icon { transition: none; } .dropzone.is-over .dz-icon { transform: none; } }
+/* Uploaded files stack one under another beneath the drop zone (decision document-drop-zone, replacing the two-to-a-row tiles of document-add-file-grid). */
+.doc-files { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+.doc-files .doc-file { margin-top: 0; flex-wrap: nowrap; min-width: 0; min-height: var(--doc-tile-h); }
 .doc-files .doc-file-name { min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .doc-files .doc-file .btn-link, .doc-files .doc-file .state-pill { flex: none; margin-left: auto; }
-@media (max-width: 560px) { .doc-files { grid-template-columns: minmax(0, 1fr); } }
 
 /* Address: a search box, then one box for each part (decision address-split-fields). */
 .addr-manual, .addr-reset { display: inline-block; margin-top: 8px; font: var(--font-label-default); }

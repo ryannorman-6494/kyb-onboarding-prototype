@@ -2267,7 +2267,7 @@
       "area": "Visual",
       "where": "Step 6 · Supporting documents",
       "t": "Add file stays on every document, and uploaded files sit two to a row",
-      "b": "The button on each document row now says Add file and stays after a file is in, so any number of files can be added to one document. Each uploaded file is a tile showing its name with a Remove link, or Uploading for a moment while it arrives. Tiles are half the width of the card, two to a row, and the next file fills the space beside the last one before starting a new row. On a phone they stack one to a row. The row counts as done once one file has uploaded, so the Required badge turns into Uploaded after the first file. The W-9 keeps Review and sign next to Add file until a file is in, and a signed W-9 shows as a file tile too. A second file with the same name gets -2 added to it.",
+      "b": "The button on each document row now says Add file and stays after a file is in, so any number of files can be added to one document. Each uploaded file is a tile showing its name with a Remove link, or Uploading for a moment while it arrives. Tiles are half the width of the card, two to a row, and the next file fills the space beside the last one before starting a new row. On a phone they stack one to a row. The row counts as done once one file has uploaded, so the Required badge turns into Uploaded after the first file. The W-9 keeps Review and sign next to Add file until a file is in, and a signed W-9 shows as a file tile too. A second file with the same name gets -2 added to it. Superseded in part, 2026-11-11 (document-drop-zone): the Add file button is replaced by a drop zone under the text, and the file tiles stack one to a row below it, not two to a row.",
       "tradeoff": "The step never says how many files a document needs, so someone could add one page of a three-page statement and carry on. Uploading more than one file is not limited, and the prototype has no file size or type check.",
       "by": "Ryan",
       "when": "2026-11-06"
@@ -2959,6 +2959,16 @@
       "t": "The selected business type card has a very faint purple fill as well as its purple outline",
       "b": "Ryan: when a radio card on the business type page is selected it gets the very faint purple background (the brand subtle colour, the same one the current step in the left column uses), in addition to the 2px brand outline and the filled radio dot it already had. Unselected cards keep the raised white fill.",
       "tradeoff": "Ryan gave no reason beyond the request. The fill is very faint, so on a low-contrast screen the outline and the dot still carry the selected state.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "document-drop-zone",
+      "area": "Visual",
+      "where": "Step 6 · Supporting documents",
+      "t": "Document rows are cards in two columns, each with a drag-or-browse drop zone under its text instead of an Add file button; uploaded files stack below the zone",
+      "b": "Ryan: make the document upload cards more card shaped, in a two column grid and not stacked one per row, and replace the Add file button with a drag or upload file drop zone, creative in look, placed below the text in the card. Each card is the document's icon, title, badge, hint and Why we ask at the top, then the drop zone, then the uploaded files. The zone is about twice the height of an uploaded file's tile (112px against 56px). It is a dashed outline with a purple upload icon and the words Drag a file here or browse; holding a file over it fills it with the faint purple and lifts the icon, and it behaves the same under the pointer and the keyboard. Files an applicant adds stack one under another below the zone, each tile with its name and Remove, or Uploading for a moment. A failed file shows the red callout in the same place (upload-failure-callout). The two cards in a row share their rows, so their drop zones stay level whatever their text or files. On a phone the cards go one to a row. The zone stays on the card after a file is in, so any number of files can be added, and an error on the card turns the dashed outline red. In the prototype, pressing the zone adds the canned file as before; dropping real files adds a tile for each, named after the file, and nothing is read or sent. A file dropped anywhere else on the page is ignored so the browser does not leave the prototype.",
+      "tradeoff": "Two columns make each card about half as wide, so a long document title and its hint wrap to more lines and the cards are taller than the old rows. A lone last card sits half-width with an empty space beside it. Ryan did not say which file types or sizes the real zone accepts, and the zone says nothing about them, so an applicant only learns a file is wrong after it fails. The two-to-a-row file tiles of document-add-file-grid are replaced by a single stack, because the card is now half the page wide.",
       "by": "Ryan",
       "when": "2026-11-11"
     }
@@ -4696,10 +4706,14 @@
     const s = d.skip ? "skipped" : doc(d.key).state;
     const cur = doc(d.key);
     const cls = s === "done" ? " is-done" : s === "skipped" ? " is-skipped" : s === "idle" || s === "failed" ? "" : " is-busy";
-    // The button stays on every row, so any number of files can be added.
-    let action;
-    if (s === "skipped") action = html`<span class="state-pill state-pill--muted">Not needed</span>`;
-    else action = html`<button type="button" class="btn btn-outline btn-sm" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}">${icon("upload", 15)}Add file</button>`;
+    // The drop zone stays under the text of every card, so any number of files can be added (decision document-drop-zone).
+    // Clicking it adds the canned file. Dropping real files adds one tile for each, using only the file's name: nothing is read or sent.
+    const drop = (e) => {
+      const names = Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => String(f.name).slice(0, 120));
+      (names.length ? names : [d.file]).forEach((n) => upload(d.key, n));
+    };
+    const action = s === "skipped" ? html`<span class="state-pill state-pill--muted">Not needed</span>` : "";
+    const zone = s === "skipped" ? "" : html`<button type="button" class="dropzone" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}" data-drop="${on(drop)}"><span class="dz-icon" aria-hidden="true">${icon("upload", 18)}</span><span class="dz-text">Drag a file here or <span class="dz-link">browse</span></span></button>`;
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
@@ -4711,12 +4725,13 @@
     </div>
     ${action}
   </div>
+  ${zone}
   ${cur.files.length > 0 && html`<div class="doc-files" data-key="files-${d.key}">${cur.files.map((f) => f.failed ? failedFileView(d, f) : html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name" title="${f.name}">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name)))}">Remove</button>`}</div>`)}</div>`}
 </article>`;
   }
 
   function step6View(v) {
-    return html`<div class="stack" data-key="s6-docs">${v.docList.filter((d) => !d.skip).map((d) => docView(d))}</div>
+    return html`<div class="doc-grid" data-key="s6-docs">${v.docList.filter((d) => !d.skip).map((d) => docView(d))}</div>
 <div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>Add as many files as you like to each item. Files are stored encrypted and shared only with Trullio, our verification partner.${pin("read-on-upload")}</span></div>`;
   }
 
@@ -5624,6 +5639,14 @@ ${protoView()}`;
   root.addEventListener("mouseenter", (e) => { if (e.target.hasAttribute && e.target.hasAttribute("data-mouseenter")) run(e.target, "data-mouseenter", e); }, true);
   root.addEventListener("mouseleave", (e) => { if (e.target.hasAttribute && e.target.hasAttribute("data-mouseleave")) run(e.target, "data-mouseleave", e); }, true);
   root.addEventListener("keydown", (e) => dispatch("data-keydown", e));
+  // File drop zones (decision document-drop-zone). Only a zone accepts a drop; the is-over class is the highlight while a file is held over it.
+  const zoneOf = (e) => (e.target && e.target.closest ? e.target.closest("[data-drop]") : null);
+  root.addEventListener("dragover", (e) => { const z = zoneOf(e); if (z) { e.preventDefault(); z.classList.add("is-over"); } });
+  root.addEventListener("dragleave", (e) => { const z = zoneOf(e); if (z && !(e.relatedTarget && z.contains(e.relatedTarget))) z.classList.remove("is-over"); });
+  root.addEventListener("drop", (e) => { const z = zoneOf(e); if (z) { e.preventDefault(); z.classList.remove("is-over"); dispatch("data-drop", e); } });
+  // A file dropped anywhere else would make the browser leave the prototype and open it, so those drops are ignored.
+  window.addEventListener("dragover", (e) => { if (!zoneOf(e)) e.preventDefault(); });
+  window.addEventListener("drop", (e) => { if (!zoneOf(e)) e.preventDefault(); });
   // Leaving a field is when its problem, if any, is shown.
   root.addEventListener("focusout", (e) => {
     const id = e.target && e.target.id;
