@@ -628,6 +628,20 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .combo-opt.is-active { background: var(--color-background-hover); }
 .combo-opt.is-chosen { background: var(--color-background-brand-subtle); color: var(--color-text-brand); font: var(--font-control-bold); }
 .combo-code { flex: none; width: 36px; font-family: var(--font-mono); font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
+/* Step 1 business lookup (decision business-lookup-typeahead). */
+.find-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; align-items: start; }
+@media (max-width: 560px) { .find-row { grid-template-columns: minmax(0, 1fr); } }
+.find-list { max-height: 340px; }
+.find-opt { flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 8px; padding-bottom: 8px; height: auto; }
+.find-opt-name { font: var(--font-control-bold); color: var(--color-text-primary); }
+.find-opt-addr { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
+.find-opt-dup { font-size: var(--type-caption-default-size); color: var(--color-text-warning); }
+.find-manual-opt { margin-top: 4px; border-top: 1px solid var(--color-border-default); border-radius: 0 0 var(--radius-default) var(--radius-default); color: var(--color-text-brand); font: var(--font-control-bold); }
+.find-picked { align-items: flex-start; }
+.find-picked-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; color: var(--color-text-primary); }
+.find-picked-text strong { font: var(--font-control-bold); }
+.find-picked-text span { font-size: var(--type-body-small-size); color: var(--color-text-secondary); }
+.find-manual-note { margin: 0; }
 .combo-empty { padding: 8px 10px; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 
 .fields-sub { margin: 10px 0 -4px; padding-top: 14px; box-shadow: inset 0 1px 0 var(--color-border-subtle); font-size: var(--type-caption-default-size); font-weight: var(--type-control-bold-weight); letter-spacing: .04em; text-transform: uppercase; color: var(--color-text-subtle); }

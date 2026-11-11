@@ -287,6 +287,10 @@
   // line marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END, and the SIMPLE TRIAL rule in app.css. Nothing else depends on it.
   const MOREINFO_CARDS = "A card for each request"; // SIMPLE TRIAL
   const MOREINFO_SIMPLE = "Just uploads and notes"; // SIMPLE TRIAL
+  // Business lookup on step 1 (decision business-lookup-typeahead): the applicant finds their business by country and name and the name and address are filled in,
+  // or the prototype owner switches it off in Prototype options and every detail is typed in, as before.
+  const LOOKUP_ON = "Find the business by name";
+  const LOOKUP_OFF = "Type everything in";
   // Where the whole prototype starts (decision login-default-start): the welcome email and login for a new Odin user by default,
   // or the existing-user email and business picker. The sample business is the Fields start as option, not a start.
   const START_LOGIN = "New Odin User";
@@ -302,6 +306,7 @@
       division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
+      lookup: q.get("lookup") === "off" ? LOOKUP_OFF : LOOKUP_ON,
       data: q.get("data") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW,
@@ -316,6 +321,7 @@
     if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
     if (ctx.start === START_EXISTING) q.set("start", "existing");
+    if (ctx.lookup === LOOKUP_OFF) q.set("lookup", "off");
     if (ctx.data === "Sample business") q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
     Object.keys(LINKS).forEach((k) => { if (ctx.link === LINKS[k]) q.set("link", k); });
@@ -338,6 +344,7 @@
     division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
     moreInfo: [MOREINFO_CARDS, MOREINFO_SIMPLE], // SIMPLE TRIAL
     start: [START_LOGIN, START_EXISTING],
+    lookup: [LOOKUP_ON, LOOKUP_OFF],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
     link: [LINK_NEW].concat(Object.keys(LINKS).map((k) => LINKS[k]))
@@ -2198,7 +2205,7 @@
       "where": "Step 1 · Registered details",
       "t": "The EIN or business number is a field in Registered details, and there is no registry lookup",
       "b": "From the refinement session with engineering. The lookup went because of what it can actually do. Trullio can only prefill an address from a lookup, it needs the business's name and country to do it, and it then returns every business that shares that name in that country. The applicant could be shown a long list of possible matches, or have the wrong business prefilled, all so that they save typing an address. That is a bad trade, so the lookup, the Look up button, Enter details manually, the Is this your business? question and the match toasts are removed, and the whole of step 1 shows from the start. The EIN (Business Number in Canada) is now an ordinary field in the Registered details card, with the legal name, Doing business as, structure, date and state. A company or a non-profit has to give one; for a sole proprietor it is optional, and the hint says that without one they give their SSN (SIN in Canada) in step 2 instead. It is checked for nine digits, an SSN-shaped number is refused with a plain message, and a Canadian number pasted with its program account (RT0001) is cut back to the nine digits as the person leaves the field. The layout puts the legal name beside the EIN for a company, and Doing business as beside it for a non-profit and a sole proprietor. Nothing is filled in from the number. The address is typed in the Addresses card. The copy that went with the lookup is changed: the welcome page's registration line now says what Step 1 asks for, the why-we-ask note says the details should match the tax documents added in step 6, the line about protecting the EIN at the lookup is gone, and the confirmation's checking line names the business details for a company or non-profit. With no registry match to waive it, the EIN letter is now always required in step 6 for a company or non-profit in the US (a sole proprietor adds it only if they gave an EIN). There is no separate proof-of-registration document: the EIN letter (in Canada, a CRA business number confirmation) and the US W-9 are the documents that back the details.",
-      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Nothing checks the entity's existence against a registration document. Ops should confirm that the EIN letter (CRA business number confirmation in Canada) and the W-9 are enough. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record.",
+      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Nothing checks the entity's existence against a registration document. Ops should confirm that the EIN letter (CRA business number confirmation in Canada) and the W-9 are enough. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record. Update, 2026-11-11: Ryan added a Find your business search back on step 1 as a type-ahead with a Prototype option to switch it off (business-lookup-typeahead), after reading Trulioo's KYB Prefill page. The EIN is still a typed field and is not filled in from it.",
       "by": "Ryan",
       "when": "2026-11-05"
     },
@@ -2907,8 +2914,8 @@
       "area": "Copy",
       "where": "Step 1 · Trading address; step 2 · Owner cards · Middle name",
       "t": "No hint under the trading address and no placeholder in the middle name box",
-      "b": "Ryan: remove the hint under Trading / physical address (Where you actually trade. We use it to send any card machines.) and the placeholder in the owner's Middle name box (If on their ID). Both boxes are now empty and plain. Ryan gave no reason; the first line was already trimmed earlier the same day after the statement descriptor went (descriptor-section-parked).",
-      "tradeoff": "Nothing now tells the applicant that a trading address is where card machines are sent, and a middle name box with no placeholder relies on its Optional state to say it can be left empty.",
+      "b": "Ryan: remove the hint under Trading / physical address (Where you actually trade. We use it to send any card machines.) and the placeholder in the owner's Middle name box (If on their ID). Both boxes are now empty and plain. Ryan gave no reason; the first line was already trimmed earlier the same day after the statement descriptor went (descriptor-section-parked). Update, 2026-11-11 (later): Ryan also removed three more hints on step 1: the line under the EIN that said Nine digits, like 12-3456789 (a sole proprietor's hint now reads only If you have one, and what to do if they do not, and the Canadian hint about leaving off RT0001 stays), the line under the legal name that said This needs to match your government registration exactly, and the same line under the registered address for a company or non-profit (a sole proprietor's business address hint is unchanged). Ryan gave no reason.",
+      "tradeoff": "Nothing now tells the applicant that a trading address is where card machines are sent, and a middle name box with no placeholder relies on its Optional state to say it can be left empty. Update, 2026-11-11 (later): with the EIN shape hint gone, nothing tells a US applicant the number is nine digits until they enter a wrong one and the error says so, and with the registration hints gone nothing asks for the name and address to match the registration exactly, which the Find your business lookup and the tax documents at step 6 now have to carry.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -2969,6 +2976,16 @@
       "t": "Document rows are cards in two columns, each with a drag-or-browse drop zone under its text instead of an Add file button; uploaded files stack below the zone",
       "b": "Ryan: make the document upload cards more card shaped, in a two column grid and not stacked one per row, and replace the Add file button with a drag or upload file drop zone, creative in look, placed below the text in the card. Each card is the document's icon, title, badge, hint and Why we ask at the top, then the drop zone, then the uploaded files. The zone is about twice the height of an uploaded file's tile (112px against 56px). It is a dashed outline with a purple upload icon and the words Drag a file here or browse; holding a file over it fills it with the faint purple and lifts the icon, and it behaves the same under the pointer and the keyboard. Files an applicant adds stack one under another below the zone, each tile with its name and Remove, or Uploading for a moment. A failed file shows the red callout in the same place (upload-failure-callout). The two cards in a row share their rows, so their drop zones stay level whatever their text or files. On a phone the cards go one to a row. The zone stays on the card after a file is in, so any number of files can be added, and an error on the card turns the dashed outline red. In the prototype, pressing the zone adds the canned file as before; dropping real files adds a tile for each, named after the file, and nothing is read or sent. A file dropped anywhere else on the page is ignored so the browser does not leave the prototype.",
       "tradeoff": "Two columns make each card about half as wide, so a long document title and its hint wrap to more lines and the cards are taller than the old rows. A lone last card sits half-width with an empty space beside it. Ryan did not say which file types or sizes the real zone accepts, and the zone says nothing about them, so an applicant only learns a file is wrong after it fails. The two-to-a-row file tiles of document-add-file-grid are replaced by a single stack, because the card is now half the page wide.",
+      "by": "Ryan",
+      "when": "2026-11-11"
+    },
+    {
+      "id": "business-lookup-typeahead",
+      "area": "Flow",
+      "where": "Step 1 · Find your business",
+      "t": "Step 1 opens with a Find your business card: pick a country, type the business name, and choose it from a list to fill in the name and address; a Prototype option turns it off and everything is typed in as before",
+      "b": "Ryan: Trulioo's KYB Prefill can search by country and business name and return matching businesses with their address, so step 1 has a simple country and business name search again (the registry lookup was removed in ein-in-registered-details). A Find your business card sits above Registered details, for a company or non-profit; a sole proprietor is not offered it, because they are a person and not a registered business. The country starts as the applicant's region, and changing it changes the region. After three characters the name box lists matching businesses as the applicant types, up to five, each with the registered name, its address and, when other businesses share that name, a line saying how many do and asking them to check the address is theirs. Picking one fills in the legal name and the registered address (the address boxes open so the parts can be checked) and shows a green confirmation with the name and address, a reminder to check them against the registration, and a Search again link. Nothing else is filled in: not the EIN, the date, the state of incorporation or the structure. The last row of the list is always Can't find it? Enter details manually, and no match says so in the list; either one leaves the card as a one-line note with a link back to searching. The card is optional and never counts towards the step, and every field below stays editable. A Prototype option, Business lookup (step 1), switches it off, so the card is not shown and everything is typed in, as before; the default is on. Trulioo's page says the search is made for search-as-you-type, takes optional state and city, caps the list with a limit, ranks by confidence and returns a count of other businesses with the same or similar name. In the prototype the list is a short fixed set per country with several businesses sharing a name, and a short wait stands in for the request. Update, 2026-11-11 (same day): Ryan asked for two changes. Opening the box before typing now lists five of the sample businesses so there is something to pick straight away, and from three characters the list is the search. And the rest of step 1 (Registered details, Addresses, How we reach you, What the business sells) is not shown until a business has been picked from the list or the applicant has chosen Can't find it? Enter details manually, so the lookup is the first thing they see. A business whose name is already in (a returning applicant, the sample business, or someone who pressed Search again after picking) keeps the sections showing, and once a business has been picked or manual entry chosen the sections stay shown even if the name is later cleared. The hidden fields still count towards the step's progress, so step 1 does not read as done while it is hidden. Ryan gave no reason for either change.",
+      "tradeoff": "Typing more does not reliably find the business: Trulioo's own page says businesses can share a name and it returns a duplicate count (the example shows 57), so the list can hold several identical names and only the address tells them apart. The applicant could pick the wrong one, and the name and address are filled in from it. There is no state or city box, so a common name cannot be narrowed except by reading addresses. Trulioo's page does not say how well it covers small businesses, sole proprietors or Canada, whether it returns an incorporation date, structure or EIN, or what each search costs, so none of those are assumed, and whether this is better than typing everything in depends on the answers. The real search needs a call from our back end with Trulioo credentials, never from the page. This partly reverses the removal in ein-in-registered-details, which closed by saying an address prefill could come back if Trullio could return a reliable match. Hiding the sections means an applicant who already has everything to hand must still pick or press the manual link before they see a field, one extra step for them, and anyone who does not notice the manual link may think the form is only the search.",
       "by": "Ryan",
       "when": "2026-11-11"
     }
@@ -3070,6 +3087,48 @@
     "Canada": ["123 Main St, Vancouver, BC V6A 2S5", "123 Bay St, Toronto, ON M5K 1E7", "123 Rue Sherbrooke O, Montréal, QC H2X 1X4", "123 8 Ave SW, Calgary, AB T2P 1B3", "123 Sparks St, Ottawa, ON K1P 5E9", "1230 Granville St, Vancouver, BC V6Z 1M8", "418 Water St, Suite 210, Vancouver, BC V6B 1A1", "1055 W Georgia St, Vancouver, BC V6E 3P3", "100 King St W, Toronto, ON M5X 1A9", "1 Yonge St, Toronto, ON M5E 1W7", "800 Rue de la Gauchetière O, Montréal, QC H5A 1K6", "500 4 Ave SW, Calgary, AB T2P 2V6", "99 Bank St, Ottawa, ON K1P 6B9", "1800 Hollis St, Halifax, NS B3J 1V7", "350 Portage Ave, Winnipeg, MB R3C 0C4"]
   };
   const searchAddress = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); if (String(q || "").trim().length < 3) return []; return ADDRESS_STUBS[isCa() ? "Canada" : "United States"].filter((x) => t.every((w) => x.toLowerCase().indexOf(w) > -1)); };
+  // Business lookup stand-ins (fake business-lookup): a short fixed list per country, with several businesses that share a name so the duplicate case can be tried.
+  // The real service ranks real registry records and says how many other businesses share a name; here that count comes from the list. Names are matched word by word, not by address.
+  const BIZ_STUBS = {
+    "United States": [
+      { name: "Riverside Pilates LLC", address: "418 SE Water Ave, Suite 210, Portland, OR 97214" },
+      { name: "Riverside Pilates LLC", address: "77 Harbor View Rd, Sacramento, CA 95814" },
+      { name: "Riverside Community Foundation", address: "1200 Main St, Springfield, IL 62701" },
+      { name: "Main Street Bakery LLC", address: "310 Pine St, Seattle, WA 98101" },
+      { name: "Main Street Bakery LLC", address: "250 Elm Ave, Austin, TX 78701" },
+      { name: "Main Street Bakery LLC", address: "75 Lakeview Dr, Denver, CO 80202" },
+      { name: "Main Street Bakery LLC", address: "9 Harbor Rd, Boston, MA 02110" },
+      { name: "Main Street Bakery & Cafe Inc", address: "123 Main St, Springfield, IL 62701" },
+      { name: "Harbor Coffee Co", address: "88 Market St, San Francisco, CA 94105" },
+      { name: "Summit Yoga Studio LLC", address: "75 Lakeview Dr, Suite 4, Denver, CO 80202" },
+      { name: "Peachtree Fitness Group LLC", address: "1500 Peachtree St NE, Atlanta, GA 30309" },
+      { name: "Sunrise Dental PC", address: "4100 N Central Ave, Phoenix, AZ 85012" },
+      { name: "Sunrise Dental PC", address: "123 Congress Ave, Austin, TX 78701" }
+    ],
+    "Canada": [
+      { name: "Riverside Pilates Inc.", address: "418 Water St, Suite 210, Vancouver, BC V6B 1A1" },
+      { name: "Riverside Community Foundation", address: "99 Bank St, Ottawa, ON K1P 6B9" },
+      { name: "Maple Leaf Bakery Inc.", address: "100 King St W, Toronto, ON M5X 1A9" },
+      { name: "Maple Leaf Bakery Inc.", address: "123 Sparks St, Ottawa, ON K1P 5E9" },
+      { name: "Maple Leaf Bakery Inc.", address: "500 4 Ave SW, Calgary, AB T2P 2V6" },
+      { name: "Pacific Coast Yoga Ltd.", address: "1230 Granville St, Vancouver, BC V6Z 1M8" },
+      { name: "Harbour Coffee Co.", address: "1800 Hollis St, Halifax, NS B3J 1V7" },
+      { name: "Rue Sherbrooke Fitness Inc.", address: "123 Rue Sherbrooke O, Montréal, QC H2X 1X4" },
+      { name: "Prairie Dental Corp.", address: "350 Portage Ave, Winnipeg, MB R3C 0C4" }
+    ]
+  };
+  const bizList = () => BIZ_STUBS[isCa() ? "Canada" : "United States"];
+  const withDups = (x) => Object.assign({}, x, { dups: bizList().filter((y) => y !== x && y.name.toLowerCase() === x.name.toLowerCase()).length });
+  // A few businesses shown as soon as the box is opened, before anything is typed (decision business-lookup-typeahead).
+  const suggestBiz = () => (isCa() ? [0, 2, 5, 6, 7] : [0, 3, 8, 9, 11]).map((i) => withDups(bizList()[i]));
+  const searchBiz = (q) => {
+    const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean);
+    if (String(q || "").trim().length < 3) return [];
+    return bizList()
+      .filter((x) => t.every((w) => x.name.toLowerCase().indexOf(w) > -1))
+      .map(withDups)
+      .sort((a, b) => (a.name.toLowerCase().indexOf(t[0]) === 0 ? 0 : 1) - (b.name.toLowerCase().indexOf(t[0]) === 0 ? 0 : 1) || b.dups - a.dups);
+  };
   // The address is stored as one line, and these split it into parts and join it back (decision address-split-fields). Parsing works from the end: "state ZIP" or "province postal code" last, then the city, then the street, with anything left over as the unit.
   const US_REGIONS = "AL Alabama;AK Alaska;AZ Arizona;AR Arkansas;CA California;CO Colorado;CT Connecticut;DE Delaware;DC District of Columbia;FL Florida;GA Georgia;HI Hawaii;ID Idaho;IL Illinois;IN Indiana;IA Iowa;KS Kansas;KY Kentucky;LA Louisiana;ME Maine;MD Maryland;MA Massachusetts;MI Michigan;MN Minnesota;MS Mississippi;MO Missouri;MT Montana;NE Nebraska;NV Nevada;NH New Hampshire;NJ New Jersey;NM New Mexico;NY New York;NC North Carolina;ND North Dakota;OH Ohio;OK Oklahoma;OR Oregon;PA Pennsylvania;RI Rhode Island;SC South Carolina;SD South Dakota;TN Tennessee;TX Texas;UT Utah;VT Vermont;VA Virginia;WA Washington;WV West Virginia;WI Wisconsin;WY Wyoming".split(";").map((x) => [x.slice(0, 2), x.slice(3)]);
   const CA_REGIONS = "AB Alberta;BC British Columbia;MB Manitoba;NB New Brunswick;NL Newfoundland and Labrador;NS Nova Scotia;NT Northwest Territories;NU Nunavut;ON Ontario;PE Prince Edward Island;QC Quebec;SK Saskatchewan;YT Yukon".split(";").map((x) => [x.slice(0, 2), x.slice(3)]);
@@ -3150,6 +3209,15 @@
       addrQ: {},
       addrManual: {},
       addrParts: {},
+      // The business lookup on step 1: the text typed, whether the list is open, the highlighted row, whether a search is running, the results, the business picked, and whether the applicant chose to type everything in (decision business-lookup-typeahead).
+      findQ: "",
+      findOpen: false,
+      findIdx: 0,
+      findBusy: false,
+      findResults: [],
+      findPicked: null,
+      findManual: false,
+      findRevealed: false,
       openOwner: 1,
       // The furthest step the applicant has opened. Steps up to here can be returned to from the left column; later ones cannot (decision partial-steps-allowed).
       maxStep: 1,
@@ -3642,7 +3710,8 @@
       if (a.acceptPrivacy !== true && !problemsOnly) errs.acceptPrivacy = "Tick this to sign.";
       if (state.sign === "" && !problemsOnly) errs.sign = "Draw your signature, or upload an image of it.";
     }
-    cardsFor(step).forEach((c) => c && c.fields.forEach(add));
+    // Every card counts, including the step 1 sections still hidden behind the business lookup (decision business-lookup-typeahead).
+    cardsFor(step, true).forEach((c) => c && c.fields.forEach(add));
     return errs;
   }
 
@@ -3840,16 +3909,28 @@
   const einField = (ca) => fld("ein", ca ? "Business Number (BN)" : "Employer Identification Number (EIN)", "mono", {
     optional: isSole(),
     placeholder: ca ? "123456789" : "12-3456789",
-    hint: (isSole() ? "If you have one. " : "") + (ca ? "Just the first 9 digits. Leave off RT0001 or similar." : "Nine digits, like 12-3456789.") + (isSole() ? " If you don't, you'll give your " + (ca ? "SIN" : "SSN") + " in step 2 instead." : "")
+    // No hint about the number's shape in the US, and none under the legal name or registered address (decision field-helper-text-trims).
+    hint: [isSole() && "If you have one.", ca && "Just the first 9 digits. Leave off RT0001 or similar.", isSole() && "If you don't, you'll give your " + (ca ? "SIN" : "SSN") + " in step 2 instead."].filter(Boolean).join(" ")
   });
 
-  function cardsFor(step) {
+  // With the lookup on, the rest of step 1 stays hidden until a business is picked or the applicant chooses to enter details manually. A business whose name is already in (a returning applicant, or after Search again) keeps the sections (decision business-lookup-typeahead).
+  const lookupGate = () => ctx.lookup === LOOKUP_ON && !isSole();
+  // findRevealed is set once a business is picked or manual entry is chosen and never cleared, so the sections do not vanish if the name is later emptied or the search is reopened.
+  const lookupDone = () => state.findRevealed || String(state.a.legalName || "").trim() !== "";
+  // all: every card, even the ones still hidden, so the step's progress counts their fields.
+  function cardsFor(step, all) {
     const a = state.a;
     const ca = isCa();
     if (step === 1) {
+      // The lookup is optional help, not a required answer, so it never counts towards the step. A sole proprietor is a person, not a registered business, so is not offered it.
+      const find = lookupGate() ? card("s1-find", "Find your business", "Search for it by name and we'll fill in the name and address. You can change anything we fill in.", [
+        fld("bizFind", "Business name", "bizfind", { optional: true, span: true })
+      ], { pinId: "business-lookup-typeahead" }) : null;
+      if (find && !all && !lookupDone()) return [find];
       return [
+        find,
         card("s1-reg", isSole() ? "Your details" : "Registered details", "Enter these as they appear on " + (isSole() ? "your tax records." : "your registration."), [
-          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || isNonprofit(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC", hint: isSole() ? "" : "This needs to match your government registration exactly." }),
+          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || isNonprofit(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC" }),
           // The EIN or business number is typed here like any other detail; nothing is looked up from it (decision ein-in-registered-details). A company or non-profit has to give one; a sole proprietor may not have one.
           isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "e.g. Riverside Pilates" }) : einField(ca),
           isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
@@ -3857,7 +3938,7 @@
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ]),
         card("s1-addr", "Addresses", "", [
-          fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "This needs to match your government registration." }),
+          fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "" }),
           fld("tradingSame", "Is that also where you operate?", "yn", { span: true }),
           a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh() }) : null
         ]),
@@ -4142,7 +4223,67 @@
   // Draft wording, not reviewed by security (see decision encrypted-lock-tooltip).
   const ENCRYPTED_NOTE = "We encrypt this number as it travels and while it's stored. Once you leave the field only the last four characters show, and you can choose to show or hide the rest. It goes to Trullio, our verification partner, to check who you are.";
 
+  // The step 1 business lookup (decision business-lookup-typeahead). The typed text goes only to the fixed list above; nothing leaves the page.
+  let findTimer = 0;
+  function bizFindView() {
+    const reset = () => setState({ findPicked: null, findManual: false, findQ: "", findResults: [], findOpen: false, findBusy: false });
+    if (state.findPicked) {
+      const x = state.findPicked;
+      return html`<div class="callout callout--positive find-picked" data-key="find-picked">${icon("check", 16)}<span class="find-picked-text"><strong>${x.name}</strong><span>${x.address}</span><span>We filled in the name and address below. Check they match your registration.</span></span><button type="button" class="btn-link" data-click="${on(reset)}">Search again</button></div>`;
+    }
+    if (state.findManual) {
+      return html`<p class="small-note find-manual-note" data-key="find-manual">You're entering your details yourself. <button type="button" class="btn-link" data-click="${on(reset)}">Search for my business instead</button></p>`;
+    }
+    const typed = state.findQ.trim().length >= 3;
+    // Opening the box before typing lists a few businesses; from three characters the list is the search.
+    const open = state.findOpen;
+    const rows = !typed ? suggestBiz() : state.findBusy ? [] : state.findResults.slice(0, 5);
+    const total = rows.length + 1; // the last row is always "Can't find it?"
+    const idx = Math.min(state.findIdx, total - 1);
+    const manual = () => setState({ findManual: true, findRevealed: true, findOpen: false });
+    const pick = (x) => {
+      // Fills the legal name and the registered address and opens the address boxes so the parts can be checked. Nothing else is filled in.
+      setState((s) => ({
+        findPicked: x, findRevealed: true, findOpen: false, findQ: "", findResults: [], findBusy: false,
+        a: Object.assign({}, s.a, { legalName: x.name, regAddress: x.address }),
+        addrParts: Object.assign({}, s.addrParts, { regAddress: addrParse(x.address) }),
+        addrManual: Object.assign({}, s.addrManual, { regAddress: true }),
+        addrQ: Object.assign({}, s.addrQ, { regAddress: "" })
+      }));
+    };
+    const onType = (e) => {
+      const q = e.target.value;
+      const t = q.trim().length >= 3;
+      setState({ findQ: q, findOpen: true, findIdx: 0, findBusy: t, findResults: t ? state.findResults : [] });
+      clearTimeout(findTimer);
+      // A short wait stands in for the real search request.
+      if (t) findTimer = setTimeout(() => setState({ findBusy: false, findResults: searchBiz(state.findQ) }), 350);
+    };
+    const keys = (e) => {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); setState({ findOpen: true, findIdx: (idx + (e.key === "ArrowDown" ? 1 : total - 1)) % total }); }
+      else if (e.key === "Enter") { if (open) { e.preventDefault(); if (idx < rows.length) pick(rows[idx]); else manual(); } }
+      else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ findOpen: false }); } }
+    };
+    const onCountry = (e) => { setCtx({ region: e.target.value === "Canada" ? "Canada" : "United States" }); setState({ findQ: "", findResults: [], findBusy: false, findOpen: false }); };
+    const dupText = (n) => n + " other " + (n === 1 ? "business has" : "businesses have") + " this name. Check the address is yours.";
+    return html`<div class="find-row" data-key="find-search">
+  <div class="find-country"><label class="field-label" for="f-findCountry">Country</label><select class="input" id="f-findCountry" data-input="${on(onCountry)}">${["United States", "Canada"].map((c) => html`<option${attr("selected", (isCa() ? "Canada" : "United States") === c)}>${c}</option>`)}</select></div>
+  <div class="find-name"><label class="field-label" for="f-bizFind">Business name</label>
+    <div class="combo combo--lead">
+      <input class="input" id="f-bizFind" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-bizFind" aria-autocomplete="list" aria-busy="${String(state.findBusy)}" value="${state.findQ}" placeholder="Start typing your business name" autocomplete="off" spellcheck="false" data-click="${on(() => setState({ findOpen: true }))}" data-focus="${on(() => { if (!state.findOpen) setState({ findOpen: true, findIdx: 0 }); })}" data-input="${on(onType)}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.findOpen) setState({ findOpen: false }); }, 160))}">
+      <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
+      ${open && html`<ul class="combo-list find-list" id="lb-bizFind" role="listbox" data-key="lb-find">
+        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span>${x.dups > 0 && html`<span class="find-opt-dup">${dupText(x.dups)}</span>`}</li>`) : html`<li class="combo-empty" role="status">No business found for “${state.findQ.trim()}”. Check the spelling, or enter your details yourself.</li>`}
+        ${typed && !state.findBusy && state.findResults.length > rows.length && html`<li class="combo-empty">${state.findResults.length - rows.length} more. Keep typing to narrow the list.</li>`}
+        <li class="combo-opt find-manual-opt${idx === rows.length ? " is-active" : ""}" role="option" aria-selected="${String(idx === rows.length)}" data-click="${on(manual)}">Can't find it? Enter details manually</li>
+      </ul>`}
+    </div>
+  </div>
+</div>`;
+  }
+
   function fieldView(f) {
+    if (f.kind === "bizfind") return html`<div class="span-2" data-key="${f.id}">${bizFindView()}</div>`;
     const id = "f-" + f.id;
     // The monthly card volume sits beside a calculated yearly figure that cannot be clicked or typed in (decision yearly-volume-shown).
     // Together they fill the left half of the row, a quarter of the form each, and the average transaction amount takes the right half.
@@ -5394,6 +5535,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Slice", "slice", "slices-option")}
     ${select("Flow starts as", "start", "start-as-option")}
     ${select("Region", "region")}
+    ${select("Business lookup (step 1)", "lookup", "business-lookup-typeahead")}
     ${select("Fields start as", "data")}
     ${select("Division", "division", "division-option")}
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
