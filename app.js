@@ -1004,7 +1004,7 @@
       "area": "Flow",
       "where": "Step 6 · Documents, and step 4 · Payout account",
       "t": "Step 6 no longer asks for proof of the bank account",
-      "b": "The Bank account verification row (a voided check or void cheque, a bank letter, or a recent statement) is gone from step 6, in both regions and for every business type. Ryan says Trullio, our verification partner, verifies bank accounts for us, so the applicant only types the account in step 4. The step 4 description, the line under the fields and the Why do you need my account details? note, the welcome page's bank line and the step 7 review row no longer mention a document, and the review row shows only the bank name and account type. The Banking Verification card on the More info needed screen is unchanged: it is what Ops can still ask for after submit. Earlier versions made the bank letter always required (decision bank-letter-always, 2026-10-07).",
+      "b": "The Bank account verification row (a voided check or void cheque, a bank letter, or a recent statement) is gone from step 6, in both regions and for every business type. Ryan says Trullio, our verification partner, verifies bank accounts for us, so the applicant only types the account in step 4. The step 4 description, the line under the fields and the Why do you need my account details? note, the welcome page's bank line and the step 7 review row no longer mention a document, and the review row shows only the bank name and account type. The Banking Verification card on the More info needed screen is unchanged: it is what Ops can still ask for after submit. Earlier versions made the bank letter always required (decision bank-letter-always, 2026-10-07). Update, 2026-11-11: Ryan says Trullio verifies bank accounts for the US but not for Canada. Step 6 still asks for no bank proof in either region, so how a Canadian account is checked is not decided.",
       "tradeoff": "That Trullio verifies bank accounts is relayed by Ryan, not from a document; Trullio or compliance should confirm it covers US and Canadian accounts and what happens when an account cannot be verified (the Banking Verification request is the likely route). A mistyped number is now caught only after submit, not by a document at step 6. Step 6 has one less file to find, which was the most common place people got stuck without the paper in hand.",
       "by": "Ryan",
       "when": "2026-11-02"
@@ -1116,7 +1116,7 @@
       "where": "Step 6 · Processing statements",
       "t": "Ask for the last 3 months of processing statements",
       "b": "When someone says they have processed cards before, step 6 asks for their last 3 months of processing statements from the prior processor, not one recent one. The hint says they help us judge risk. Three months gives the risk team more to go on than a single month.",
-      "tradeoff": "Whether three months is what the risk team needs, and in what format, is not confirmed. The row is still one upload, so someone with three separate files has no way to add them as three; the real product would need to take several files. Someone who has never processed cards is not asked, because they have no statements to give.",
+      "tradeoff": "Whether three months is what the risk team needs, and in what format, is not confirmed. The row is still one upload, so someone with three separate files has no way to add them as three; the real product would need to take several files. Someone who has never processed cards is not asked, because they have no statements to give. Update, 2026-11-11: the line about the row being a single upload is no longer true. Every document row now takes any number of files (see document-add-file-grid), so three separate statements can be added. Ryan spotted it.",
       "by": "Ryan",
       "when": "2026-10-07"
     },
@@ -1737,7 +1737,7 @@
       "area": "Status",
       "where": "Step 7 · What happens next; the under review page",
       "t": "Usually under 2 hours stays as the approval time",
-      "b": "ClubReady's request list says an account can take up to 5 business days to be approved once the agreement is signed. Ryan confirmed on 2026-10-26 that usually under 2 hours is correct for this flow, so the copy on step 7, the confirmation and the under review page stays. This settles the claim the tone-of-voice pass flagged.",
+      "b": "ClubReady's request list says an account can take up to 5 business days to be approved once the agreement is signed. Ryan confirmed on 2026-10-26 that usually under 2 hours is correct for this flow, so the copy on step 7, the confirmation and the under review page stays. This settles the claim the tone-of-voice pass flagged. Superseded, 2026-11-11: Ryan says no claims on time should be in the prototype. Usually under 2 hours is removed from step 7 (What happens next), the Why we ask panel on step 7 and the under review timeline, which now reads We'll email you (After the last item arrives · we'll email you while something is outstanding), and the approved page's tag no longer says how long approval took. Ryan says the remaining time claims stay because they are necessary: the Faster approval chip, About 15 minutes on the welcome page, the About N minutes left note in the step list and About 5 minutes on the invited owner's page.",
       "tradeoff": "The two figures describe different things (usually and up to), so a slower case is not covered by the copy.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1809,7 +1809,7 @@
       "where": "Step 6 · Documents (Division option)",
       "t": "Club Essentials needs two years of financial history uploaded from every applicant",
       "b": "Requirement noted. Club Essentials (CE), another Xplor division alongside ClubReady, needs two years of financial history uploaded as part of onboarding, from anyone applying through that division. Like ClubReady, the division is set by an Xplor Pay ops user in the admin portal before the form opens (decision clubready-lease-by-division), so the form could show the document row from the start. Shown in the prototype only through the Division option in Prototype options (decision division-option): choosing Club Essentials opens step 6 with a Required row, Two years of financial history, outlined and tagged. It is treated as required before submit like every other Required file, and is not skipped for non-profits; both are assumptions.",
-      "tradeoff": "Not yet known: which documents count as financial history (statements, tax returns, accounts), whether a start-up with less than two years has another route, whether it applies to non-profits, and whether it is required before submit. The row wording is a draft, not approved copy.",
+      "tradeoff": "Not yet known: which documents count as financial history (statements, tax returns, accounts), whether a start-up with less than two years has another route, whether it applies to non-profits, and whether it is required before submit. The row wording is a draft, not approved copy. Update, 2026-11-11: Ryan is still waiting on an answer for what happens when the business is under two years old.",
       "by": "Ryan",
       "when": "2026-10-27"
     },
@@ -1987,7 +1987,7 @@
       "area": "Copy",
       "where": "Step 5, consents card",
       "t": "The consents card heading and note match the number of boxes shown",
-      "b": "In the US the card shows two consents (closed merchant accounts list and OFAC screening) under \"Two consents we have to collect\". Canada shows only the first, so its heading reads \"A consent we have to collect\" and its note says \"This is a consent, not a credit check. It doesn't touch your personal credit score.\"",
+      "b": "In the US the card shows two consents (closed merchant accounts list and OFAC screening) under \"Two consents we have to collect\". Canada shows only the first, so its heading reads \"A consent we have to collect\" and its note says \"This is a consent, not a credit check. It doesn't touch your personal credit score.\" Update, 2026-11-11: Ryan confirmed the consent ticks stay on step 5 now that Sign it off on step 7 holds the terms ticks. He gave no reason.",
       "tradeoff": "The wording is branched by region, so a third consent added later needs both versions edited. That Canada is not asked for the sanctions consent is an earlier call that no compliance document backs; if Canada gets it later, both pieces of copy go back to the US wording.",
       "by": "Ryan",
       "when": "2026-11-04"
@@ -2677,8 +2677,8 @@
       "area": "Flow",
       "where": "More info needed",
       "t": "Every request for more information has the same file upload and message box, and nothing on it is required",
-      "b": "On the in-app More info needed screen every reason keeps its own title, its line on why we need it and its list of what we accept, but all of them are answered the same way: a Choose file button (Add another file once there is one) and a Message for our team box. Cards such as the website address, check your sales numbers, tell us when customers get what they pay for, remove the credit freeze and update your website no longer have their own fields or buttons. No card shows a Required, Write an answer or Done badge, nothing is pre-filled from step 3, and nothing is checked. Send to our team is on once any card has a file or a message and nothing is still uploading. Ryan's reason: Trullio does not check this information again, a person only reviews it, so a text box is enough, even for a request such as Enter your website. The message box label has no (optional) tag any more, because nothing around it is required.",
-      "tradeoff": "An applicant can send without answering every card, and the screen will not say that a request was left unanswered, so Ops has to read the messages and files against what they asked. Typed answers are free text, so Ops cannot rely on a number or a web address arriving in a usable format. The credit freeze and website cards no longer have a button to say the job is done, so the applicant has to say so in the message.",
+      "b": "On the in-app More info needed screen every reason keeps its own title, its line on why we need it and its list of what we accept, but all of them are answered the same way: a Choose file button (Add another file once there is one) and a Message for our team box. Cards such as the website address, check your sales numbers, tell us when customers get what they pay for, remove the credit freeze and update your website no longer have their own fields or buttons. No card shows a Required, Write an answer or Done badge, nothing is pre-filled from step 3, and nothing is checked. Send to our team is on once any card has a file or a message and nothing is still uploading. Ryan's reason: Trullio does not check this information again, a person only reviews it, so a text box is enough, even for a request such as Enter your website. The message box label has no (optional) tag any more, because nothing around it is required. Update, 2026-11-11: Ryan says applicants must reply to every request to be able to send. Send to our team now stays off until every card has a file or a message (and nothing is still uploading), and the line under it reads Add a file or write a message for every request to send. This replaces the line above saying Send is on once any card has a file or a message. Nothing on a card is marked Required, and nothing checks what the reply says.",
+      "tradeoff": "An applicant can send without answering every card, and the screen will not say that a request was left unanswered, so Ops has to read the messages and files against what they asked. Typed answers are free text, so Ops cannot rely on a number or a web address arriving in a usable format. The credit freeze and website cards no longer have a button to say the job is done, so the applicant has to say so in the message. Update, 2026-11-11: an applicant with nothing to send for one request (for example, a credit freeze they have already removed) now has to write that in its message box before they can send any of the others.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -2707,8 +2707,8 @@
       "area": "Visual",
       "where": "Step 3 · Your card volumes",
       "t": "A yearly card volume sits beside the monthly figure, calculated and not editable",
-      "b": "Next to Estimated monthly card volume is a Yearly card volume box that shows the monthly amount times 12, with the currency code like every other amount. It cannot be clicked, focused or typed in, it has a grey fill to say so, and it is blank until a monthly amount is entered. The monthly and yearly boxes each take a quarter of the form's width and sit in the left half of the row, with Average transaction amount taking the right half (25 / 25 / 50). It is for demonstration, as Ryan put it: it is not stored, not sent and not reviewed. Below about 1200px wide the three labels in the row reserve two lines so the boxes line up, and on a very narrow screen the two boxes stack. Update, 2026-11-11: Average transaction amount no longer takes the right half beside the pair. The row now ends with Card present % in the right half, and Average transaction amount and Maximum single transaction share the second row (see volume-fields-reordered).",
-      "tradeoff": "At a quarter of the form the boxes are narrow, so an amount of seven or more digits is clipped with an ellipsis in the yearly box and scrolls in the monthly one. Because nothing carries the yearly figure forward, if it is wanted in the product, the field and who sees it need deciding.",
+      "b": "Next to Estimated monthly card volume is a Yearly card volume box that shows the monthly amount times 12, with the currency code like every other amount. It cannot be clicked, focused or typed in, it has a grey fill to say so, and it is blank until a monthly amount is entered. The monthly and yearly boxes each take a quarter of the form's width and sit in the left half of the row, with Average transaction amount taking the right half (25 / 25 / 50). It is for demonstration, as Ryan put it: it is not stored, not sent and not reviewed. Below about 1200px wide the three labels in the row reserve two lines so the boxes line up, and on a very narrow screen the two boxes stack. Update, 2026-11-11: Average transaction amount no longer takes the right half beside the pair. The row now ends with Card present % in the right half, and Average transaction amount and Maximum single transaction share the second row (see volume-fields-reordered). Update, 2026-11-11 (later): Ryan: the yearly figure is what the back end stores, and monthly is easier for an applicant to understand, so the applicant is asked for monthly, the box displays yearly, and yearly is what gets stored. This replaces the lines above saying it is for demonstration and is not stored or sent.",
+      "tradeoff": "At a quarter of the form the boxes are narrow, so an amount of seven or more digits is clipped with an ellipsis in the yearly box and scrolls in the monthly one. Because nothing carries the yearly figure forward, if it is wanted in the product, the field and who sees it need deciding. Update, 2026-11-11 (later): the yearly figure is wanted in the product and is the stored value (Ryan), so it is no longer only a display. Whether the monthly answer is kept as well is not said.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -2808,7 +2808,7 @@
       "where": "Step 6 · Sign it off",
       "t": "The two documents are tick boxes inside the signing card, each with the document name as a link",
       "b": "Ryan: what you're agreeing to moves into the signing section as checkboxes, with a simple hyperlink in the checkbox text to view the document. Sign it off now holds the signatory name and title, a What you're agreeing to heading with two required tick boxes (I accept the Xplor Pay merchant services agreement; I accept the privacy policy and terms of service), then the signature. The document name in each box is a link that opens the same reader as before without toggling the box. The separate What you're agreeing to card and its View buttons are gone. The e-sign tick and the authority tick stay removed: the note under the signature says that by signing the person agrees to sign electronically and confirms they are authorized to sign for the business. An untick shows Tick this to sign. when the applicant tries to submit; nothing requires the documents to have been opened. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
-      "tradeoff": "Two ticks are back after Ryan removed them earlier the same day (terms-view-only), so there is the friction of two clicks to be able to sign. Ticking does not prove either document was read, since the link is optional. Only the two documents get a tick; whether the e-sign consent and the authority confirmation need their own ticks or are covered by the note is for compliance and legal to confirm.",
+      "tradeoff": "Two ticks are back after Ryan removed them earlier the same day (terms-view-only), so there is the friction of two clicks to be able to sign. Ticking does not prove either document was read, since the link is optional. Only the two documents get a tick; whether the e-sign consent and the authority confirmation need their own ticks or are covered by the note is for compliance and legal to confirm. Update, 2026-11-11: Ryan says whether two ticks are enough is still to be decided.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -2818,7 +2818,7 @@
       "where": "Step 6 · Sign it off",
       "t": "The signature is drawn in a full-width box, or uploaded as an image",
       "b": "Ryan: the Type your legal name to sign box is replaced by a signature box that works like an e-signature product: a full-width white box, four times as wide as it is tall, where the signer draws with a mouse, finger or stylus. Sign here shows inside it until something is drawn. An optional Upload image of signature button, beside a Clear link, lets them add a PNG or JPG instead; it is drawn into the same box, drawing over it replaces it, and Clear empties the box. Only a PNG or JPG under 2 MB is accepted; anything else says Choose a PNG or JPG image. or Choose an image smaller than 2 MB. The signature is required (Draw your signature, or upload an image of it.). The signatory name and title stay as typed boxes, and the old rule that the typed name had to match the signatory name is gone, because nothing is typed. The image is read in the browser and not sent anywhere. Drawn strokes are kept as relative points so the signature redraws at any box size. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
-      "tradeoff": "The drawn box cannot be used from a keyboard, so a person who cannot draw has only the upload route. Nothing checks that the drawing is a real signature, or that it matches the signatory, as the typed name used to. An uploaded image could be anyone's signature. Legal and compliance have not confirmed that a drawn or uploaded image counts as the signature for this agreement.",
+      "tradeoff": "The drawn box cannot be used from a keyboard, so a person who cannot draw has only the upload route. Nothing checks that the drawing is a real signature, or that it matches the signatory, as the typed name used to. An uploaded image could be anyone's signature. Legal and compliance have not confirmed that a drawn or uploaded image counts as the signature for this agreement. Update, 2026-11-11: Ryan says a drawn signature and an uploaded image both count as the signature until further notice.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -2858,7 +2858,7 @@
       "where": "Step 7 · Sign it off",
       "t": "No note under the signature",
       "b": "Ryan: the note under the signature (By signing, you agree to sign electronically. You confirm that you're authorized to sign for this business, and that the information in this application is true and accurate to the best of your knowledge. That includes your declarations at step 5.) is removed. Sign it off now ends with the signature box and its Upload image of signature and Clear buttons. Ryan gave no reason.",
-      "tradeoff": "Nothing on the page now says the signer is confirming their authority to sign, that the information is true, or that they agree to sign electronically; the e-sign and authority ticks were removed earlier the same day. Compliance and legal have not said whether the two ticks for the documents are enough on their own.",
+      "tradeoff": "Nothing on the page now says the signer is confirming their authority to sign, that the information is true, or that they agree to sign electronically; the e-sign and authority ticks were removed earlier the same day. Compliance and legal have not said whether the two ticks for the documents are enough on their own. Update, 2026-11-11: Ryan says whether the removed note's confirmations (authority, truth, electronic signing) are needed is still to be decided.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -3930,7 +3930,7 @@
       4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. Trullio, our verification partner, checks it after you submit, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
       5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal. It means a person reviews your file instead of it going straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
       6: { t: "Why do you need files?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
-      7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Most decisions come back in under 2 hours", "Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
+      7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
     }[step];
   }
 
@@ -4925,7 +4925,7 @@
   <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
   ${state.nextOpen && html`<ol class="next-grid" id="next-body">
     <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trullio</div><div class="next-body">${v.submitNote}</div></div></li>
-    <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">Usually under 2 hours. You can close this window, and we'll email you.</div></div></li>
+    <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">You can close this window, and we'll email you.</div></div></li>
     <li class="next-item"><span class="next-num">3</span><div><div class="next-title">Start taking payments</div><div class="next-body">Your first payout lands the next business day after your first sale.</div></div></li>
   </ol>`}
 </section>`;
@@ -4993,7 +4993,7 @@
   <ol class="timeline">
     <li class="tl-item"><span class="tl-dot tl-dot--done">${icon("check", 12, "i-bb")}</span><div class="tl-body"><div class="tl-title">Application received</div><div class="tl-note">${v.receivedNote}</div></div></li>
     ${state.askedMore ? html`<li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">Waiting for your reply</div><div class="tl-note">We've emailed you what we need. Reply to that email, attaching any files, and we'll carry on the checks from there.</div></div></li>` : html`<li class="tl-item"><span class="tl-dot tl-dot--active"><span class="tl-spinner" aria-hidden="true"></span></span><div class="tl-body"><div class="tl-title">${waits.length ? "Checks started, waiting on the rest" : "Checks and review running"}</div><div class="tl-note">${waits.length ? "We can finish the checks once what's still owed is in · " : ""}${v.checkNote}</div></div></li>`}
-    <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">Usually within 2 hours${waits.length ? " of the last item arriving" : ""} · we'll email you</div></div></li>
+    <li class="tl-item"><span class="tl-dot tl-dot--todo"></span><div class="tl-body"><div class="tl-title tl-title--muted">Decision</div><div class="tl-note">${waits.length ? "After the last item arrives · we'll email you" : "We'll email you"}</div></div></li>
   </ol>
   ${state.askedMore ? html`<p class="hero-callout" data-key="asked-callout">We've sent you an email asking for more information. Check your inbox and reply to it to speed things up. If you can't find it, look in your spam or junk folder.</p>` : waits.length ? html`<p class="hero-callout">We can make your decision as soon as everything below is in. Add it whenever you're ready.</p>` : html`<p class="hero-callout">There's nothing else for you to do right now. If we have a question, we'll send you an email. Reply to it and we'll carry on from there.</p>`}
 </section>
@@ -5137,7 +5137,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   function rfiView() {
     if (ctx.moreInfo === MOREINFO_SIMPLE) return rfiSimpleView(); // SIMPLE TRIAL
     const list = pendReasons();
-    const ready = list.some(pendHas) && list.every((r) => rfiOf(r.id).files.every((f) => !f.busy));
+    const ready = list.every(pendHas) && list.every((r) => rfiOf(r.id).files.every((f) => !f.busy));
     return html`<header data-key="rfi-head">
   <h1 class="step-title">${pendTitle()}${pin("rfi-not-restart")}</h1>
   <p class="step-sub">${list.length === 1 ? "You're not back at the start. Fix this item and the checks carry on exactly where they left off." : "You're not back at the start. Fix these and the checks carry on exactly where they left off."}</p>
@@ -5148,13 +5148,13 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     <button type="button" class="btn btn-neutral btn-md btn-tight" data-click="${on(() => showToast("Prototype: email isn't simulated."))}">Email us</button>
     <button type="button" class="btn btn-primary btn-md"${attr("disabled", !ready)} data-click="${on(sendPend)}">Send to our team</button>
   </div>
-  ${!ready && html`<p class="pend-hint">Add a file or write a message to send.</p>`}
+  ${!ready && html`<p class="pend-hint">Add a file or write a message for every request to send.</p>`}
 </div>`;
   }
 
   function approvedView(v) {
     return html`<section class="approved" data-key="approved">
-  <span class="approved-tag">${icon("check", 13, "i-b")}Riverside Pilates approved in 1 hour 12 minutes</span>
+  <span class="approved-tag">${icon("check", 13, "i-b")}Riverside Pilates approved</span>
   <h1 class="approved-title">Welcome to Xplor Pay</h1>
   <p class="approved-body">${invitesOn() ? "We've approved your application. Add a merchant to start taking transactions, then invite your team and order card readers." : "We've approved your application. Open your payments dashboard to add a merchant and start taking transactions. You can add more users there too."}</p>
   <div class="btn-row">
