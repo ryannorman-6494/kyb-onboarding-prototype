@@ -288,7 +288,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .check input:hover { border-color: var(--color-border-brand); }
 .check input:checked { background: var(--color-background-brand-default); border-color: var(--color-background-brand-default); }
 .check input:checked:hover { background: var(--color-background-brand-hover); border-color: var(--color-background-brand-hover); }
-.check input:checked::after { content: ""; position: absolute; left: 2px; top: 2.5px; width: 8px; height: 4px; border-left: 2px solid var(--color-icon-on-brand); border-bottom: 2px solid var(--color-icon-on-brand); transform: rotate(-45deg); }
+.check input:checked::after { content: ""; position: absolute; left: 50%; top: 50%; width: 8px; height: 4px; border-left: 2px solid var(--color-icon-on-brand); border-bottom: 2px solid var(--color-icon-on-brand); transform: translate(-50%, -65%) rotate(-45deg); }
 .check input:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: var(--border-focus-offset); }
 [data-error] .check input { border-color: var(--color-border-error); }
 .check.is-disabled, .check.is-disabled input { cursor: not-allowed; }

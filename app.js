@@ -2152,7 +2152,7 @@
       "area": "Visual",
       "where": "Step 6 · Supporting documents",
       "t": "The Required badge on a document is the warning colour, and turns into a green Uploaded badge once a file is in",
-      "b": "On each document row the Required badge, beside the title, is the warning colour (light warning background, warning text) instead of grey, to show the file has to be added before the applicant can continue. When the file has been added and checked, that same badge turns green and reads Checked, with a tick. It replaces the Checked pill that used to sit at the top right of the row, so a finished row has no badge on the right at all. While a file is uploading or being read, the busy pill still shows on the right. A document that is Not needed stays grey.",
+      "b": "On each document row the Required badge, beside the title, is the warning colour (light warning background, warning text) instead of grey, to show the file has to be added before the applicant can continue. When a file has been added, that same badge turns green and reads Checked, with a tick. Changed 2026-11-11: it has no tick and reads the number of files in, such as 1 uploaded or 2 uploaded, so the applicant can see how many files the row holds. It replaces the Checked pill that used to sit at the top right of the row, so a finished row has no badge on the right at all. While a file is uploading or being read, the busy pill still shows on the right. A document that is Not needed stays grey.",
       "tradeoff": "Several orange badges at once on an empty step make the page look more urgent than it is, and the warning colour is also the one used for caution elsewhere, so it can read as a problem rather than a to-do. A finished row no longer says Required anywhere, so the badge stops telling the applicant the file was mandatory; the green tick says it is dealt with.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2382,7 +2382,7 @@
       "area": "Flow",
       "where": "Step 1 · How we reach you",
       "t": "The website is required, and a box says there is none",
-      "b": "The primary website URL is now a required field. Under it, a box reads I don't have a website. Ticking it fills the website box with N/A and locks it; unticking clears it and unlocks it. This replaces the earlier optional website, where testers who had none pasted a Facebook link or other text to get on. A website typed without https:// still gets it added as the person leaves the box; N/A does not. A later idea, to ask first whether the business sells or advertises online and only require the website on Yes, was tried on 2026-11-06 and reverted the same week: the website is mandatory for everyone.",
+      "b": "The primary website URL is now a required field. Under it, a box reads I don't have a website. Ticking it fills the website box with N/A and locks it; unticking clears it and unlocks it. This replaces the earlier optional website, where testers who had none pasted a Facebook link or other text to get on. A website typed without https:// still gets it added as the person leaves the box; N/A does not. The helper line under the box (We take a look at the site to check what you sell) was removed on 2026-11-11. A later idea, to ask first whether the business sells or advertises online and only require the website on Yes, was tried on 2026-11-06 and reverted the same week: the website is mandatory for everyone.",
       "tradeoff": "An applicant with a Facebook page or a booking link can still paste it as the website. Underwriting gets N/A on file for a business with none, so it can tell that apart from a field left empty. Ops should say whether a missing website needs anything else from the applicant, such as a description of how they sell.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2656,6 +2656,16 @@
       "tradeoff": "Done and a percentage are two different ways of saying how far along a step is, so a list of steps now mixes ticks, rings and minutes. A step that drops below 100 (an entry cleared or made invalid) swaps its tick back to a ring.",
       "by": "Ryan",
       "when": "2026-11-10"
+    },
+    {
+      "id": "checkbox-tick-centred",
+      "area": "Visual",
+      "where": "Checkboxes everywhere",
+      "t": "The tick in a checked box sits in the middle of the box",
+      "b": "In every checked checkbox the white tick is centred in the square, both across and up and down, instead of sitting a little high and to the left. It is placed from the centre of the box so it stays centred if the box size changes.",
+      "tradeoff": "The tick is drawn with CSS borders rather than the Atlas check icon, so it is centred by eye and measurement, not by the design system; if Atlas changes the checkbox, this should follow it.",
+      "by": "Ryan",
+      "when": "2026-11-11"
     }
   ];
 
@@ -3503,7 +3513,7 @@
           fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
           fld("email", isNonprofit() ? "Organization email address" : "Business email address", "text", { placeholder: isNonprofit() ? "hello@yourorganization.org" : "hello@yourbusiness.com" }),
           // The website is required. A business with none ticks the box, which fills the box with N/A and locks it (decision website-required-with-none-box).
-          fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", hint: "We take a look at the site to check " + (isNonprofit() ? "what you do" : "what you sell") + "." }),
+          fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com" }),
           fld("noWebsite", "I don't have a website", "check", { span: true, optional: true })
         ]),
         card("s1-desc", isNonprofit() ? "What the organization does" : "What the business sells", "", [
@@ -4394,7 +4404,7 @@
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="req req--done">${icon("check", 12, "i-b")}Uploaded</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="req req--done">${cur.files.filter((x) => !x.busy).length || 1} uploaded</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
       ${d.why && fieldWhyView({ id: "doc_" + d.key, why: d.why })}
       ${errView("doc_" + d.key)}
