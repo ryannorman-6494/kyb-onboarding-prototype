@@ -1784,7 +1784,7 @@
       "area": "Flow",
       "where": "More info needed",
       "t": "One Send to our team button, on once every request is answered",
-      "b": "Each card marks itself Done as soon as it has what it needs: a file that finished uploading, every required field filled in, or a tap on its button. The page ends with two buttons on the right: Email us, then the primary Send to our team furthest right, which stays off until every card is done, with a short line under it saying why. Sending takes the applicant back to the under-review screen. One send means Ops gets one resubmission and the applicant sends one email, however many reasons were picked. A page with only a nothing-to-send reason has no Send button. Email us stays as the secondary button for a request the applicant cannot meet. There is no closing line under the buttons.",
+      "b": "Each card marks itself Done as soon as it has what it needs: a file that finished uploading, every required field filled in, or a tap on its button. The page ends with two buttons on the right: Email us, then the primary Send to our team furthest right, which stays off until every card is done, with a short line under it saying why. Sending takes the applicant back to the under-review screen. One send means Ops gets one resubmission and the applicant sends one email, however many reasons were picked. A page with only a nothing-to-send reason has no Send button. Email us stays as the secondary button for a request the applicant cannot meet. There is no closing line under the buttons. Update 2026-11-11: Ryan removed the Email us secondary button from the More info needed screen, so the page ends with the single Send to our team button and there is no longer a button for a request the applicant cannot meet. Ryan gave no reason.",
       "tradeoff": "An applicant who can answer two of three cannot send those two now and the third later. If that matters, each card could send on its own.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -5397,7 +5397,6 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 <div class="stack" data-key="rfi-cards">${list.map((r) => pendCardView(r))}</div>
 <div class="rfi-actions" data-key="rfi-actions">
   <div class="btn-row">
-    <button type="button" class="btn btn-neutral btn-md btn-tight" data-click="${on(() => showToast("Prototype: email isn't simulated."))}">Email us</button>
     <button type="button" class="btn btn-primary btn-md"${attr("disabled", !ready)} data-click="${on(sendPend)}">Send to our team</button>
   </div>
   ${!ready && html`<p class="pend-hint">Add a file or write a message for every request to send.</p>`}
