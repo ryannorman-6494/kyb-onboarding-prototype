@@ -2884,7 +2884,7 @@
       "area": "Visual",
       "where": "Step 6 · Supporting documents",
       "t": "A document row shows no badge once a file is uploaded; the Required badge just goes",
-      "b": "Ryan: remove the 1 uploaded badge. When something is uploaded, the Required badge is removed and nothing replaces it. The uploaded file tiles under the row, and the row's border, already say it is done. A row with no file keeps its Required or Optional badge; a row whose only file failed keeps it too.",
+      "b": "Ryan: remove the 1 uploaded badge. When something is uploaded, the Required badge is removed and nothing replaces it. The uploaded file tiles under the row, and the row's border, already say it is done. A row with no file keeps its Required or Optional badge; a row whose only file failed keeps it too. Update 2026-11-12: partly superseded by doc-done-badge. A card that has what it needs now shows a green Done badge with a tick, so the card is not left with no signal; the old Uploaded badge text does not come back.",
       "tradeoff": "A row with no badge looks the same as a row that never needed one, so the applicant reads that it is done only from the file tile below it. The count of files in the row is no longer in the badge.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -2998,6 +2998,26 @@
       "tradeoff": "The register in app.js and DESIGN-DECISIONS.md still hold every entry, because they are the archive that answers why it is like this, so the screen and the register no longer agree on the count. CUT_DECISIONS has to be kept in step with the review by hand.",
       "by": "Ryan",
       "when": "2026-11-11"
+    },
+    {
+      "id": "doc-why-we-ask-removed",
+      "area": "Copy",
+      "where": "Step 6 · Supporting documents",
+      "t": "Document cards have no Why we ask helper text",
+      "b": "Ryan: remove the Why we ask helper text on the document upload cards, because the why is already covered in the description's tooltip. The small Why we ask link under each card's description is gone, and the sentence behind it (the government ID card's \"To confirm you are who you say you are. It goes only to Trullio, our verification partner.\") is deleted with it.",
+      "tradeoff": "The reason for asking now lives only in the description tooltip, so an applicant who does not open it sees no explanation on the card. The Trullio sharing line also stays on the step 6 callout (Files are stored encrypted and shared only with Trullio), not on the ID card.",
+      "by": "Ryan",
+      "when": "2026-11-12"
+    },
+    {
+      "id": "doc-done-badge",
+      "area": "Visual",
+      "where": "Step 6 · Supporting documents",
+      "t": "A document card with what it needs shows a green tick Done badge",
+      "b": "Ryan: he likes that the owner card shows a check mark when a section is done, and wants it kept in badge form, a green status badge reading a tick icon and Done. On a document card the badge sits in the title row beside the title once a file is in, in the place of the Required tag, in the success colours (pill--positive). It replaces the old state where a finished card showed no badge (no-uploaded-badge). The badge is not shown on a card marked Not needed, which keeps its muted pill. Read as applying to the document cards; the owner section keeps its round green tick, as before. Ryan gave no other reason.",
+      "tradeoff": "The owner section's done signal is a round tick and the document card's is a badge with a word, so the two differ. A card with a failed upload and no good file shows no badge.",
+      "by": "Ryan",
+      "when": "2026-11-12"
     }
   ];
 
@@ -4125,7 +4145,6 @@
     const idRows = owners.map((o) => ({
       key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Required",
       hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's " + licWord() + ". All four corners in shot and no glare.",
-      why: "To confirm you are who you say you are. It goes only to Trullio, our verification partner.",
       file: "id-" + o.id + "-license.jpg",
     }));
     if (idOnly) return idRows;
@@ -4921,15 +4940,15 @@
       const names = Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => String(f.name).slice(0, 120));
       (names.length ? names : [d.file]).forEach((n) => upload(d.key, n));
     };
+    // A card with what it needs shows a green Done badge with a tick in the title row, where the Required tag was (decision doc-done-badge); same signal as the tick on a finished owner section, but as a badge.
     const action = s === "skipped" ? html`<span class="state-pill state-pill--muted">Not needed</span>` : "";
     const zone = s === "skipped" ? "" : html`<button type="button" class="dropzone" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}" data-drop="${on(drop)}"><span class="dz-icon" aria-hidden="true">${icon("upload", 18)}</span><span class="dz-text">Drag a file here or <span class="dz-link">browse</span></span></button>`;
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? "" : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="pill pill--positive doc-done">${icon("check", 13, "i-b")}Done</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
-      ${d.why && fieldWhyView({ id: "doc_" + d.key, why: d.why })}
       ${errView("doc_" + d.key)}
     </div>
     ${action}
