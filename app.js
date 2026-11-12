@@ -278,11 +278,9 @@
   // nobody can be invited. Slice 2 is the fuller build, where an owner can be invited to fill in their own details.
   const SLICE_1 = "Slice 1: one person, no invites";
   const SLICE_2 = "Slice 2: invite owners";
-  // Which Xplor division the applicant is onboarding with (decisions division-option, clubready-lease-by-division,
-  // club-essentials-financial-history). In the real product Ops sets it in the admin portal before the form opens.
+  // Which Xplor division the applicant is onboarding with (decisions division-option, clubready-lease-by-division). In the real product Ops sets it in the admin portal before the form opens.
   const DIV_STANDARD = "Standard";
   const DIV_CLUBREADY = "ClubReady";
-  const DIV_CE = "Club Essentials";
   // SIMPLE TRIAL (decision moreinfo-simple-trial): a bare More info needed screen, only uploads and notes. To undo: delete every
   // line marked SIMPLE TRIAL and the block between SIMPLE TRIAL:START and SIMPLE TRIAL:END, and the SIMPLE TRIAL rule in app.css. Nothing else depends on it.
   const MOREINFO_CARDS = "A card for each request"; // SIMPLE TRIAL
@@ -303,7 +301,7 @@
     return {
       slice: q.get("slice") === "2" ? SLICE_2 : SLICE_1,
       moreInfo: q.get("moreinfo") === "simple" ? MOREINFO_SIMPLE : MOREINFO_CARDS, // SIMPLE TRIAL
-      division: q.get("division") === "clubready" ? DIV_CLUBREADY : q.get("division") === "ce" ? DIV_CE : DIV_STANDARD,
+      division: q.get("division") === "clubready" ? DIV_CLUBREADY : DIV_STANDARD,
       region: q.get("region") === "ca" ? "Canada" : "United States",
       start: q.get("start") === "existing" ? START_EXISTING : START_LOGIN,
       lookup: q.get("lookup") === "off" ? LOOKUP_OFF : LOOKUP_ON,
@@ -318,7 +316,6 @@
     if (ctx.slice === SLICE_2) q.set("slice", "2");
     if (ctx.moreInfo === MOREINFO_SIMPLE) q.set("moreinfo", "simple"); // SIMPLE TRIAL
     if (ctx.division === DIV_CLUBREADY) q.set("division", "clubready");
-    if (ctx.division === DIV_CE) q.set("division", "ce");
     if (ctx.region === "Canada") q.set("region", "ca");
     if (ctx.start === START_EXISTING) q.set("start", "existing");
     if (ctx.lookup === LOOKUP_OFF) q.set("lookup", "off");
@@ -341,7 +338,7 @@
 
   const CONTEXT_OPTIONS = {
     slice: [SLICE_1, SLICE_2],
-    division: [DIV_STANDARD, DIV_CLUBREADY, DIV_CE],
+    division: [DIV_STANDARD, DIV_CLUBREADY],
     moreInfo: [MOREINFO_CARDS, MOREINFO_SIMPLE], // SIMPLE TRIAL
     start: [START_LOGIN, START_EXISTING],
     lookup: [LOOKUP_ON, LOOKUP_OFF],
@@ -840,7 +837,7 @@
       "area": "Flow",
       "where": "Step 6 · Supporting documents",
       "t": "Documents that are no longer needed are not listed",
-      "b": "A sole proprietor without an EIN has no EIN letter to add, so that row is not listed. A row like that used to stay on the page greyed out with a “Not needed” pill and an explanation, which added a line for something the applicant never has to do. Step 6 now lists only the documents still to add, the note above says how many are left, and the review summary no longer counts the ones that dropped away.",
+      "b": "A sole proprietor without an EIN has no EIN letter to add, so that row is not listed. A row like that used to stay on the page greyed out with a “Not needed” pill and an explanation, which added a line for something the applicant never has to do. Step 6 now lists only the documents still to add, the note above says how many are left, and the review summary no longer counts the ones that dropped away. Update, 2026-11-12: the EIN row no longer exists for anyone, so this case no longer arises (ein-bn-document-removed).",
       "tradeoff": "",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -1684,7 +1681,7 @@
       "area": "Trust",
       "where": "Step 7 · document viewer",
       "t": "The agreement and privacy documents can be downloaded from the viewer",
-      "b": "The document viewer has a Download button beside Close, so the applicant can send the terms to a legal team before signing. In the prototype it saves the sample text as a plain text file. The real product would give the same versioned PDF the viewer shows. Update, 2026-11-11: the viewer is now opened from the View buttons at step 6 (sign-on-step-6). The Download button is unchanged. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
+      "b": "The document viewer has a Download button beside Close, so the applicant can send the terms to a legal team before signing. In the prototype it saves the sample text as a plain text file. The real product would give the same versioned PDF the viewer shows. Update, 2026-11-11: the viewer is now opened from the View buttons at step 6 (sign-on-step-6). The Download button is unchanged. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7. Update, 2026-11-12: there is now one combined document, so one Download (agreement-and-privacy-one-document).",
       "tradeoff": "Nothing records that the applicant downloaded it, and the real PDF has to match the version they go on to accept.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1816,7 +1813,7 @@
       "where": "Step 6 · Documents (Division option)",
       "t": "Club Essentials needs two years of financial history uploaded from every applicant",
       "b": "Requirement noted. Club Essentials (CE), another Xplor division alongside ClubReady, needs two years of financial history uploaded as part of onboarding, from anyone applying through that division. Like ClubReady, the division is set by an Xplor Pay ops user in the admin portal before the form opens (decision clubready-lease-by-division), so the form could show the document row from the start. Shown in the prototype only through the Division option in Prototype options (decision division-option): choosing Club Essentials opens step 6 with a Required row, Two years of financial history, outlined and tagged. It is treated as required before submit like every other Required file, and is not skipped for non-profits; both are assumptions.",
-      "tradeoff": "Not yet known: which documents count as financial history (statements, tax returns, accounts), whether a start-up with less than two years has another route, whether it applies to non-profits, and whether it is required before submit. The row wording is a draft, not approved copy. Update, 2026-11-11: Ryan is still waiting on an answer for what happens when the business is under two years old.",
+      "tradeoff": "Not yet known: which documents count as financial history (statements, tax returns, accounts), whether a start-up with less than two years has another route, whether it applies to non-profits, and whether it is required before submit. The row wording is a draft, not approved copy. Update, 2026-11-11: Ryan is still waiting on an answer for what happens when the business is under two years old. Update, 2026-11-12: Ryan says the two years of financial history are no longer needed for the division-specific prototype option, so the Two years of financial history row is gone from step 6 and Club Essentials adds no document. Club Essentials still changes the merchant category list (14 codes for ClubReady, 20 for Club Essentials, 32 for Standard). Ryan gave no reason; the open question about businesses under two years old no longer applies. Update, 2026-11-12: Ryan removed the Club Essentials option because, with the financial history row gone, it no longer differs from the normal flow (club-essentials-option-removed).",
       "by": "Ryan",
       "when": "2026-10-27"
     },
@@ -1845,7 +1842,7 @@
       "area": "Flow",
       "where": "Prototype options · Division",
       "t": "A Division option shows what changes for ClubReady and Club Essentials",
-      "b": "Prototype options has a Division select: Standard, ClubReady or Club Essentials (address ?division=clubready or ?division=ce). It stands in for the Xplor Pay admin portal, where an Ops user sets the division before the form opens. Choosing a division other than Standard opens step 6 directly, with the sample business filled in, and shows only that step. The row that exists only for that division has a dashed orange outline and a tag (ClubReady only, Club Essentials only). ClubReady adds a Signed lease, business licence or utility bill row; Club Essentials adds a Two years of financial history row. The rest of the flow is not shown and is the same as Standard.",
+      "b": "Prototype options has a Division select: Standard, ClubReady or Club Essentials (address ?division=clubready or ?division=ce). It stands in for the Xplor Pay admin portal, where an Ops user sets the division before the form opens. Choosing a division other than Standard opens step 6 directly, with the sample business filled in, and shows only that step. The row that exists only for that division has a dashed orange outline and a tag (ClubReady only, Club Essentials only). ClubReady adds a Signed lease, business licence or utility bill row; Club Essentials adds a Two years of financial history row. The rest of the flow is not shown and is the same as Standard. Update, 2026-11-12: Club Essentials no longer adds a Two years of financial history row (club-essentials-financial-history), so only ClubReady changes step 6; Club Essentials still changes the merchant category list on step 1. Update, 2026-11-12: the Division select now offers only Standard and ClubReady; Club Essentials was removed (club-essentials-option-removed), so only ClubReady changes step 6.",
       "tradeoff": "It is a stand-in, not the product: the real flow would show the whole form with the division's rows in place, and what else a division changes (fees, agreement text, descriptor) is unknown. The outline and tag are prototype-only marks and would not ship.",
       "by": "Ryan",
       "when": "2026-10-27"
@@ -2165,7 +2162,7 @@
       "where": "Step 1 · Merchant category code",
       "t": "The category list is the set of codes for the applicant's division",
       "b": "From the refinement session with engineering: the business description box is removed and the merchant category code (MCC) field is a searchable list only. The codes in it are inherited from the division the business sits in. An Ops user creates the division in Odin, so each one has a finite list of codes, perhaps 20 or 30, and the applicant never searches the whole card-network list. Typing narrows the list by name or by code, and opening an empty field shows every code in the division. The helper text under the field used to link to a country-specific website; that link was removed on 2026-11-06 (decision mcc-no-help-link).",
-      "tradeoff": "The three division lists in the prototype (Standard 32 codes, ClubReady 14, Club Essentials 20) are invented stand-ins, not Ops's lists, and every MCC in them comes from mcc-codes.js, which was written from general knowledge and is unchecked. If a division list has only one code the field could be pre-filled; not designed. The division changes the list only; the prototype's Division option still opens on step 6 with the sample business filled in, so step 1 is reached by going back.",
+      "tradeoff": "The three division lists in the prototype (Standard 32 codes, ClubReady 14, Club Essentials 20) are invented stand-ins, not Ops's lists, and every MCC in them comes from mcc-codes.js, which was written from general knowledge and is unchecked. If a division list has only one code the field could be pre-filled; not designed. The division changes the list only; the prototype's Division option still opens on step 6 with the sample business filled in, so step 1 is reached by going back. Update, 2026-11-12: Club Essentials and its 20-code list are gone, so the prototype has two division lists, Standard 32 codes and ClubReady 14 (club-essentials-option-removed).",
       "by": "Ryan",
       "when": "2026-11-05"
     },
@@ -2205,7 +2202,7 @@
       "where": "Step 1 · Registered details",
       "t": "The EIN or business number is a field in Registered details, and there is no registry lookup",
       "b": "From the refinement session with engineering. The lookup went because of what it can actually do. Trullio can only prefill an address from a lookup, it needs the business's name and country to do it, and it then returns every business that shares that name in that country. The applicant could be shown a long list of possible matches, or have the wrong business prefilled, all so that they save typing an address. That is a bad trade, so the lookup, the Look up button, Enter details manually, the Is this your business? question and the match toasts are removed, and the whole of step 1 shows from the start. The EIN (Business Number in Canada) is now an ordinary field in the Registered details card, with the legal name, Doing business as, structure, date and state. A company or a non-profit has to give one; for a sole proprietor it is optional, and the hint says that without one they give their SSN (SIN in Canada) in step 2 instead. It is checked for nine digits, an SSN-shaped number is refused with a plain message, and a Canadian number pasted with its program account (RT0001) is cut back to the nine digits as the person leaves the field. The layout puts the legal name beside the EIN for a company, and Doing business as beside it for a non-profit and a sole proprietor. Nothing is filled in from the number. The address is typed in the Addresses card. The copy that went with the lookup is changed: the welcome page's registration line now says what Step 1 asks for, the why-we-ask note says the details should match the tax documents added in step 6, the line about protecting the EIN at the lookup is gone, and the confirmation's checking line names the business details for a company or non-profit. With no registry match to waive it, the EIN letter is now always required in step 6 for a company or non-profit in the US (a sole proprietor adds it only if they gave an EIN). There is no separate proof-of-registration document: the EIN letter (in Canada, a CRA business number confirmation) and the US W-9 are the documents that back the details.",
-      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Nothing checks the entity's existence against a registration document. Ops should confirm that the EIN letter (CRA business number confirmation in Canada) and the W-9 are enough. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record. Update, 2026-11-11: Ryan added a Find your business search back on step 1 as a type-ahead with a Prototype option to switch it off (business-lookup-typeahead), after reading Trulioo's KYB Prefill page. The EIN is still a typed field and is not filled in from it.",
+      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Nothing checks the entity's existence against a registration document. Ops should confirm that the EIN letter (CRA business number confirmation in Canada) and the W-9 are enough. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record. Update, 2026-11-11: Ryan added a Find your business search back on step 1 as a type-ahead with a Prototype option to switch it off (business-lookup-typeahead), after reading Trulioo's KYB Prefill page. The EIN is still a typed field and is not filled in from it. Update, 2026-11-12: step 6 no longer asks for the EIN letter or the CRA confirmation (ein-bn-document-removed), so Ops's question about whether the EIN letter is enough no longer applies; Ryan says Trulioo validates the number.",
       "by": "Ryan",
       "when": "2026-11-05"
     },
@@ -2214,7 +2211,7 @@
       "area": "Flow",
       "where": "Step 6 · Supporting documents (Canada)",
       "t": "Canadian businesses add a CRA business number confirmation, the counterpart of the US EIN letter",
-      "b": "In the US, a company or non-profit adds the IRS EIN letter; a Canadian one now adds a CRA business number confirmation. The row accepts any one of four documents: the CRA business registration confirmation printed from Business Registration Online, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter downloaded from CRA My Business Account, or articles of incorporation that show the business number. It follows the same rule as the EIN letter: required for a company or non-profit, and for a sole proprietor only if they gave a business number in step 1. The US W-9 is still US only, so Canada has no tax-form row.",
+      "b": "In the US, a company or non-profit adds the IRS EIN letter; a Canadian one now adds a CRA business number confirmation. The row accepts any one of four documents: the CRA business registration confirmation printed from Business Registration Online, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter downloaded from CRA My Business Account, or articles of incorporation that show the business number. It follows the same rule as the EIN letter: required for a company or non-profit, and for a sole proprietor only if they gave a business number in step 1. The US W-9 is still US only, so Canada has no tax-form row. Update, 2026-11-12: the Canadian CRA business number confirmation row is gone. Ryan says Trulioo will validate the number, so the document is not needed to evidence it (ein-bn-document-removed).",
       "tradeoff": "The four documents come from Ryan's notes drawn from public pages, not from an Xplor or CRA source, and the row title and wording are my draft. Ops should confirm which of them underwriting accepts, and whether Trulioo's check of the business number could make the upload unnecessary. Accepting articles of incorporation means a registration document is allowed here even though the US has no separate registration proof.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -2814,7 +2811,7 @@
       "area": "Trust",
       "where": "Step 6 · Sign it off",
       "t": "The two documents are tick boxes inside the signing card, each with the document name as a link",
-      "b": "Ryan: what you're agreeing to moves into the signing section as checkboxes, with a simple hyperlink in the checkbox text to view the document. Sign it off now holds the signatory name and title, a What you're agreeing to heading with two required tick boxes (I accept the Xplor Pay merchant services agreement; I accept the privacy policy and terms of service), then the signature. The document name in each box is a link that opens the same reader as before without toggling the box. The separate What you're agreeing to card and its View buttons are gone. The e-sign tick and the authority tick stay removed: the note under the signature says that by signing the person agrees to sign electronically and confirms they are authorized to sign for the business. An untick shows Tick this to sign. when the applicant tries to submit; nothing requires the documents to have been opened. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7.",
+      "b": "Ryan: what you're agreeing to moves into the signing section as checkboxes, with a simple hyperlink in the checkbox text to view the document. Sign it off now holds the signatory name and title, a What you're agreeing to heading with two required tick boxes (I accept the Xplor Pay merchant services agreement; I accept the privacy policy and terms of service), then the signature. The document name in each box is a link that opens the same reader as before without toggling the box. The separate What you're agreeing to card and its View buttons are gone. The e-sign tick and the authority tick stay removed: the note under the signature says that by signing the person agrees to sign electronically and confirms they are authorized to sign for the business. An untick shows Tick this to sign. when the applicant tries to submit; nothing requires the documents to have been opened. Update, 2026-11-11 (later): the Sign it off card is back at the end of step 7, as the last thing before Submit (sign-back-on-step-7); where this entry says step 6, read step 7. Update, 2026-11-12: the privacy tick and document are merged into the agreement (agreement-and-privacy-one-document), so there is one tick and one link.",
       "tradeoff": "Two ticks are back after Ryan removed them earlier the same day (terms-view-only), so there is the friction of two clicks to be able to sign. Ticking does not prove either document was read, since the link is optional. Only the two documents get a tick; whether the e-sign consent and the authority confirmation need their own ticks or are covered by the note is for compliance and legal to confirm. Update, 2026-11-11: Ryan says whether two ticks are enough is still to be decided.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -3048,6 +3045,36 @@
       "tradeoff": "Not every Atlas Callout part is built: there is no dismiss button (Atlas has an optional one, and it is discouraged where the callout is the only record of a choice) and no show or hide title option. The hero callouts on the waiting and sent screens are a separate class and still have the 8px radius, so two callout radii remain until they are brought across. A success callout carries the business name as its title, so the name appears here and again in the Legal business name field below it.",
       "by": "Ryan",
       "when": "2026-11-12"
+    },
+    {
+      "id": "agreement-and-privacy-one-document",
+      "area": "Trust",
+      "where": "Step 7 · Sign it off",
+      "t": "The merchant services agreement and the privacy policy are one document, with one tick and one link",
+      "b": "Ryan: the sub-merchant application and agreement (SMAA) and the privacy policy are one document, and he attached the ClubReady version as the example. So Sign it off now has one required tick, I accept the Xplor Pay merchant services agreement, privacy policy and terms of service, and the whole phrase is a single link that opens one reader. The reader holds one document: the agreement sections followed by the privacy sections (numbered 9 to 11), one title, one Download. The second tick (acceptPrivacy), the second document and its Tick this to sign. error are gone, and the step 7 count and the what-is-missing hover note count one acceptance instead of two. Ryan also said not to show the attached PDF in the prototype, so none of its text is used; the sample wording is still the prototype's own and legal owns the real text. The attached PDF is a filled-in application that holds a real person's personal and bank details, so none of that was copied anywhere.",
+      "tradeoff": "One tick is less friction, but a single tick now stands for the agreement and the privacy policy together, so whether that is enough consent is for compliance and legal to confirm (it adds to the open question in terms-as-signing-checkboxes). The attached ClubReady terms differ from the prototype sample (for example they carry an early termination fee and a personal guarantee, where the sample says no minimum term and no exit fee), so the real Xplor document and its page count need Legal to supply them. The 18 pages and version 4.2 are placeholder figures.",
+      "by": "Ryan",
+      "when": "2026-11-12"
+    },
+    {
+      "id": "ein-bn-document-removed",
+      "area": "Flow",
+      "where": "Step 6 · Documents",
+      "t": "No EIN letter or CRA business number confirmation upload, because Trulioo validates the number",
+      "b": "Ryan: Trulioo will validate the EIN, so the applicant does not need to upload a document that evidences it, and the same goes for Canada. The EIN confirmation letter (CP-575 or 147C) row is gone for the US and the CRA business number confirmation row is gone for Canada, for company, non-profit and sole proprietor alike. Step 6 now asks for the government photo ID of each person listed, the W-9 (US only), the last three months of processing statements (only if the business has processed cards before), and, for ClubReady, the signed lease. A Canadian business with no prior processing and no ClubReady division now uploads only photo IDs.",
+      "tradeoff": "The prototype does not check the number against any record (it only checks for nine digits), so this rests on the real Trulioo integration doing the validation. Whether Trulioo covers small businesses, sole proprietors and Canadian business numbers is still one of the questions to put to Trulioo, and what happens when validation fails or finds no match is not designed. Without the letter, Ops has nothing on file to see how the number was issued. Ryan said he is happy for this to go; whether risk, compliance or the sponsor bank still want the document is for them to confirm.",
+      "by": "Ryan",
+      "when": "2026-11-12"
+    },
+    {
+      "id": "club-essentials-option-removed",
+      "area": "Flow",
+      "where": "Prototype options · Division",
+      "t": "The Club Essentials Division option is removed",
+      "b": "Ryan: with the two years of financial history gone (club-essentials-financial-history), Club Essentials no longer differs from the normal flow, so its Division option is removed. Prototype options now offers Standard and ClubReady only, and ?division=ce no longer does anything (it opens the standard flow). Ryan asked to be corrected if wrong; the one remaining difference was Club Essentials' own 20-code merchant category list on step 1, and he chose to remove the option anyway. That list was an invented stand-in, so nothing real is lost: in the product an Ops user sets each division's codes in Odin (mcc-from-division).",
+      "tradeoff": "ClubReady is now the only division the prototype can show, so it no longer demonstrates that different divisions can have different category lists on top of different documents; Standard (32 codes) against ClubReady (14) still shows a different list per division. If Club Essentials rejoins the flow with real differences, its row, its list and its option would need rebuilding. Ryan gave no other reason.",
+      "by": "Ryan",
+      "when": "2026-11-12"
     }
   ];
 
@@ -3191,12 +3218,11 @@
   // Business category is a merchant category code (MCC). The full list lives in mcc-codes.js, but the applicant only sees
   // the codes set up for their division (decision mcc-from-division). In the real product Ops builds each division in
   // Odin with its own finite list of codes, so the picker inherits it. These three lists are INVENTED stand-ins
-  // (DIVISION_MCC), not Ops's lists. Standard has 32 codes, ClubReady 14 and Club Essentials 20, to show a short and a longer list.
+  // (DIVISION_MCC), not Ops's lists. Standard has 32 codes and ClubReady 14, to show a longer and a shorter list.
   const MCC_LIST = String(window.MCC_CODES || "").split("\n").filter(Boolean).map((l) => { const p = l.split("\t"); return { code: p[0], name: p[1], label: p[0] + " · " + p[1], hay: (p[0] + " " + p[1]).toLowerCase() }; });
   const DIVISION_MCC = {
     [DIV_STANDARD]: ["5462", "5499", "5651", "5732", "5811", "5812", "5814", "5942", "5947", "5977", "5995", "5999", "7221", "7230", "7298", "7299", "7333", "7349", "7392", "7399", "7699", "7911", "7997", "8011", "8041", "8099", "8111", "8299", "8351", "8398", "8641", "8661"],
-    [DIV_CLUBREADY]: ["5499", "5941", "5977", "7230", "7297", "7298", "7299", "7911", "7941", "7997", "7999", "8011", "8041", "8099"],
-    [DIV_CE]: ["5499", "5811", "5812", "5813", "5941", "5947", "7011", "7032", "7230", "7298", "7299", "7911", "7933", "7941", "7992", "7997", "7999", "8299", "8398", "8641"]
+    [DIV_CLUBREADY]: ["5499", "5941", "5977", "7230", "7297", "7298", "7299", "7911", "7941", "7997", "7999", "8011", "8041", "8099"]
   };
   const divisionMccs = () => { const codes = DIVISION_MCC[ctx.division] || DIVISION_MCC[DIV_STANDARD]; return MCC_LIST.filter((x) => codes.indexOf(x.code) > -1); };
   // Every word typed must appear in the code or title, so "bake" and "5462" both find bakeries. An empty search lists the whole division list.
@@ -3848,11 +3874,10 @@
       const signatory = (a.signatoryName !== undefined ? a.signatoryName : (a.sigSame === "no" ? (a.sigName || "") : (ownerVal(state.owners[0] || {}, "name") || ""))).trim();
       const title = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((owners.filter((o) => o.self)[0] || state.owners[0]) || {}).role || ""));
       unit(true, !!signatory); unit(true, !!String(title).trim()); unit(true, state.sign !== "");
-      unit(true, a.acceptAgreement === true); unit(true, a.acceptPrivacy === true);
+      unit(true, a.acceptAgreement === true);
       if (!signatory && !problemsOnly) errs.signatoryName = "Enter the signatory's full legal name.";
       if (!String(title).trim() && !problemsOnly) errs.signatoryTitle = "Enter the signatory's title.";
       if (a.acceptAgreement !== true && !problemsOnly) errs.acceptAgreement = "Tick this to sign.";
-      if (a.acceptPrivacy !== true && !problemsOnly) errs.acceptPrivacy = "Tick this to sign.";
       if (state.sign === "" && !problemsOnly) errs.sign = "Draw your signature, or upload an image of it.";
     }
     // Every card counts, including the step 1 sections still hidden behind the business lookup (decision business-lookup-typeahead).
@@ -4208,16 +4233,13 @@
     if (idOnly) return idRows;
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
-    // Canada's counterpart to the US EIN letter (decision ca-bn-confirmation-document). Any one of the CRA documents will do.
-    if (ca && !(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "bn", title: "CRA business number confirmation", requirement: "Required", hint: "Any one of these: your CRA business registration confirmation, the CRA's RC145 confirmation letter, a Filing and Balance Confirmation letter from your CRA My Business Account, or articles of incorporation showing your business number.", file: "cra-bn-confirmation.pdf" });
+    // The EIN letter (US) and the CRA business number confirmation (Canada) are no longer asked for: Trulioo validates the number (decision ein-bn-document-removed).
     if (!ca) {
-      if (!(isSole() && digitsOf(a.ein).length !== 9)) list.push({ key: "ein", title: "EIN confirmation letter (CP-575 or 147C)", requirement: "Required", hint: "The letter the IRS sent when your EIN was issued.", file: "irs-147c-riverside.pdf" });
       list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
     }
     if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf" });
-    // Division rows (decisions clubready-lease-by-division, club-essentials-financial-history). Wording is a draft, not approved copy.
+    // Division rows (decision clubready-lease-by-division; Club Essentials and its financial history row were removed, see club-essentials-financial-history). Wording is a draft, not approved copy.
     if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business " + licWord() + " or utility bill", requirement: "Required", hint: "Your club's signed lease. If you don't have one yet, a business " + licWord() + " or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf" });
-    if (ctx.division === DIV_CE) list.push({ key: "finhist", division: DIV_CE, title: "Two years of financial history", requirement: "Required", hint: "Financial history for your " + orgWord() + " covering the last two years.", file: "financial-history.pdf" });
     return list;
   }
 
@@ -4255,7 +4277,7 @@
     // are shown on the fields themselves, as each is left (see touched), not on the button. Only bad entries are; missing answers are not.
     const stepComplete = !errStep || Object.keys(allErrs).length === 0;
     // What is still needed, in the applicant's own words, for the hover note on the disabled button (decision 78).
-    const labelOf = { signatoryName: "Signatory name", signatoryTitle: "Signatory title", sign: "Your signature", acceptAgreement: "Accept the merchant services agreement", acceptPrivacy: "Accept the privacy policy and terms of service" };
+    const labelOf = { signatoryName: "Signatory name", signatoryTitle: "Signatory title", sign: "Your signature", acceptAgreement: "Accept the merchant services agreement, privacy policy and terms of service" };
     cards.forEach((c) => c.fields.forEach((f) => { labelOf[f.id] = f.label; }));
     if (errStep === 2) st.owners.forEach((o) => { const n = String(ownerInfo(o).name || "").trim(); ownerFields(o).forEach((f) => { labelOf[f.id] = (n && n !== "New owner" ? n : "Owner") + ": " + f.label; }); });
     docList.forEach((d) => { labelOf["doc_" + d.key] = "File: " + d.title; });
@@ -5062,7 +5084,7 @@
   // Sample text for the prototype; the real documents come from legal.
   const AGREEMENTS = {
     agreement: {
-      title: "Merchant services agreement", meta: "PDF · 12 pages · version 4.2",
+      title: "Merchant services agreement, privacy policy and terms of service", meta: "PDF · 18 pages · version 4.2",
       sections: [
         ["1. What we provide", "Xplor Pay processes card payments for your business and pays the proceeds out to your bank account."],
         ["2. Fees", "You pay the rates in your fee schedule."],
@@ -5090,15 +5112,10 @@
           "(a) Underwriting. Your application may be rejected in underwriting. Once we accept it, this agreement is a legally binding agreement between you and Xplor Pay.",
           "(b) Documents that are part of this agreement. The terms and conditions, and any other documents this agreement refers to, are part of the agreement.",
           "(c) Fees and compliance. We provide the payment services on condition that you pay all fees and other charges, and that you follow our terms of service and privacy policy, as they may be revised from time to time."
-        ]]
-      ]
-    },
-    privacy: {
-      title: "Privacy policy and terms of service", meta: "PDF · 6 pages · version 3.1",
-      sections: [
-        ["What we collect", "The business, ownership and identity details you give us in this application, and the documents you upload."],
-        ["How it is used", "To verify your business, meet card network and anti-money-laundering requirements, and run your account."],
-        ["Who sees it", "Trullio, our verification partner, and the card networks, where the rules require it. Files are stored encrypted."]
+        ]],
+        ["9. Privacy policy: what we collect", "The business, ownership and identity details you give us in this application, and the documents you upload."],
+        ["10. Privacy policy: how it is used", "To verify your business, meet card network and anti-money-laundering requirements, and run your account."],
+        ["11. Privacy policy: who sees it", "Trullio, our verification partner, and the card networks, where the rules require it. Files are stored encrypted."]
       ]
     }
   };
@@ -5180,8 +5197,7 @@
   </div>
   <h3 class="fields-sub sign-sub">What you're agreeing to${pin("read-before-accept")}</h3>
   <div class="sign-checks">
-    ${tick("acceptAgreement", "I accept the ", "agreement", "Xplor Pay merchant services agreement")}
-    ${tick("acceptPrivacy", "I accept the ", "privacy", "privacy policy and terms of service")}
+    ${tick("acceptAgreement", "I accept the ", "agreement", "Xplor Pay merchant services agreement, privacy policy and terms of service")}
   </div>
   <div class="sig"${ERR.sign ? html` data-error="1"` : ""} data-key="sig">
     <span class="field-label field-label--block" id="sig-label">Your signature${REQ}</span>
