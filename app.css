@@ -114,12 +114,18 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .icon-tile--positive { background: var(--color-background-success-subtle); color: var(--color-text-success); }
 
 /* Atlas Callout: radius large, padding default, fill is the severity's subtle background, icon and text carry the severity. Info is a calm grey. */
-.callout { display: flex; align-items: flex-start; gap: var(--space-gap-related); padding: var(--space-padding-surface); border-radius: var(--radius-default); background: var(--color-background-info-subtle); color: var(--color-text-info); font: var(--font-body-default); }
+.callout { display: flex; align-items: flex-start; gap: var(--space-gap-related); padding: var(--space-padding-surface); border-radius: var(--radius-large); background: var(--color-background-info-subtle); color: var(--color-text-info); font: var(--font-body-default); }
 .callout > .i { margin-top: 2px; color: var(--color-icon-info); }
 .callout--card { margin-top: var(--space-gap-group); }
 .callout--lg { padding: var(--space-padding-surface); font: var(--font-body-default); }
-.callout--positive { align-items: center; background: var(--color-background-success-subtle); color: var(--color-text-success); }
-.callout--positive > .i { margin-top: 0; color: var(--color-icon-success); }
+.callout--positive { background: var(--color-background-success-subtle); color: var(--color-text-success); }
+.callout--positive > .i { color: var(--color-icon-success); }
+/* Atlas Callout structure (decision lookup-confirmation-atlas-callout): icon slot, then content = text block (title Body/Bold, body Body/Default, 4px apart) over optional actions (8px below), all in the severity text colour. No border, no shadow. Actions are secondary small Buttons. */
+.callout-content { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-gap-related); }
+.callout-text { display: flex; flex-direction: column; gap: var(--space-gap-pair); }
+.callout-title { font: var(--font-body-bold); }
+.callout-actions { display: flex; flex-wrap: wrap; gap: var(--space-gap-related); }
+.btn-small { height: var(--size-control-small); padding: 0 var(--component-button-padding-x-small); flex: none; }
 .callout--warning { background: var(--color-background-warning-subtle); color: var(--color-text-primary); }
 .callout--warning > .i { color: var(--color-icon-warning); }
 .callout--error { background: var(--color-background-error-subtle); color: var(--color-text-primary); }
@@ -625,10 +631,10 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .combo--lead .input { padding-left: 38px; padding-right: 12px; }
 .combo .combo-chev--lead { right: auto; left: 12px; }
 .combo-chev { position: absolute; right: 12px; top: 12px; color: var(--color-text-subtle); pointer-events: none; display: flex; }
-.combo-list { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; min-width: var(--component-menu-min-width); max-height: var(--component-menu-max-height); overflow-y: auto; background: var(--color-background-surface-raised-2); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-sm); }
+.combo-list { position: absolute; z-index: 5; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; min-width: var(--component-menu-min-width); max-height: var(--component-menu-max-height); overflow-y: auto; background: var(--color-background-surface-raised-2); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-sm); }
 .combo-opt { display: flex; gap: var(--space-gap-pair); align-items: center; min-height: var(--size-control-medium); padding: 0 var(--space-padding-item); border-radius: var(--radius-default); font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
 .combo-opt:hover, .combo-opt.is-active { background: var(--color-background-hover); }
-.combo-opt.is-chosen { background: var(--color-background-brand-subtle); color: var(--color-text-brand); font: var(--font-control-default); }
+.combo-opt.is-chosen { background: var(--color-background-brand-subtle); font: var(--font-control-bold); }
 .combo-code { flex: none; width: 36px; font-family: var(--font-mono); font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 /* Step 1 business lookup (decision business-lookup-typeahead). */
 .find-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; align-items: start; }
@@ -639,10 +645,6 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .find-opt-addr { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .find-manual-opt { position: sticky; bottom: 0; margin-top: 4px; border-top: 1px solid var(--color-border-default); border-radius: 0 0 var(--radius-default) var(--radius-default); background: var(--color-background-surface-raised-2); color: var(--color-text-brand); font: var(--font-control-default); }
 .find-manual-opt:hover, .find-manual-opt.is-active { background: var(--color-background-hover); }
-.find-picked { align-items: flex-start; }
-.find-picked-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; color: var(--color-text-primary); }
-.find-picked-text strong { font: var(--font-control-bold); }
-.find-picked-text span { font-size: var(--type-body-small-size); color: var(--color-text-secondary); }
 .find-manual-note { margin: 0; }
 .combo-empty { padding: 8px 10px; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 
