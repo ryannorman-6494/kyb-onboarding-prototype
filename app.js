@@ -2984,7 +2984,7 @@
       "area": "Flow",
       "where": "Step 1 · Find your business",
       "t": "Step 1 opens with a Find your business card: pick a country, type the business name, and choose it from a list to fill in the name and address; a Prototype option turns it off and everything is typed in as before",
-      "b": "Ryan: Trulioo's KYB Prefill can search by country and business name and return matching businesses with their address, so step 1 has a simple country and business name search again (the registry lookup was removed in ein-in-registered-details). A Find your business card sits above Registered details, for a company or non-profit; a sole proprietor is not offered it, because they are a person and not a registered business. The country starts as the applicant's region, and changing it changes the region. After three characters the name box lists matching businesses as the applicant types, up to five, each with the registered name, its address and, when other businesses share that name, a line saying how many do and asking them to check the address is theirs. Picking one fills in the legal name and the registered address (the address boxes open so the parts can be checked) and shows a green confirmation with the name and address, a reminder to check them against the registration, and a Search again link. Nothing else is filled in: not the EIN, the date, the state of incorporation or the structure. The last row of the list is always Can't find it? Enter details manually, and no match says so in the list; either one leaves the card as a one-line note with a link back to searching. The card is optional and never counts towards the step, and every field below stays editable. A Prototype option, Business lookup (step 1), switches it off, so the card is not shown and everything is typed in, as before; the default is on. Trulioo's page says the search is made for search-as-you-type, takes optional state and city, caps the list with a limit, ranks by confidence and returns a count of other businesses with the same or similar name. In the prototype the list is a short fixed set per country with several businesses sharing a name, and a short wait stands in for the request. Update, 2026-11-11 (same day): Ryan asked for two changes. Opening the box before typing now lists five of the sample businesses so there is something to pick straight away, and from three characters the list is the search. And the rest of step 1 (Registered details, Addresses, How we reach you, What the business sells) is not shown until a business has been picked from the list or the applicant has chosen Can't find it? Enter details manually, so the lookup is the first thing they see. A business whose name is already in (a returning applicant, the sample business, or someone who pressed Search again after picking) keeps the sections showing, and once a business has been picked or manual entry chosen the sections stay shown even if the name is later cleared. The hidden fields still count towards the step's progress, so step 1 does not read as done while it is hidden. Ryan gave no reason for either change.",
+      "b": "Ryan: Trulioo's KYB Prefill can search by country and business name and return matching businesses with their address, so step 1 has a simple country and business name search again (the registry lookup was removed in ein-in-registered-details). A Find your business card sits above Registered details, for a company or non-profit; a sole proprietor is not offered it, because they are a person and not a registered business. The country starts as the applicant's region, and changing it changes the region. After three characters the name box lists matching businesses as the applicant types, up to five, each with the registered name, its address and, when other businesses share that name, a line saying how many do and asking them to check the address is theirs. Picking one fills in the legal name and the registered address (the address boxes open so the parts can be checked) and shows a green confirmation with the name and address, a reminder to check them against the registration, and a Search again link. Nothing else is filled in: not the EIN, the date, the state of incorporation or the structure. The last row of the list is always Can't find it? Enter details manually, and no match says so in the list; either one leaves the card as a one-line note with a link back to searching. The card is optional and never counts towards the step, and every field below stays editable. A Prototype option, Business lookup (step 1), switches it off, so the card is not shown and everything is typed in, as before; the default is on. Trulioo's page says the search is made for search-as-you-type, takes optional state and city, caps the list with a limit, ranks by confidence and returns a count of other businesses with the same or similar name. In the prototype the list is a short fixed set per country with several businesses sharing a name, and a short wait stands in for the request. Update, 2026-11-11 (same day): Ryan asked for two changes. Opening the box before typing now lists five of the sample businesses so there is something to pick straight away, and from three characters the list is the search. And the rest of step 1 (Registered details, Addresses, How we reach you, What the business sells) is not shown until a business has been picked from the list or the applicant has chosen Can't find it? Enter details manually, so the lookup is the first thing they see. A business whose name is already in (a returning applicant, the sample business, or someone who pressed Search again after picking) keeps the sections showing, and once a business has been picked or manual entry chosen the sections stay shown even if the name is later cleared. The hidden fields still count towards the step's progress, so step 1 does not read as done while it is hidden. Ryan gave no reason for either change. Update 2026-11-12: the Country select is replaced by a State select (Province in Canada); see business-lookup-state.",
       "tradeoff": "Typing more does not reliably find the business: Trulioo's own page says businesses can share a name and it returns a duplicate count (the example shows 57), so the list can hold several identical names and only the address tells them apart. The applicant could pick the wrong one, and the name and address are filled in from it. There is no state or city box, so a common name cannot be narrowed except by reading addresses. Trulioo's page does not say how well it covers small businesses, sole proprietors or Canada, whether it returns an incorporation date, structure or EIN, or what each search costs, so none of those are assumed, and whether this is better than typing everything in depends on the answers. The real search needs a call from our back end with Trulioo credentials, never from the page. This partly reverses the removal in ein-in-registered-details, which closed by saying an address prefill could come back if Trullio could return a reliable match. Hiding the sections means an applicant who already has everything to hand must still pick or press the manual link before they see a field, one extra step for them, and anyone who does not notice the manual link may think the form is only the search.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -3016,6 +3016,16 @@
       "t": "A document card with what it needs shows a green tick Done badge",
       "b": "Ryan: he likes that the owner card shows a check mark when a section is done, and wants it kept in badge form, a green status badge reading a tick icon and Done. On a document card the badge sits in the title row beside the title once a file is in, in the place of the Required tag, in the success colours (pill--positive). It replaces the old state where a finished card showed no badge (no-uploaded-badge). The badge is not shown on a card marked Not needed, which keeps its muted pill. Read as applying to the document cards; the owner section keeps its round green tick, as before. Ryan gave no other reason.",
       "tradeoff": "The owner section's done signal is a round tick and the document card's is a badge with a word, so the two differ. A card with a failed upload and no good file shows no badge.",
+      "by": "Ryan",
+      "when": "2026-11-12"
+    },
+    {
+      "id": "business-lookup-state",
+      "area": "Flow",
+      "where": "Step 1 · Find your business",
+      "t": "The business lookup asks for a state or province, not a country",
+      "b": "Ryan: the business's country is already known before the applicant enters the onboarding flow, so the lookup swaps its Country dropdown for a State dropdown (Province in Canada). This narrows the search, and the back end already knows the country. The select starts on Any state (Any province), so choosing one is optional; once chosen, both the opening list and the typed search look only at businesses in that state, and the \"others share this name\" count is taken within it. The country comes from the prototype's Region setting. Fake businesses are matched on the state or province code at the end of their address. Ryan also asked that the lookup fields use the same label and field spacing as every other field: each label now sits in the standard field-head wrapper (6px under the label, as on the other step 1 fields) instead of directly against the box.",
+      "tradeoff": "Leaving the state on Any state searches the whole country, so same-name businesses stay hard to tell apart unless the applicant picks one. A business whose registered address is in another state than the one chosen will not be found, which the Can't find it? row covers. The real lookup still needs Trulioo to confirm that a state filter is supported (the KYB Prefill page lists optional state and city).",
       "by": "Ryan",
       "when": "2026-11-12"
     }
@@ -3205,15 +3215,28 @@
     ]
   };
   const bizList = () => BIZ_STUBS[isCa() ? "Canada" : "United States"];
-  const withDups = (x) => Object.assign({}, x, { dups: bizList().filter((y) => y !== x && y.name.toLowerCase() === x.name.toLowerCase()).length });
-  // A few businesses shown as soon as the box is opened, before anything is typed (decision business-lookup-typeahead).
-  const suggestBiz = () => (isCa() ? [0, 2, 5, 6, 7] : [0, 3, 8, 9, 11]).map((i) => withDups(bizList()[i]));
-  const searchBiz = (q) => {
+  // The country is already known before the applicant starts, so the lookup asks for the state or province instead, to narrow the search (decision business-lookup-state). "" means no state chosen. A saved choice that belongs to the other country is ignored.
+  const findRegionCode = () => {
+    const code = state.findState || "";
+    return (isCa() ? CA_REGIONS : US_REGIONS).some((r) => r[0] === code) ? code : "";
+  };
+  // The state or province is the two letters before the ZIP or postal code at the end of the address.
+  const bizRegion = (x) => { const m = /,\s*([A-Z]{2})\s+[A-Z0-9 -]+$/.exec(x.address); return m ? m[1] : ""; };
+  // The businesses the search looks through: all of the country's, or only those in the chosen state. The duplicate count is taken within it, so narrowing by state also narrows the "others share this name" warnings.
+  const bizScope = (code) => (code ? bizList().filter((x) => bizRegion(x) === code) : bizList());
+  const withDups = (x, scope) => Object.assign({}, x, { dups: (scope || bizList()).filter((y) => y !== x && y.name.toLowerCase() === x.name.toLowerCase()).length });
+  // A few businesses shown as soon as the box is opened, before anything is typed (decision business-lookup-typeahead). With a state chosen, they are the first few in that state.
+  const suggestBiz = (code) => {
+    const scope = bizScope(code);
+    return (code ? scope.slice(0, 5) : (isCa() ? [0, 2, 5, 6, 7] : [0, 3, 8, 9, 11]).map((i) => bizList()[i])).map((x) => withDups(x, scope));
+  };
+  const searchBiz = (q, code) => {
     const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean);
     if (String(q || "").trim().length < 3) return [];
-    return bizList()
+    const scope = bizScope(code);
+    return scope
       .filter((x) => t.every((w) => x.name.toLowerCase().indexOf(w) > -1))
-      .map(withDups)
+      .map((x) => withDups(x, scope))
       .sort((a, b) => (a.name.toLowerCase().indexOf(t[0]) === 0 ? 0 : 1) - (b.name.toLowerCase().indexOf(t[0]) === 0 ? 0 : 1) || b.dups - a.dups);
   };
   // The address is stored as one line, and these split it into parts and join it back (decision address-split-fields). Parsing works from the end: "state ZIP" or "province postal code" last, then the city, then the street, with anything left over as the unit.
@@ -3305,6 +3328,7 @@
       findPicked: null,
       findManual: false,
       findRevealed: false,
+      findState: "",
       openOwner: 1,
       // The furthest step the applicant has opened. Steps up to here can be returned to from the left column; later ones cannot (decision partial-steps-allowed).
       maxStep: 1,
@@ -4323,7 +4347,8 @@
     const typed = state.findQ.trim().length >= 3;
     // Opening the box before typing lists a few businesses; from three characters the list is the search.
     const open = state.findOpen;
-    const rows = !typed ? suggestBiz() : state.findBusy ? [] : state.findResults.slice(0, 5);
+    const region = findRegionCode();
+    const rows = !typed ? suggestBiz(region) : state.findBusy ? [] : state.findResults.slice(0, 5);
     const total = rows.length + 1; // the last row is always "Can't find it?"
     const idx = Math.min(state.findIdx, total - 1);
     const manual = () => setState({ findManual: true, findRevealed: true, findOpen: false });
@@ -4343,23 +4368,29 @@
       setState({ findQ: q, findOpen: true, findIdx: 0, findBusy: t, findResults: t ? state.findResults : [] });
       clearTimeout(findTimer);
       // A short wait stands in for the real search request.
-      if (t) findTimer = setTimeout(() => setState({ findBusy: false, findResults: searchBiz(state.findQ) }), 350);
+      if (t) findTimer = setTimeout(() => setState({ findBusy: false, findResults: searchBiz(state.findQ, findRegionCode()) }), 350);
     };
     const keys = (e) => {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); setState({ findOpen: true, findIdx: (idx + (e.key === "ArrowDown" ? 1 : total - 1)) % total }); }
       else if (e.key === "Enter") { if (open) { e.preventDefault(); if (idx < rows.length) pick(rows[idx]); else manual(); } }
       else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ findOpen: false }); } }
     };
-    const onCountry = (e) => { setCtx({ region: e.target.value === "Canada" ? "Canada" : "United States" }); setState({ findQ: "", findResults: [], findBusy: false, findOpen: false }); };
+    // Choosing a state or province narrows the search; the country is not asked because it is already known (decision business-lookup-state).
+    const onRegion = (e) => {
+      const code = e.target.value;
+      const t = state.findQ.trim().length >= 3;
+      clearTimeout(findTimer);
+      setState({ findState: code, findIdx: 0, findOpen: true, findBusy: false, findResults: t ? searchBiz(state.findQ, code) : [] });
+    };
     const dupText = (n) => n + " other " + (n === 1 ? "business has" : "businesses have") + " this name. Check the address is yours.";
     return html`<div class="find-row" data-key="find-search">
-  <div class="find-country"><label class="field-label" for="f-findCountry">Country</label><select class="input" id="f-findCountry" data-input="${on(onCountry)}">${["United States", "Canada"].map((c) => html`<option${attr("selected", (isCa() ? "Canada" : "United States") === c)}>${c}</option>`)}</select></div>
-  <div class="find-name"><label class="field-label" for="f-bizFind">Business name</label>
+  <div class="find-country"><div class="field-head"><label class="field-label" for="f-findRegion">${isCa() ? "Province" : "State"}</label></div><select class="input${region === "" ? " is-unset" : ""}" id="f-findRegion" data-input="${on(onRegion)}"><option value=""${attr("selected", region === "")}>${isCa() ? "Any province" : "Any state"}</option>${(isCa() ? CA_REGIONS : US_REGIONS).map((r) => html`<option value="${r[0]}"${attr("selected", region === r[0])}>${r[1]}</option>`)}</select></div>
+  <div class="find-name"><div class="field-head"><label class="field-label" for="f-bizFind">Business name</label></div>
     <div class="combo combo--lead">
       <input class="input" id="f-bizFind" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-bizFind" aria-autocomplete="list" aria-busy="${String(state.findBusy)}" value="${state.findQ}" placeholder="Start typing your business name" autocomplete="off" spellcheck="false" data-click="${on(() => setState({ findOpen: true }))}" data-focus="${on(() => { if (!state.findOpen) setState({ findOpen: true, findIdx: 0 }); })}" data-input="${on(onType)}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.findOpen) setState({ findOpen: false }); }, 160))}">
       <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
       ${open && html`<ul class="combo-list find-list" id="lb-bizFind" role="listbox" data-key="lb-find">
-        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span>${x.dups > 0 && html`<span class="find-opt-dup">${dupText(x.dups)}</span>`}</li>`) : html`<li class="combo-empty" role="status">No business found for “${state.findQ.trim()}”. Check the spelling, or enter your details yourself.</li>`}
+        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span>${x.dups > 0 && html`<span class="find-opt-dup">${dupText(x.dups)}</span>`}</li>`) : html`<li class="combo-empty" role="status">${typed ? "No business found for “" + state.findQ.trim() + "”. Check the spelling, or enter your details yourself." : "No businesses to suggest here. Type the name, or enter your details yourself."}</li>`}
         ${typed && !state.findBusy && state.findResults.length > rows.length && html`<li class="combo-empty">${state.findResults.length - rows.length} more. Keep typing to narrow the list.</li>`}
         <li class="combo-opt find-manual-opt${idx === rows.length ? " is-active" : ""}" role="option" aria-selected="${String(idx === rows.length)}" data-click="${on(manual)}">Can't find it? Enter details manually</li>
       </ul>`}
