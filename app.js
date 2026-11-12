@@ -3028,6 +3028,16 @@
       "tradeoff": "In the prototype the state does not really narrow anything: every state lists the same businesses, so it cannot show how a real state filter would cut down the same-name duplicates, and the made-up ZIPs are not real. With the real lookup a business outside the chosen state would not be found, which the Can't find it? row covers. The real lookup still needs Trulioo to confirm that a state filter is supported (the KYB Prefill page lists optional state and city).",
       "by": "Ryan",
       "when": "2026-11-12"
+    },
+    {
+      "id": "dropdowns-atlas-menu",
+      "area": "Flow",
+      "where": "Every dropdown in the form: the business lookup State box, State of incorporation, address State or Province, the company type list, and the searchable lists (merchant category, address, business name)",
+      "t": "All dropdowns share one Atlas Select and Menu look, with hover, keyboard highlight and a marked chosen item",
+      "b": "Ryan: the lookup dropdown had no hover state, all dropdowns should be aligned in style, and they should use the Atlas design system wherever Atlas has a component for the case. Atlas has a Select (the closed field) and a Menu (the open list) but no autocomplete, so the searchable lists use the Menu look under a text field. Before this, the closed fields were Atlas-styled but the open list of a plain dropdown was the browser's own, which cannot be styled and looks different on every system, while the searchable lists had their own look with no hover. Now one component, selectView in app.js, draws every plain dropdown: the closed field is the same 40px text field with a chevron, and the open list is the Atlas Menu from the token repo. It sits on the raised-2 surface with the sm shadow (Atlas 0018: Menu and Select use shadow sm), has a 200px minimum width and 320px maximum height (component/menu tokens), items at the medium control height (32px) with the item padding, and normal body weight (400), and the highlight on background/hover (Atlas 0068), which is used for both mouse hover and the keyboard arrows. Moving the mouse moves the highlight, so only one row is ever highlighted. The chosen item is on the brand subtle fill with brand text and Control/Default weight (500). Update, 2026-11-12, Ryan: the list text looked too thick, so standard dropdowns use normal body weight (400) and only lists that carry a heading line per row, the business lookup, are slightly heavier (Control/Default, 500, on the business name, with the address in the caption size below it and the Can't find it? row in the same weight). This sets aside Atlas 0071's Control/Bold on a selected menu item, because the fill and brand text already mark the choice. The keyboard works as in a native select: Enter, Space or an arrow opens it, arrows move, Enter picks, Escape closes, Home and End jump, and typing a letter jumps to the next item starting with it. The searchable lists (business name lookup, merchant category, address suggestions) share the same list look and the same hover. The only native select left is in the Prototype options panel, which is a tool for us and not part of the form.",
+      "tradeoff": "A custom list is more code than the browser's own select and has to be kept accessible by hand: it has the combobox and listbox roles and keyboard handling but is not tested with a screen reader, and on a phone it gives up the native picker wheel that many people prefer. Atlas has no Select option, group or autocomplete tokens, so item height, padding and the highlight reuse the control and padding tokens and background/hover, per Atlas 0068 and 0084; if the designer adds dedicated tokens this should follow. The chosen item uses the fill and brand text but not a checkmark, and no longer the bold weight Atlas 0071 asks for, so the selected cue is colour only plus a one step heavier weight than its neighbours. Long lists such as the 52 states scroll inside the 320px cap, so a state far down the list needs scrolling or typing its first letter.",
+      "by": "Ryan",
+      "when": "2026-11-12"
     }
   ];
 
@@ -3324,6 +3334,9 @@
       comboOpen: "",
       comboQuery: "",
       comboIdx: 0,
+      // The Atlas-style select list: which select has its list open, and the highlighted row.
+      selOpen: "",
+      selIdx: 0,
       // The address lookup: which address field has its suggestions open, and the highlighted row (-1 until the arrow keys are used).
       addrOpen: "",
       addrIdx: -1,
@@ -4387,25 +4400,55 @@
       else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ findOpen: false }); } }
     };
     // Choosing a state or province narrows the search; the country is not asked because it is already known (decision business-lookup-state).
-    const onRegion = (e) => {
-      const code = e.target.value;
+    const onRegion = (code) => {
       const t = state.findQ.trim().length >= 3;
       clearTimeout(findTimer);
       setState({ findState: code, findIdx: 0, findOpen: true, findBusy: false, findResults: t ? searchBiz(state.findQ, code) : [] });
     };
     return html`<div class="find-row" data-key="find-search">
-  <div class="find-country"><div class="field-head"><label class="field-label" for="f-findRegion">${isCa() ? "Province" : "State"}</label></div><select class="input${region === "" ? " is-unset" : ""}" id="f-findRegion" data-input="${on(onRegion)}"><option value=""${attr("selected", region === "")}>${isCa() ? "Any province" : "Any state"}</option>${(isCa() ? CA_REGIONS : US_REGIONS).map((r) => html`<option value="${r[0]}"${attr("selected", region === r[0])}>${r[1]}</option>`)}</select></div>
+  <div class="find-country"><div class="field-head"><label class="field-label" for="f-findRegion">${isCa() ? "Province" : "State"}</label></div>${selectView({ id: "f-findRegion", value: region, placeholder: isCa() ? "Any province" : "Any state", pick: onRegion, options: [["", isCa() ? "Any province" : "Any state"]].concat((isCa() ? CA_REGIONS : US_REGIONS).map((r) => [r[0], r[1]])) })}</div>
   <div class="find-name"><div class="field-head"><label class="field-label" for="f-bizFind">Business name</label></div>
     <div class="combo combo--lead">
       <input class="input" id="f-bizFind" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-bizFind" aria-autocomplete="list" aria-busy="${String(state.findBusy)}" value="${state.findQ}" placeholder="Start typing your business name" autocomplete="off" spellcheck="false" data-click="${on(() => setState({ findOpen: true }))}" data-focus="${on(() => { if (!state.findOpen) setState({ findOpen: true, findIdx: 0 }); })}" data-input="${on(onType)}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.findOpen) setState({ findOpen: false }); }, 160))}">
       <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
       ${open && html`<ul class="combo-list find-list" id="lb-bizFind" role="listbox" data-key="lb-find">
-        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span></li>`) : html`<li class="combo-empty" role="status">${typed ? "No business found for “" + state.findQ.trim() + "”. Check the spelling, or enter your details yourself." : "No businesses to suggest here. Type the name, or enter your details yourself."}</li>`}
+        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.findIdx !== i) setState({ findIdx: i }); })}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span></li>`) : html`<li class="combo-empty" role="status">${typed ? "No business found for “" + state.findQ.trim() + "”. Check the spelling, or enter your details yourself." : "No businesses to suggest here. Type the name, or enter your details yourself."}</li>`}
         ${typed && !state.findBusy && state.findResults.length > rows.length && html`<li class="combo-empty">${state.findResults.length - rows.length} more. Keep typing to narrow the list.</li>`}
-        <li class="combo-opt find-manual-opt${idx === rows.length ? " is-active" : ""}" role="option" aria-selected="${String(idx === rows.length)}" data-click="${on(manual)}">Can't find it? Enter details manually</li>
+        <li class="combo-opt find-manual-opt${idx === rows.length ? " is-active" : ""}" role="option" aria-selected="${String(idx === rows.length)}" data-mouseenter="${on(() => { if (state.findIdx !== rows.length) setState({ findIdx: rows.length }); })}" data-click="${on(manual)}">Can't find it? Enter details manually</li>
       </ul>`}
     </div>
   </div>
+</div>`;
+  }
+
+  // Atlas Select (decision dropdowns-atlas-menu). The closed field is the text field with a chevron; the open list is built like the Atlas Menu:
+  // raised-2 surface, shadow-sm, items at the medium control height with space/padding/item, hover and keyboard highlight on background/hover,
+  // normal body weight, and the chosen item on the brand subtle fill in Control/Default. Every dropdown in the form uses it, so none falls back to the browser's own list.
+  // options is a list of [value, label]; pick receives the chosen value.
+  function selectView({ id, value, options, placeholder, pick, described }) {
+    const open = state.selOpen === id;
+    const cur = options.findIndex((o) => o[0] === value);
+    const idx = open ? Math.min(Math.max(state.selIdx, 0), options.length - 1) : cur;
+    const choose = (v) => { setState({ selOpen: "" }); pick(v); };
+    const openIt = () => setState({ selOpen: id, selIdx: Math.max(cur, 0) });
+    const keys = (e) => {
+      const n = options.length;
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!open) openIt(); else setState({ selIdx: (idx + (e.key === "ArrowDown" ? 1 : n - 1)) % n }); }
+      else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (open) choose(options[idx][0]); else openIt(); }
+      else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ selOpen: "" }); } }
+      else if (e.key === "Home" || e.key === "End") { if (open) { e.preventDefault(); setState({ selIdx: e.key === "Home" ? 0 : n - 1 }); } }
+      // Typing a letter jumps to the next item that starts with it, like the browser's own select.
+      else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey && e.key !== " ") {
+        const k = e.key.toLowerCase();
+        for (let step = 1; step <= n; step++) { const j = ((open ? idx : cur) + step) % n; if (String(options[j][1]).toLowerCase().indexOf(k) === 0) { setState({ selOpen: id, selIdx: j }); break; } }
+      }
+    };
+    return html`<div class="combo combo--select">
+  <button type="button" class="input select-field${value === "" ? " is-unset" : ""}" id="${id}" role="combobox" aria-haspopup="listbox" aria-expanded="${String(open)}" aria-controls="lb-${id}"${described || ""} data-click="${on(() => (open ? setState({ selOpen: "" }) : openIt()))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.selOpen === id) setState({ selOpen: "" }); }, 160))}"><span class="select-text">${cur > -1 ? options[cur][1] : placeholder}</span></button>
+  <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
+  ${open && html`<ul class="combo-list select-list" id="lb-${id}" role="listbox" data-key="lb-${id}">
+    ${options.map((o, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${o[0] === value ? " is-chosen" : ""}" role="option" aria-selected="${String(o[0] === value)}" data-mouseenter="${on(() => { if (state.selIdx !== i) setState({ selIdx: i }); })}" data-click="${on(() => choose(o[0]))}">${o[1]}</li>`)}
+  </ul>`}
 </div>`;
   }
 
@@ -4445,7 +4488,7 @@
         control = html`<input class="input mono" id="${id}" value="${f.value}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${described} data-input="${onInput}">`;
         break;
       case "select":
-        control = html`<select class="input${f.value === "" ? " is-unset" : ""}" id="${id}"${described} data-input="${onInput}">${f.value === "" && html`<option value="" selected>${f.placeholder || "Choose one"}</option>`}${f.options.map((op) => html`<option${attr("selected", op === f.value)}>${op}</option>`)}</select>`;
+        control = selectView({ id, value: f.value, placeholder: f.placeholder || "Choose one", described, pick: (v) => set(f.id, v), options: f.options.map((op) => [op, op]) });
         break;
       case "combo": {
         // A searchable list (ARIA combobox). Picking writes the "code · title" label into the answer.
@@ -4463,7 +4506,7 @@
   <input class="input" id="${id}" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${open ? state.comboQuery : f.value}" placeholder="${f.value && open ? f.value : f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ comboOpen: f.id, comboQuery: "", comboIdx: 0 }))}" data-input="${on((e) => setState({ comboOpen: f.id, comboQuery: e.target.value, comboIdx: 0 }))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.comboOpen === f.id) setState({ comboOpen: "", comboQuery: "" }); }, 160))}">
   <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
   ${open && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb">
-    ${shown.length ? shown.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" role="option" aria-selected="${String(x.label === f.value)}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
+    ${shown.length ? shown.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
     ${matches.length > shown.length && html`<li class="combo-empty">${matches.length - shown.length} more. Keep typing to narrow the list.</li>`}
   </ul>`}
 </div>`;
@@ -4517,7 +4560,7 @@
     ${cell("l1", "Street address 1", " addr-cell--wide")}
     ${cell("l2", "Street address 2 (optional)", " addr-cell--wide")}
     ${cell("city", "City", " addr-cell--city")}
-    <div class="addr-cell addr-cell--sm"><label class="field-label" for="${id}-region">${ca ? "Province" : "State"}</label><select class="input${parts.region === "" ? " is-unset" : ""}" id="${id}-region" data-input="${on((e) => setPart("region", e.target.value))}">${parts.region === "" && html`<option value="" selected>Choose one</option>`}${regions.map((r) => html`<option value="${r[0]}"${attr("selected", r[0] === parts.region)}>${r[1]}</option>`)}</select></div>
+    <div class="addr-cell addr-cell--sm"><label class="field-label" for="${id}-region">${ca ? "Province" : "State"}</label>${selectView({ id: id + "-region", value: parts.region, placeholder: "Choose one", pick: (v) => setPart("region", v), options: regions.map((r) => [r[0], r[1]]) })}</div>
     ${cell("postal", ca ? "Postal code" : "ZIP code", " addr-cell--sm")}
   </div>
 </div>`;
@@ -4539,7 +4582,7 @@
   <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${q}" placeholder="Start typing to search for the address" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => setState((s) => ({ addrQ: Object.assign({}, s.addrQ, { [f.id]: e.target.value }), addrOpen: f.id, addrIdx: -1 })))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
   <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
   ${open && typed && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb-addr">
-    ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
+    ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.addrIdx !== i) setState({ addrIdx: i }); })}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
   </ul>`}
 </div>
 </div></div>`;
@@ -4806,7 +4849,7 @@
       </button>`;
         if (state.bizType === t.id && t.id === "company") return html`<div class="biz-open" data-key="biz-open-company">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-company">
         <label class="field-label field-label--block" for="f-structure-up">What kind of company is it?${REQ}</label>
-        <select class="input${state.a.structure === "" ? " is-unset" : ""}" id="f-structure-up" data-input="${on((e) => set("structure", e.target.value))}">${state.a.structure === "" && html`<option value="" selected>Choose a type</option>`}${companyStructures().map((op) => html`<option${attr("selected", op === state.a.structure)}>${op}</option>`)}</select>
+        ${selectView({ id: "f-structure-up", value: state.a.structure, placeholder: "Choose a type", pick: (v) => set("structure", v), options: companyStructures().map((op) => [op, op]) })}
       </div></div>`;
         if (state.bizType === t.id && t.id === "non-profit") return html`<div class="biz-open" data-key="biz-open-nonprofit">${head(" biz-head")}<div class="biz-sub" data-key="biz-sub-nonprofit">
         <span class="field-label field-label--block" id="l-structure-up">What type of organization is it?${REQ}</span>
@@ -5670,7 +5713,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
     ${ctx.moreInfo === MOREINFO_SIMPLE && html`<p class="proto-note">The bare screen ignores Ops picks. Pick A card for each request to use them.</p>`}
     <div class="proto-pend" data-key="pend-list">${pendAvailable().map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
-    ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<label data-key="pend-for"><span class="field-label field-label--block">Request is about</span><select class="input" data-input="${on((e) => setState({ pendFor: Number(e.target.value) }))}">${state.owners.map((o) => html`<option value="${o.id}"${attr("selected", pendPerson().id === o.id)}>${ownerInfo(o).name}</option>`)}</select></label>`}`}
+    ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<div data-key="pend-for"><label class="field-label field-label--block" for="f-pend-for">Request is about</label>${selectView({ id: "f-pend-for", value: String(pendPerson().id), placeholder: "", pick: (v) => setState({ pendFor: Number(v) }), options: state.owners.map((o) => [String(o.id), ownerInfo(o).name]) })}</div>`}`}
     ${invitesOn() && html`<hr class="proto-rule">
     <div class="proto-sub">Owner links</div>
     ${state.owners.some((o) => o.status === "invited") ? state.owners.filter((o) => o.status === "invited").map((o) => html`<button type="button" class="btn btn-soft btn-xs proto-list" data-click="${on(() => { setState({ protoOpen: false }); previewInvitee(o.id); })}">Sign in as ${ownerInfo(o).name === "New owner" ? o.inviteEmail : ownerInfo(o).name}</button>`) : html`<p class="proto-note">Send an owner an invite in step 2, then sign in as them here.</p>`}

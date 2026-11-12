@@ -255,9 +255,12 @@ button.step:hover { background: var(--color-background-hover); }
 .input { width: 100%; height: var(--size-control-large); padding: 0 var(--component-input-padding-x-large); border: none; border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); font: var(--font-body-default); color: var(--color-text-primary); }
 .input:hover { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-hover); }
 .input:disabled { background: var(--color-background-disabled); color: var(--color-text-disabled); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default); }
-/* Atlas Select, closed field: the text field with a 16px chevron at the end (the open list stays the browser's own). */
+/* Atlas Select, closed field: the text field with a 16px chevron at the end. The open list is the Atlas Menu look below (.combo-list), shared by every dropdown (decision dropdowns-atlas-menu); only the prototype panel keeps the browser's own select. */
 select.input { appearance: none; -webkit-appearance: none; padding: 0 36px 0 10px; background-image: url("assets/chevron-down.svg"); background-repeat: no-repeat; background-position: right 12px center; background-size: 16px 16px; }
 select.input:disabled { background-image: url("assets/chevron-down-disabled.svg"); }
+button.select-field { display: flex; align-items: center; text-align: left; cursor: pointer; padding-right: 36px; }
+.select-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+button.select-field:focus-visible, button.select-field[aria-expanded="true"] { outline: none; box-shadow: inset 0 0 0 1px var(--color-border-brand), 0 0 0 3px var(--component-input-focus-glow); }
 textarea.input { height: auto; padding: 10px var(--component-input-padding-x-large); line-height: 1.45; resize: vertical; }
 .input::placeholder, .affix input::placeholder { color: var(--color-text-subtle); }
 
@@ -536,7 +539,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 }
 
 /* An unchosen select reads as a placeholder, not as an answer. */
-select.input.is-unset { color: var(--color-text-subtle); }
+select.input.is-unset, button.select-field.is-unset { color: var(--color-text-subtle); }
 
 /* ---------- Animation layer (Motion + canvas-confetti, see enhance.js) ----------
    Scoped to html[data-motion="enhanced"], which enhance.js sets once Motion has
@@ -622,19 +625,20 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .combo--lead .input { padding-left: 38px; padding-right: 12px; }
 .combo .combo-chev--lead { right: auto; left: 12px; }
 .combo-chev { position: absolute; right: 12px; top: 12px; color: var(--color-text-subtle); pointer-events: none; display: flex; }
-.combo-list { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; max-height: 280px; overflow-y: auto; background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-md); }
-.combo-opt { display: flex; gap: var(--space-gap-related); align-items: center; min-height: var(--size-control-medium); padding: 0 var(--space-padding-item); border-radius: var(--radius-default); font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
-.combo-opt.is-active { background: var(--color-background-hover); }
-.combo-opt.is-chosen { background: var(--color-background-brand-subtle); color: var(--color-text-brand); font: var(--font-control-bold); }
+.combo-list { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 4px; list-style: none; min-width: var(--component-menu-min-width); max-height: var(--component-menu-max-height); overflow-y: auto; background: var(--color-background-surface-raised-2); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-sm); }
+.combo-opt { display: flex; gap: var(--space-gap-pair); align-items: center; min-height: var(--size-control-medium); padding: 0 var(--space-padding-item); border-radius: var(--radius-default); font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
+.combo-opt:hover, .combo-opt.is-active { background: var(--color-background-hover); }
+.combo-opt.is-chosen { background: var(--color-background-brand-subtle); color: var(--color-text-brand); font: var(--font-control-default); }
 .combo-code { flex: none; width: 36px; font-family: var(--font-mono); font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 /* Step 1 business lookup (decision business-lookup-typeahead). */
 .find-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; align-items: start; }
 @media (max-width: 560px) { .find-row { grid-template-columns: minmax(0, 1fr); } }
-.find-list { max-height: 340px; padding-bottom: 0; }
+.find-list { padding-bottom: 0; }
 .find-opt { flex-direction: column; align-items: flex-start; gap: 2px; padding-top: 8px; padding-bottom: 8px; height: auto; }
-.find-opt-name { font: var(--font-control-bold); color: var(--color-text-primary); }
+.find-opt-name { font: var(--font-control-default); color: var(--color-text-primary); }
 .find-opt-addr { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
-.find-manual-opt { position: sticky; bottom: 0; margin-top: 4px; border-top: 1px solid var(--color-border-default); border-radius: 0 0 var(--radius-default) var(--radius-default); background: var(--color-background-surface-raised-1); color: var(--color-text-brand); font: var(--font-control-bold); }
+.find-manual-opt { position: sticky; bottom: 0; margin-top: 4px; border-top: 1px solid var(--color-border-default); border-radius: 0 0 var(--radius-default) var(--radius-default); background: var(--color-background-surface-raised-2); color: var(--color-text-brand); font: var(--font-control-default); }
+.find-manual-opt:hover, .find-manual-opt.is-active { background: var(--color-background-hover); }
 .find-picked { align-items: flex-start; }
 .find-picked-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; color: var(--color-text-primary); }
 .find-picked-text strong { font: var(--font-control-bold); }
@@ -788,7 +792,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .biz-open { background: var(--color-background-brand-subtle); border-radius: var(--radius-default); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
 .biz-open .biz-head.biz-card { background: transparent; box-shadow: none; border-radius: var(--radius-default) var(--radius-default) 0 0; }
 .biz-sub { padding: 0 18px 20px 50px; animation: biz-sub-in 200ms ease-out; }
-.biz-sub .input { max-width: 420px; }
+.biz-sub .input, .biz-sub .combo { max-width: 420px; }
 .biz-sub .small-note { margin-top: 8px; }
 @keyframes biz-sub-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .biz-sub { animation: none; } }
