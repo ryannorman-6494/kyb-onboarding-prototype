@@ -2884,7 +2884,7 @@
       "area": "Visual",
       "where": "Step 6 · Supporting documents",
       "t": "A document row shows no badge once a file is uploaded; the Required badge just goes",
-      "b": "Ryan: remove the 1 uploaded badge. When something is uploaded, the Required badge is removed and nothing replaces it. The uploaded file tiles under the row, and the row's border, already say it is done. A row with no file keeps its Required or Optional badge; a row whose only file failed keeps it too. Update 2026-11-12: partly superseded by doc-done-badge. A card that has what it needs now shows a green Done badge with a tick, so the card is not left with no signal; the old Uploaded badge text does not come back.",
+      "b": "Ryan: remove the 1 uploaded badge. When something is uploaded, the Required badge is removed and nothing replaces it. The uploaded file tiles under the row, and the row's border, already say it is done. A row with no file keeps its Required or Optional badge; a row whose only file failed keeps it too. Update 2026-11-12: a Done badge was tried on finished document cards (doc-done-badge) and then reversed at Ryan's word, so this decision stands as written: no badge once a file is in.",
       "tradeoff": "A row with no badge looks the same as a row that never needed one, so the applicant reads that it is done only from the file tile below it. The count of files in the row is no longer in the badge.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -2924,7 +2924,7 @@
       "area": "Step 2",
       "where": "Step 2 · Owner cards · section headings",
       "t": "Each owner section heading shows where it stands: Not started, N of M done, then a green tick",
-      "b": "Ryan: the Identity verification section is required but easy to pass by, so each section heading (Personal details and Identity verification) now shows its state beside the title, not beside the chevron (moved there on 2026-11-11 at Ryan's request, having first been at the right), whether the section is open or closed. Until the applicant has entered something in it (or nothing valid is in, on a listed owner) it reads Not started in the warning colour; starting values such as Director and 10%, or a country filled in for them, do not count as a start on an owner they added. Once some of the required answers are in it reads, for example, 3 of 6 done in the purple (brand) colour. When all are in it is replaced by a green tick circle (the same one the review summary uses), with Complete for screen readers. The count is the required answers that are filled in and valid out of the required answers in that section; optional boxes (the middle name) and the SSN tick are not counted, and a non-profit has no SSN or ownership percentage so its counts are smaller. Ryan chose this from four options and dropped the word Required from the chip. Nothing is blocked or opened for the applicant: an empty required field still shows no error (errors-only-for-bad-entries), and the sections still open and close on their own. Superseded in part, 2026-11-11: prefilled values now count, and the Not started exception for added owners is gone (see status-chip-counts-prefilled).",
+      "b": "Ryan: the Identity verification section is required but easy to pass by, so each section heading (Personal details and Identity verification) now shows its state beside the title, not beside the chevron (moved there on 2026-11-11 at Ryan's request, having first been at the right), whether the section is open or closed. Until the applicant has entered something in it (or nothing valid is in, on a listed owner) it reads Not started in the warning colour; starting values such as Director and 10%, or a country filled in for them, do not count as a start on an owner they added. Once some of the required answers are in it reads, for example, 3 of 6 done in the purple (brand) colour. When all are in it is replaced by a green tick circle (the same one the review summary uses), with Complete for screen readers. The count is the required answers that are filled in and valid out of the required answers in that section; optional boxes (the middle name) and the SSN tick are not counted, and a non-profit has no SSN or ownership percentage so its counts are smaller. Ryan chose this from four options and dropped the word Required from the chip. Nothing is blocked or opened for the applicant: an empty required field still shows no error (errors-only-for-bad-entries), and the sections still open and close on their own. Superseded in part, 2026-11-11: prefilled values now count, and the Not started exception for added owners is gone (see status-chip-counts-prefilled). Update 2026-11-12: a finished section no longer shows the round green tick; it shows a green Done badge with a tick (pill--positive) beside the section title. Ryan asked for this on the owner sections; the same badge on the document upload cards was a misreading and was reversed (doc-done-badge). Ryan gave no other reason.",
       "tradeoff": "A section that holds a wrong entry counts it as not done but does not say so in the chip; the existing Needs a look pill on the owner row and the error under the field do that. A section starts in the warning colour on every empty owner card, so a new card shows two warning chips at once, which makes an empty card look more urgent than the form means it to. The earlier count and minutes badges were removed on 2026-11-09 as noise; this chip is different because it changes with progress, but it is on both headings all the time.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -3014,7 +3014,7 @@
       "area": "Visual",
       "where": "Step 6 · Supporting documents",
       "t": "A document card with what it needs shows a green tick Done badge",
-      "b": "Ryan: he likes that the owner card shows a check mark when a section is done, and wants it kept in badge form, a green status badge reading a tick icon and Done. On a document card the badge sits in the title row beside the title once a file is in, in the place of the Required tag, in the success colours (pill--positive). It replaces the old state where a finished card showed no badge (no-uploaded-badge). The badge is not shown on a card marked Not needed, which keeps its muted pill. Read as applying to the document cards; the owner section keeps its round green tick, as before. Ryan gave no other reason.",
+      "b": "Ryan: he likes that the owner card shows a check mark when a section is done, and wants it kept in badge form, a green status badge reading a tick icon and Done. On a document card the badge sits in the title row beside the title once a file is in, in the place of the Required tag, in the success colours (pill--positive). It replaces the old state where a finished card showed no badge (no-uploaded-badge). The badge is not shown on a card marked Not needed, which keeps its muted pill. Read as applying to the document cards; the owner section keeps its round green tick, as before. Ryan gave no other reason. Superseded 2026-11-12, the same day: Ryan said this was a misreading. The badges on the document upload cards were fine as they were, and the request was about the owner sections, so the document card is back to showing no badge once a file is in (no-uploaded-badge stands). The owner sections got the green tick Done badge instead (section-status-chip).",
       "tradeoff": "The owner section's done signal is a round tick and the document card's is a badge with a word, so the two differ. A card with a failed upload and no good file shows no badge.",
       "by": "Ryan",
       "when": "2026-11-12"
@@ -3024,8 +3024,8 @@
       "area": "Flow",
       "where": "Step 1 · Find your business",
       "t": "The business lookup asks for a state or province, not a country",
-      "b": "Ryan: the business's country is already known before the applicant enters the onboarding flow, so the lookup swaps its Country dropdown for a State dropdown (Province in Canada). This narrows the search, and the back end already knows the country. The select starts on Any state (Any province), so choosing one is optional; once chosen, both the opening list and the typed search look only at businesses in that state, and the \"others share this name\" count is taken within it. The country comes from the prototype's Region setting. Fake businesses are matched on the state or province code at the end of their address. Ryan also asked that the lookup fields use the same label and field spacing as every other field: each label now sits in the standard field-head wrapper (6px under the label, as on the other step 1 fields) instead of directly against the box.",
-      "tradeoff": "Leaving the state on Any state searches the whole country, so same-name businesses stay hard to tell apart unless the applicant picks one. A business whose registered address is in another state than the one chosen will not be found, which the Can't find it? row covers. The real lookup still needs Trulioo to confirm that a state filter is supported (the KYB Prefill page lists optional state and city).",
+      "b": "Ryan: the business's country is already known before the applicant enters the onboarding flow, so the lookup swaps its Country dropdown for a State dropdown (Province in Canada). This narrows the search, and the back end already knows the country. The select starts on Any state (Any province), so choosing one is optional. Update 2026-11-12, Ryan: make sure there are sample businesses in the lookup for whatever state is selected, using the same business names for every state and changing only the state and ZIP code in the address. So the opening list and the typed search show the same fake businesses for every state, with the state or province and the ZIP or postal code of each address swapped to the chosen one (street and city are left as they were, so a Seattle street can show a Texas ZIP; that is fine for a prototype). The same-name warnings therefore do not change with the state. The country comes from the prototype's Region setting. Ryan also asked that the lookup fields use the same label and field spacing as every other field: each label now sits in the standard field-head wrapper (6px under the label, as on the other step 1 fields) instead of directly against the box.",
+      "tradeoff": "In the prototype the state does not really narrow anything: every state lists the same businesses, so it cannot show how a real state filter would cut down the same-name duplicates, and the made-up ZIPs are not real. With the real lookup a business outside the chosen state would not be found, which the Can't find it? row covers. The real lookup still needs Trulioo to confirm that a state filter is supported (the KYB Prefill page lists optional state and city).",
       "by": "Ryan",
       "when": "2026-11-12"
     }
@@ -3041,6 +3041,7 @@
   // shows until a review cuts it. Numbers are still each entry's place in DECISIONS,
   // so a pin matches its REQ number in the requirements draft.
   const CUT_DECISIONS = [
+    "doc-done-badge",
     "welcome-delegate", "welcome-actions", "welcome-four-cards",
     "welcome-phone-partner", "info-popover-hover", "sales-intake-first",
     "login-default-start", "sales-prefill", "sales-contract-upload",
@@ -3220,15 +3221,24 @@
     const code = state.findState || "";
     return (isCa() ? CA_REGIONS : US_REGIONS).some((r) => r[0] === code) ? code : "";
   };
-  // The state or province is the two letters before the ZIP or postal code at the end of the address.
-  const bizRegion = (x) => { const m = /,\s*([A-Z]{2})\s+[A-Z0-9 -]+$/.exec(x.address); return m ? m[1] : ""; };
-  // The businesses the search looks through: all of the country's, or only those in the chosen state. The duplicate count is taken within it, so narrowing by state also narrows the "others share this name" warnings.
-  const bizScope = (code) => (code ? bizList().filter((x) => bizRegion(x) === code) : bizList());
+  // Choosing a state or province shows the same fake businesses for every one, with only the state or province and the ZIP or postal code of each address swapped to match, so every state has something to pick (decision business-lookup-state). The street and city are left as they were, which is fine for a prototype.
+  // US ZIPs are made up from the state's place in the list and the last three digits of the original; Canadian postal codes get the province's usual first letter.
+  const CA_POSTAL_LETTER = { AB: "T", BC: "V", MB: "R", NB: "E", NL: "A", NS: "B", NT: "X", NU: "X", ON: "K", PE: "C", QC: "H", SK: "S", YT: "Y" };
+  const reState = (address, code) => {
+    const m = /^(.*,\s*)([A-Z]{2})\s+([A-Z0-9 -]+)$/.exec(address);
+    if (!m) return address;
+    const postal = isCa()
+      ? (CA_POSTAL_LETTER[code] || m[3][0]) + m[3].slice(1)
+      : String(10000 + US_REGIONS.findIndex((r) => r[0] === code) * 1700 + Number(m[3].slice(2))).slice(0, 5);
+    return m[1] + code + " " + postal;
+  };
+  // The businesses the search looks through: the country's list, with addresses moved to the chosen state when there is one. Same-name businesses stay same-name, so the "others share this name" warnings do not change with the state.
+  const bizScope = (code) => (code ? bizList().map((x) => Object.assign({}, x, { address: reState(x.address, code) })) : bizList());
   const withDups = (x, scope) => Object.assign({}, x, { dups: (scope || bizList()).filter((y) => y !== x && y.name.toLowerCase() === x.name.toLowerCase()).length });
-  // A few businesses shown as soon as the box is opened, before anything is typed (decision business-lookup-typeahead). With a state chosen, they are the first few in that state.
+  // A few businesses shown as soon as the box is opened, before anything is typed (decision business-lookup-typeahead). The same few for every state.
   const suggestBiz = (code) => {
     const scope = bizScope(code);
-    return (code ? scope.slice(0, 5) : (isCa() ? [0, 2, 5, 6, 7] : [0, 3, 8, 9, 11]).map((i) => bizList()[i])).map((x) => withDups(x, scope));
+    return (isCa() ? [0, 2, 5, 6, 7] : [0, 3, 8, 9, 11]).map((i) => withDups(scope[i], scope));
   };
   const searchBiz = (q, code) => {
     const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean);
@@ -4879,7 +4889,7 @@
       const need = sec.fields.filter((x) => x.required && x.kind !== "heading");
       const have = need.filter((x) => !fieldError(x)).length;
       // Prefilled values count like typed ones (decision status-chip-counts-prefilled): Add myself starts partly done, and a new owner has only the 100% ownership percentage prefilled, so it reads 1 of 10 done (the percentage is the share still unaccounted for, never below 25, and 100 for the first owner).
-      const status = !need.length ? "" : have === need.length ? html`<span class="tick sec-tick">${icon("check", 13, "i-b")}<span class="sr-only">Complete</span></span>` : have === 0 ? html`<span class="pill pill--warning sec-status">Not started</span>` : html`<span class="pill pill--brand sec-status">${have} of ${need.length} done</span>`;
+      const status = !need.length ? "" : have === need.length ? html`<span class="pill pill--positive sec-status">${icon("check", 13, "i-b")}Done</span>` : have === 0 ? html`<span class="pill pill--warning sec-status">Not started</span>` : html`<span class="pill pill--brand sec-status">${have} of ${need.length} done</span>`;
       // Done at the foot of each section (decision section-done-buttons): on every section but the last it closes this one and opens the next; on the last it closes the whole owner card. Nothing is saved or checked, since each field is kept as it is filled in. The invited owner's own page has no card to close, so its last section has no button.
       const last = idx === secs.length - 1;
       const doneClick = () => {
@@ -4971,14 +4981,13 @@
       const names = Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => String(f.name).slice(0, 120));
       (names.length ? names : [d.file]).forEach((n) => upload(d.key, n));
     };
-    // A card with what it needs shows a green Done badge with a tick in the title row, where the Required tag was (decision doc-done-badge); same signal as the tick on a finished owner section, but as a badge.
     const action = s === "skipped" ? html`<span class="state-pill state-pill--muted">Not needed</span>` : "";
     const zone = s === "skipped" ? "" : html`<button type="button" class="dropzone" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}" data-drop="${on(drop)}"><span class="dz-icon" aria-hidden="true">${icon("upload", 18)}</span><span class="dz-text">Drag a file here or <span class="dz-link">browse</span></span></button>`;
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? html`<span class="pill pill--positive doc-done">${icon("check", 13, "i-b")}Done</span>` : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? "" : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
       ${errView("doc_" + d.key)}
     </div>

@@ -879,4 +879,3 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 /* Section status chip on an owner card heading (decision section-status-chip). */
 .pill--brand { background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
 .sec-status { flex: none; }
-.sec-tick { flex: none; }
