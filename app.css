@@ -53,7 +53,6 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 /* ---------- Buttons (Atlas Button: emphasis x size) ---------- */
 /* Primary = brand fill, secondary = bordered, tertiary = text only. Sizes follow the Atlas Button sizes: small 24, medium 32, large 40 (label type follows the size; large is the same 14px as medium). */
 .btn {
-  --shadow-button-outer: 0px 1px 3px 0px #00000014; /* Atlas cast shadow only: secondary buttons have no inner bevel */
   display: inline-flex; align-items: center; justify-content: center; gap: var(--component-button-gap);
   height: var(--size-control-medium); padding: 0 var(--component-button-padding-x-medium);
   border: var(--border-default) solid transparent; border-radius: var(--radius-default);
@@ -65,7 +64,8 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .btn-primary { background: var(--color-background-brand-default); color: var(--color-text-on-brand); box-shadow: var(--shadow-button-contained); }
 .btn-primary:hover { background: var(--color-background-brand-hover); }
 .btn-primary:active { background: var(--color-background-brand-active); }
-.btn-outline, .btn-quiet, .btn-neutral, .btn-soft { background: var(--color-background-page); border-color: var(--color-border-default); color: var(--color-text-secondary); box-shadow: var(--shadow-button-outer); }
+.btn-primary:active:not(:disabled), .btn-outline:active:not(:disabled), .btn-quiet:active:not(:disabled), .btn-neutral:active:not(:disabled), .btn-soft:active:not(:disabled) { box-shadow: none; } /* Atlas 0040: no shadow while pressed */
+.btn-outline, .btn-quiet, .btn-neutral, .btn-soft { background: var(--color-background-page); border-color: var(--color-border-default); color: var(--color-text-secondary); box-shadow: var(--shadow-button-contained); } /* Atlas 0040: primary and secondary both use the full Shadow/button/contained (bevel + cast) */
 .btn-outline:hover, .btn-quiet:hover, .btn-neutral:hover, .btn-soft:hover { background: var(--color-background-hover); }
 .btn-ghost { background: transparent; color: var(--color-text-brand); }
 .btn-ghost:hover { background: var(--color-background-hover); }
@@ -605,6 +605,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .field-error > .i { flex: none; color: var(--color-icon-error); }
 [data-error] > .input, [data-error] .input, [data-error] .affix { box-shadow: inset 0 0 0 1px var(--color-border-error); border-color: var(--color-border-error); }
 [data-error] .check { box-shadow: inset 0 0 0 1px var(--color-border-error); }
+/* Atlas 0072: an error field gets no focus halo. Its border stays red while focused. */
+[data-error] .input:focus, [data-error] select:focus, [data-error] textarea:focus, [data-error] .affix:focus-within, [data-error] button.select-field:focus-visible, [data-error] button.select-field[aria-expanded="true"] { box-shadow: inset 0 0 0 1px var(--color-border-error); }
 .doc[data-error] { box-shadow: inset 0 0 0 1px var(--color-border-error), var(--lift-static); }
 .footer-error { display: flex; align-items: center; gap: var(--space-gap-related); margin: 0; padding-top: 16px; font-size: var(--type-body-small-size); font-weight: var(--type-control-default-weight); color: var(--color-text-error); }
 

@@ -3195,6 +3195,16 @@
       "tradeoff": "The info colours are grey in Atlas, so the labels look almost the same as before, only slightly lighter. Titles lose their full stop; the message keeps its own. There is no pause on hover and no stacking of several toasts (a new toast replaces the old one). The decisions panel's area chip also turned info grey. The division-tag (ClubReady only marker) still uses raw colours because it is a prototype annotation. Not changed from the sweep: the list check mark, card and owner header paddings, button hover tint.",
       "by": "Ryan",
       "when": "2026-11-13"
+    },
+    {
+      "id": "atlas-sweep-shadow-error-focus",
+      "area": "Atlas",
+      "where": "Secondary buttons, pressed buttons, focused fields in error",
+      "t": "Secondary buttons use the full Atlas button shadow, pressed buttons have none, and a focused field in error keeps its red border with no purple halo",
+      "b": "Ryan asked to verify the focus glow and the secondary Button shadow after the sweep. The Figma connection returned errors, so both were checked against the Atlas token repo (last commit 2026-11-09), not Figma. Decision 0040 says primary and secondary buttons both use the single effect style Shadow/button/contained (inset white bevel, inset dark bevel, 0/1 blur 3 cast) at rest, hover and focus, and that pressed, disabled and tertiary buttons take none. The prototype gave secondary buttons the cast shadow only and primary kept its shadow while pressed. Secondary now uses the same --shadow-button-contained as primary, and primary and secondary lose the shadow while pressed. Decision 0072 says the text field focus halo is a 2px glow in brand subtle outside a 1px border, which the prototype already matched, and that an error field gets no halo because a brand tint around a red border mixes two meanings. The global focus rule was winning over the error rule, so a focused field in error lost its red border and showed the glow. A higher-specificity rule now keeps the red 1px border and no halo on focus for inputs, selects, textareas, the prefix/suffix wrapper and the select button.",
+      "tradeoff": "Both values come from the token repo and its decision records, not from reading the Figma effect style, so they are only as current as the repo. The old 0024 note (secondary has the cast shadow only) is superseded by 0040, but the prototype comment still said so until now. A focused error field shows only the red border, so focus is carried by the red border alone, as in Atlas. Still unverified in Figma: the disabled button border and the exact effect style values. Tertiary hover tint is still open.",
+      "by": "Ryan",
+      "when": "2026-11-13"
     }
   ];
 
