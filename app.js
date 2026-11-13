@@ -82,7 +82,7 @@
     {
       id: "banking", name: "Banking Verification", file: "bank-verification.pdf",
       title: "Confirm your bank account",
-      why: "We need to check that the payout account you gave us belongs to your business, so we pay the right place.",
+      why: "We need to verify that the payout account you gave us belongs to your business, so we pay the right place.",
       lead: "Either of these works",
       accept: [
         "A voided check with your business name and account details printed on it. We can't take starter checks.",
@@ -123,7 +123,7 @@
     },
     {
       id: "kyb", name: "KYB Verification", file: "business-registration.pdf",
-      title: "Prove your business is registered",
+      title: "Show that your business is registered",
       why: "We need an official document that shows your business is registered under the name you gave us.",
       lead: "Any one of these works. It needs to show your legal business name.",
       accept: ["A government-issued business license", "Your filed articles of incorporation", "Your partnership agreement"],
@@ -409,7 +409,7 @@
       "area": "Copy",
       "where": "Step 1 · Business & address",
       "t": "The category is picked from a short searchable list, with a plain-words hint for people who do not know their code",
-      "b": "The business description box that used to suggest a category is gone. Almost no merchant knows their merchant category code (MCC), so the field is a searchable list the applicant types into, by name or by four-digit code, and the list is short because it holds only the codes set up for their division (decision mcc-from-division). Under the field a short hint tells people who are unsure to search by a word that describes what they sell (see mcc-no-help-link). Nothing is suggested or pre-filled, and the category is required.",
+      "b": "The business description box that used to suggest a category is gone. Almost no merchant knows their merchant category code (MCC), so the field is a searchable list the applicant types into, by name or by four-digit code, and the list is short because it holds only the codes set up for their division (decision mcc-from-division). Under the field a short hint tells people who are unsure to search by a word that describes what they sell (see mcc-no-help-link). Nothing is suggested or pre-filled, and the category is required. Update, 2026-11-13: Ryan changed the link expiry from 7 days to 30 days, in the Save and exit dialog and for the temporary password in the welcome email (content-audit-should-fix). Not confirmed with Security.",
       "tradeoff": "With no description the applicant has no keywords to match against, so someone who does not know their code relies on the list names and the hint. The suggestion used to be a simulated keyword guess, which is no longer in the prototype. Earlier decisions here (category-editable, category-is-mcc) describe the old suggestion and have been reworded.",
       "by": "Claude",
       "when": "2026-09-23"
@@ -3155,6 +3155,26 @@
       "tradeoff": "The applicant who takes no bank transfers sees a box they can ignore, and a 0 that reads as an answer (see ach-volume-defaults-zero). Ryan's reason: the field is small and defaults to 0. The card still says Only if you'll also take ACH payments.",
       "by": "Ryan",
       "when": "2026-11-13"
+    },
+    {
+      "id": "content-audit-must-fix",
+      "area": "Copy",
+      "where": "Step 1, step 4 and step 5 notes and descriptions",
+      "t": "Three accuracy fixes from the content audit: stale step 6 reference, Canada bank check, and no statement about how a yes is decided",
+      "b": "Ryan ran the Xplor Pay content guidelines over the journey (CONTENT-AUDIT-2026-11-13.md) and asked for the must fix items to be applied except the ones he is happy with (Faster approval, Secure sign-in, the security and privacy lines on steps 2 and 6, the pricing and credit-check lines on step 3, and the credit score line on step 5). Three were applied. (1) The step 1 note said the details are checked against the tax documents the applicant adds in step 6, which stopped being true when the EIN letter and CRA confirmation were removed (ein-bn-document-removed); it now says to type the details as they appear on the registration, and the first pill reads We use these to confirm the business exists. (2) The step 4 note said Trullio checks the bank account so payouts only ever go where they should. The absolute promise is gone, and Canada now reads We ask for proof of it in step 6, then check it after you submit, because Trulioo does not verify Canadian accounts and step 6 asks for bank proof there (ca-bank-proof-row). The US wording keeps the Trullio check without the word only. The note also says payouts, not sales. (3) Three lines said a yes on the declarations is never an automatic no, is not a refusal, or won't stop the application. They are replaced by one neutral statement in all three places: If you answer yes to any of these, a person reviews your application.",
+      "tradeoff": "The new step 5 line is still a statement about process, so Compliance should confirm it before it ships; no locked wording was written. The step 5 note and the step 6 notes still say things Ryan chose to keep (None of this affects your personal credit score, Stored encrypted). The Canada step 4 line assumes the bank proof stays on step 6 for Canada. The partner name is still spelled Trullio in the UI; the audit asked Ryan which spelling is right.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "content-audit-should-fix",
+      "area": "Copy",
+      "where": "Whole journey",
+      "t": "The should fix and polish findings from the content audit are applied, with four left as they were and three altered",
+      "b": "Ryan ran the Xplor Pay content guidelines over the journey (CONTENT-AUDIT-2026-11-13.md) and said to fix everything in the should fix and polish groups except four items he left as they were (1.3 the welcome email reassurance, 5.2 the Merchant category code (MCC) label because MCC is correct, 8.5 the step 4 line about adding more accounts, and 13.3 the under review timing and nothing-else-to-do lines) and three he altered (1.1 and 12.3: the temporary password and the resume link now work for 30 days, not 7; and 14.2: the digit messages drop You've entered [n]). Applied: the Change your password button reads Save password and sign in; the welcome page says seven steps, have it all ready, splits the owners sentence, lists documents on the bank card, and says average payment; slashes became or (Individual or sole proprietor, Registered or legal address, Title or role, Refund or return policy URL, Owner and CEO); queries became questions; Just the first 9 digits became Enter the first 9 digits only; We only need owners with 25% or more became We need owners who hold 25% or more; every step note asks Why are we asking?; transaction, sale and chargeback became payment and dispute (Average payment amount, Largest single payment, the limits tick, the limit and its error with the currency code, and no above); the Card present % label is Card present percentage; the step 4 card is Payout account and says We send your payouts to this account; the MATCH and OFAC hints expand their acronyms and crypto is cryptocurrency; the step 5 Declarations card no longer repeats the sentence already in the subtitle; step 6 is titled The documents we need to verify your details, its callout no longer repeats the subtitle, and the photo hint reads Include all four corners and avoid glare; the ampersands in Business and address, Organization and address, Agreement and submit and Save and exit are gone; When you sign, we send everything at once; the submit note and the rail note no longer say Straight away or use a dash; support hours read 7 AM–7 PM PT; the cancel toast reads Invite to [email] canceled; the status title is In review; the submitted line reads Submitted [date, time and zone] · Reference: [ID]; the approved page says payments; More info needed reads One more thing we need, Add this item and we'll carry on with your checks, Show that your business is registered, and verify in the bank card; placeholders say For example, instead of e.g.; the fitness and retail example uses straight quotes; the optional marker is gone from Street address 2. Validation messages: empty required answers say Enter [field] or Choose [field] where the label reads cleanly (the acronym alone for labels that end in one, such as SSN), the routing, SSN, SIN, institution and transit messages say Enter all [n] digits of your [thing], the account number says Enter your account number and how many digits it has, the date messages say what to enter, the maximum-payment error uses payment and the currency code, and the signing tick says Accept the agreement to sign.",
+      "tradeoff": "Not done: a copy button for the reference (13.2), because it needs a design (icon, toast); the Checking line on the under review screen (13.4), which is still accurate; the Continue buttons (2.4); the PEP acronym (6.4); the ACH label in shared copy (7.9). The red asterisk stays (required-marker is an earlier decision of Ryan's) and only the stray (optional) was removed. The second sentence on step 4 (We may also take fees, chargebacks and refunds from it) was not reworded because it describes fee and debit authority, which Legal owns, and the Mastercard and Every US merchant claims in the step 5 hints were kept with their acronyms expanded; both still need sourcing. The 30 days figure is Ryan's and not confirmed with Engineering or Security. The submitted time shows the viewer's own zone on a real submit and a fixed ET on the sample. The generic empty-answer messages only show where an empty required answer is flagged (the final submit), so they were checked on the label logic, not on screen.",
+      "by": "Ryan",
+      "when": "2026-11-13"
     }
   ];
 
@@ -3229,13 +3249,13 @@
   // ---------------------------------------------------------------------------
 
   const STEPS = [
-    { n: 1, label: "Business & address", time: "3 min" },
+    { n: 1, label: "Business and address", time: "3 min" },
     { n: 2, label: "Owners & signatory", time: "4 min" },
     { n: 3, label: "How you take payments", time: "3 min" },
     { n: 4, label: "Payout account", time: "1 min" },
     { n: 5, label: "Compliance declarations", time: "2 min" },
     { n: 6, label: "Supporting documents", time: "2 min" },
-    { n: 7, label: "Agreement & submit", time: "2 min" }
+    { n: 7, label: "Agreement and submit", time: "2 min" }
   ];
 
   // Answers the merchant supplies. The prototype starts empty so the flow can be
@@ -3413,7 +3433,7 @@
   function freshOwners() {
     return isSample()
       ? [
-          { id: 1, name: "Dana Whitfield", initials: "DW", pct: 60, role: "Owner / CEO", status: "pending", self: true },
+          { id: 1, name: "Dana Whitfield", initials: "DW", pct: 60, role: "Owner and CEO", status: "pending", self: true },
           { id: 2, name: "Marcus Lee", initials: "ML", pct: 30, role: "Director", status: "pending", self: false }
         ]
       : [];
@@ -3593,7 +3613,7 @@
     const monthly = num(a.monthlyVolume), perTx = num(a.maxTicket);
     const missing = [];
     if (!(monthly > 0)) missing.push("your estimated monthly card volume");
-    if (!(perTx > 0)) missing.push("your maximum single transaction");
+    if (!(perTx > 0)) missing.push("your largest single payment");
     return { ready: missing.length === 0, missing: missing, monthly: monthly, perTx: perTx };
   }
   const go = (screen, step) => setState({ screen, step: step || state.step, saveOpen: false });
@@ -3612,7 +3632,7 @@
     // More info needed: in Slice 1 the applicant answers on a screen in the product; in Slice 2 Ops asks by email, so the applicant sees the waiting screen with a note to check their inbox (decisions more-info-by-email, more-info-slice-swap).
     const asked = ctx.link === LINKS.info;
     const screen = asked && !invitesOn() ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
-    setState({ screen, submittedAt: "9:12 AM", askedMore: asked && invitesOn() });
+    setState({ screen, submittedAt: stampDate() + ", 9:12 AM ET", askedMore: asked && invitesOn() });
   }
 
   // Login (decision login-default-start): a temporary password always forces a change, same as a real first sign-in
@@ -3663,7 +3683,7 @@
     if (state.step < 7 && blockedByProblems()) return;
     if (state.step < 7) { setState({ step: state.step + 1 }); return; }
     if (stepGaps().length) return;
-    attempt(() => setState({ screen: "submitted", submittedAt: new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }) }));
+    attempt(() => setState({ screen: "submitted", submittedAt: stampDate() + ", " + new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZoneName: "short" }) }));
   };
   const editFromReview = (step) => setState({ step, editing: true, saveOpen: false });
   const saveEdit = () => setState({ step: 7, editing: false });
@@ -3676,7 +3696,7 @@
     : ["Private corporation", "Public corporation (publicly traded)", "Private partnership", "Public partnership (publicly traded)", "Limited liability company (LLC)", "Limited liability partnership (LLP)"];
   const BIZ_TYPES = [
     { id: "company", label: "Company", desc: "A registered business, such as an LLC, corporation or partnership." },
-    { id: "individual", label: "Individual / Sole proprietor", desc: "You run the business yourself and haven't registered it as a company or corporation." },
+    { id: "individual", label: "Individual or sole proprietor", desc: "You run the business yourself and haven't registered it as a company or corporation." },
     { id: "non-profit", label: "Non-profit or government", desc: "Charitable organizations, foundations, non-governmental organizations and government bodies." }
   ];
   // An LLC does not exist in Canada, so the Company card leaves it out there (decision ca-company-card-no-llc).
@@ -3732,7 +3752,7 @@
   function cancelInvite(id) {
     const o = ownerById(id);
     setState({ menuOwner: 0, owners: state.owners.map((x) => (x.id === id ? Object.assign({}, x, { status: "pending", inviteEmail: "", signedIn: false, received: false, revoked: false }) : x)) });
-    showToast("Cancelled the invite to " + (o && o.inviteEmail ? o.inviteEmail : "them") + ".");
+    showToast("Invite to " + (o && o.inviteEmail ? o.inviteEmail : "them") + " canceled.");
   }
   const askConfirm = (kind, id) => setState({ menuOwner: 0, confirm: { kind: kind, id: id } });
   const closeConfirm = () => setState({ confirm: null });
@@ -3831,10 +3851,10 @@
     if (d.length !== 8) return "Enter the full date as " + datePh() + ".";
     const ca = isCa();
     const day = parseInt(ca ? d.slice(0, 2) : d.slice(2, 4), 10), month = parseInt(ca ? d.slice(2, 4) : d.slice(0, 2), 10), year = parseInt(d.slice(4), 10);
-    if (month < 1 || month > 12) return "That month isn't right. This field goes " + datePh() + ", so the " + (ca ? "second" : "first") + " part is the month, 01 to 12.";
-    if (day < 1 || day > new Date(year, month, 0).getDate()) return "That day isn't right for the month. This field goes " + datePh() + ".";
+    if (month < 1 || month > 12) return "Enter a month from 01 to 12. This field uses " + datePh() + ".";
+    if (day < 1 || day > new Date(year, month, 0).getDate()) return "Enter a day that exists in that month. This field uses " + datePh() + ".";
     const when = new Date(year, month - 1, day), today = new Date(); today.setHours(0, 0, 0, 0);
-    if (year < 1900) return "Check the year: it can't be before 1900.";
+    if (year < 1900) return "Enter a year from 1900 onward.";
     if (key === "idExpiry" ? when < today : when > today) return key === "idExpiry" ? "This ID has expired. Use one that is still valid." : "That date is in the future.";
     return "";
   }
@@ -3868,6 +3888,18 @@
   // Values are only ever read, never written into markup; html`` escapes them.
   // ---------------------------------------------------------------------------
 
+  // The date shown with the submitted time (decision content-audit-should-fix), for example "Nov 13, 2026".
+  const stampDate = () => new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  // A field's label as it reads inside "Enter ..." and "Choose ..." messages (decision content-audit-should-fix): the acronym if the label ends in one
+  // (Social Security Number (SSN) reads "SSN"), otherwise the label with a lowercase first letter. A label that does not read cleanly that way returns "".
+  const askPhrase = (f) => {
+    const l = String((f && f.label) || "").replace(/\s*\((required|optional)\)\s*$/i, "").trim();
+    const ac = /\(([A-Z]{2,6})\)\s*$/.exec(l);
+    if (ac) return ac[1];
+    if (!/^([A-Z]{2,}|[A-Z][a-z'’]*)( ([a-z'’-]+|[A-Z]{2,}))*$/.test(l)) return "";
+    return /^[A-Z]{2,}\b/.test(l) ? l : l.charAt(0).toLowerCase() + l.slice(1);
+  };
+
   function fieldError(f) {
     // The EIN or business number is checked whenever something is typed, even for a sole proprietor, where it is optional.
     if (f.id === "ein" && !f.disabled && String(f.value).trim()) { const p = einProblem(f.value); if (p) return p; }
@@ -3875,11 +3907,11 @@
     const v = f.value;
     if (f.kind === "check") return v === true ? "" : "Tick this to finish this step.";
     if (f.kind === "yn") return v ? "" : "Choose yes or no.";
-    if (f.kind === "pills") return v ? "" : "Choose one.";
-    if (f.kind === "select") return v ? "" : "Choose one.";
+    if (f.kind === "pills") return v ? "" : (askPhrase(f) ? "Choose " + askPhrase(f) + "." : "Choose one.");
+    if (f.kind === "select") return v ? "" : (askPhrase(f) ? "Choose " + askPhrase(f) + "." : "Choose one.");
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
-    if (!String(v).trim()) return "Fill this in to finish this step.";
+    if (!String(v).trim()) return askPhrase(f) ? "Enter " + askPhrase(f) + "." : "Fill this in to finish this step.";
     const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
@@ -3888,22 +3920,22 @@
     if (key === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v).trim())) return "Enter an email like name@example.com.";
     if (key === "phone" && (d.length < 10 || d.length > 15)) return "Enter the full number, including the area code.";
     if (DATE_KEYS.indexOf(key) > -1) { const p = dateProblem(key, v); if (p) return p; }
-    if (key === "natId" && d.length !== 9) return ca ? "A SIN has 9 digits." : "An SSN has 9 digits.";
-    if (key === "routing" && d.length !== 9) return "A routing number has 9 digits.";
-    if (key === "institution" && d.length !== 3) return "An institution number has 3 digits.";
-    if (key === "transit" && d.length !== 5) return "A transit number has 5 digits.";
-    if (key === "accountNumber" && (d.length < (ca ? 7 : 4) || d.length > (ca ? 12 : 17))) return ca ? "An account number has 7 to 12 digits." : "An account number has up to 17 digits.";
+    if (key === "natId" && d.length !== 9) return ca ? "Enter all 9 digits of your SIN." : "Enter all 9 digits of your SSN.";
+    if (key === "routing" && d.length !== 9) return "Enter all 9 digits of your routing number.";
+    if (key === "institution" && d.length !== 3) return "Enter all 3 digits of your institution number.";
+    if (key === "transit" && d.length !== 5) return "Enter all 5 digits of your transit number.";
+    if (key === "accountNumber" && (d.length < (ca ? 7 : 4) || d.length > (ca ? 12 : 17))) return ca ? "Enter your account number. It has 7 to 12 digits." : "Enter your account number. It has up to 17 digits.";
     if (key === "pct" || key === "cpSplit") {
       const n = parseFloat(v);
       if (!isFinite(n) || n < 0 || n > 100) return "Enter a number from 0 to 100.";
       // Only owners with 25% or more are listed (decision owner-share-minimum).
-      if (key === "pct" && n < 25) return "Enter 25 or more. We only need owners with 25% or more.";
+      if (key === "pct" && n < 25) return "Enter 25 or more. We need owners who hold 25% or more.";
     }
     if (f.kind === "currency" && !(parseFloat(String(v).replace(/,/g, "")) > 0)) return "Enter an amount greater than zero.";
     // The biggest single sale cannot be smaller than the average one. Only checked once both amounts are in.
     if (f.id === "maxTicket") {
       const avg = parseFloat(String(state.a.avgTicket || "").replace(/,/g, ""));
-      if (avg > 0 && parseFloat(String(v).replace(/,/g, "")) < avg) return "Your biggest single sale can't be smaller than your average of $" + fmtMoney(state.a.avgTicket) + ".";
+      if (avg > 0 && parseFloat(String(v).replace(/,/g, "")) < avg) return "Your largest payment can't be smaller than your average payment of $" + fmtMoney(state.a.avgTicket) + " " + (ca ? "CAD" : "USD") + ".";
     }
     return "";
   }
@@ -3957,7 +3989,7 @@
       unit(true, a.acceptAgreement === true);
       if (!signatory && !problemsOnly) errs.signatoryName = "Enter the signatory's full legal name.";
       if (!String(title).trim() && !problemsOnly) errs.signatoryTitle = "Enter the signatory's title.";
-      if (a.acceptAgreement !== true && !problemsOnly) errs.acceptAgreement = "Tick this to sign.";
+      if (a.acceptAgreement !== true && !problemsOnly) errs.acceptAgreement = "Accept the agreement to sign.";
       if (state.sign === "" && !problemsOnly) errs.sign = "Draw your signature, or upload an image of it.";
     }
     // Every card counts, including the step 1 sections still hidden behind the business lookup (decision business-lookup-typeahead).
@@ -4122,8 +4154,8 @@
       f("middle", "Middle name", "text", { optional: true }),
       f("last", "Last name", "text", { placeholder: "As printed on their ID" }),
       // Their place in the business: title, then ownership percentage (decision owner-personal-details-grouped). Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
-      f("role", "Title / role", "text", { placeholder: "e.g. Director" }),
-      isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "e.g. 40", hint: isSole() ? "" : "We only need owners with 25% or more." }),
+      f("role", "Title or role", "text", { placeholder: "For example, Director" }),
+      isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "For example, 40", hint: isSole() ? "" : "We need owners who hold 25% or more." }),
       // Facts about the person.
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
@@ -4134,7 +4166,7 @@
       f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
       sub("id", "Identity verification"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
-      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "e.g. D1234567", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
+      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "For example, D1234567", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: countries() }),
       // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
@@ -4160,7 +4192,7 @@
     optional: isSole(),
     placeholder: ca ? "123456789" : "12-3456789",
     // No hint about the number's shape in the US, and none under the legal name or registered address (decision field-helper-text-trims).
-    hint: [isSole() && "If you have one.", ca && "Just the first 9 digits. Leave off RT0001 or similar.", isSole() && "If you don't, you'll give your " + (ca ? "SIN" : "SSN") + " in step 2 instead."].filter(Boolean).join(" ")
+    hint: [isSole() && "If you have one.", ca && "Enter the first 9 digits only. Leave off RT0001 or similar.", isSole() && "If you don't, you'll give your " + (ca ? "SIN" : "SSN") + " in step 2 instead."].filter(Boolean).join(" ")
   });
 
   // With the lookup on, the rest of step 1 stays hidden until a business is picked or the applicant chooses to enter details manually. A business whose name is already in (a returning applicant, or after Search again) keeps the sections (decision business-lookup-typeahead).
@@ -4180,19 +4212,19 @@
       return [
         find,
         card("s1-reg", isSole() ? "Your details" : "Registered details", "Enter these as they appear on " + (isSole() ? "your tax records." : "your registration."), [
-          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || isNonprofit(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "e.g. Riverside Community Foundation" : "e.g. Riverside Pilates LLC" }),
+          fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || isNonprofit(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "For example, Riverside Community Foundation" : "For example, Riverside Pilates LLC" }),
           // The EIN or business number is typed here like any other detail; nothing is looked up from it (decision ein-in-registered-details). A company or non-profit has to give one; a sole proprietor may not have one.
-          isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "e.g. Riverside Pilates" }) : einField(ca),
-          isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "e.g. Riverside Pilates" }),
+          isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "For example, Riverside Pilates" }) : einField(ca),
+          isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "For example, Riverside Pilates" }),
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ]),
         card("s1-addr", "Addresses", "", [
-          fld("regAddress", isSole() ? "Business address" : "Registered / legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "" }),
+          fld("regAddress", isSole() ? "Business address" : "Registered or legal address", "address", { span: true, placeholder: addressPh(), hint: isSole() ? "Where your business is based. If you work from home, this can be your home address." : "" }),
           fld("tradingSame", "Is that also where you operate?", "yn", { span: true }),
           a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh() }) : null
         ]),
-        card("s1-contact", "How we reach you", isNonprofit() ? "For account notices and questions from the people paying you. We won't add you to any marketing." : "For account notices and customer queries. We won't add you to any marketing.", [
+        card("s1-contact", "How we reach you", isNonprofit() ? "For account notices and questions from the people paying you. We won't add you to any marketing." : "For account notices and customer questions. We won't add you to any marketing.", [
           fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
           fld("email", isNonprofit() ? "Organization email address" : "Business email address", "text", { placeholder: isNonprofit() ? "hello@yourorganization.org" : "hello@yourbusiness.com" }),
           // The website is required. A business with none ticks the box, which fills the box with N/A and locks it (decision website-required-with-none-box).
@@ -4200,7 +4232,7 @@
         ]),
         card("s1-desc", isNonprofit() ? "What the organization does" : "What the business sells", "", [
           // The list holds only the codes set up for the applicant's division (decision mcc-from-division).
-          fld("category", "Merchant category code (MCC)", "combo", { span: true, placeholder: "Search by name or code", hint: html`Pick the closest match from the list. Not sure which one fits? Search by a word that describes what you sell, like “fitness” or “retail”.` })
+          fld("category", "Merchant category code (MCC)", "combo", { span: true, placeholder: "Search by name or code", hint: html`Pick the closest match from the list. Not sure which one fits? Search by a word that describes what you sell, like "fitness" or "retail".` })
         ], { pinId: "no-mcc-picker" })
       ];
     }
@@ -4212,7 +4244,7 @@
         card("s2-sig", "Who'll be signing?", isNonprofit() ? "The signatory is the person who signs the agreement for the organization." : "It doesn't have to be the biggest owner.", [
           fld("sigSame", "Will you be signing it yourself?", "yn", { span: true }),
           a.sigSame === "no" ? fld("sigName", "Authorized signatory full legal name", "text", { span: true, conditional: true, placeholder: "As printed on their ID" }) : null,
-          a.sigSame === "no" ? fld("sigTitle", "Title", "text", { conditional: true, placeholder: "e.g. Director" }) : null
+          a.sigSame === "no" ? fld("sigTitle", "Title", "text", { conditional: true, placeholder: "For example, Director" }) : null
         ], { assurance: "You'll sign at step 7, and nothing's binding until you type your name there." })
       ];
     }
@@ -4220,23 +4252,23 @@
       return [
         card("s3-vol", "Your card volumes", "Best guesses are fine. These set your limits, not your rate.", [
           fld("monthlyVolume", "Estimated monthly card volume", "currency", { placeholder: "40,000", annual: true }),
-          fld("cpSplit", "Card present %", "mono", { placeholder: "70", tall: true, hint: "In person, on a card machine." }),
-          fld("avgTicket", "Average transaction amount", "currency", { placeholder: "38" }),
-          fld("maxTicket", "Maximum single transaction", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your biggest single payment or donation, even if it only happens now and then." : "Your biggest single sale, even if it only happens now and then." }),
+          fld("cpSplit", "Card present percentage", "mono", { placeholder: "70", tall: true, hint: "In person, on a card machine." }),
+          fld("avgTicket", "Average payment amount", "currency", { placeholder: "38" }),
+          fld("maxTicket", "Largest single payment", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your largest single payment or donation, even if it only happens now and then." : "Your largest single payment, even if it only happens now and then." }),
           fld("prior", "Have you accepted card payments before?", "yn", { span: true }),
-          a.prior === "yes" ? fld("priorName", "Prior processor name", "text", { conditional: true, placeholder: "e.g. Square, Stripe" }) : null,
+          a.prior === "yes" ? fld("priorName", "Prior processor name", "text", { conditional: true, placeholder: "For example, Square, Stripe" }) : null,
           a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null,
-          fld("velocityAck", "I've read the transaction and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + ", based on what you entered above. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
+          fld("velocityAck", "I've read the payment and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + " " + (isCa() ? "CAD" : "USD") + ", based on the monthly volume you entered. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
         ], { pinId: "underwriting-plain" }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "Primary payment channel" : "Primary sales channel", "select", { placeholder: "Choose a channel", options: ["In-person", "Online", "In-person and online", "Mobile", "Phone / mail order (MOTO)"] }),
           fld("goods", isNonprofit() ? "What people pay or give for" : "Type of goods or services", "select", { placeholder: "Choose a type", options: isNonprofit() ? ["Donations", "Tickets and events", "Memberships and subscriptions", "Services", "Physical goods", "Mixed"] : ["Services", "Services and subscriptions", "Physical goods", "Digital goods", "Mixed"] }),
           fld("recurring", isNonprofit() ? "Recurring donations or memberships?" : "Recurring billing or subscriptions?", "yn"),
           fld("trial", "Free trial or deferred billing?", "yn"),
-          fld("marketplace", isNonprofit() ? "Do you take payments on behalf of other organizations?" : "Do you take payments on behalf of other businesses?", "yn", { span: true, hint: (isNonprofit() ? "Chapters, member groups or fundraisers collecting through you, say." : "Contractors or instructors invoicing through you, say.") + " Saying yes changes who's responsible, so we have to ask directly." }),
+          fld("marketplace", isNonprofit() ? "Do you take payments on behalf of other organizations?" : "Do you take payments on behalf of other businesses?", "yn", { span: true, hint: (isNonprofit() ? "For example, chapters, member groups or fundraisers collecting through you." : "For example, contractors or instructors who invoice through you.") + " If you say yes, we have to ask for more details." }),
           fld("international", isNonprofit() ? "Do you take payments from outside " + (ca ? "Canada" : "the US") + "?" : "Do you sell outside " + (ca ? "Canada" : "the US") + "?", "yn"),
-          a.international === "yes" ? fld("countries", isNonprofit() ? "Countries payments come from" : "Countries sold to", "text", { conditional: true, placeholder: "e.g. Canada, United Kingdom" }) : null,
-          fld("refundPolicy", "Refund / return policy URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org/refunds" : "yourbusiness.com/refunds", hint: "A clear policy helps with chargebacks. Leave it blank if you don't have one." })
+          a.international === "yes" ? fld("countries", isNonprofit() ? "Countries payments come from" : "Countries sold to", "text", { conditional: true, placeholder: "For example, Canada, United Kingdom" }) : null,
+          fld("refundPolicy", "Refund or return policy URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org/refunds" : "yourbusiness.com/refunds", hint: "A clear policy helps if a customer disputes a payment. Leave it blank if you don't have one." })
         ]),
         ca
           ? card("s3-ach", "Bank transfer volumes", "Only if you'll also take direct debits.", [
@@ -4250,7 +4282,7 @@
     if (step === 4) {
       const bankFields = (p, main) => ca
         ? [
-            fld(p + "bankName", "Bank name", "text", { placeholder: "e.g. RBC Royal Bank" }),
+            fld(p + "bankName", "Bank name", "text", { placeholder: "For example, RBC Royal Bank" }),
             fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account", hint: main ? "This needs to match your legal " + (isNonprofit() ? "organization" : "business") + " name." : "" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business chequing", "Business savings"] }),
             fld(p + "institution", "Institution number", "mono", { placeholder: "3 digits" }),
@@ -4258,33 +4290,33 @@
             fld(p + "accountNumber", "Account number", "masked", { sensitive: true, placeholder: "7 to 12 digits" })
           ]
         : [
-            fld(p + "bankName", "Bank name", "text", { placeholder: "e.g. Umpqua Bank" }),
+            fld(p + "bankName", "Bank name", "text", { placeholder: "For example, Umpqua Bank" }),
             fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account", hint: main ? "This needs to match your legal " + (isNonprofit() ? "organization" : "business") + " name." : "" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business checking", "Business savings"] }),
             fld(p + "routing", "ABA routing number", "mono", { placeholder: "9 digits" }),
             fld(p + "accountNumber", "Account number (up to 17 digits)", "masked", { sensitive: true, placeholder: "Up to 17 digits" })
           ];
       return [
-        card("s4-manual", "Settlement account", "", bankFields("", true), {
+        card("s4-manual", "Payout account", "", bankFields("", true), {
           pinId: "bank-no-debit",
-          assurance: "We pay your sales into this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains."
+          assurance: "We send your payouts to this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains."
         })
       ];
     }
     if (step === 5) {
       return [
-        card("s5-dec", "Declarations", "Saying yes to any of these won't stop your application — it just means someone reads it alongside the automated checks.", [
+        card("s5-dec", "Declarations", "", [
           fld("legalProceedings", "Are there any legal proceedings involving the business right now?", "yn", { span: true }),
           a.legalProceedings === "yes" ? fld("legalProceedingsWhy", "Tell us a bit about it", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
           fld("priorTermination", "Has a merchant account of yours been terminated?", "yn", { span: true }),
           a.priorTermination === "yes" ? fld("priorTerminationWhy", "Processor, date and reason", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
           fld("taxLiens", ca ? "Any outstanding tax debts owed to the CRA, or court judgments?" : "Any outstanding tax liens or judgments?", "yn", { span: true }),
           a.taxLiens === "yes" ? fld("taxLiensWhy", "Amount and current status", "long", { span: true, conditional: true, placeholder: "How much, and where it stands now." }) : null,
-          ca ? null : fld("msb", "Are you a money service business?", "yn", { span: true, hint: "Check cashing, money transfer, currency exchange or crypto. Most businesses aren't." })
+          ca ? null : fld("msb", "Are you a money service business?", "yn", { span: true, hint: "Check cashing, money transfer, currency exchange or cryptocurrency. Most businesses aren't." })
         ], { pinId: "yes-is-not-no" }),
         card("s5-consent", ca ? "A consent we have to collect" : "Two consents we have to collect", "", [
-          fld("matchConsent", "I agree to a check of the card networks' list of closed merchant accounts", "check", { span: true, hint: "Also called a MATCH or TMF check. Mastercard requires it for every merchant account." }),
-          ca ? null : fld("ofacAck", "I understand we'll check your name against the US government sanctions list", "check", { span: true, hint: "Known as OFAC screening. Every US merchant goes through it." })
+          fld("matchConsent", "I agree to a check of the card networks' list of closed merchant accounts", "check", { span: true, hint: "Also called a MATCH check, or a Terminated Merchant File (TMF) check. Mastercard requires it for every merchant account." }),
+          ca ? null : fld("ofacAck", "I understand we'll check your name against the US government sanctions list", "check", { span: true, hint: "Known as screening by the Office of Foreign Assets Control (OFAC). Every US merchant goes through it." })
         ], { assurance: ca ? "This is a consent, not a credit check. It doesn't touch your personal credit score." : "These are consents, not credit checks. Neither one touches your personal credit score." })
       ];
     }
@@ -4293,12 +4325,12 @@
 
   function whyFor(step, ca) {
     return {
-      1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. Type these details as they appear on your registration, so they match the tax documents you add in step 6.", p: ["Checked against the tax documents you add in step 6", "Typing them as they appear on your registration avoids questions later"] },
-      2: { t: "Why do you need owners?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
-      3: { t: "Why do you need numbers?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real sales don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
-      4: { t: "Why do you need my account details?", b: "This is the account your sales are paid into. Trullio, our verification partner, checks it after you submit, so your payouts only ever go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
-      5: { t: "Why ask all this?", b: "Card networks and regulators require these exact questions on every application. A yes isn't a refusal. It means a person reviews your file instead of it going straight through.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
-      6: { t: "Why do you need files?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
+      1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. Type these details as they appear on your registration.", p: ["We use these to confirm the " + orgWord() + " exists", "Typing them as they appear on your registration avoids questions later"] },
+      2: { t: "Why are we asking?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
+      3: { t: "Why are we asking?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real payments don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
+      4: { t: "Why are we asking?", b: ca ? "This is the account your payouts are paid into. We ask for proof of it in step 6, then check it after you submit." : "This is the account your payouts are paid into. Trullio, our verification partner, checks it after you submit, so your payouts go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
+      5: { t: "Why are we asking?", b: "Card networks and regulators require these exact questions on every application. If you answer yes to any of them, a person reviews your application.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
+      6: { t: "Why are we asking?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
     }[step];
   }
@@ -4307,7 +4339,7 @@
     const a = state.a;
     const idRows = owners.map((o) => ({
       key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Required",
-      hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's " + licWord() + ". All four corners in shot and no glare.",
+      hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's " + licWord() + ". Include all four corners and avoid glare.",
       file: "id-" + o.id + "-license.jpg",
     }));
     if (idOnly) return idRows;
@@ -4392,15 +4424,15 @@
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
       needRegistration: (ca ? "Your CRA business number, plus the legal name, registered address and registration date as they appear on your registration." : "Your EIN, plus the legal name, registered address and incorporation details as they appear on your registration.") + " You'll also choose your merchant category from a short list.",
-      needIds: "Owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN (a non-profit or government body doesn't need the SIN)." : "a driver's license or passport and an SSN (a non-profit or government body doesn't need the SSN).") + (invitesOn() ? " If it's easier, they can fill in their own bit." : " You fill this in for everyone, so have it all to hand."),
-      needBank: ca ? "Your institution, transit and account numbers." : "Your routing and account numbers.",
-      shellRailNote: isStatus ? "Submitted — with our verification partner" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
+      needIds: "Owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN. A non-profit or government body doesn't need the SIN." : "a driver's license or passport and an SSN. A non-profit or government body doesn't need the SSN.") + (invitesOn() ? " If it's easier, they can fill in their own details." : " You fill this in for everyone, so have it all ready."),
+      needBank: ca ? "Your institution, transit and account numbers, plus a photo ID for each owner and proof of your bank account." : "Your routing and account numbers, plus a photo ID for each owner and a signed W-9.",
+      shellRailNote: isStatus ? "Submitted to our verification partner" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
       remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
       stepCounter: "Step " + st.step + " of 7",
       stepTitle: {
         1: isNonprofit() ? "Tell us about your organization" : "Tell us about your business", 2: isSole() ? "Tell us about you" : isNonprofit() ? "Who runs the organization?" : "Who owns the business?",
         3: "How you'll take payments", 4: "Where should we send your money?",
-        5: "A few questions we have to ask", 6: "A few documents to back it up",
+        5: "A few questions we have to ask", 6: "The documents we need to verify your details",
         7: "One last look, then you're done"
       }[st.step],
       stepSubtitle: {
@@ -4408,15 +4440,15 @@
         2: isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : "."),
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: "Add the account your payouts should go to. Once you're approved, you can add more accounts for your other merchants.",
-        5: "Every application includes these. Saying yes to one is never an automatic no — it just means someone reads your file.",
+        5: "Every application includes these. If you answer yes to any of them, a person reviews your application.",
         6: "Add each file we ask for. You can add as many as you need to each one.",
-        7: "Check everything you've told us. When you sign, we send it all in one go."
+        7: "Check everything you've told us. When you sign, we send everything at once."
       }[st.step],
       stepComplete: stepComplete,
       canNext: canNext,
       missing: missing,
       nextLabel: st.step === 7 ? "Submit for verification" : "Save and continue",
-      submitNote: "Straight away. Trullio, our verification partner, gets one complete package.",
+      submitNote: "We send one complete package to Trullio, our verification partner, when you submit.",
       saveProgressNote: isWelcome ? "You haven't started yet, so there's nothing to lose." : "Last saved on step " + st.step + ", a moment ago.",
       // The ownership card shows how many owners are listed, and All listed only once the shares pass 75% (decision ownership-no-question). Nothing asks whether anyone is missing.
       ownersOver100: ownedPct > 100,
@@ -4429,12 +4461,12 @@
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
       payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
-      submittedWhen: st.submittedAt ? "at " + st.submittedAt : "just now",
+      submittedWhen: st.submittedAt ? st.submittedAt : "just now",
       checkNote: "Checking " + [!isSole() && "your " + orgWord() + " details", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
-      receivedNote: st.submittedAt ? "Sent to our verification partner at " + st.submittedAt : "Sent to our verification partner",
+      receivedNote: st.submittedAt ? "Sent to our verification partner on " + st.submittedAt : "Sent to our verification partner",
       // Each row on the last step says only how many answers are in, "N of M done" (decision summary-counts-only).
       summary: [
-        { label: isNonprofit() ? "Organization & address" : "Business & address", step: 1 },
+        { label: isNonprofit() ? "Organization and address" : "Business and address", step: 1 },
         { label: step2Name(), step: 2 },
         { label: "How you take payments", step: 3 },
         { label: "Payout account", step: 4 },
@@ -4672,7 +4704,7 @@
           control = html`<div class="addr" data-key="addr-${f.id}">
   <div class="addr-grid">
     ${cell("l1", "Street address 1", " addr-cell--wide")}
-    ${cell("l2", "Street address 2 (optional)", " addr-cell--wide")}
+    ${cell("l2", "Street address 2", " addr-cell--wide")}
     ${cell("city", "City", " addr-cell--city")}
     <div class="addr-cell addr-cell--sm"><label class="field-label" for="${id}-region">${ca ? "Province" : "State"}</label>${selectView({ id: id + "-region", value: parts.region, placeholder: "Choose one", pick: (v) => setPart("region", v), options: regions.map((r) => [r[0], r[1]]) })}</div>
     ${cell("postal", ca ? "Postal code" : "ZIP code", " addr-cell--sm")}
@@ -4808,15 +4840,15 @@
     return html`<div class="welcome" data-key="welcome">
   <div class="welcome-inner">
     <div class="welcome-title-row"><h1 class="welcome-title">Let's get you set up to take payments${pin("step-count-7")}</h1><span class="tag tag--green">${icon("bolt", 13)}Faster approval</span></div>
-    <p class="welcome-lede">We'll walk you through seven short steps. It takes about 15 minutes, and you can stop and pick up right where you left off.${pin("welcome-length")} ${infoNote}</p>
+    <p class="welcome-lede">We'll walk you through seven steps. It takes about 15 minutes, and you can stop and pick up right where you left off.${pin("welcome-length")} ${infoNote}</p>
     <div class="need-bar">
       <h2 class="need-head">What you'll need</h2>
     </div>
     <div class="need-list">
       ${need("building", "Your registration and tax numbers", v.needRegistration)}
       ${need("users", "Details of the people who own your organization", v.needIds)}
-      ${need("card", "Your bank account and a few documents", v.needBank)}
-      ${need("chart", "A rough idea of your card sales", "Your monthly total, your average sale, and whether you sell in person, online or both. A rough guess is fine.")}
+      ${need("card", "Your bank account and your documents", v.needBank)}
+      ${need("chart", "A rough idea of your card sales", "Your monthly total, your average payment, and whether you sell in person, online or both. A rough guess is fine.")}
     </div>
     <div class="actions">
       <button type="button" class="btn btn-neutral btn-lg btn-help" data-click="${on(openHelp)}">${icon("help", 17)}Get help</button>
@@ -4845,7 +4877,7 @@
       <div class="em-hero">${existing ? html`<h1>Your application is ready to start</h1><p>We've started a new Xplor Pay application for Riverside Pilates. Sign in to your existing account to pick it up.</p>` : html`<h1>Welcome to Xplor Pay</h1><p>Your account is ready. Here are your sign-in details, so you can sign in and get started.</p>`}</div>
       <div class="em-body">
         <h2>${existing ? "Your application" : "Your sign-in details"}</h2>
-        <p>${existing ? "You already have an account, so there's nothing new to set up. Sign in with the same details you always use." : "Use these to sign in for the first time. Your temporary password works for 7 days, so sign in before then."}</p>
+        <p>${existing ? "You already have an account, so there's nothing new to set up. Sign in with the same details you always use." : "Use these to sign in for the first time. Your temporary password works for 30 days, so sign in before then."}</p>
         <div class="em-creds">
           ${existing ? html`<div class="em-label">Business</div><div class="em-val">Riverside Pilates</div><div class="em-label">Your username</div><div class="em-val">dana@riversidepilates.example</div>` : html`<div class="em-label">Username</div><div class="em-val">dana@riversidepilates.example</div>
           <div class="em-label">Temporary password</div><div class="em-val em-mono">Xp-7Kd2-demo</div>`}
@@ -4917,7 +4949,7 @@
         </div>
         ${state.changeErr && html`<p class="field-error" role="alert">${state.changeErr}</p>`}
         <div class="entry-actions">
-          <div class="footer-end"><button type="submit" class="btn btn-primary btn-lg">Sign in${icon("arrow-r", 19)}</button></div>
+          <div class="footer-end"><button type="submit" class="btn btn-primary btn-lg">Save password and sign in${icon("arrow-r", 19)}</button></div>
         </div>
       </form>
     </div>
@@ -5110,7 +5142,7 @@
     }); };
     // "Add myself": the applicant is often the owner too. It fills in what step 1 already gave (email, phone), a sensible title, and the share still unaccounted for (never below 25). Nothing else is guessed, and every field stays editable.
     const addSelf = () => { const id = Date.now(); setState({
-      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isNonprofit() ? 10 : shareLeft(), role: isNonprofit() ? "Director" : "Owner / CEO", status: "pending", self: true, added: true, me: true }]),
+      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isNonprofit() ? 10 : shareLeft(), role: isNonprofit() ? "Director" : "Owner and CEO", status: "pending", self: true, added: true, me: true }]),
       openOwner: id
     }); };
     const addLabel = isNonprofit() ? (v.owners.length ? "Add another director or trustee" : "Add a director or trustee") : (v.owners.length ? "Add another owner or director" : "Add an owner or director");
@@ -5156,7 +5188,7 @@
 
   function step6View(v) {
     return html`<div class="doc-grid" data-key="s6-docs">${v.docList.filter((d) => !d.skip).map((d) => docView(d))}</div>
-<div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>Add as many files as you like to each item. Files are stored encrypted and shared only with Trullio, our verification partner.${pin("read-on-upload")}</span></div>`;
+<div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>Files are stored encrypted and shared only with Trullio, our verification partner.${pin("read-on-upload")}</span></div>`;
   }
 
   // ---------------------------------------------------------------------------
@@ -5275,7 +5307,7 @@
   <h2 class="card-title sign-title">Sign it off${pin("sign-last")}</h2>
   <div class="fields fields--sign">
     <div${ERR.signatoryName ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryName">Authorized signatory name${REQ}</label><input class="input" id="f-signatoryName" value="${v.signatoryName}" placeholder="As printed on your ID" data-input="${on((e) => set("signatoryName", e.target.value))}">${errView("signatoryName")}</div>
-    <div${ERR.signatoryTitle ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryTitle">Title${REQ}</label><input class="input" id="f-signatoryTitle" value="${v.signatoryTitle}" placeholder="e.g. Owner / CEO" data-input="${on((e) => set("signatoryTitle", e.target.value))}">${errView("signatoryTitle")}</div>
+    <div${ERR.signatoryTitle ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryTitle">Title${REQ}</label><input class="input" id="f-signatoryTitle" value="${v.signatoryTitle}" placeholder="For example, Owner and CEO" data-input="${on((e) => set("signatoryTitle", e.target.value))}">${errView("signatoryTitle")}</div>
   </div>
   <h3 class="fields-sub sign-sub">What you're agreeing to${pin("read-before-accept")}</h3>
   <div class="sign-checks">
@@ -5448,7 +5480,7 @@
     <span class="hero-icon">${icon("clock", 20)}</span>
     <div>
       <h1 class="hero-title">${state.askedMore ? "We need a little more from you" : waits.length ? "Thanks, we're waiting on " + waits.join(" and ") : "That's everything, thanks"}</h1>
-      <p class="hero-sub">Submitted ${v.submittedWhen} · reference <span class="mono">#XP-40718</span></p>
+      <p class="hero-sub">Submitted ${v.submittedWhen} · Reference: <span class="mono">#XP-40718</span></p>
     </div>
   </div>
   <ol class="timeline">
@@ -5496,7 +5528,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   }
   const pendText = (r, t0) => { const t = t0.replace(/licen[cs]e/g, licWord()); if (!r.person) return t; const p = pendPerson(); return t.split("{name}").join(p.name).split("{first}").join(p.first); };
   const NUMBER_WORDS = ["Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten"];
-  function pendTitle() { const n = pendReasons().length; return n === 1 ? "One thing to fix" : (NUMBER_WORDS[n] || String(n)) + " things to fix"; }
+  function pendTitle() { const n = pendReasons().length; return n === 1 ? "One more thing we need" : (NUMBER_WORDS[n] || String(n)) + " more things we need"; }
 
   // Ops picks the reasons in Prototype options. At least one stays picked.
   function togglePend(id, checked) {
@@ -5601,7 +5633,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const ready = list.every(pendHas) && list.every((r) => rfiOf(r.id).files.every((f) => !f.busy));
     return html`<header data-key="rfi-head">
   <h1 class="step-title">${pendTitle()}${pin("rfi-not-restart")}</h1>
-  <p class="step-sub">${list.length === 1 ? "You're not back at the start. Fix this item and the checks carry on exactly where they left off." : "You're not back at the start. Fix these and the checks carry on exactly where they left off."}</p>
+  <p class="step-sub">${list.length === 1 ? "Add this item and we'll carry on with your checks." : "Add these and we'll carry on with your checks."}</p>
 </header>
 <div class="stack" data-key="rfi-cards">${list.map((r) => pendCardView(r))}</div>
 <div class="rfi-actions" data-key="rfi-actions">
@@ -5616,7 +5648,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     return html`<section class="approved" data-key="approved">
   <span class="approved-tag">${icon("check", 13, "i-b")}Riverside Pilates approved</span>
   <h1 class="approved-title">Welcome to Xplor Pay</h1>
-  <p class="approved-body">${invitesOn() ? "We've approved your application. Add a merchant to start taking transactions, then invite your team and order card readers." : "We've approved your application. Open your payments dashboard to add a merchant and start taking transactions. You can add more users there too."}</p>
+  <p class="approved-body">${invitesOn() ? "We've approved your application. Add a merchant to start taking payments, then invite your team and order card readers." : "We've approved your application. Open your payments dashboard to add a merchant and start taking payments. You can add more users there too."}</p>
   <div class="btn-row">
     <button type="button" class="btn btn-light btn-lg">Open payments dashboard</button>
   </div>
@@ -5669,7 +5701,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       <button type="submit" class="btn btn-primary btn-md">Send link</button>
     </form>
     ${state.saveEmailErr && html`<p class="field-error" role="alert">${state.saveEmailErr}</p>`}
-    <p class="dialog-foot">${icon("lock", 14)}The link expires in 7 days and only works for that email address.${pin("save-link-scope")}</p>
+    <p class="dialog-foot">${icon("lock", 14)}The link expires in 30 days and only works for that email address.${pin("save-link-scope")}</p>
     `}
     <div class="dialog-actions"><button type="button" class="btn btn-neutral btn-md" data-click="${on(closeSave)}">Close</button><button type="button" class="btn btn-primary btn-md" data-click="${on(signOut)}">Sign out</button></div>
   </div>
@@ -5720,7 +5752,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       <button type="submit" class="btn btn-primary btn-md">${changing ? "Update and resend" : "Send invite"}</button>
     </form>
     ${state.delegateErr && html`<p class="field-error" role="alert">${state.delegateErr}</p>`}
-    <p class="dialog-foot">${icon("lock", 14)}The link expires in 7 days and only works for that email address.</p>
+    <p class="dialog-foot">${icon("lock", 14)}The link expires in 30 days and only works for that email address.</p>
   </div>
 </div>`;
   }
@@ -5773,7 +5805,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
 
   // Contact options. The number is a placeholder (555-01xx is reserved for fiction).
   const SUPPORT_PHONE = "1-800-555-0100";
-  const SUPPORT_HOURS = "7am–7pm PT, Monday to Friday";
+  const SUPPORT_HOURS = "7 AM–7 PM PT, Monday to Friday";
   function helpView() {
     return html`<div class="backdrop" data-key="help">
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="help-title">
@@ -5845,7 +5877,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     return html`<header class="topnav topnav--${navW}${state.screen === "flow" ? " topnav--flow" : ""}" data-key="topnav">
   <div class="topnav-inner">
     <img class="topnav-logo" src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="1354" height="295">
-    ${canSave && html`<button type="button" class="btn btn-neutral btn-md topnav-exit" data-click="${on(openSave)}">Save &amp; Exit</button>`}
+    ${canSave && html`<button type="button" class="btn btn-neutral btn-md topnav-exit" data-click="${on(openSave)}">Save and exit</button>`}
   </div>
 </header>`;
   }
@@ -5978,7 +6010,7 @@ ${protoView()}`;
         : state.screen === "welcome" ? "Business verification"
         : state.screen === "bizType" ? "Your business type"
         : state.screen === "invitee" ? "Owner details"
-        : state.screen === "approved" ? "Approved" : state.screen === "submitted" && state.askedMore ? "We've emailed you" : state.screen === "rfi" ? (ctx.moreInfo === MOREINFO_SIMPLE ? "Send us what we asked for" : pendTitle()) : "Under review") + " · Xplor Pay";
+        : state.screen === "approved" ? "Approved" : state.screen === "submitted" && state.askedMore ? "We've emailed you" : state.screen === "rfi" ? (ctx.moreInfo === MOREINFO_SIMPLE ? "Send us what we asked for" : pendTitle()) : "In review") + " · Xplor Pay";
     }
     // Move focus into the dialog when it opens and back to the opener when it closes.
     if (state.saveOpen && !last.saveOpen) {
