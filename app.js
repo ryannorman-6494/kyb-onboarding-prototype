@@ -568,7 +568,7 @@
       "area": "Copy",
       "where": "Throughout",
       "t": "Conversational by default, flat and direct on money and security",
-      "b": "The everyday copy sounds like a person talking you through it — “Let's get you set up”, “Step 1 starts with your EIN”, “Don't worry, it's all saved”. Anything about credentials, debit authority, sanctions screening or what is stored drops the warmth and states the fact plainly, because hedged language there reads as evasion.",
+      "b": "The everyday copy sounds like a person talking you through it — “Let's get you set up”, “Step 1 starts with your EIN”, “Don't worry, it's all saved”. Anything about credentials, debit authority, sanctions screening or what is stored drops the warmth and states the fact plainly, because hedged language there reads as evasion. Update, 2026-11-13: in the secure number and money fields the Roboto Mono text is set to the Atlas code size (13px) instead of the 14px body size, so it reads the same size as normal text (mono-fields-match-text-size).",
       "tradeoff": "The register shifts between two voices, so new copy has to be written knowing which one it's in.",
       "by": "Ryan",
       "when": "2026-09-30"
@@ -2631,7 +2631,7 @@
       "area": "Flow",
       "where": "Step 2 · Owner cards",
       "t": "The whole owner card header opens and closes it, with a chevron only and a tertiary negative Remove",
-      "b": "Clicking anywhere in an owner card's header (avatar, name, role line or empty space) opens or closes the card, and the header shows a pointer. The Open and Collapse words are gone: the toggle is a single chevron icon at the far right that turns over when the card is open, and it keeps a label (Open or Collapse, with the owner's name) for screen readers. The card's chevron is the more prominent one (20px, primary icon colour) and the chevrons on the sections inside the card are smaller and lighter (16px, secondary icon colour, primary on hover), with both centred on the same vertical line. Remove now comes before the chevron, so the chevron is the last thing on the row, and it is the Atlas tertiary negative button: no fill, error-coloured text and trash icon, and a subtle error-coloured fill on hover or press. Clicking Remove removes the owner and does not also open or close the card.",
+      "b": "Clicking anywhere in an owner card's header (avatar, name, role line or empty space) opens or closes the card, and the header shows a pointer. The Open and Collapse words are gone: the toggle is a single chevron icon at the far right that turns over when the card is open, and it keeps a label (Open or Collapse, with the owner's name) for screen readers. The card's chevron is the more prominent one (20px, primary icon colour) and the chevrons on the sections inside the card are smaller and lighter (16px, secondary icon colour, primary on hover), with both centred on the same vertical line. Remove now comes before the chevron, so the chevron is the last thing on the row, and it is the Atlas tertiary negative button: no fill, error-coloured text and trash icon, and a subtle error-coloured fill on hover or press. Clicking Remove removes the owner and does not also open or close the card. Update, 2026-11-13: the section chevrons now point down when closed and turn up when open, like the card's (accordion-chevrons-match); they no longer start turned 90 degrees.",
       "tradeoff": "A clickable header makes a stray click anywhere on it open the card. Remove sits right beside the large click target and still acts at once with no confirmation or undo, so a misclick can lose a filled-in card. The chevron alone says less than the words did.",
       "by": "Ryan",
       "when": "2026-11-10"
@@ -2741,7 +2741,7 @@
       "area": "Flow",
       "where": "Step 3 · Bank transfer volumes",
       "t": "The monthly ACH or EFT volume starts at 0 and goes back to 0 if it is emptied",
-      "b": "The Estimated monthly ACH volume (EFT in Canada) box is optional but starts with 0 in it, because the back end needs a valid value. If the applicant clears it and leaves the box, it fills with 0 again, so the stored answer is never empty. Typing an amount replaces it. The card stays collapsed by default, so most applicants never see the 0.",
+      "b": "The Estimated monthly ACH volume (EFT in Canada) box is optional but starts with 0 in it, because the back end needs a valid value. If the applicant clears it and leaves the box, it fills with 0 again, so the stored answer is never empty. Typing an amount replaces it. The card stays collapsed by default, so most applicants never see the 0. Update, 2026-11-13: the card is no longer collapsed by default; it is always shown (ach-field-always-shown), so the 0 is visible.",
       "tradeoff": "A 0 already in the box reads as an answer, so an applicant who does take bank transfers may leave it at 0 without noticing it is there; Ryan's reason is that the back end needs a value. The prototype does not send anything, so this only shows the behaviour.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -2921,7 +2921,7 @@
       "area": "Step 2",
       "where": "Step 2 · Owner cards · section headings",
       "t": "Each owner section heading shows where it stands: Not started, N of M done, then a green tick",
-      "b": "Ryan: the Identity verification section is required but easy to pass by, so each section heading (Personal details and Identity verification) now shows its state beside the title, not beside the chevron (moved there on 2026-11-11 at Ryan's request, having first been at the right), whether the section is open or closed. Until the applicant has entered something in it (or nothing valid is in, on a listed owner) it reads Not started in the warning colour; starting values such as Director and 10%, or a country filled in for them, do not count as a start on an owner they added. Once some of the required answers are in it reads, for example, 3 of 6 done in the purple (brand) colour. When all are in it is replaced by a green tick circle (the same one the review summary uses), with Complete for screen readers. The count is the required answers that are filled in and valid out of the required answers in that section; optional boxes (the middle name) and the SSN tick are not counted, and a non-profit has no SSN or ownership percentage so its counts are smaller. Ryan chose this from four options and dropped the word Required from the chip. Nothing is blocked or opened for the applicant: an empty required field still shows no error (errors-only-for-bad-entries), and the sections still open and close on their own. Superseded in part, 2026-11-11: prefilled values now count, and the Not started exception for added owners is gone (see status-chip-counts-prefilled). Update 2026-11-12: a finished section no longer shows the round green tick; it shows a green Done badge with a tick (pill--positive) beside the section title. Ryan asked for this on the owner sections; the same badge on the document upload cards was a misreading and was reversed (doc-done-badge). Ryan gave no other reason. Update, 2026-11-12, Ryan: the partly done chip (N of M done) uses the Atlas info badge colours instead of the brand ones, so the three states read as Done (green), N of M done (info grey) and Not started (orange), and purple is kept for actions and selection.",
+      "b": "Ryan: the Identity verification section is required but easy to pass by, so each section heading (Personal details and Identity verification) now shows its state beside the title, not beside the chevron (moved there on 2026-11-11 at Ryan's request, having first been at the right), whether the section is open or closed. Until the applicant has entered something in it (or nothing valid is in, on a listed owner) it reads Not started in the warning colour; starting values such as Director and 10%, or a country filled in for them, do not count as a start on an owner they added. Once some of the required answers are in it reads, for example, 3 of 6 done in the purple (brand) colour. When all are in it is replaced by a green tick circle (the same one the review summary uses), with Complete for screen readers. The count is the required answers that are filled in and valid out of the required answers in that section; optional boxes (the middle name) and the SSN tick are not counted, and a non-profit has no SSN or ownership percentage so its counts are smaller. Ryan chose this from four options and dropped the word Required from the chip. Nothing is blocked or opened for the applicant: an empty required field still shows no error (errors-only-for-bad-entries), and the sections still open and close on their own. Superseded in part, 2026-11-11: prefilled values now count, and the Not started exception for added owners is gone (see status-chip-counts-prefilled). Update 2026-11-12: a finished section no longer shows the round green tick; it shows a green Done badge with a tick (pill--positive) beside the section title. Ryan asked for this on the owner sections; the same badge on the document upload cards was a misreading and was reversed (doc-done-badge). Ryan gave no other reason. Update, 2026-11-12, Ryan: the partly done chip (N of M done) uses the Atlas info badge colours instead of the brand ones, so the three states read as Done (green), N of M done (info grey) and Not started (orange), and purple is kept for actions and selection. Update, 2026-11-13: a partly done section (N of M done) now uses the warning (orange) badge, the same as Not started, until it is complete, and turns green with Done only when finished (section-chip-warning-until-done). This replaces the grey info badge from 2026-11-12.",
       "tradeoff": "A section that holds a wrong entry counts it as not done but does not say so in the chip; the existing Needs a look pill on the owner row and the error under the field do that. A section starts in the warning colour on every empty owner card, so a new card shows two warning chips at once, which makes an empty card look more urgent than the form means it to. The earlier count and minutes badges were removed on 2026-11-09 as noise; this chip is different because it changes with progress, but it is on both headings all the time.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -3041,7 +3041,7 @@
       "area": "Flow",
       "where": "Step 1 · Find your business, after a business is picked",
       "t": "The green confirmation after picking a business is the Atlas success Callout",
-      "b": "Ryan: the green confirmation shown once a business is picked is a good idea but was not built from the Atlas component; it should be the Atlas success callout. It now follows the Atlas Callout in the Atlas Figma file, severity success: a flat block with no border or shadow on the success wash (background/success/subtle), radius/large (12px, where the old one used the 8px default radius), space/padding/surface padding, and a 16px circle-check icon in icon/success in a 20px-high slot. Beside the icon is the content: a text block with a Title in Body/Bold and the description in Body/Default, both in text/success, 4px apart (space/gap/pair), then the actions 8px below (space/gap/related). The title is the business name, the description is its address followed by We filled in the name and address below. Check they match your registration., and the one action, Search again, is now a secondary small Button (24px high, white fill, Atlas size/control/small and small padding) in place of the small text link, as Atlas says actions in a callout are secondary buttons. The shared .callout rule now uses the Atlas 12px radius for every callout in the prototype (the lock assurances, the edit note and the failed upload), and the Atlas structure classes are callout-content, callout-text, callout-title and callout-actions. The sprite has a new circle-check icon, which Atlas names as the success glyph; the other severities still show the info and alert glyphs the prototype already had.",
+      "b": "Ryan: the green confirmation shown once a business is picked is a good idea but was not built from the Atlas component; it should be the Atlas success callout. It now follows the Atlas Callout in the Atlas Figma file, severity success: a flat block with no border or shadow on the success wash (background/success/subtle), radius/large (12px, where the old one used the 8px default radius), space/padding/surface padding, and a 16px circle-check icon in icon/success in a 20px-high slot. Beside the icon is the content: a text block with a Title in Body/Bold and the description in Body/Default, both in text/success, 4px apart (space/gap/pair), then the actions 8px below (space/gap/related). The title is the business name, the description is its address followed by We filled in the name and address below. Check they match your registration., and the one action, Search again, is now a secondary small Button (24px high, white fill, Atlas size/control/small and small padding) in place of the small text link, as Atlas says actions in a callout are secondary buttons. The shared .callout rule now uses the Atlas 12px radius for every callout in the prototype (the lock assurances, the edit note and the failed upload), and the Atlas structure classes are callout-content, callout-text, callout-title and callout-actions. The sprite has a new circle-check icon, which Atlas names as the success glyph; the other severities still show the info and alert glyphs the prototype already had. Update, 2026-11-13: the hero callouts are now 12px too (card-radius-all-large).",
       "tradeoff": "Not every Atlas Callout part is built: there is no dismiss button (Atlas has an optional one, and it is discouraged where the callout is the only record of a choice) and no show or hide title option. The hero callouts on the waiting and sent screens are a separate class and still have the 8px radius, so two callout radii remain until they are brought across. A success callout carries the business name as its title, so the name appears here and again in the Legal business name field below it.",
       "by": "Ryan",
       "when": "2026-11-12"
@@ -3083,6 +3083,76 @@
       "t": "Canadian applicants add proof of their bank account on step 6, because Trulioo cannot verify Canadian accounts",
       "b": "Ryan asked whether Canada still asks for evidence of the bank account given that Trulioo cannot validate Canadian bank accounts, and said yes when offered the row back. For a Canadian business (company, non-profit or sole proprietor) step 6 now has a required Bank account verification card: any one of a void cheque with the business name and account details printed on it, a letter from the bank, or a recent bank statement. The US still has no bank row, because Trulioo verifies US accounts (bank-verified-by-trullio). The card works like every other document card: drop zone, any number of files, the red outline and Add this file to finish this step. when it is missing. A Canadian business now uploads at least the photo IDs and the bank proof.",
       "tradeoff": "That Trulioo verifies US but not Canadian bank accounts is relayed by Ryan, not from a document; Trulioo or compliance should confirm it. This is a prototype row, and the wording is a draft. The Banking Verification card on More info needed is still what Ops can ask for after submit; this row asks for the proof up front instead of after. Whether the sponsor bank accepts a bank statement as well as a void cheque or letter is not known. Step 4 and the step 7 review do not mention the document, as before.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "accordion-chevrons-match",
+      "area": "Flow",
+      "where": "Step 2 · Owner card and its sections",
+      "t": "The sections inside an owner card use the same chevron pattern as the card",
+      "b": "Ryan: in the owner form the owner card's chevron points down and turns up when open, but the sections inside it (Personal details, Identity verification) started pointing right (turned 90 degrees) and swapped to down when opened, which was confusing. They now match the card: a section's chevron points down when it is closed and turns up when it is open, with the same 160ms turn. The section chevrons keep their smaller size and lighter colour from owner-card-click-to-open. Only the closed rotation and the open rotation changed in app.css (.owner-sec.is-open .sec-chev).",
+      "tradeoff": "A down chevron on a closed section reads as open me, the same as on the card, but a right-pointing chevron usually says there is more nested inside, so the two levels are now told apart only by size and colour. Ryan gave no other reason. The invited owner's page uses the same section accordions and gets the same change.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "owner-card-radius-matches",
+      "area": "Flow",
+      "where": "Step 2 · Owner card",
+      "t": "The owner card has the same corner radius as the other cards",
+      "b": "Ryan: the owner card in the owners form did not match the border radius of the other cards. The .card class (the step cards, document cards, the Sign it off card and others) uses the large radius (radius/large, 12px), but .person used the default radius (8px). .person now uses radius/large too, so the owner cards have the same rounded corners as every other card. Nothing else about the owner card changed: its border, shadow, surface and clipping are as before.",
+      "tradeoff": "The card clips its content to the corners (overflow hidden, except while its actions menu is open), so with the bigger radius the open header and section rows sit slightly further from the corners. Ryan gave no other reason. Other card-like pieces (the hero callouts on the waiting and sent screens, still 8px) were not changed here; they are listed in lookup-confirmation-atlas-callout.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "card-radius-all-large",
+      "area": "Flow",
+      "where": "Step 7 review list, business type cards, waiting and sent screens",
+      "t": "The review list, the business type cards and the hero callouts use the large card radius too",
+      "b": "Ryan: after the owner card was matched to the other cards (owner-card-radius-matches), match the other card-like pieces still at the default 8px as well. They now use radius/large (12px), the same as .card: the step 7 review list (.summary), the business type cards (.biz-card, and the opened Company and Non-profit wrapper .biz-open with its header's top corners), and the hero callouts on the waiting and sent screens (.hero-callout). This also closes the leftover noted in lookup-confirmation-atlas-callout, where the hero callouts were the one callout still at 8px.",
+      "tradeoff": "Other raised, bordered blocks are still at the default 8px and were not touched because Ryan did not list them: the What you'll need card on the welcome page (.need), the Help list rows (.help-list li), the document viewer paper (.docv-paper), the Prototype options panel and similar small controls. Whether they count as cards is for Ryan to say. Ryan gave no other reason.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "section-chip-warning-until-done",
+      "area": "Flow",
+      "where": "Step 2 · Owner sections",
+      "t": "An owner section that is partly done keeps the warning badge until it is complete",
+      "b": "Ryan: the grey badge on an owner section (for example 2 of 10 done) should stay orange while the section is in progress, so it shows as a warning until complete. A section now reads Not started or N of M done in the warning badge (orange), and only a finished section shows the green Done badge. The grey info badge from 2026-11-12 is gone from the sections; .pill--info is no longer used there.",
+      "tradeoff": "Orange on a section the applicant has already started can read as something is wrong, rather than as work still to do. Ryan gave no other reason.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "id-number-placeholder-example",
+      "area": "Copy",
+      "where": "Step 2 · Owner · Identity verification",
+      "t": "The Government ID number placeholder is an example number",
+      "b": "Ryan: the Government ID number placeholder should be an example number, not the wording As shown on the document. It now reads e.g. D1234567. It is one example for every ID type (driver's licence, passport, national ID card) and is a made-up format, not a real number.",
+      "tradeoff": "A single example looks like a driver's licence number even when the applicant chose a passport or national ID card; a placeholder that changes with the ID type is not designed. Real formats differ by state, province and country. Ryan gave no other reason.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "mono-fields-match-text-size",
+      "area": "Flow",
+      "where": "Secure number fields and currency fields",
+      "t": "Text in the encrypted number and currency fields is the same size as normal text",
+      "b": "Ryan: the font in the encrypted number fields and the currency fields should be the same size as normal text; it can be a different font style but should not look larger. The boxes use Roboto Mono, which is wider than Roboto at the same pixel size, so at 14px the entered numbers looked larger than the text in other boxes. They now use the Atlas code size (type-code-default-size, 13px) instead of the 14px body size, which gives digits about the same width as the 14px body text. This covers the encrypted boxes (SSN or SIN, ID number, account number), the money boxes (card volumes, ACH or EFT volume) and the read-only yearly volume. The font style stays Roboto Mono.",
+      "tradeoff": "13px is the Atlas code token, but it is matched by eye and by digit width, not by an Atlas rule that says mono and body text should be the same size; a one pixel difference in height remains. The date, EIN and other plain mono boxes were already Roboto at 14px (the .mono class loses to the .input font rule), so they did not change. Ryan gave no other reason.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "ach-field-always-shown",
+      "area": "Flow",
+      "where": "Step 3 · Bank transfer volumes",
+      "t": "The ACH or EFT volume field is shown by default",
+      "b": "Ryan: do not hide the ACH field by default; it is only small and already defaults to zero, so it is easier to just show it. The Bank transfer volumes card on step 3 (Estimated monthly ACH volume, EFT in Canada) is no longer collapsible: it is always open, with no Show 1 field button, and the 0 is visible in the box. The card keeps its heading and the line Only if you'll also take ACH payments (direct debits in Canada). The collapse mechanism in the card code is still there, unused.",
+      "tradeoff": "The applicant who takes no bank transfers sees a box they can ignore, and a 0 that reads as an answer (see ach-volume-defaults-zero). Ryan's reason: the field is small and defaults to 0. The card still says Only if you'll also take ACH payments.",
       "by": "Ryan",
       "when": "2026-11-13"
     }
@@ -4064,7 +4134,7 @@
       f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
       sub("id", "Identity verification"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
-      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "As shown on the document", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
+      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "e.g. D1234567", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: countries() }),
       // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
@@ -4171,10 +4241,10 @@
         ca
           ? card("s3-ach", "Bank transfer volumes", "Only if you'll also take direct debits.", [
               fld("achVolume", "Estimated monthly EFT volume", "currency", { optional: true, zero: true, placeholder: "10,000" })
-            ], { collapsible: true })
+            ])
           : card("s3-ach", "Bank transfer volumes", "Only if you'll also take ACH payments.", [
               fld("achVolume", "Estimated monthly ACH volume", "currency", { optional: true, zero: true, placeholder: "10,000" })
-            ], { collapsible: true })
+            ])
       ];
     }
     if (step === 4) {
@@ -4975,7 +5045,7 @@
       const need = sec.fields.filter((x) => x.required && x.kind !== "heading");
       const have = need.filter((x) => !fieldError(x)).length;
       // Prefilled values count like typed ones (decision status-chip-counts-prefilled): Add myself starts partly done, and a new owner has only the 100% ownership percentage prefilled, so it reads 1 of 10 done (the percentage is the share still unaccounted for, never below 25, and 100 for the first owner).
-      const status = !need.length ? "" : have === need.length ? html`<span class="pill pill--positive sec-status">${icon("check", 13, "i-b")}Done</span>` : have === 0 ? html`<span class="pill pill--warning sec-status">Not started</span>` : html`<span class="pill pill--info sec-status">${have} of ${need.length} done</span>`;
+      const status = !need.length ? "" : have === need.length ? html`<span class="pill pill--positive sec-status">${icon("check", 13, "i-b")}Done</span>` : have === 0 ? html`<span class="pill pill--warning sec-status">Not started</span>` : html`<span class="pill pill--warning sec-status">${have} of ${need.length} done</span>`;
       // Done at the foot of each section (decision section-done-buttons): on every section but the last it closes this one and opens the next; on the last it closes the whole owner card. Nothing is saved or checked, since each field is kept as it is filled in. The invited owner's own page has no card to close, so its last section has no button.
       const last = idx === secs.length - 1;
       const doneClick = () => {

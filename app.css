@@ -273,7 +273,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .affix { display: flex; align-items: center; gap: var(--component-input-gap); height: var(--size-control-large); padding: 0 var(--component-input-padding-x-large); border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); }
 .affix:hover { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-hover); }
 .affix:focus-within { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-focus), 0 0 0 3px var(--component-input-focus-glow); }
-.affix input { flex: 1; min-width: 0; height: 100%; border: none; outline: none; background: transparent; font-size: var(--type-body-default-size); font-family: var(--font-mono); color: var(--color-text-secondary); }
+.affix input { flex: 1; min-width: 0; height: 100%; border: none; outline: none; background: transparent; font-size: var(--type-code-default-size); font-family: var(--font-mono); color: var(--color-text-secondary); }
 .affix input:focus { box-shadow: none; }
 .affix-prefix { font-size: var(--type-body-small-size); color: var(--color-text-subtle); font-family: var(--font-mono); }
 .affix--money { padding-right: 0; }
@@ -315,7 +315,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .own-total { font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .bar { height: 6px; border-radius: var(--radius-full); background: var(--color-background-neutral-default); margin-bottom: 8px; overflow: hidden; }
 .bar-fill { display: block; height: 6px; background: var(--color-background-brand-default); transition: width 240ms ease; }
-.person { background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
+.person { background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
 .person-head { display: flex; align-items: center; gap: 14px; padding: var(--space-padding-hero); }
 .avatar { width: 32px; height: 32px; flex: none; border-radius: var(--radius-full); background: var(--color-background-brand-subtle); color: var(--color-text-link-hover); display: flex; align-items: center; justify-content: center; font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); }
 .person-name { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
@@ -382,7 +382,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 @media (max-width: 560px) { .addr-grid { grid-template-columns: minmax(0, 1fr); } .addr-cell--wide, .addr-cell--city, .addr-cell--sm { grid-column: 1 / -1; } }
 
 /* ---------- Step 7: review + sign ---------- */
-.summary { background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
+.summary { background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift-static); overflow: hidden; }
 .summary-row { display: flex; align-items: center; gap: 14px; padding: 16px 20px; box-shadow: inset 0 -1px 0 var(--color-border-subtle); }
 .summary-label { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .summary-value { font-size: var(--type-body-small-size); color: var(--color-text-subtle); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -427,7 +427,7 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .tl-title { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
 .tl-title--muted { color: var(--color-text-subtle); }
 .tl-note { font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
-.hero-callout { margin-top: 24px; padding: var(--space-padding-surface); border-radius: var(--radius-default); background: var(--color-background-info-subtle); color: var(--color-text-info); font: var(--font-body-default); }
+.hero-callout { margin-top: 24px; padding: var(--space-padding-surface); border-radius: var(--radius-large); background: var(--color-background-info-subtle); color: var(--color-text-info); font: var(--font-body-default); }
 .two-up { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
 .tile-title { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); margin-bottom: 4px; }
 .tile-body { font-size: var(--type-body-small-size); line-height: 1.5; color: var(--color-text-subtle); margin-bottom: 12px; }
@@ -607,7 +607,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 /* ---------- Business type page ---------- */
 .biz-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
-.biz-card { display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left; border: none; cursor: pointer; background: var(--color-background-surface-raised-1); border-radius: var(--radius-default); padding: 16px 18px; box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift); transition: box-shadow 0.15s; }
+.biz-card { display: flex; gap: 14px; align-items: flex-start; width: 100%; text-align: left; border: none; cursor: pointer; background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); padding: 16px 18px; box-shadow: inset 0 0 0 1px var(--color-border-default), var(--lift); transition: box-shadow 0.15s; }
 .biz-card:hover { box-shadow: inset 0 0 0 1px var(--color-border-brand), var(--lift); }
 .biz-card.is-selected { background: var(--color-background-brand-subtle); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
 .biz-radio { flex: none; width: 18px; height: 18px; margin-top: 2px; border-radius: var(--radius-full); box-shadow: inset 0 0 0 2px var(--color-border-default); display: flex; align-items: center; justify-content: center; }
@@ -791,8 +791,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 /* Step 4: the optional extra bank account link sits quietly under the card, as text rather than a button. */
 
 /* The selected business type card opens up and holds its follow-up question (decision type-asked-on-business-type-page). */
-.biz-open { background: var(--color-background-brand-subtle); border-radius: var(--radius-default); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
-.biz-open .biz-head.biz-card { background: transparent; box-shadow: none; border-radius: var(--radius-default) var(--radius-default) 0 0; }
+.biz-open { background: var(--color-background-brand-subtle); border-radius: var(--radius-large); box-shadow: inset 0 0 0 2px var(--color-border-brand), var(--lift); }
+.biz-open .biz-head.biz-card { background: transparent; box-shadow: none; border-radius: var(--radius-large) var(--radius-large) 0 0; }
 .biz-sub { padding: 0 18px 20px 50px; animation: biz-sub-in 200ms ease-out; }
 .biz-sub .input, .biz-sub .combo { max-width: 420px; }
 .biz-sub .small-note { margin-top: 8px; }
@@ -810,7 +810,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .sec-toggle:hover .sec-chev { color: var(--color-text-primary); }
 .sec-icon { color: var(--color-text-secondary); flex: none; }
 .sec-chev { transition: transform 160ms ease; }
-.owner-sec:not(.is-open) .sec-chev { transform: rotate(-90deg); }
+/* Section chevrons follow the card's chevron (decision accordion-chevrons-match): down when closed, turned up when open, never sideways. */
+.owner-sec.is-open .sec-chev { transform: rotate(180deg); }
 .owner-sec .fields { margin-top: 0; padding-bottom: var(--space-padding-hero); }
 .owner-sec .sec-actions { display: flex; justify-content: flex-start; padding-bottom: var(--space-padding-hero); }
 .sec-label { flex: 1; display: flex; align-items: center; gap: 10px; }
@@ -834,7 +835,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .field-pair--vol { align-items: start; }
 .affix--static { background: var(--color-background-surface-sunken); pointer-events: none; cursor: default; }
 .affix--static:hover { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); }
-.affix--static .affix-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: var(--type-body-default-size); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+.affix--static .affix-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-mono); font-size: var(--type-code-default-size); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
 /* Below about 1200px the monthly label wraps in its quarter-width column, so the three labels in that row reserve two lines and the boxes line up. A tighter box keeps six-figure amounts readable. */
 @media (max-width: 1200px) { .field-pair--vol .field-head, .field--tall .field-head { min-height: 2lh; align-items: flex-start; } }
 .field-pair--vol .affix { gap: 4px; padding-left: 10px; }
