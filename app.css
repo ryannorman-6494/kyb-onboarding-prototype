@@ -20,7 +20,7 @@ ul, ol { padding: 0; list-style: none; }
 
 input:not([type="checkbox"]):focus, select:focus, textarea:focus {
   outline: none;
-  box-shadow: inset 0 0 0 1px var(--color-border-brand), 0 0 0 3px var(--component-input-focus-glow);
+  box-shadow: inset 0 0 0 var(--border-default) var(--color-border-focus), 0 0 0 var(--border-focus-width) var(--component-input-focus-glow);
 }
 button:focus-visible, input[type="checkbox"]:focus-visible {
   outline: 2px solid var(--color-border-focus);
@@ -146,7 +146,7 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .welcome { flex: 1; display: flex; justify-content: center; padding: 56px 28px 80px; }
 .welcome-inner { width: 100%; max-width: 720px; }
 .tag { display: inline-flex; align-items: center; gap: var(--space-gap-related); height: var(--size-control-small); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); }
-.tag--purple { background: var(--color-background-brand-subtle); color: var(--color-text-link-hover); }
+.tag--purple { background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
 .tag--green { margin-left: var(--space-gap-related); background: var(--color-background-success-subtle); color: var(--color-text-success); }
 .welcome-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin: 0 0 16px; }
 .welcome-title-row .welcome-title { margin: 0; }
@@ -248,10 +248,10 @@ button.step:hover { background: var(--color-background-hover); }
 .fields--sign { margin-bottom: 20px; }
 .span-2 { grid-column: span 2; }
 .field-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-.field-head { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; }
+.field-head { display: flex; align-items: center; gap: 7px; margin-bottom: var(--space-gap-related); }
 .field-label { display: block; font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); color: var(--color-text-secondary); }
-.field-label--block { margin-bottom: 6px; }
-.chip { display: inline-flex; align-items: center; height: var(--size-control-small); font: var(--font-label-default); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); background: var(--color-background-neutral-default); color: var(--color-text-primary); }
+.field-label--block { margin-bottom: var(--space-gap-related); }
+.chip { display: inline-flex; align-items: center; height: var(--size-control-small); font: var(--font-label-default); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); background: var(--color-background-info-subtle); color: var(--color-text-info); }
 .chip--secure { gap: var(--space-gap-pair); background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
 .chip--success { background: var(--color-background-success-subtle); color: var(--color-text-success); }
 .field-hint { font: var(--font-caption-default); color: var(--color-text-subtle); margin-top: var(--space-gap-related); }
@@ -266,13 +266,13 @@ select.input { appearance: none; -webkit-appearance: none; padding: 0 36px 0 10p
 select.input:disabled { background-image: url("assets/chevron-down-disabled.svg"); }
 button.select-field { display: flex; align-items: center; text-align: left; cursor: pointer; padding-right: 36px; }
 .select-text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-button.select-field:focus-visible, button.select-field[aria-expanded="true"] { outline: none; box-shadow: inset 0 0 0 1px var(--color-border-brand), 0 0 0 3px var(--component-input-focus-glow); }
+button.select-field:focus-visible, button.select-field[aria-expanded="true"] { outline: none; box-shadow: inset 0 0 0 var(--border-default) var(--color-border-focus), 0 0 0 var(--border-focus-width) var(--component-input-focus-glow); }
 textarea.input { height: auto; padding: 10px var(--component-input-padding-x-large); line-height: 1.45; resize: vertical; }
 .input::placeholder, .affix input::placeholder { color: var(--color-text-subtle); }
 
 .affix { display: flex; align-items: center; gap: var(--component-input-gap); height: var(--size-control-large); padding: 0 var(--component-input-padding-x-large); border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); }
 .affix:hover { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-hover); }
-.affix:focus-within { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-focus), 0 0 0 3px var(--component-input-focus-glow); }
+.affix:focus-within { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-focus), 0 0 0 var(--border-focus-width) var(--component-input-focus-glow); }
 .affix input { flex: 1; min-width: 0; height: 100%; border: none; outline: none; background: transparent; font-size: var(--type-code-default-size); font-family: var(--font-mono); color: var(--color-text-secondary); }
 .affix input:focus { box-shadow: none; }
 .affix-prefix { font-size: var(--type-body-small-size); color: var(--color-text-subtle); font-family: var(--font-mono); }
@@ -331,13 +331,13 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 .doc-row { display: flex; align-items: flex-start; gap: 14px; }
 .doc-titlebar { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; margin-bottom: 3px; }
 .doc-title { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
-.req { display: inline-flex; align-items: center; height: var(--size-control-small); font: var(--font-label-default); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); background: var(--color-background-neutral-default); color: var(--color-text-primary); }
+.req { display: inline-flex; align-items: center; height: var(--size-control-small); font: var(--font-label-default); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); background: var(--color-background-info-subtle); color: var(--color-text-info); }
 .req--required { background: var(--color-background-warning-subtle); color: var(--color-text-warning); }
 .req--done { gap: 4px; background: var(--color-background-success-subtle); color: var(--color-text-success); }
-.state-pill { height: var(--size-control-medium); flex: none; display: inline-flex; align-items: center; gap: var(--space-gap-related); padding: 0 var(--space-padding-surface); border-radius: var(--radius-small); font: var(--font-label-default); }
-.state-pill--busy { background: var(--color-background-neutral-default); color: var(--color-text-primary); }
+.state-pill { height: var(--size-control-small); flex: none; display: inline-flex; align-items: center; gap: var(--space-gap-pair); padding: 0 var(--space-padding-cell); border-radius: var(--radius-small); font: var(--font-label-default); }
+.state-pill--busy { background: var(--color-background-info-subtle); color: var(--color-text-info); }
 .state-pill--done { background: var(--color-background-success-subtle); color: var(--color-text-success); }
-.state-pill--muted { background: var(--color-background-hover); color: var(--color-text-subtle); }
+.state-pill--muted { background: var(--color-background-info-subtle); color: var(--color-text-info); }
 .spinner { width: 13px; height: 13px; border-radius: var(--radius-full); border: 2px solid var(--color-border-default); border-top-color: var(--color-border-brand); animation: xspin 700ms linear infinite; }
 .doc-file { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-default); background: var(--color-background-shell); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .doc-file-name { font-size: var(--type-caption-default-size); font-family: var(--font-mono); color: var(--color-text-secondary); }
@@ -355,14 +355,22 @@ textarea.input { height: auto; padding: 10px var(--component-input-padding-x-lar
 
 /* The drop zone is twice the height of an uploaded file's tile (--doc-tile-h). */
 .doc-files, .dropzone { --doc-tile-h: 56px; }
-.dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: calc(2 * var(--doc-tile-h)); margin-top: 16px; padding: 14px 16px; border: 1.5px dashed var(--color-border-default); border-radius: var(--radius-default); background: transparent; cursor: pointer; text-align: center; transition: background-color 0.15s, border-color 0.15s; }
-.dz-icon { width: 34px; height: 34px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; background: var(--color-background-brand-subtle); color: var(--color-text-brand); transition: transform 0.15s; }
-.dz-text { font-size: var(--type-body-small-size); color: var(--color-text-secondary); }
-.dz-link { color: var(--color-text-brand); font-weight: var(--type-control-bold-weight); text-decoration: underline; text-underline-offset: 2px; }
+/* Atlas File drop zone (decision atlas-sweep-top-three): radius large, 1px dashed border/default on the raised-1 surface, padding hero, a plain 24px brand icon (no bubble), Body/Bold prompt with an "or browse" link line. Hover = brand tint and border. Drag-over = solid border/thick (1px border plus 1px inset), prompt "Drop to upload", no movement. Error = error wash and dashed error border. */
+.dropzone { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--space-gap-related); width: 100%; min-height: calc(2 * var(--doc-tile-h)); margin-top: 16px; padding: var(--space-padding-hero); border: var(--border-default) dashed var(--color-border-default); border-radius: var(--radius-large); background: var(--color-background-surface-raised-1); cursor: pointer; text-align: center; transition: background-color 0.15s, border-color 0.15s; }
+.dz-icon { display: flex; color: var(--color-icon-brand); }
+.dz-text { display: flex; flex-direction: column; align-items: center; gap: var(--space-gap-pair); }
+.dz-prompt, .dz-drop { font: var(--font-body-bold); color: var(--color-text-primary); }
+.dz-drop { display: none; }
+.dz-action { font: var(--font-body-default); color: var(--color-text-secondary); }
+.dz-link { color: var(--color-text-link-default); text-decoration: underline; text-underline-offset: 2px; }
+.dropzone:hover .dz-link, .dropzone.is-over .dz-link { color: var(--color-text-link-hover); }
 .dropzone:hover, .dropzone.is-over { background: var(--color-background-brand-subtle); border-color: var(--color-border-brand); }
-.dropzone.is-over .dz-icon { transform: translateY(-3px) scale(1.08); background: var(--color-background-brand-default); color: var(--color-icon-on-brand); }
-.doc[data-error] .dropzone { border-color: var(--color-border-error); }
-@media (prefers-reduced-motion: reduce) { .dropzone, .dz-icon { transition: none; } .dropzone.is-over .dz-icon { transform: none; } }
+.dropzone.is-over { border-style: solid; box-shadow: inset 0 0 0 var(--border-default) var(--color-border-brand); }
+.dropzone.is-over .dz-prompt { display: none; }
+.dropzone.is-over .dz-drop { display: block; }
+.dropzone.is-over .dz-action { visibility: hidden; }
+.doc[data-error] .dropzone { background: var(--color-background-error-subtle); border-color: var(--color-border-error); }
+@media (prefers-reduced-motion: reduce) { .dropzone { transition: none; } }
 /* Uploaded files stack one under another beneath the drop zone (decision document-drop-zone, replacing the two-to-a-row tiles of document-add-file-grid). */
 .doc-files { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
 .doc-files .doc-file { margin-top: 0; flex-wrap: nowrap; min-width: 0; min-height: var(--doc-tile-h); }
@@ -592,7 +600,9 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .req-star { color: var(--color-text-error); margin-left: 2px; font-weight: var(--type-control-bold-weight); }
 
 /* ---------- Validation: shown only after "Save and continue" has been pressed ---------- */
-.field-error { margin: 6px 0 0; font-size: var(--type-caption-default-size); line-height: 1.4; font-weight: var(--type-control-default-weight); color: var(--color-text-error); }
+/* Atlas helper row in error (decision atlas-sweep-top-three): 16px error icon, 4px gap, Caption/Default, text/error, 8px below the field. The icon means the status is not carried by colour alone. */
+.field-error { display: flex; align-items: flex-start; gap: var(--space-gap-pair); margin: var(--space-gap-related) 0 0; font: var(--font-caption-default); color: var(--color-text-error); }
+.field-error > .i { flex: none; color: var(--color-icon-error); }
 [data-error] > .input, [data-error] .input, [data-error] .affix { box-shadow: inset 0 0 0 1px var(--color-border-error); border-color: var(--color-border-error); }
 [data-error] .check { box-shadow: inset 0 0 0 1px var(--color-border-error); }
 .doc[data-error] { box-shadow: inset 0 0 0 1px var(--color-border-error), var(--lift-static); }
@@ -620,10 +630,20 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 .footer-hint { margin: 0; text-align: right; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 /* Success toast, top right. Fades itself out at the end of its 4.5 seconds; app.js removes it then. */
-.toast { position: fixed; top: 20px; right: 20px; z-index: 60; display: flex; align-items: center; gap: var(--space-gap-related); max-width: 400px; padding: var(--space-padding-surface) var(--space-padding-surface) var(--space-padding-surface) 22px; border-radius: var(--radius-large); background: var(--color-background-surface-raised-2); color: var(--color-text-primary); font: var(--font-body-default); box-shadow: inset 6px 0 0 var(--color-icon-success), inset 0 0 0 1px var(--color-border-default), var(--shadow-md); animation: xtoast 4.5s ease both; }
-.toast > .i { flex: none; color: var(--color-icon-success); }
+/* Atlas Toast (decision atlas-sweep-toast-badges): 400px wide, padding surface on every side, radius large, 1px border, Shadow/md. Header row = 16px icon plus Title in Body/Bold in the severity text colour; the message sits 8px below in Body/Default; a 24px dismiss button; a 6px bar on the left edge that drains downward over the 5 second hang time. Success sits on the success wash, info on the neutral raised surface. */
+.toast { position: fixed; top: 20px; right: 20px; z-index: 60; display: flex; align-items: flex-start; gap: var(--space-gap-related); width: 400px; max-width: calc(100vw - 40px); padding: var(--space-padding-surface); border-radius: var(--radius-large); background: var(--color-background-surface-raised-2); color: var(--color-text-primary); font: var(--font-body-default); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default), var(--shadow-md); animation: xtoast 5s ease both; --toast-accent: var(--color-icon-info); --toast-title: var(--color-text-info); }
+.toast--success { background: var(--color-background-success-subtle); --toast-accent: var(--color-icon-success); --toast-title: var(--color-text-success); }
+.toast-timer { position: absolute; inset: 0; border-radius: var(--radius-large); overflow: hidden; pointer-events: none; }
+.toast-timer::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--toast-accent); transform-origin: bottom; animation: xdrain 5s linear both; }
+.toast-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-gap-related); }
+.toast-head { display: flex; align-items: center; gap: var(--space-gap-pair); font: var(--font-body-bold); color: var(--toast-title); }
+.toast-head > .i { flex: none; color: var(--toast-accent); }
+.toast-msg { font: var(--font-body-default); color: var(--color-text-primary); }
+.toast-close { flex: none; display: inline-flex; align-items: center; justify-content: center; width: var(--size-icon-large); height: var(--size-icon-large); padding: 0; border: none; border-radius: var(--radius-default); background: transparent; color: var(--color-icon-secondary); cursor: pointer; }
+.toast-close:hover { background: var(--color-background-hover); }
 @keyframes xtoast { 0% { opacity: 0; transform: translateX(16px) } 5% { opacity: 1; transform: none } 92% { opacity: 1 } 100% { opacity: 0 } }
-@media (prefers-reduced-motion: reduce) { .toast { animation: none !important; } }
+@keyframes xdrain { from { transform: scaleY(1) } to { transform: scaleY(0) } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none !important; } .toast-timer::before { animation: none; } }
 
 /* Searchable category picker */
 .combo { position: relative; }
@@ -770,8 +790,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .action-opt:hover, .action-opt:focus-visible { background: var(--color-background-hover); }
 .action-opt--danger { color: var(--color-text-error); }
 .action-sep { height: 1px; margin: 4px 0; background: var(--color-border-subtle); }
-.pill--info { background: var(--color-background-info-default); color: var(--color-text-info); }
-.pill--neutral { background: var(--color-background-surface-sunken); color: var(--color-text-secondary); }
+.pill--info { background: var(--color-background-info-subtle); color: var(--color-text-info); }
+.pill--neutral { background: var(--color-background-info-subtle); color: var(--color-text-info); }
 .btn-critical { color: var(--color-text-error); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-gap-related); flex-wrap: wrap; }
 .gate-foot { display: block; margin-top: 8px; font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }

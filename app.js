@@ -484,8 +484,8 @@
       "area": "Flow",
       "where": "Step 4 · Payout account",
       "t": "The payout account is typed in, with no bank connection",
-      "b": "Step 4 asks for the account details directly: bank name, account holder, account type, and the routing and account numbers (institution, transit and account numbers in Canada). The earlier choice between connecting a bank and typing the details in is gone, along with the “30 seconds” and “+1 document” labels, the simulated bank login, and the lines on the welcome page and in step 4 that promised a faster route. Nothing proves the account on the spot any more, so the account is checked by Trullio after submit (decision bank-verified-by-trullio); an earlier version asked for a bank letter or voided check in step 6.",
-      "tradeoff": "Typing numbers is slower and easier to get wrong than a bank connection, and a mistyped digit would send money to the wrong place; the check is Trullio's, after submit. A connection could come back later as a second route, but it is not designed here.",
+      "b": "Step 4 asks for the account details directly: bank name, account holder, account type, and the routing and account numbers (institution, transit and account numbers in Canada). The earlier choice between connecting a bank and typing the details in is gone, along with the “30 seconds” and “+1 document” labels, the simulated bank login, and the lines on the welcome page and in step 4 that promised a faster route. Nothing proves the account on the spot any more, so the account is checked by Trulioo after submit (decision bank-verified-by-trulioo); an earlier version asked for a bank letter or voided check in step 6.",
+      "tradeoff": "Typing numbers is slower and easier to get wrong than a bank connection, and a mistyped digit would send money to the wrong place; the check is Trulioo's, after submit. A connection could come back later as a second route, but it is not designed here.",
       "by": "Ryan",
       "when": "2026-10-07"
     },
@@ -747,7 +747,7 @@
       "area": "Trust",
       "where": "Step 2, step 6 and welcome",
       "t": "Give a reason beside each sensitive request and say what documents are coming",
-      "b": "A wary tester stopped at the photo ID request because the welcome page never mentioned it and the only explanation named an unnamed partner. The ID number, the SSN or SIN and the photo ID row now each start with a one-line reason, the welcome page lists the documents needed at step 6, and its “owners” card now covers people who run an organization too. The verification partner is named in every place it appears (Trullio, on Ryan's word), so there is a name to look up.",
+      "b": "A wary tester stopped at the photo ID request because the welcome page never mentioned it and the only explanation named an unnamed partner. The ID number, the SSN or SIN and the photo ID row now each start with a one-line reason, the welcome page lists the documents needed at step 6, and its “owners” card now covers people who run an organization too. The verification partner is named in every place it appears (Trulioo, on Ryan's word), so there is a name to look up.",
       "tradeoff": "More words beside already dense fields. The security claims repeated here (never stored, sent straight to the partner) are existing copy and have not been verified.",
       "by": "Claude",
       "when": "2026-10-05"
@@ -807,7 +807,7 @@
       "area": "Copy",
       "where": "Welcome page",
       "t": "The “What you'll need” list is four cards, with bank and documents combined",
-      "b": "Getting paid and the documents that back it up are one preparation job, so they share a card: bank numbers, and the documents that back it up (the bank letter was removed later, decision bank-verified-by-trullio). The line about a photo ID going up at step 6 was removed because it was unclear; the second card is titled “Details of the people who own your organization”. The page also sits closer to the top, as do all the steps.",
+      "b": "Getting paid and the documents that back it up are one preparation job, so they share a card: bank numbers, and the documents that back it up (the bank letter was removed later, decision bank-verified-by-trulioo). The line about a photo ID going up at step 6 was removed because it was unclear; the second card is titled “Details of the people who own your organization”. The page also sits closer to the top, as do all the steps.",
       "tradeoff": "The combined card is longer than the others.",
       "by": "Ryan",
       "when": "2026-10-05"
@@ -857,7 +857,7 @@
       "area": "Trust",
       "where": "Welcome",
       "t": "Put a phone number and the verification partner's name on the welcome page",
-      "b": "The baker in the persona tests looked for someone to call before she would give an SSN, and the welcome page offered only a small privacy link that never named who checks her identity. The page now carries a line stacked just above the privacy link, “Want to talk to someone first?”, with the support number and hours, and the privacy note says identity checks are done by Trullio, our verification partner. The number and hours are the same constants the Get help panel uses, so they change in one place. Changed on 2026-10-22: the privacy note moved into the description and the support line was replaced by a Get help button (decision welcome-help-and-info-in-header).",
+      "b": "The baker in the persona tests looked for someone to call before she would give an SSN, and the welcome page offered only a small privacy link that never named who checks her identity. The page now carries a line stacked just above the privacy link, “Want to talk to someone first?”, with the support number and hours, and the privacy note says identity checks are done by Trulioo, our verification partner. The number and hours are the same constants the Get help panel uses, so they change in one place. Changed on 2026-10-22: the privacy note moved into the description and the support line was replaced by a Get help button (decision welcome-help-and-info-in-header).",
       "tradeoff": "The number is a placeholder until ops supply the real one, and the security claims in the privacy note (tokenized, encrypted) are still unverified. A person has to read the page to reach the number; it is a line of text, not a button.",
       "by": "Claude",
       "when": "2026-10-06"
@@ -1004,12 +1004,12 @@
       "when": "2026-10-06"
     },
     {
-      "id": "bank-verified-by-trullio",
+      "id": "bank-verified-by-trulioo",
       "area": "Flow",
       "where": "Step 6 · Documents, and step 4 · Payout account",
       "t": "Step 6 no longer asks for proof of the bank account",
-      "b": "The Bank account verification row (a voided check or void cheque, a bank letter, or a recent statement) is gone from step 6, in both regions and for every business type. Ryan says Trullio, our verification partner, verifies bank accounts for us, so the applicant only types the account in step 4. The step 4 description, the line under the fields and the Why do you need my account details? note, the welcome page's bank line and the step 7 review row no longer mention a document, and the review row shows only the bank name and account type. The Banking Verification card on the More info needed screen is unchanged: it is what Ops can still ask for after submit. Earlier versions made the bank letter always required (decision bank-letter-always, 2026-10-07). Update, 2026-11-11: Ryan says Trullio verifies bank accounts for the US but not for Canada. Step 6 still asks for no bank proof in either region, so how a Canadian account is checked is not decided. Update, 2026-11-13: for Canada only, a Bank account verification row is back on step 6 (ca-bank-proof-row), because Trulioo cannot verify Canadian bank accounts. The US still asks for no bank proof.",
-      "tradeoff": "That Trullio verifies bank accounts is relayed by Ryan, not from a document; Trullio or compliance should confirm it covers US and Canadian accounts and what happens when an account cannot be verified (the Banking Verification request is the likely route). A mistyped number is now caught only after submit, not by a document at step 6. Step 6 has one less file to find, which was the most common place people got stuck without the paper in hand.",
+      "b": "The Bank account verification row (a voided check or void cheque, a bank letter, or a recent statement) is gone from step 6, in both regions and for every business type. Ryan says Trulioo, our verification partner, verifies bank accounts for us, so the applicant only types the account in step 4. The step 4 description, the line under the fields and the Why do you need my account details? note, the welcome page's bank line and the step 7 review row no longer mention a document, and the review row shows only the bank name and account type. The Banking Verification card on the More info needed screen is unchanged: it is what Ops can still ask for after submit. Earlier versions made the bank letter always required (decision bank-letter-always, 2026-10-07). Update, 2026-11-11: Ryan says Trulioo verifies bank accounts for the US but not for Canada. Step 6 still asks for no bank proof in either region, so how a Canadian account is checked is not decided. Update, 2026-11-13: for Canada only, a Bank account verification row is back on step 6 (ca-bank-proof-row), because Trulioo cannot verify Canadian bank accounts. The US still asks for no bank proof.",
+      "tradeoff": "That Trulioo verifies bank accounts is relayed by Ryan, not from a document; Trulioo or compliance should confirm it covers US and Canadian accounts and what happens when an account cannot be verified (the Banking Verification request is the likely route). A mistyped number is now caught only after submit, not by a document at step 6. Step 6 has one less file to find, which was the most common place people got stuck without the paper in hand.",
       "by": "Ryan",
       "when": "2026-11-02"
     },
@@ -1833,7 +1833,7 @@
       "where": "Step 2 · Leaders & signatory (non-profit and government route)",
       "t": "Non-profit and government applicants are not asked for anyone's SSN or SIN",
       "b": "On the non-profit and government route, the leader cards at step 2 no longer ask for a Social Security Number (Social Insurance Number in Canada). It is not required for these organizations, so the field is gone and nothing waits on it. Company and sole proprietor owners are still asked for it. The Government ID number, ID type, expiry and country, and the photo ID at step 6, are still asked for everyone. On the More info needed screen, the Know your customer card does not offer a Social Security card as an accepted document on this route. The welcome page says in its list of what to have ready that a non-profit or government body does not need the SSN or SIN, and the Why do you need owners note no longer mentions it for this route.",
-      "tradeoff": "The rule is Ryan's; no source document was checked. The Know your customer request on the More info needed screen no longer lists a Social Security card as an accepted document on this route (Ryan, 2026-10-27); the same card still lists it for companies and sole proprietors. Whether the identity check can work without the number is for Trullio and compliance to confirm.",
+      "tradeoff": "The rule is Ryan's; no source document was checked. The Know your customer request on the More info needed screen no longer lists a Social Security card as an accepted document on this route (Ryan, 2026-10-27); the same card still lists it for companies and sole proprietors. Whether the identity check can work without the number is for Trulioo and compliance to confirm.",
       "by": "Ryan",
       "when": "2026-10-27"
     },
@@ -1922,7 +1922,7 @@
       "area": "Flow",
       "where": "Step 4 · Payout account",
       "t": "Onboarding takes one bank account; more are added after approval",
-      "b": "Step 4 asks for one settlement account, the one that must match the legal name. Applicants cannot add further accounts here. The step description says that once approved they can add more accounts for their other merchants. A business such as a golf and country club can have a restaurant with its own bank account, but that is a separate merchant under the same business, set up after approval, not a second payout account on this application. A bank account held by a different legal entity is not an extra account: it needs its own application. Underwriting therefore reviews one legal entity and one verified bank account (decision bank-verified-by-trullio). This replaces the earlier optional Add another bank account link built on 2026-11-02.",
+      "b": "Step 4 asks for one settlement account, the one that must match the legal name. Applicants cannot add further accounts here. The step description says that once approved they can add more accounts for their other merchants. A business such as a golf and country club can have a restaurant with its own bank account, but that is a separate merchant under the same business, set up after approval, not a second payout account on this application. A bank account held by a different legal entity is not an extra account: it needs its own application. Underwriting therefore reviews one legal entity and one verified bank account (decision bank-verified-by-trulioo). This replaces the earlier optional Add another bank account link built on 2026-11-02.",
       "tradeoff": "Adding accounts and merchants after approval is only described, not built. How underwriting treats a later account (extra check, new underwriting for a different trading name or merchant category) is not decided. A business with several accounts has to wait for approval before setting them up.",
       "by": "Ryan",
       "when": "2026-11-03"
@@ -2111,8 +2111,8 @@
       "area": "Flow",
       "where": "Under review page",
       "t": "The under review page says questions arrive by email and are answered on the page, and names no vendor",
-      "b": "The line at the bottom of the under review card now reads \"If we have a question, we'll send you an email. Reply to it and we'll carry on from there.\" (Reworded 2026-11-09, see more-info-by-email: it used to say \"and you'll respond to us here\", when the applicant answered on the page.) It used to say the question would appear on the page as one clear request, which left out how the applicant would know there was one. The email is what brings them back and is also where they answer. The Application received line also stops naming Trullio and says it was sent to our verification partner, matching the rest of the prototype's wording for the identity check.",
-      "tradeoff": "It promises an email for every question, so the More info needed email has to be sent whenever Ops asks for something (the template exists; nothing connects Ops picks to it yet). Step 7's What happens next panel and the why-we-ask notes still name Trullio; only the under review page was changed.",
+      "b": "The line at the bottom of the under review card now reads \"If we have a question, we'll send you an email. Reply to it and we'll carry on from there.\" (Reworded 2026-11-09, see more-info-by-email: it used to say \"and you'll respond to us here\", when the applicant answered on the page.) It used to say the question would appear on the page as one clear request, which left out how the applicant would know there was one. The email is what brings them back and is also where they answer. The Application received line also stops naming Trulioo and says it was sent to our verification partner, matching the rest of the prototype's wording for the identity check.",
+      "tradeoff": "It promises an email for every question, so the More info needed email has to be sent whenever Ops asks for something (the template exists; nothing connects Ops picks to it yet). Step 7's What happens next panel and the why-we-ask notes still name Trulioo; only the under review page was changed.",
       "by": "Ryan",
       "when": "2026-11-04"
     },
@@ -2201,8 +2201,8 @@
       "area": "Flow",
       "where": "Step 1 · Registered details",
       "t": "The EIN or business number is a field in Registered details, and there is no registry lookup",
-      "b": "From the refinement session with engineering. The lookup went because of what it can actually do. Trullio can only prefill an address from a lookup, it needs the business's name and country to do it, and it then returns every business that shares that name in that country. The applicant could be shown a long list of possible matches, or have the wrong business prefilled, all so that they save typing an address. That is a bad trade, so the lookup, the Look up button, Enter details manually, the Is this your business? question and the match toasts are removed, and the whole of step 1 shows from the start. The EIN (Business Number in Canada) is now an ordinary field in the Registered details card, with the legal name, Doing business as, structure, date and state. A company or a non-profit has to give one; for a sole proprietor it is optional, and the hint says that without one they give their SSN (SIN in Canada) in step 2 instead. It is checked for nine digits, an SSN-shaped number is refused with a plain message, and a Canadian number pasted with its program account (RT0001) is cut back to the nine digits as the person leaves the field. The layout puts the legal name beside the EIN for a company, and Doing business as beside it for a non-profit and a sole proprietor. Nothing is filled in from the number. The address is typed in the Addresses card. The copy that went with the lookup is changed: the welcome page's registration line now says what Step 1 asks for, the why-we-ask note says the details should match the tax documents added in step 6, the line about protecting the EIN at the lookup is gone, and the confirmation's checking line names the business details for a company or non-profit. With no registry match to waive it, the EIN letter is now always required in step 6 for a company or non-profit in the US (a sole proprietor adds it only if they gave an EIN). There is no separate proof-of-registration document: the EIN letter (in Canada, a CRA business number confirmation) and the US W-9 are the documents that back the details.",
-      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Nothing checks the entity's existence against a registration document. Ops should confirm that the EIN letter (CRA business number confirmation in Canada) and the W-9 are enough. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trullio can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record. Update, 2026-11-11: Ryan added a Find your business search back on step 1 as a type-ahead with a Prototype option to switch it off (business-lookup-typeahead), after reading Trulioo's KYB Prefill page. The EIN is still a typed field and is not filled in from it. Update, 2026-11-12: step 6 no longer asks for the EIN letter or the CRA confirmation (ein-bn-document-removed), so Ops's question about whether the EIN letter is enough no longer applies; Ryan says Trulioo validates the number.",
+      "b": "From the refinement session with engineering. The lookup went because of what it can actually do. Trulioo can only prefill an address from a lookup, it needs the business's name and country to do it, and it then returns every business that shares that name in that country. The applicant could be shown a long list of possible matches, or have the wrong business prefilled, all so that they save typing an address. That is a bad trade, so the lookup, the Look up button, Enter details manually, the Is this your business? question and the match toasts are removed, and the whole of step 1 shows from the start. The EIN (Business Number in Canada) is now an ordinary field in the Registered details card, with the legal name, Doing business as, structure, date and state. A company or a non-profit has to give one; for a sole proprietor it is optional, and the hint says that without one they give their SSN (SIN in Canada) in step 2 instead. It is checked for nine digits, an SSN-shaped number is refused with a plain message, and a Canadian number pasted with its program account (RT0001) is cut back to the nine digits as the person leaves the field. The layout puts the legal name beside the EIN for a company, and Doing business as beside it for a non-profit and a sole proprietor. Nothing is filled in from the number. The address is typed in the Addresses card. The copy that went with the lookup is changed: the welcome page's registration line now says what Step 1 asks for, the why-we-ask note says the details should match the tax documents added in step 6, the line about protecting the EIN at the lookup is gone, and the confirmation's checking line names the business details for a company or non-profit. With no registry match to waive it, the EIN letter is now always required in step 6 for a company or non-profit in the US (a sole proprietor adds it only if they gave an EIN). There is no separate proof-of-registration document: the EIN letter (in Canada, a CRA business number confirmation) and the US W-9 are the documents that back the details.",
+      "tradeoff": "The applicant types more, and a typo in the name, structure, date or address is no longer caught by a match. Nothing checks the entity's existence against a registration document. Ops should confirm that the EIN letter (CRA business number confirmation in Canada) and the W-9 are enough. The earlier decisions that described the lookup are removed (lookup-first, lookup-not-me, lookup-progressive, lookup-clears-refused-number, welcome-registry-promise-softened). If Trulioo can later return a single reliable match, an address prefill could come back as an option; it is not designed. The EIN is checked only for nine digits, not against any record. Update, 2026-11-11: Ryan added a Find your business search back on step 1 as a type-ahead with a Prototype option to switch it off (business-lookup-typeahead), after reading Trulioo's KYB Prefill page. The EIN is still a typed field and is not filled in from it. Update, 2026-11-12: step 6 no longer asks for the EIN letter or the CRA confirmation (ein-bn-document-removed), so Ops's question about whether the EIN letter is enough no longer applies; Ryan says Trulioo validates the number.",
       "by": "Ryan",
       "when": "2026-11-05"
     },
@@ -2681,7 +2681,7 @@
       "area": "Flow",
       "where": "More info needed",
       "t": "Every request for more information has the same file upload and message box, and nothing on it is required",
-      "b": "On the in-app More info needed screen every reason keeps its own title, its line on why we need it and its list of what we accept, but all of them are answered the same way: a Choose file button (Add another file once there is one) and a Message for our team box. Cards such as the website address, check your sales numbers, tell us when customers get what they pay for, remove the credit freeze and update your website no longer have their own fields or buttons. No card shows a Required, Write an answer or Done badge, nothing is pre-filled from step 3, and nothing is checked. Send to our team is on once any card has a file or a message and nothing is still uploading. Ryan's reason: Trullio does not check this information again, a person only reviews it, so a text box is enough, even for a request such as Enter your website. The message box label has no (optional) tag any more, because nothing around it is required. Update, 2026-11-11: Ryan says applicants must reply to every request to be able to send. Send to our team now stays off until every card has a file or a message (and nothing is still uploading), and the line under it reads Add a file or write a message for every request to send. This replaces the line above saying Send is on once any card has a file or a message. Nothing on a card is marked Required, and nothing checks what the reply says.",
+      "b": "On the in-app More info needed screen every reason keeps its own title, its line on why we need it and its list of what we accept, but all of them are answered the same way: a Choose file button (Add another file once there is one) and a Message for our team box. Cards such as the website address, check your sales numbers, tell us when customers get what they pay for, remove the credit freeze and update your website no longer have their own fields or buttons. No card shows a Required, Write an answer or Done badge, nothing is pre-filled from step 3, and nothing is checked. Send to our team is on once any card has a file or a message and nothing is still uploading. Ryan's reason: Trulioo does not check this information again, a person only reviews it, so a text box is enough, even for a request such as Enter your website. The message box label has no (optional) tag any more, because nothing around it is required. Update, 2026-11-11: Ryan says applicants must reply to every request to be able to send. Send to our team now stays off until every card has a file or a message (and nothing is still uploading), and the line under it reads Add a file or write a message for every request to send. This replaces the line above saying Send is on once any card has a file or a message. Nothing on a card is marked Required, and nothing checks what the reply says.",
       "tradeoff": "An applicant can send without answering every card, and the screen will not say that a request was left unanswered, so Ops has to read the messages and files against what they asked. Typed answers are free text, so Ops cannot rely on a number or a web address arriving in a usable format. The credit freeze and website cards no longer have a button to say the job is done, so the applicant has to say so in the message. Update, 2026-11-11: an applicant with nothing to send for one request (for example, a credit freeze they have already removed) now has to write that in its message box before they can send any of the others.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -2782,7 +2782,7 @@
       "where": "Step 2 · Owner cards · Identity verification",
       "t": "A tick under the SSN or SIN says the person has none, and fills the box with zeros",
       "b": "Ryan: under the Social Security Number (or SIN) box in an owner card, a tick box reads This person doesn't have an SSN (SIN for Canada). Ticking it fills the box with all zeros (000-00-0000, or 000 000 000 for a SIN) and locks it, with no Show button, the same way the website box locks to N/A when I don't have a website is ticked. Unticking clears the box and unlocks it, so the person can type a number. The tick is optional and is not shown for a non-profit or government body, which are not asked for the number (nonprofit-no-national-id). It sits above the politically exposed person question. Only zeros are ever stored in the box, never a real number. Update, 2026-11-11 (later): the tick now sits in line to the right of the box, and a locked box looks disabled like the website box (see tick-beside-field).",
-      "tradeoff": "Zeros in an SSN box can look like a real answer to anything that reads the form later. The tick is kept as its own answer so the two cases can be told apart, but whether Trullio or Ops accept an owner with no SSN, and what they need instead, is not confirmed. The earlier hint about an ITIN (in the why note under the box) is still there for someone who has a different number.",
+      "tradeoff": "Zeros in an SSN box can look like a real answer to anything that reads the form later. The tick is kept as its own answer so the two cases can be told apart, but whether Trulioo or Ops accept an owner with no SSN, and what they need instead, is not confirmed. The earlier hint about an ITIN (in the why note under the box) is still there for someone who has a different number.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -2982,7 +2982,7 @@
       "where": "Step 1 · Find your business",
       "t": "Step 1 opens with a Find your business card: pick a country, type the business name, and choose it from a list to fill in the name and address; a Prototype option turns it off and everything is typed in as before",
       "b": "Ryan: Trulioo's KYB Prefill can search by country and business name and return matching businesses with their address, so step 1 has a simple country and business name search again (the registry lookup was removed in ein-in-registered-details). A Find your business card sits above Registered details, for a company or non-profit; a sole proprietor is not offered it, because they are a person and not a registered business. The country starts as the applicant's region, and changing it changes the region. After three characters the name box lists matching businesses as the applicant types, up to five, each with the registered name, its address and, when other businesses share that name, a line saying how many do and asking them to check the address is theirs. Picking one fills in the legal name and the registered address (the address boxes open so the parts can be checked) and shows a green confirmation with the name and address, a reminder to check them against the registration, and a Search again link. Nothing else is filled in: not the EIN, the date, the state of incorporation or the structure. The last row of the list is always Can't find it? Enter details manually, and no match says so in the list; either one leaves the card as a one-line note with a link back to searching. The card is optional and never counts towards the step, and every field below stays editable. A Prototype option, Business lookup (step 1), switches it off, so the card is not shown and everything is typed in, as before; the default is on. Trulioo's page says the search is made for search-as-you-type, takes optional state and city, caps the list with a limit, ranks by confidence and returns a count of other businesses with the same or similar name. In the prototype the list is a short fixed set per country with several businesses sharing a name, and a short wait stands in for the request. Update, 2026-11-11 (same day): Ryan asked for two changes. Opening the box before typing now lists five of the sample businesses so there is something to pick straight away, and from three characters the list is the search. And the rest of step 1 (Registered details, Addresses, How we reach you, What the business sells) is not shown until a business has been picked from the list or the applicant has chosen Can't find it? Enter details manually, so the lookup is the first thing they see. A business whose name is already in (a returning applicant, the sample business, or someone who pressed Search again after picking) keeps the sections showing, and once a business has been picked or manual entry chosen the sections stay shown even if the name is later cleared. The hidden fields still count towards the step's progress, so step 1 does not read as done while it is hidden. Ryan gave no reason for either change. Update 2026-11-12: the Country select is replaced by a State select (Province in Canada); see business-lookup-state. Update, 2026-11-12, Ryan: the line under a result saying how many other businesses share its name and asking the applicant to check the address is theirs is removed, so each row is only the name and address. The same-name samples stay in the list and are still ranked first; they just carry no warning. The Can't find it? Enter details manually row is now pinned to the bottom of the open list: the results scroll above it and it stays in view without scrolling.",
-      "tradeoff": "Typing more does not reliably find the business: Trulioo's own page says businesses can share a name and it returns a duplicate count (the example shows 57), so the list can hold several identical names and only the address tells them apart. The applicant could pick the wrong one, and the name and address are filled in from it. There is no state or city box, so a common name cannot be narrowed except by reading addresses. Trulioo's page does not say how well it covers small businesses, sole proprietors or Canada, whether it returns an incorporation date, structure or EIN, or what each search costs, so none of those are assumed, and whether this is better than typing everything in depends on the answers. The real search needs a call from our back end with Trulioo credentials, never from the page. This partly reverses the removal in ein-in-registered-details, which closed by saying an address prefill could come back if Trullio could return a reliable match. Hiding the sections means an applicant who already has everything to hand must still pick or press the manual link before they see a field, one extra step for them, and anyone who does not notice the manual link may think the form is only the search. Removing the same-name line means nothing now tells the applicant that a name is shared, so the wrong business is easier to pick; the only cue left is reading the addresses, and the manual row is the way out.",
+      "tradeoff": "Typing more does not reliably find the business: Trulioo's own page says businesses can share a name and it returns a duplicate count (the example shows 57), so the list can hold several identical names and only the address tells them apart. The applicant could pick the wrong one, and the name and address are filled in from it. There is no state or city box, so a common name cannot be narrowed except by reading addresses. Trulioo's page does not say how well it covers small businesses, sole proprietors or Canada, whether it returns an incorporation date, structure or EIN, or what each search costs, so none of those are assumed, and whether this is better than typing everything in depends on the answers. The real search needs a call from our back end with Trulioo credentials, never from the page. This partly reverses the removal in ein-in-registered-details, which closed by saying an address prefill could come back if Trulioo could return a reliable match. Hiding the sections means an applicant who already has everything to hand must still pick or press the manual link before they see a field, one extra step for them, and anyone who does not notice the manual link may think the form is only the search. Removing the same-name line means nothing now tells the applicant that a name is shared, so the wrong business is easier to pick; the only cue left is reading the addresses, and the manual row is the way out.",
       "by": "Ryan",
       "when": "2026-11-11"
     },
@@ -3001,8 +3001,8 @@
       "area": "Copy",
       "where": "Step 6 · Supporting documents",
       "t": "Document cards have no Why we ask helper text",
-      "b": "Ryan: remove the Why we ask helper text on the document upload cards, because the why is already covered in the description's tooltip. The small Why we ask link under each card's description is gone, and the sentence behind it (the government ID card's \"To confirm you are who you say you are. It goes only to Trullio, our verification partner.\") is deleted with it.",
-      "tradeoff": "The reason for asking now lives only in the description tooltip, so an applicant who does not open it sees no explanation on the card. The Trullio sharing line also stays on the step 6 callout (Files are stored encrypted and shared only with Trullio), not on the ID card.",
+      "b": "Ryan: remove the Why we ask helper text on the document upload cards, because the why is already covered in the description's tooltip. The small Why we ask link under each card's description is gone, and the sentence behind it (the government ID card's \"To confirm you are who you say you are. It goes only to Trulioo, our verification partner.\") is deleted with it.",
+      "tradeoff": "The reason for asking now lives only in the description tooltip, so an applicant who does not open it sees no explanation on the card. The Trulioo sharing line also stays on the step 6 callout (Files are stored encrypted and shared only with Trulioo), not on the ID card.",
       "by": "Ryan",
       "when": "2026-11-12"
     },
@@ -3081,7 +3081,7 @@
       "area": "Flow",
       "where": "Step 6 · Documents (Canada)",
       "t": "Canadian applicants add proof of their bank account on step 6, because Trulioo cannot verify Canadian accounts",
-      "b": "Ryan asked whether Canada still asks for evidence of the bank account given that Trulioo cannot validate Canadian bank accounts, and said yes when offered the row back. For a Canadian business (company, non-profit or sole proprietor) step 6 now has a required Bank account verification card: any one of a void cheque with the business name and account details printed on it, a letter from the bank, or a recent bank statement. The US still has no bank row, because Trulioo verifies US accounts (bank-verified-by-trullio). The card works like every other document card: drop zone, any number of files, the red outline and Add this file to finish this step. when it is missing. A Canadian business now uploads at least the photo IDs and the bank proof.",
+      "b": "Ryan asked whether Canada still asks for evidence of the bank account given that Trulioo cannot validate Canadian bank accounts, and said yes when offered the row back. For a Canadian business (company, non-profit or sole proprietor) step 6 now has a required Bank account verification card: any one of a void cheque with the business name and account details printed on it, a letter from the bank, or a recent bank statement. The US still has no bank row, because Trulioo verifies US accounts (bank-verified-by-trulioo). The card works like every other document card: drop zone, any number of files, the red outline and Add this file to finish this step. when it is missing. A Canadian business now uploads at least the photo IDs and the bank proof.",
       "tradeoff": "That Trulioo verifies US but not Canadian bank accounts is relayed by Ryan, not from a document; Trulioo or compliance should confirm it. This is a prototype row, and the wording is a draft. The Banking Verification card on More info needed is still what Ops can ask for after submit; this row asks for the proof up front instead of after. Whether the sponsor bank accepts a bank statement as well as a void cheque or letter is not known. Step 4 and the step 7 review do not mention the document, as before.",
       "by": "Ryan",
       "when": "2026-11-13"
@@ -3161,8 +3161,8 @@
       "area": "Copy",
       "where": "Step 1, step 4 and step 5 notes and descriptions",
       "t": "Three accuracy fixes from the content audit: stale step 6 reference, Canada bank check, and no statement about how a yes is decided",
-      "b": "Ryan ran the Xplor Pay content guidelines over the journey (CONTENT-AUDIT-2026-11-13.md) and asked for the must fix items to be applied except the ones he is happy with (Faster approval, Secure sign-in, the security and privacy lines on steps 2 and 6, the pricing and credit-check lines on step 3, and the credit score line on step 5). Three were applied. (1) The step 1 note said the details are checked against the tax documents the applicant adds in step 6, which stopped being true when the EIN letter and CRA confirmation were removed (ein-bn-document-removed); it now says to type the details as they appear on the registration, and the first pill reads We use these to confirm the business exists. (2) The step 4 note said Trullio checks the bank account so payouts only ever go where they should. The absolute promise is gone, and Canada now reads We ask for proof of it in step 6, then check it after you submit, because Trulioo does not verify Canadian accounts and step 6 asks for bank proof there (ca-bank-proof-row). The US wording keeps the Trullio check without the word only. The note also says payouts, not sales. (3) Three lines said a yes on the declarations is never an automatic no, is not a refusal, or won't stop the application. They are replaced by one neutral statement in all three places: If you answer yes to any of these, a person reviews your application.",
-      "tradeoff": "The new step 5 line is still a statement about process, so Compliance should confirm it before it ships; no locked wording was written. The step 5 note and the step 6 notes still say things Ryan chose to keep (None of this affects your personal credit score, Stored encrypted). The Canada step 4 line assumes the bank proof stays on step 6 for Canada. The partner name is still spelled Trullio in the UI; the audit asked Ryan which spelling is right.",
+      "b": "Ryan ran the Xplor Pay content guidelines over the journey (CONTENT-AUDIT-2026-11-13.md) and asked for the must fix items to be applied except the ones he is happy with (Faster approval, Secure sign-in, the security and privacy lines on steps 2 and 6, the pricing and credit-check lines on step 3, and the credit score line on step 5). Three were applied. (1) The step 1 note said the details are checked against the tax documents the applicant adds in step 6, which stopped being true when the EIN letter and CRA confirmation were removed (ein-bn-document-removed); it now says to type the details as they appear on the registration, and the first pill reads We use these to confirm the business exists. (2) The step 4 note said Trulioo checks the bank account so payouts only ever go where they should. The absolute promise is gone, and Canada now reads We ask for proof of it in step 6, then check it after you submit, because Trulioo does not verify Canadian accounts and step 6 asks for bank proof there (ca-bank-proof-row). The US wording keeps the Trulioo check without the word only. The note also says payouts, not sales. (3) Three lines said a yes on the declarations is never an automatic no, is not a refusal, or won't stop the application. They are replaced by one neutral statement in all three places: If you answer yes to any of these, a person reviews your application.",
+      "tradeoff": "The new step 5 line is still a statement about process, so Compliance should confirm it before it ships; no locked wording was written. The step 5 note and the step 6 notes still say things Ryan chose to keep (None of this affects your personal credit score, Stored encrypted). The Canada step 4 line assumes the bank proof stays on step 6 for Canada. The partner name is still spelled Trulioo in the UI; the audit asked Ryan which spelling is right.",
       "by": "Ryan",
       "when": "2026-11-13"
     },
@@ -3173,6 +3173,26 @@
       "t": "The should fix and polish findings from the content audit are applied, with four left as they were and three altered",
       "b": "Ryan ran the Xplor Pay content guidelines over the journey (CONTENT-AUDIT-2026-11-13.md) and said to fix everything in the should fix and polish groups except four items he left as they were (1.3 the welcome email reassurance, 5.2 the Merchant category code (MCC) label because MCC is correct, 8.5 the step 4 line about adding more accounts, and 13.3 the under review timing and nothing-else-to-do lines) and three he altered (1.1 and 12.3: the temporary password and the resume link now work for 30 days, not 7; and 14.2: the digit messages drop You've entered [n]). Applied: the Change your password button reads Save password and sign in; the welcome page says seven steps, have it all ready, splits the owners sentence, lists documents on the bank card, and says average payment; slashes became or (Individual or sole proprietor, Registered or legal address, Title or role, Refund or return policy URL, Owner and CEO); queries became questions; Just the first 9 digits became Enter the first 9 digits only; We only need owners with 25% or more became We need owners who hold 25% or more; every step note asks Why are we asking?; transaction, sale and chargeback became payment and dispute (Average payment amount, Largest single payment, the limits tick, the limit and its error with the currency code, and no above); the Card present % label is Card present percentage; the step 4 card is Payout account and says We send your payouts to this account; the MATCH and OFAC hints expand their acronyms and crypto is cryptocurrency; the step 5 Declarations card no longer repeats the sentence already in the subtitle; step 6 is titled The documents we need to verify your details, its callout no longer repeats the subtitle, and the photo hint reads Include all four corners and avoid glare; the ampersands in Business and address, Organization and address, Agreement and submit and Save and exit are gone; When you sign, we send everything at once; the submit note and the rail note no longer say Straight away or use a dash; support hours read 7 AM–7 PM PT; the cancel toast reads Invite to [email] canceled; the status title is In review; the submitted line reads Submitted [date, time and zone] · Reference: [ID]; the approved page says payments; More info needed reads One more thing we need, Add this item and we'll carry on with your checks, Show that your business is registered, and verify in the bank card; placeholders say For example, instead of e.g.; the fitness and retail example uses straight quotes; the optional marker is gone from Street address 2. Validation messages: empty required answers say Enter [field] or Choose [field] where the label reads cleanly (the acronym alone for labels that end in one, such as SSN), the routing, SSN, SIN, institution and transit messages say Enter all [n] digits of your [thing], the account number says Enter your account number and how many digits it has, the date messages say what to enter, the maximum-payment error uses payment and the currency code, and the signing tick says Accept the agreement to sign.",
       "tradeoff": "Not done: a copy button for the reference (13.2), because it needs a design (icon, toast); the Checking line on the under review screen (13.4), which is still accurate; the Continue buttons (2.4); the PEP acronym (6.4); the ACH label in shared copy (7.9). The red asterisk stays (required-marker is an earlier decision of Ryan's) and only the stray (optional) was removed. The second sentence on step 4 (We may also take fees, chargebacks and refunds from it) was not reworded because it describes fee and debit authority, which Legal owns, and the Mastercard and Every US merchant claims in the step 5 hints were kept with their acronyms expanded; both still need sourcing. The 30 days figure is Ryan's and not confirmed with Engineering or Security. The submitted time shows the viewer's own zone on a real submit and a fixed ET on the sample. The generic empty-answer messages only show where an empty required answer is flagged (the final submit), so they were checked on the label logic, not on screen.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "atlas-sweep-top-three",
+      "area": "Atlas",
+      "where": "Every field, every error message, document drop zones",
+      "t": "Field errors carry an icon, labels sit 8px above the field, focus uses the Atlas border and 2px glow, and the drop zone follows the Atlas File drop",
+      "b": "Ryan asked for the top three wins from the Atlas conformity sweep (ATLAS-SWEEP-2026-11-13.md), which compared the prototype with the Atlas Figma pages. (1) Every error message is the Atlas helper row: a 16px error icon, a 4px gap, then the message in Caption/Default regular weight (it was weight 500) in the error text colour, 8px below the field. Label to field spacing is now 8px (space/gap/related) instead of 6px. One errMsg helper draws every error line, including the sign in, change password, sign off and save-and-return emails. (2) Focus on text fields, the dropdown button and the money and secure boxes uses the focus border colour (color/border/focus) and a 2px glow (border/focus/width) instead of the brand border colour and a 3px glow. (3) The document drop zone is the Atlas File drop: 12px radius, 1px dashed border on the raised surface, 24px padding, a plain 24px brand upload icon instead of the round tinted bubble, a bold prompt (Drag a file here) with an or browse link line in the Atlas link colour. Hover keeps the brand tint. Dragging a file over shows a solid 2px brand border and the prompt Drop to upload, with no movement (the old icon bounce is gone). A zone in error takes the error wash and a dashed error border.",
+      "tradeoff": "The zone is now about 124px tall against the 112px minimum set by document-drop-zone (twice a 56px file tile), because Atlas padding is 24px. Error text now shows an icon everywhere, so a very long message wraps under the icon line. A field in error that is also focused still shows the focus look, because the global focus rule is more specific than the error outline; Atlas draws no glow on error, so this may need a follow-up. The Atlas upload-ready glyph for drag-over does not exist as an icon here, so the upload icon stays. Not changed from the sweep: the label gap in the few places that do not use field-head, the toast, badges, the list check mark and the card and owner header paddings.",
+      "by": "Ryan",
+      "when": "2026-11-13"
+    },
+    {
+      "id": "atlas-sweep-toast-badges",
+      "area": "Atlas",
+      "where": "Toasts and badges across the flow",
+      "t": "Toasts follow the Atlas Toast (title, message, dismiss, draining timer bar, success wash) and grey badges use the Atlas info colours",
+      "b": "Ryan asked for the toast and badge items from the Atlas conformity sweep (ATLAS-SWEEP-2026-11-13.md, sections 3 and 4). Toast: 400px wide with 16px padding on every side (the extra left padding is gone because the bar overlays it), a header row of a 16px circle-check icon and a Title in Body/Bold in the success text colour, the message under it in Body/Default, a 24px Dismiss button, and a 6px bar on the left edge that drains downward over the 5 seconds the toast stays (it was 4.5). Success toasts sit on the success wash instead of the neutral raised surface. showToast now takes a title, an optional message and a severity. Existing two-sentence toasts were split at the full stop with no new wording (Welcome back / Your answers are saved.); single-sentence ones show a title only. The two prototype-only notices (Harbor Yoga Studio's dashboard, password reset) are now info toasts with the info icon and neutral surface, because they are notices and not successes. Badges: Atlas has no neutral badge, so the grey labels (the Optional tag on documents, field chips, the Signed in and Access removed pills, Uploading and Not needed) use the Atlas info subtle fill with the info text colour; the info pill itself now uses the subtle fill with its text colour, not the solid fill. State pills on document tiles are 24px high with the badge padding, like every other badge, instead of 32px.",
+      "tradeoff": "The info colours are grey in Atlas, so the labels look almost the same as before, only slightly lighter. Titles lose their full stop; the message keeps its own. There is no pause on hover and no stacking of several toasts (a new toast replaces the old one). The decisions panel's area chip also turned info grey. The division-tag (ClubReady only marker) still uses raw colours because it is a prototype annotation. Not changed from the sweep: the list check mark, card and owner header paddings, button hover tint.",
       "by": "Ryan",
       "when": "2026-11-13"
     }
@@ -3574,10 +3594,15 @@
 
   // Green confirmations are toasts, not blocks in the page, so the next fields can come into view straight away.
   let toastTimer = 0;
-  function showToast(text) {
+  // Atlas Toast (decision atlas-sweep-toast-badges): a title, an optional message under it, a severity ("success" or "info"), five seconds on screen, and a dismiss button.
+  function showToast(title, message, severity) {
     clearTimeout(toastTimer);
-    setState({ toast: { id: Date.now(), text: text } });
-    toastTimer = setTimeout(() => setState({ toast: null }), 4500);
+    setState({ toast: { id: Date.now(), title: title, message: message || "", severity: severity || "success" } });
+    toastTimer = setTimeout(() => setState({ toast: null }), 5000);
+  }
+  function dismissToast() {
+    clearTimeout(toastTimer);
+    setState({ toast: null });
   }
   // Flips the rail's Saved / Saving tell while a committed edit saves (decision autosave-tell). Autosave is assumed to take about a second.
   let savingTimer = 0;
@@ -3626,7 +3651,7 @@
     resetData();
     if (ctx.link === LINKS.returning) {
       setState({ screen: "flow", step: 4 });
-      showToast("Welcome back. Your answers are saved.");
+      showToast("Welcome back", "Your answers are saved.");
       return;
     }
     // More info needed: in Slice 1 the applicant answers on a screen in the product; in Slice 2 Ops asks by email, so the applicant sees the waiting screen with a note to check their inbox (decisions more-info-by-email, more-info-slice-swap).
@@ -3739,7 +3764,7 @@
     const t = state.owners.filter((x) => x.id === state.delegateTarget)[0];
     const changing = !!t && t.status === "invited";
     setState({ delegateOpen: false, openOwner: state.openOwner === state.delegateTarget ? 0 : state.openOwner, owners: state.owners.map((x) => (x.id === state.delegateTarget ? Object.assign({}, x, { status: "invited", inviteEmail: email, signedIn: false, received: false, revoked: false }) : x)) });
-    showToast(changing ? "Invite sent to " + email + " instead. The old one no longer works." : "Invite sent to " + email + ". You can carry on with the rest in the meantime.");
+    if (changing) showToast("Invite sent to " + email + " instead", "The old one no longer works."); else showToast("Invite sent to " + email, "You can carry on with the rest in the meantime.");
   }
   // The card's actions menu (decision owner-actions-menu). Cancel invite before they have signed in, Remove access after, Remove owner at any time.
   const closeMenu = () => setState({ menuOwner: 0 });
@@ -3747,12 +3772,12 @@
   function resendInvite(id) {
     const o = ownerById(id);
     setState({ menuOwner: 0 });
-    showToast("Invite sent again to " + (o && o.inviteEmail ? o.inviteEmail : "that address") + ".");
+    showToast("Invite sent again to " + (o && o.inviteEmail ? o.inviteEmail : "that address"));
   }
   function cancelInvite(id) {
     const o = ownerById(id);
     setState({ menuOwner: 0, owners: state.owners.map((x) => (x.id === id ? Object.assign({}, x, { status: "pending", inviteEmail: "", signedIn: false, received: false, revoked: false }) : x)) });
-    showToast("Invite to " + (o && o.inviteEmail ? o.inviteEmail : "them") + " canceled.");
+    showToast("Invite to " + (o && o.inviteEmail ? o.inviteEmail : "them") + " canceled");
   }
   const askConfirm = (kind, id) => setState({ menuOwner: 0, confirm: { kind: kind, id: id } });
   const closeConfirm = () => setState({ confirm: null });
@@ -3762,7 +3787,7 @@
     const o = ownerById(id);
     if (!o) { closeConfirm(); return; }
     setState({ confirm: null, owners: state.owners.map((x) => (x.id === id ? Object.assign({}, x, { status: "pending", revoked: true }) : x)) });
-    showToast("Removed access for " + (ownerInfo(o).name === "New owner" ? "them" : ownerInfo(o).name) + ". What they entered stays.");
+    showToast("Removed access for " + (ownerInfo(o).name === "New owner" ? "them" : ownerInfo(o).name), "What they entered stays.");
   }
   // Someone who has signed in may have typed things, so removing them asks first (decision remove-access-vs-owner).
   function removeOwnerClick(id) {
@@ -3778,7 +3803,7 @@
     Object.keys(a).forEach((k) => { if (k.indexOf("o" + id + "_") === 0) delete a[k]; });
     const docs = Object.assign({}, state.docs); delete docs["id_" + id];
     setState({ owners: state.owners.filter((x) => x.id !== id), a: a, docs: docs, openOwner: state.openOwner === id ? 0 : state.openOwner, menuOwner: 0, confirm: null });
-    showToast("Removed " + name + ".");
+    showToast("Removed " + name);
   }
   // What the person who gets the link sees. Prototype only: the real page is the recipient's own session.
   // Prototype only: signing in as the invitee also marks them Signed in on the applicant's card.
@@ -4015,7 +4040,9 @@
   // Errors on show for the current step. Empty until the first attempt, then
   // live, so each message clears the moment its field is put right.
   let ERR = {};
-  const errView = (key) => ERR[key] && html`<p class="field-error" role="alert">${ERR[key]}</p>`;
+  // One error line for every field and screen: the Atlas helper row is an error icon plus the message (decision atlas-sweep-top-three).
+  const errMsg = (text) => html`<p class="field-error" role="alert">${icon("alert", 16)}<span>${text}</span></p>`;
+  const errView = (key) => ERR[key] && errMsg(ERR[key]);
 
   // The three name boxes start from the one name the seed data and a sole proprietor's step 1 name give: first word, last word, anything between.
   function splitName(full) {
@@ -4166,7 +4193,7 @@
       f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
       sub("id", "Identity verification"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
-      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "For example, D1234567", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trullio, our verification partner." }),
+      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "For example, D1234567", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trulioo, our verification partner." }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: countries() }),
       // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
@@ -4178,7 +4205,7 @@
         span: true, tickHalf: true,
         tick: f("noNatId", ca ? "This person doesn't have a SIN" : "This person doesn't have an SSN", "check", { optional: true, dflt: false }),
         placeholder: ca ? "000 000 000" : "000-00-0000",
-        why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trullio, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trullio, our verification partner, and never stored by Xplor.")
+        why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trulioo, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trulioo, our verification partner, and never stored by Xplor.")
       }),
       // Full row, so it starts on a new line below the SSN or SIN (decision owner-form-two-sections).
       f("pep", "Is this person a politically exposed person?", "yn", {
@@ -4326,11 +4353,11 @@
   function whyFor(step, ca) {
     return {
       1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. Type these details as they appear on your registration.", p: ["We use these to confirm the " + orgWord() + " exists", "Typing them as they appear on your registration avoids questions later"] },
-      2: { t: "Why are we asking?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trullio, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
+      2: { t: "Why are we asking?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trulioo, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
       3: { t: "Why are we asking?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real payments don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
-      4: { t: "Why are we asking?", b: ca ? "This is the account your payouts are paid into. We ask for proof of it in step 6, then check it after you submit." : "This is the account your payouts are paid into. Trullio, our verification partner, checks it after you submit, so your payouts go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
+      4: { t: "Why are we asking?", b: ca ? "This is the account your payouts are paid into. We ask for proof of it in step 6, then check it after you submit." : "This is the account your payouts are paid into. Trulioo, our verification partner, checks it after you submit, so your payouts go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
       5: { t: "Why are we asking?", b: "Card networks and regulators require these exact questions on every application. If you answer yes to any of them, a person reviews your application.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
-      6: { t: "Why are we asking?", b: "Documents are how Trullio, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
+      6: { t: "Why are we asking?", b: "Documents are how Trulioo, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
     }[step];
   }
@@ -4346,7 +4373,7 @@
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
     // The EIN letter (US) and the CRA business number confirmation (Canada) are no longer asked for: Trulioo validates the number (decision ein-bn-document-removed).
-    // Canada only (decision ca-bank-proof-row): Trulioo does not verify Canadian bank accounts, so the applicant adds one proof of the payout account. The US account is verified without a document (decision bank-verified-by-trullio).
+    // Canada only (decision ca-bank-proof-row): Trulioo does not verify Canadian bank accounts, so the applicant adds one proof of the payout account. The US account is verified without a document (decision bank-verified-by-trulioo).
     if (ca) list.push({ key: "bank", title: "Bank account verification", requirement: "Required", hint: "Any one of these: a void cheque with your " + orgWord() + " name and account details printed on it, a letter from your bank, or a recent bank statement.", file: "void-cheque.pdf" });
     if (!ca) {
       list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
@@ -4448,7 +4475,7 @@
       canNext: canNext,
       missing: missing,
       nextLabel: st.step === 7 ? "Submit for verification" : "Save and continue",
-      submitNote: "We send one complete package to Trullio, our verification partner, when you submit.",
+      submitNote: "We send one complete package to Trulioo, our verification partner, when you submit.",
       saveProgressNote: isWelcome ? "You haven't started yet, so there's nothing to lose." : "Last saved on step " + st.step + ", a moment ago.",
       // The ownership card shows how many owners are listed, and All listed only once the shares pass 75% (decision ownership-no-question). Nothing asks whether anyone is missing.
       ownersOver100: ownedPct > 100,
@@ -4501,7 +4528,7 @@
     return html`<div class="field-meta">${f.why && trig(f.id, "help", "Why we ask", f.why)}</div>`;
   }
   // Draft wording, not reviewed by security (see decision encrypted-lock-tooltip).
-  const ENCRYPTED_NOTE = "We encrypt this number as it travels and while it's stored. Once you leave the field only the last four characters show, and you can choose to show or hide the rest. It goes to Trullio, our verification partner, to check who you are.";
+  const ENCRYPTED_NOTE = "We encrypt this number as it travels and while it's stored. Once you leave the field only the last four characters show, and you can choose to show or hide the rest. It goes to Trulioo, our verification partner, to check who you are.";
 
   // The step 1 business lookup (decision business-lookup-typeahead). The typed text goes only to the fixed list above; nothing leaves the page.
   let findTimer = 0;
@@ -4836,7 +4863,7 @@
     const need = (ic, title, body) => html`<div class="need"><span class="icon-tile">${icon(ic, 18)}</span><div><div class="need-title">${title}</div><div class="need-body">${body}</div></div></div>`;
     // "What we do with your information" sits at the end of the description, as hoverable text with a question icon, the same way "Why are we asking?" does on a step (decision welcome-help-and-info-in-header).
     const openInfo = () => setState({ infoOpen: true });
-    const infoNote = html`<span class="why-wrap" data-mouseenter="${on(openInfo)}" data-mouseleave="${on(() => setState({ infoOpen: false }))}"><button type="button" class="why-trigger" aria-expanded="${String(state.infoOpen)}" data-click="${on(openInfo)}" data-blur="${on(() => setState({ infoOpen: false }))}">What we do with your information${icon("help", 15, "i-accent")}</button>${state.infoOpen && html`<span class="why-pop" data-key="info-pop" role="note"><span class="why-pop-body"><span class="why-points">${["We encrypt your information as it travels and while it's stored.", "We protect tax and national ID numbers, so Xplor staff can't read them.", "Trullio, our verification partner, runs the identity checks.", "We only use it to verify you, never for marketing.", "We save your progress after every field."].map((t) => html`<span class="why-point">${icon("check", 14, "i-b i-ok")}<span>${t}</span></span>`)}</span></span></span>`}</span>`;
+    const infoNote = html`<span class="why-wrap" data-mouseenter="${on(openInfo)}" data-mouseleave="${on(() => setState({ infoOpen: false }))}"><button type="button" class="why-trigger" aria-expanded="${String(state.infoOpen)}" data-click="${on(openInfo)}" data-blur="${on(() => setState({ infoOpen: false }))}">What we do with your information${icon("help", 15, "i-accent")}</button>${state.infoOpen && html`<span class="why-pop" data-key="info-pop" role="note"><span class="why-pop-body"><span class="why-points">${["We encrypt your information as it travels and while it's stored.", "We protect tax and national ID numbers, so Xplor staff can't read them.", "Trulioo, our verification partner, runs the identity checks.", "We only use it to verify you, never for marketing.", "We save your progress after every field."].map((t) => html`<span class="why-point">${icon("check", 14, "i-b i-ok")}<span>${t}</span></span>`)}</span></span></span>`}</span>`;
     return html`<div class="welcome" data-key="welcome">
   <div class="welcome-inner">
     <div class="welcome-title-row"><h1 class="welcome-title">Let's get you set up to take payments${pin("step-count-7")}</h1><span class="tag tag--green">${icon("bolt", 13)}Faster approval</span></div>
@@ -4905,7 +4932,7 @@
     // Sign in confirms the choice; picking a card only selects it (decision existing-user-new-business).
     function signInToBiz() {
       if (state.pickedBiz === "new") openLink();
-      else if (state.pickedBiz === "existing") showToast("Prototype only: Harbor Yoga Studio's dashboard isn't part of this prototype.");
+      else if (state.pickedBiz === "existing") showToast("Prototype only", "Harbor Yoga Studio's dashboard isn't part of this prototype.", "info");
     }
 
     function pickBusinessView() {
@@ -4947,7 +4974,7 @@
           <div><label class="field-label field-label--block" for="login-confirm-pw">Enter new password again</label>
           <input class="input" id="login-confirm-pw" type="password" autocomplete="new-password" value="${state.confirmPassword}" data-input="${on((e) => setState({ confirmPassword: e.target.value, changeErr: "" }))}"></div>
         </div>
-        ${state.changeErr && html`<p class="field-error" role="alert">${state.changeErr}</p>`}
+        ${state.changeErr && errMsg(state.changeErr)}
         <div class="entry-actions">
           <div class="footer-end"><button type="submit" class="btn btn-primary btn-lg">Save password and sign in${icon("arrow-r", 19)}</button></div>
         </div>
@@ -4967,10 +4994,10 @@
           <div><label class="field-label field-label--block" for="login-password">Password</label>
           <input class="input" id="login-password" type="password" autocomplete="current-password" placeholder="Password" value="${state.loginPassword}" data-input="${on((e) => setState({ loginPassword: e.target.value, loginErr: "" }))}"></div>
         </div>
-        ${state.loginErr && html`<p class="field-error" role="alert">${state.loginErr}</p>`}
+        ${state.loginErr && errMsg(state.loginErr)}
         <div class="entry-actions">
           <div class="footer-end">
-            <button type="button" class="btn btn-ghost btn-md" data-click="${on(() => showToast("Prototype: password reset isn't simulated."))}">Send me another password</button>
+            <button type="button" class="btn btn-ghost btn-md" data-click="${on(() => showToast("Prototype only", "Password reset isn't simulated.", "info"))}">Send me another password</button>
             <button type="submit" class="btn btn-primary btn-lg">${isReturning() ? "Sign in" : "Continue"}${icon("arrow-r", 19)}</button>
           </div>
         </div>
@@ -5170,7 +5197,7 @@
       (names.length ? names : [d.file]).forEach((n) => upload(d.key, n));
     };
     const action = s === "skipped" ? html`<span class="state-pill state-pill--muted">Not needed</span>` : "";
-    const zone = s === "skipped" ? "" : html`<button type="button" class="dropzone" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}" data-drop="${on(drop)}"><span class="dz-icon" aria-hidden="true">${icon("upload", 18)}</span><span class="dz-text">Drag a file here or <span class="dz-link">browse</span></span></button>`;
+    const zone = s === "skipped" ? "" : html`<button type="button" class="dropzone" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}" data-drop="${on(drop)}"><span class="dz-icon" aria-hidden="true">${icon("upload", 24)}</span><span class="dz-text"><span class="dz-prompt">Drag a file here</span><span class="dz-drop">Drop to upload</span><span class="dz-action">or <span class="dz-link">browse</span></span></span></button>`;
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
@@ -5188,7 +5215,7 @@
 
   function step6View(v) {
     return html`<div class="doc-grid" data-key="s6-docs">${v.docList.filter((d) => !d.skip).map((d) => docView(d))}</div>
-<div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>Files are stored encrypted and shared only with Trullio, our verification partner.${pin("read-on-upload")}</span></div>`;
+<div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>Files are stored encrypted and shared only with Trulioo, our verification partner.${pin("read-on-upload")}</span></div>`;
   }
 
   // ---------------------------------------------------------------------------
@@ -5229,7 +5256,7 @@
         ]],
         ["9. Privacy policy: what we collect", "The business, ownership and identity details you give us in this application, and the documents you upload."],
         ["10. Privacy policy: how it is used", "To verify your business, meet card network and anti-money-laundering requirements, and run your account."],
-        ["11. Privacy policy: who sees it", "Trullio, our verification partner, and the card networks, where the rules require it. Files are stored encrypted."]
+        ["11. Privacy policy: who sees it", "Trulioo, our verification partner, and the card networks, where the rules require it. Files are stored encrypted."]
       ]
     }
   };
@@ -5325,7 +5352,7 @@
       <input type="file" id="sig-file" class="sr-only" accept="image/png,image/jpeg" tabindex="-1" aria-label="Upload image of signature">
       ${state.sign !== "" && html`<button type="button" class="btn-link" data-click="${on(clearSignature)}">Clear</button>`}
     </div>
-    ${state.signErr && html`<p class="field-error" role="alert">${state.signErr}</p>`}
+    ${state.signErr && errMsg(state.signErr)}
     ${errView("sign")}
   </div>
 </section>`;
@@ -5417,7 +5444,7 @@
     return html`<section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
   <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
   ${state.nextOpen && html`<ol class="next-grid" id="next-body">
-    <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trullio</div><div class="next-body">${v.submitNote}</div></div></li>
+    <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trulioo</div><div class="next-body">${v.submitNote}</div></div></li>
     <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">You can close this window, and we'll email you.</div></div></li>
     <li class="next-item"><span class="next-num">3</span><div><div class="next-title">Start taking payments</div><div class="next-body">Your first payout lands the next business day after your first sale.</div></div></li>
   </ol>`}
@@ -5700,7 +5727,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       <input class="input" id="save-email" type="email" value="${state.saveEmail}" placeholder="name@example.com" autocomplete="email" spellcheck="false" data-input="${on((e) => setState({ saveEmail: e.target.value, saveEmailErr: "" }))}" data-blur="${on(() => setState({ saveEmailErr: state.saveEmail.trim() && !SAVE_EMAIL_OK.test(state.saveEmail.trim()) ? "Enter an email like name@example.com." : "" }))}">
       <button type="submit" class="btn btn-primary btn-md">Send link</button>
     </form>
-    ${state.saveEmailErr && html`<p class="field-error" role="alert">${state.saveEmailErr}</p>`}
+    ${state.saveEmailErr && errMsg(state.saveEmailErr)}
     <p class="dialog-foot">${icon("lock", 14)}The link expires in 30 days and only works for that email address.${pin("save-link-scope")}</p>
     `}
     <div class="dialog-actions"><button type="button" class="btn btn-neutral btn-md" data-click="${on(closeSave)}">Close</button><button type="button" class="btn btn-primary btn-md" data-click="${on(signOut)}">Sign out</button></div>
@@ -5773,7 +5800,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
   <div class="need-list">
     ${need("user", "Your personal details", "Your name, date of birth, home address, email and phone number.")}
     ${need("file", "A photo ID", "A passport or driver's " + licWord() + ". You can take the photo on your phone.")}
-    ${need("shield", "Why we ask", (isNonprofit() ? "To confirm who runs the organization. " : "To confirm who owns the business. ") + "The details go to Trullio, our verification partner, like the rest of the application.")}
+    ${need("shield", "Why we ask", (isNonprofit() ? "To confirm who runs the organization. " : "To confirm who owns the business. ") + "The details go to Trulioo, our verification partner, like the rest of the application.")}
   </div>
   <div class="actions">
     <button type="button" class="btn btn-outline btn-lg" data-click="${on(() => showToast("No problem. Forward the email to the right person, or tell whoever sent it."))}">I'm not the right person</button>
@@ -5898,7 +5925,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     </div>
   </div>
 </div>
-${state.toast && html`<div class="toast" data-key="toast-${state.toast.id}" role="status">${icon("check", 16, "i-b")}<span>${state.toast.text}</span></div>`}
+${state.toast && html`<div class="toast toast--${state.toast.severity}" data-key="toast-${state.toast.id}" role="status"><span class="toast-timer" aria-hidden="true"></span><div class="toast-body"><div class="toast-head">${icon(state.toast.severity === "info" ? "info" : "circle-check", 16)}<span>${state.toast.title}</span></div>${state.toast.message && html`<p class="toast-msg">${state.toast.message}</p>`}</div><button type="button" class="toast-close" aria-label="Dismiss" data-click="${on(dismissToast)}">${icon("x", 16)}</button></div>`}
 ${state.saveOpen && saveView(v)}
 ${state.delegateOpen && delegateView()}
 ${state.confirm && confirmView()}
