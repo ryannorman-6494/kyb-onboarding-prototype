@@ -1008,7 +1008,7 @@
       "area": "Flow",
       "where": "Step 6 · Documents, and step 4 · Payout account",
       "t": "Step 6 no longer asks for proof of the bank account",
-      "b": "The Bank account verification row (a voided check or void cheque, a bank letter, or a recent statement) is gone from step 6, in both regions and for every business type. Ryan says Trullio, our verification partner, verifies bank accounts for us, so the applicant only types the account in step 4. The step 4 description, the line under the fields and the Why do you need my account details? note, the welcome page's bank line and the step 7 review row no longer mention a document, and the review row shows only the bank name and account type. The Banking Verification card on the More info needed screen is unchanged: it is what Ops can still ask for after submit. Earlier versions made the bank letter always required (decision bank-letter-always, 2026-10-07). Update, 2026-11-11: Ryan says Trullio verifies bank accounts for the US but not for Canada. Step 6 still asks for no bank proof in either region, so how a Canadian account is checked is not decided.",
+      "b": "The Bank account verification row (a voided check or void cheque, a bank letter, or a recent statement) is gone from step 6, in both regions and for every business type. Ryan says Trullio, our verification partner, verifies bank accounts for us, so the applicant only types the account in step 4. The step 4 description, the line under the fields and the Why do you need my account details? note, the welcome page's bank line and the step 7 review row no longer mention a document, and the review row shows only the bank name and account type. The Banking Verification card on the More info needed screen is unchanged: it is what Ops can still ask for after submit. Earlier versions made the bank letter always required (decision bank-letter-always, 2026-10-07). Update, 2026-11-11: Ryan says Trullio verifies bank accounts for the US but not for Canada. Step 6 still asks for no bank proof in either region, so how a Canadian account is checked is not decided. Update, 2026-11-13: for Canada only, a Bank account verification row is back on step 6 (ca-bank-proof-row), because Trulioo cannot verify Canadian bank accounts. The US still asks for no bank proof.",
       "tradeoff": "That Trullio verifies bank accounts is relayed by Ryan, not from a document; Trullio or compliance should confirm it covers US and Canadian accounts and what happens when an account cannot be verified (the Banking Verification request is the likely route). A mistyped number is now caught only after submit, not by a document at step 6. Step 6 has one less file to find, which was the most common place people got stuck without the paper in hand.",
       "by": "Ryan",
       "when": "2026-11-02"
@@ -3075,6 +3075,16 @@
       "tradeoff": "ClubReady is now the only division the prototype can show, so it no longer demonstrates that different divisions can have different category lists on top of different documents; Standard (32 codes) against ClubReady (14) still shows a different list per division. If Club Essentials rejoins the flow with real differences, its row, its list and its option would need rebuilding. Ryan gave no other reason.",
       "by": "Ryan",
       "when": "2026-11-12"
+    },
+    {
+      "id": "ca-bank-proof-row",
+      "area": "Flow",
+      "where": "Step 6 · Documents (Canada)",
+      "t": "Canadian applicants add proof of their bank account on step 6, because Trulioo cannot verify Canadian accounts",
+      "b": "Ryan asked whether Canada still asks for evidence of the bank account given that Trulioo cannot validate Canadian bank accounts, and said yes when offered the row back. For a Canadian business (company, non-profit or sole proprietor) step 6 now has a required Bank account verification card: any one of a void cheque with the business name and account details printed on it, a letter from the bank, or a recent bank statement. The US still has no bank row, because Trulioo verifies US accounts (bank-verified-by-trullio). The card works like every other document card: drop zone, any number of files, the red outline and Add this file to finish this step. when it is missing. A Canadian business now uploads at least the photo IDs and the bank proof.",
+      "tradeoff": "That Trulioo verifies US but not Canadian bank accounts is relayed by Ryan, not from a document; Trulioo or compliance should confirm it. This is a prototype row, and the wording is a draft. The Banking Verification card on More info needed is still what Ops can ask for after submit; this row asks for the proof up front instead of after. Whether the sponsor bank accepts a bank statement as well as a void cheque or letter is not known. Step 4 and the step 7 review do not mention the document, as before.",
+      "by": "Ryan",
+      "when": "2026-11-13"
     }
   ];
 
@@ -4234,6 +4244,8 @@
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
     // The EIN letter (US) and the CRA business number confirmation (Canada) are no longer asked for: Trulioo validates the number (decision ein-bn-document-removed).
+    // Canada only (decision ca-bank-proof-row): Trulioo does not verify Canadian bank accounts, so the applicant adds one proof of the payout account. The US account is verified without a document (decision bank-verified-by-trullio).
+    if (ca) list.push({ key: "bank", title: "Bank account verification", requirement: "Required", hint: "Any one of these: a void cheque with your " + orgWord() + " name and account details printed on it, a letter from your bank, or a recent bank statement.", file: "void-cheque.pdf" });
     if (!ca) {
       list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
     }
