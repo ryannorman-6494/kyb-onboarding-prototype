@@ -2431,7 +2431,7 @@
       "area": "Visual",
       "where": "Every money amount field (step 3 card volumes, EFT or ACH volume)",
       "t": "Money fields show the currency code, USD or CAD, as well as the dollar sign",
-      "b": "A dollar sign does not say which dollar, and the product serves both the US and Canada, so every amount field now ends with the currency code: USD for a United States application and CAD for a Canadian one. The field reads as three parts: the dollar sign, the amount, and the code in a small separate tab at the right end with a pale grey fill and a hairline divider, the way payment forms from Stripe and similar products show it. The numbers use equal-width digits so figures line up as they are typed. The code is fixed by the application's region and cannot be changed here. It applies to the estimated monthly card volume, average transaction amount, maximum single transaction and the monthly EFT or ACH volume.",
+      "b": "A dollar sign does not say which dollar, and the product serves both the US and Canada, so every amount field now ends with the currency code: USD for a United States application and CAD for a Canadian one. The field reads as three parts: the dollar sign, the amount, and the code in a small separate tab at the right end with a pale grey fill and a hairline divider, the way payment forms from Stripe and similar products show it. The numbers use equal-width digits so figures line up as they are typed. The code is fixed by the application's region and cannot be changed here. It applies to the estimated monthly card volume, average transaction amount, maximum single transaction and the monthly EFT or ACH volume. Update, 2026-11-16: the code is now plain Amount/Small text inside the same box rather than its own shaded cell (see atlas-currency-input).",
       "tradeoff": "The code is the region's own currency only, so a business that takes payments in another currency has nowhere to say so. Amounts shown as plain text elsewhere (the limits card, the review summary) still use only the dollar sign.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -3202,7 +3202,7 @@
       "where": "Secondary buttons, pressed buttons, focused fields in error",
       "t": "Secondary buttons use the full Atlas button shadow, pressed buttons have none, and a focused field in error keeps its red border with no purple halo",
       "b": "Ryan asked to verify the focus glow and the secondary Button shadow after the sweep. The Figma connection returned errors, so both were checked against the Atlas token repo (last commit 2026-11-09), not Figma. Decision 0040 says primary and secondary buttons both use the single effect style Shadow/button/contained (inset white bevel, inset dark bevel, 0/1 blur 3 cast) at rest, hover and focus, and that pressed, disabled and tertiary buttons take none. The prototype gave secondary buttons the cast shadow only and primary kept its shadow while pressed. Secondary now uses the same --shadow-button-contained as primary, and primary and secondary lose the shadow while pressed. Decision 0072 says the text field focus halo is a 2px glow in brand subtle outside a 1px border, which the prototype already matched, and that an error field gets no halo because a brand tint around a red border mixes two meanings. The global focus rule was winning over the error rule, so a focused field in error lost its red border and showed the glow. A higher-specificity rule now keeps the red 1px border and no halo on focus for inputs, selects, textareas, the prefix/suffix wrapper and the select button.",
-      "tradeoff": "Both values come from the token repo and its decision records, not from reading the Figma effect style, so they are only as current as the repo. The old 0024 note (secondary has the cast shadow only) is superseded by 0040, but the prototype comment still said so until now. A focused error field shows only the red border, so focus is carried by the red border alone, as in Atlas. Still unverified in Figma: the disabled button border and the exact effect style values. Tertiary hover tint is still open.",
+      "tradeoff": "Both values come from the token repo and its decision records, not from reading the Figma effect style, so they are only as current as the repo. The old 0024 note (secondary has the cast shadow only) is superseded by 0040, but the prototype comment still said so until now. A focused error field shows only the red border, so focus is carried by the red border alone, as in Atlas. Still unverified in Figma: the disabled button border and the exact effect style values. Tertiary hover tint is still open. Update, 2026-11-16: the Figma values were read and the secondary half of this decision was wrong; see button-secondary-shadow-from-figma.",
       "by": "Ryan",
       "when": "2026-11-13"
     },
@@ -3211,7 +3211,7 @@
       "area": "Fields",
       "where": "Business phone number (step 1) and the owner Phone number (step 2)",
       "t": "Both phone fields are one component: a country list with flag and code, then a number box spaced as it is typed",
-      "b": "Ryan's manager asked for the phone fields to be refined before the build, with the country code separated out and the digits spaced, for example [+1] 000 000 0000. Both fields used to be plain text boxes with a +1 (555) 000-0000 placeholder and no separate code. They now share one component (phoneParts, phoneFmt and phoneJoin in app.js, the phone case in fieldView): a country list on the left that shows a flag and the code (for example +1), and a number box on the right that takes digits only and spaces them 3, 3 and 4 for a +1 number (10 digits, so the area code is included) and the same three groups with the rest in the last group for other countries. The list holds the United States, Canada, the United Kingdom, Australia, New Zealand, France, Germany, Ireland, Italy, the Netherlands, Spain, Mexico and India, and opens as the standard Atlas Select menu. The code starts as +1 in both the US and Canada, with the flag of the region. Pasting a number that begins with 1 and has 11 digits drops the leading 1. The value is still stored as one line, +1 503 555 0148, so the owner prefill from step 1, the review screen and the saved data keep working; numbers already stored in the older +1 (503) 555-0148 shape show correctly spaced. The error is the same sentence, Enter the full number, including the area code., shown when a +1 number has fewer than 10 digits or another country has fewer than 6. The country list does not turn red on an error, only the number box. In the owner form the phone box spans two of the three columns (it was one third, too narrow for the list and the number). Ryan chose a country list over a fixed prefix or a typed code, and the 000 000 0000 spacing.",
+      "b": "Ryan's manager asked for the phone fields to be refined before the build, with the country code separated out and the digits spaced, for example [+1] 000 000 0000. Both fields used to be plain text boxes with a +1 (555) 000-0000 placeholder and no separate code. They now share one component (phoneParts, phoneFmt and phoneJoin in app.js, the phone case in fieldView): a country list on the left that shows a flag and the code (for example +1), and a number box on the right that takes digits only and spaces them 3, 3 and 4 for a +1 number (10 digits, so the area code is included) and the same three groups with the rest in the last group for other countries. The list holds the United States, Canada, the United Kingdom, Australia, New Zealand, France, Germany, Ireland, Italy, the Netherlands, Spain, Mexico and India, and opens as the standard Atlas Select menu. The code starts as +1 in both the US and Canada, with the flag of the region. Pasting a number that begins with 1 and has 11 digits drops the leading 1. The value is still stored as one line, +1 503 555 0148, so the owner prefill from step 1, the review screen and the saved data keep working; numbers already stored in the older +1 (503) 555-0148 shape show correctly spaced. The error is the same sentence, Enter the full number, including the area code., shown when a +1 number has fewer than 10 digits or another country has fewer than 6. The country list does not turn red on an error, only the number box. In the owner form the phone box spans two of the three columns (it was one third, too narrow for the list and the number). Ryan chose a country list over a fixed prefix or a typed code, and the 000 000 0000 spacing. Update, 2026-11-16: the two boxes became one Atlas Phone input box with a search row in the country list (see atlas-phone-input-one-box); the digit spacing and validation described here are unchanged.",
       "tradeoff": "Flags are emoji, which Windows browsers draw as two letters (for example US) instead of a flag, so the closed list reads as US +1 there. The list of 13 countries is a guess at Xplor's markets plus a few near ones, not a full country list or a rule from Product. Digit counts for non-US numbers are loose (6 to 12), so a wrong number can pass. The component is built, not checked against an Atlas Phone input: Atlas Figma was not read for this (the Figma connection was down last session), and the sweep has no Phone input entry.",
       "by": "Ryan",
       "when": "2026-11-16"
@@ -3222,7 +3222,7 @@
       "where": "Done button at the foot of each owner section",
       "t": "The Done button at the foot of an owner section has purple text; its fill, border and shadow are unchanged",
       "b": "Ryan's manager felt the outlined Done button looked like another input field rather than the button that closes the section, and suggested a subtle colour fill such as light purple. Ryan chose to make the text purple only for now and to sort the Atlas side of it separately. So .owner-sec .sec-actions .btn uses --color-text-brand (the brand text colour) in place of the secondary grey. Nothing else changed: the button is still the white secondary button with the grey border and shadow, small size, and still closes the section without saving or checking anything (see section-done-buttons).",
-      "tradeoff": "The button keeps its white fill and grey border, so it may still read a little like a field next to the inputs above it; purple text is a lighter signal than the subtle fill the manager suggested. The light purple fill was offered and not chosen. Ryan will review the button against Atlas separately.",
+      "tradeoff": "The button keeps its white fill and grey border, so it may still read a little like a field next to the inputs above it; purple text is a lighter signal than the subtle fill the manager suggested. The light purple fill was offered and not chosen. Ryan will review the button against Atlas separately. Update, 2026-11-16 (Ryan): reverted. The Done button is the plain Atlas secondary button again (text/secondary grey label, white fill, border/default), until the Atlas side is sorted. Ryan gave no further reason; the purple-text rule is removed from app.css.",
       "by": "Ryan",
       "when": "2026-11-16"
     },
@@ -3293,6 +3293,166 @@
       "t": "The channel question is How do customers pay you?, Online is E-commerce, and an e-commerce answer asks for a required website or app address",
       "b": "Rosh, from risk operations, pointed out that in the payments world sales channel means direct sales, ISV, ISO and the like, and asked whether in-person and online is how Club businesses word it; he also asked for Online to be E-commerce, because that is how the card brands categorise it, and for a required URL box when e-commerce is picked. Ryan chose a new label and the card-brand term. The label Primary sales channel (Primary payment channel for a non-profit) is now How do customers pay you? (How do people pay you?). The options are In-person, E-commerce (online), In-person and e-commerce, Mobile and Phone / mail order (MOTO). Picking E-commerce (online) or In-person and e-commerce shows a required box, Website or app where customers pay (people, for a non-profit), under the two pickers. It starts filled with the website from step 1 unless step 1 says there is no website, can be changed, and gets https:// added as the applicant leaves it, like the step 1 website. Empty gives Enter the website or app address where customers pay, and it blocks the step like any required box. The sample business is In-person and e-commerce. Update, 2026-11-16 (Ryan): the box does not block Continue, only the final Submit, like every other required box (see errors-only-for-bad-entries); Rosh had asked for it to be required to progress to the next page, and Ryan chose to keep the prototype consistent. Ryan gave no further reason. I could not say how Club businesses word the channel; that stays Ryan's to confirm.",
       "tradeoff": "E-commerce (online) keeps online in brackets so an applicant who does not know the card-brand term can still pick it; Rosh asked for the card-brand name alone. The box is not checked for being a real address, only for being filled in. Because it starts from the step 1 website, an applicant may accept it without checking it. The What you'll need card still says in person, online or both. The usability kit and field spreadsheet still hold the old label and options.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-choice-chip-yes-no",
+      "area": "Atlas",
+      "where": "Every Yes / No question, and the non-profit structure pills",
+      "t": "The Yes / No pills follow the Atlas Choice chip: no fill at rest, grey fill on hover, pale purple fill when chosen, and they hug their label",
+      "b": "Found in the Atlas audit of 2026-11-16 (ATLAS-AUDIT-2026-11-16.md, section 2), read from the Choice chip variant layers in the Atlas Figma file. The round shape was already right; the fills and border colours were not. Now (large chip, 40px high): rest has no fill and a 1px border/default ring; hover has a bg/hover fill and a border/strong ring; pressed has a bg/neutral/active fill; chosen has a bg/brand/subtle fill and a 2px border/brand ring. The 76px minimum width is gone, so Yes is about 63px wide and No is narrower, as in Atlas. Ryan chose to hug the label like Atlas rather than keep the pair even. This supersedes the rest border of the old pills (border/input).",
+      "tradeoff": "Yes and No are no longer the same width, and the longer non-profit structure labels hug too, so the pair can look uneven. Atlas has no hover style for a chosen chip, so a chosen chip keeps its purple fill on hover and press. The Atlas Choice chip page is the only source for these values; I read it in Figma and did not check it against the Atlas React component.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-progress-bar-step-meter",
+      "area": "Atlas",
+      "where": "Step list on the left · Your progress",
+      "t": "The progress bar is the Atlas medium size, 8px high with a full radius, and its label is Label/Default",
+      "b": "Found in the Atlas audit of 2026-11-16 (section 4). The bar was 5px high with a 2.5px radius, a grey track and 6px gaps. It is now 8px high (Atlas medium, chosen by Ryan over the 4px small size), fully rounded, on the bg/surface/track grey, with 8px gaps above and below. The label Your progress is Label/Default (12px, weight 500) in text/secondary. It was 12px bold in text/primary; Atlas has no 12px bold style, and Ryan chose Label/Default rather than keep the bold. The percentage stays green (text/success), which Ryan chose to keep; Atlas shows the value in text/subtle. It is now Caption/Default (weight 400) rather than bold. The green fill is unchanged and matches Atlas.",
+      "tradeoff": "The bar is thicker, so the rail looks heavier, and the label is lighter than before, so Your progress is less prominent. The green percentage is a known difference from Atlas, which uses text/subtle. The circular step rings are not an Atlas component and are unchanged. The fill still animates over 240ms, which Atlas does not specify.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-combobox-popup",
+      "area": "Atlas",
+      "where": "Business category, select lists, address and business lookups",
+      "t": "The list popups follow the Atlas Combobox popup: rows run edge to edge, the chosen row has a check mark, the group headings and the status rows use Atlas styles",
+      "b": "Found in the Atlas audit of 2026-11-16 (section 5), read from the Combobox popup set in Figma. The 4px inset around the rows is now the 1px frame, and the rows are square so they run edge to edge inside the rounded frame. The chosen row, still pale purple and bold, now ends with a 16px check in icon/brand (category list and select lists). The Most common / All categories headings (see mcc-most-common-first) are Label/Default in text/secondary with 12px side and 8px top and bottom padding, and a 1px border/subtle line between groups. Before they were small bold grey text with a border/default line. The No match, Searching and N more rows have 12px side and 8px top and bottom padding, Body/Default text (14px, was 13px) and a 36px minimum height. Ryan chose to restyle the headings to Atlas rather than drop them. This supersedes the padding and type of the old combo-list, combo-group and combo-empty rules.",
+      "tradeoff": "The status rows have no icon slot, so there is no spinner or error icon on Searching or on an error, which Atlas has. The gap between a row's text and its code stays 4px, where Atlas uses 8px for a row with a check. The address list has no chosen row, so it shows no check. The Manual entry row at the foot of the business lookup is now square too.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-spacing-by-role",
+      "area": "Atlas",
+      "where": "Product screens, app.css",
+      "t": "Off-grid spacing (14, 18, 10, 6, 7, 9, 11, 22 and 3 pixels) moved onto the Atlas spacing roles, chosen by what the space is for",
+      "b": "Found in the Atlas audit of 2026-11-16 (section 1: about 80 product rules used values that are not on the 4 and 8 pixel grid). Ryan asked that each value be chosen from the meaning of the Atlas semantic spacing tokens, not by rounding. Rules used, from the token descriptions in the Atlas-tokens repo (space.json): (1) a leading icon, avatar, dot or radio and its text is gap/related 8 (card, person, document, summary, next-step, hero, timeline and business type heads, was 14); (2) a title and its one-line subtitle or meta is gap/pair 4 (was 2 or 3); (3) a title and the paragraph or controls under it, a label above an input, and controls side by side is gap/related 8 (was 6, 7, 9, 10, 11); (4) one field and the next, a block and the next, a head and its body, is gap/group 16 (field row gap 18 to 16, card head margin 18 to 16, was 14, 18 or 22); (5) a container that holds other components, such as the popovers, the pending-accept box, the add row, the empty note and the business type card, is padding/surface 16 (was 14 or 18); (6) a list item is padding/item 12 and a dense nav row is padding/cell 8 (rail step rows, was 9 and 8); (7) a status tick and its text is gap/pair 4 (was 3); (8) bullet indents are 16 (was 18) and the business type sub-panel left padding is 42 so it still lines up with the label (16 card padding, 18 radio, 8 gap). Left as they were: 20px values (no role, on the grid), and 1 to 3 pixel optical nudges that line an icon, star or radio up with a text baseline (callout icon, why-point icon, check label, required star, help label, business type radio, later-note icon), the screen-reader-only rule, the affix-code inset, the combobox 1 pixel frame and the division tag. Prototype scaffolding (.proto, .note, .em, .mail) was not touched (Ryan chose product UI only).",
+      "tradeoff": "Heads that had 14 pixels between the icon and the text now have 8, so the icon sits closer to its title (the person head, hero head, timeline and next-step columns); this follows the Atlas test for related things but it is a visible change and may feel tight beside the 40 pixel hero icon. Page height changes are small: step 1 is 16 pixels shorter, step 3 24 shorter. Atlas has no token for a bullet indent or for 20 pixels, so those stay as plain pixels. Textarea vertical padding went from 10 to 8 pixels and the business type cards, dialogs, why popover, Canada, slice 2 and phone width were not checked by eye.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "button-secondary-shadow-from-figma",
+      "area": "Atlas",
+      "where": "Every secondary button (Back, Done, Get help, Choose file and the rest)",
+      "t": "Secondary buttons take the shadow drawn in the Atlas Figma file: a white inner bevel and the cast shadow, without the dark inner bevel",
+      "b": "Ryan said the buttons did not seem to use the Atlas shadows accurately. I read the Button component set in Figma (page 2132:480, variants with Sentiment default, medium) instead of the token repo. Primary, at rest, hover and focus, has all three layers of Shadow/button/contained: inner white 2/2 blur 2 at 15%, inner black minus 2/minus 2 blur 2 at 8%, and a drop shadow 0/1 blur 3 at 8%. Secondary, at rest, hover and focus, has only two: the inner white 2/2 blur 2 at 15% and the drop shadow 0/1 blur 3 at 8%; there is no dark inner layer and the surface is not linked to an effect style. Pressed and disabled have no shadow on either; tertiary has none. The prototype had given secondary all three layers, following decision 0040 in the token repo (see atlas-sweep-shadow-error-focus), so it showed a dark inner edge Figma does not have. app.css now has --shadow-button-secondary with the two layers and secondary buttons use it; primary is unchanged. The secondary label colour in Figma is text/secondary, which is also why the Done button goes back to grey (see done-button-brand-text).",
+      "tradeoff": "The two-layer shadow lives only in app.css, because the Atlas-tokens repo has no token for it: decision 0040 says secondary uses the full three-layer style, and the Figma file disagrees. This needs to be raised with whoever owns Atlas so repo and Figma match; I followed Figma because the variant layers are what the designer drew. Not changed: the disabled secondary button still has a transparent border and a grey fill, where Figma keeps the border/default border with no fill (audit item 2.4).",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "button-disabled-per-emphasis",
+      "area": "Atlas",
+      "where": "Every disabled button (secondary and tertiary change; primary is unchanged)",
+      "t": "A disabled secondary button keeps its grey border with no fill, and a disabled tertiary button has no fill, as in Atlas",
+      "b": "Audit item 2.4 and Ryan's go-ahead on 2026-11-16. I read all 18 disabled Button variants in the Atlas Figma file (page 2132:480): primary, at every size and for default and negative, has the bg/disabled fill (#f4f4f7), no border and no shadow; secondary has no fill, a 1px border/default stroke inside the edge and no shadow; tertiary has no fill, no border and no shadow; the label is text/disabled (#c9cad1) on all of them. The prototype gave every disabled button the bg/disabled fill and a transparent border. Now primary is unchanged, disabled secondary buttons (.btn-outline, .btn-quiet, .btn-neutral, .btn-soft) have a transparent fill and a border/default border, and disabled tertiary buttons (.btn-ghost, .btn-tertiary-negative) have a transparent fill and no border. The rules are written with raised specificity so the white fills some secondary buttons carry (Back, Get help) cannot show through. Ryan gave no further reason.",
+      "tradeoff": "In the product today only primary buttons are ever disabled (Submit for verification, the gated Continue), so the secondary and tertiary change cannot be seen on the real screens; it was checked by disabling a button in the page. A disabled secondary now sits on the page with only its border showing, so it reads fainter than before on the grey page background. The icon colour of a disabled button was not compared with icon/disabled.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-batch2-button-input-tag",
+      "area": "Atlas",
+      "where": "Tertiary and negative buttons, small buttons, disabled and required fields, tags",
+      "t": "Button hover tints, the required star, the disabled field border and the tag gap follow the Atlas Figma file",
+      "b": "Second fix batch of the Atlas audit of 2026-11-16 (ATLAS-AUDIT-2026-11-16-batch2.md), values read from the Figma variant layers. (1) Tertiary buttons (.btn-ghost) hover and press to the pale purple bg/brand/subtle fill, not the grey bg/hover; the label stays text/brand. (2) The secondary negative button (.btn-critical, the owner Remove buttons) hovers and presses to bg/error/subtle with its border unchanged. (3) The tertiary negative button (the owner bin icon) keeps its red label when pressed instead of changing colour. (4) Small buttons (.btn-small, 24px, the lookup callout actions) use the 12px weight 500 label. (5) The required star is weight 500 (Label/Default) and sits 4px (gap/pair) from its label, was 600 and 2px. (6) A disabled field keeps the border/input ring (was border/default). (7) .tag has a 4px gap (was 8), and the unused .pill--lg rule is deleted. Ryan asked to leave the File drop hover alone: Atlas shows a white fill with a brand border on hover, the prototype keeps the pale purple fill, and Ryan will fix it in Atlas (he said the pale purple tint should be there). Not changed either: the read-only field fill and the upload hint line, which Ryan was not asked about yet.",
+      "tradeoff": "The File drop hover now differs from the Atlas Figma file on purpose until Ryan updates Atlas. The disabled field border change cannot be seen on a real screen because no field is disabled in the product. The 12px small label also applies to every .btn-small, which today is only the lookup callout actions. Tertiary pressed uses the same pale purple as hover, as in Figma.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-batch3-radio-search",
+      "area": "Atlas",
+      "where": "Step 1 business type cards, business and address search boxes",
+      "t": "The business type radio circle and the search box text start follow the Atlas Radio and Search input",
+      "b": "Third fix batch of the Atlas audit of 2026-11-16 (ATLAS-AUDIT-2026-11-16-batch3.md), values read from the Figma variant layers. (1) The radio circle in the business type cards is 16px (was 18), with a 1px border/strong ring at rest (was a 2px, much paler border/default ring), a 1px border/brand ring on hover and when chosen (was 2px), and the same 8px brand dot; it is centred on the first label line (19px high) with a 2px top margin. The cards themselves, with their padding, shadow and pale purple selected state, are unchanged because Atlas has no selectable card component. (2) The lookup and address search boxes start their text 36px in (12 padding, 16px icon, 8px gap), was 38px, as in Atlas Search input. Ryan asked on 2026-11-16 to ignore the Accordion component because it is still work in progress in Atlas, so the owner card header, chevron, shadow and section toggle findings are not acted on and the deliberate owner card choices (owner-card-click-to-open, static-cards-flat) stand. Ryan also said to fix anything remaining; the read-only field fill and the upload hint line were never answered, so they are left as they are.",
+      "tradeoff": "The unchosen radio circle is now much darker than before, so the three cards read as more clearly choosable and slightly busier. The 2px top margin is an optical centring, not an Atlas value. The search box padding was read from the CSS source and the Atlas spec; the lookup and address boxes were not on a screen in this run, so the 2px shift was not seen on screen.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-batch3-callout-checkbox",
+      "area": "Atlas",
+      "where": "Callouts (warning and error titles, the lock note), the disabled checkbox",
+      "t": "Warning and error callout titles take the severity colour, the lock note icon is 16px, and a disabled checkbox uses the Atlas disabled colours",
+      "b": "Remaining findings of the first Atlas audit report (ATLAS-AUDIT-2026-11-16.md, sections 3 and 6), built when Ryan said to fix anything remaining on 2026-11-16. (1) In a warning or error callout the title is text/warning or text/error and the description stays text/primary, as in the Atlas Callout variants; before the whole box was text/primary. No warning callout has a title and the one error callout (the failed upload line) has none, so nothing changes on screen today. (2) The lock note on the sign-in and secure fields uses a 16px icon (was 15). (3) A disabled checkbox has the bg/disabled fill (was neutral 200), a text/disabled label (was text/subtle) and an icon/disabled tick when ticked; it is used by the limits confirmation tick on step 3 until the limits are ready. Not changed: the padded row around each checkbox (padding 8, radius 8), which Atlas does not have and which Ryan has not been asked about, and the disabled checkbox border, whose Atlas value was not re-read.",
+      "tradeoff": "The disabled checkbox border is still border/default; I did not re-read the Atlas disabled border, so it may differ by a shade. The disabled tick colour was taken from the first report, not seen on screen next to the Figma variant. Ryan also told me to ignore the Accordion component for now (work in progress in Atlas), so none of its findings were acted on.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-file-drop-hint-line",
+      "area": "Atlas",
+      "where": "Step 6 document cards, the drop zone",
+      "t": "The drop zone has no hint line; each document's guidance stays above it, as before",
+      "b": "Atlas File drop has a hint line (Caption, text/subtle) under the prompt (ATLAS-AUDIT-2026-11-16-batch2.md, finding 4.6). Ryan chose to use it, and I first moved each document's own guidance (for example Include all four corners and avoid glare) into the zone as the hint. Ryan then said the hint should be exactly as Atlas writes it and the guidance should go back where it was, so it did. The guidance stays as body text under the document title, above the drop zone, and the zone shows only the icon, Drag a file here and or browse. The prototype has no file type or size rules to put in an Atlas hint line.",
+      "tradeoff": "The zone is 126px high at rest (measured) where Atlas draws 148px with its hint line. If the product has real file type and size rules, they would go in the hint line as Atlas shows it, and the height would then match.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "masked-field-not-read-only",
+      "area": "Atlas",
+      "where": "Encrypted or hidden value fields (account number, SSN)",
+      "t": "The masked field keeps the white editable fill: it is not an Atlas read-only field",
+      "b": "Atlas Input has a state=read-only variant (Input box in Figma): fill color/background/surface/sunken (#fafafc), 1px border/input, radius 8, value text unchanged. The Atlas page calls it a proposed state. On 2026-11-16 Ryan first chose to keep white, then asked for the sunken fill, then said the masked field should not use read-only at all: the box is editable (Show reveals and edits the value), so a read-only look would confuse. The masked value is a kind of field Atlas does not have yet, and Ryan will define it in Atlas separately. Until then it keeps the normal white Input look. The sunken fill I had added to it is removed. The input is marked readonly in code only so the dots cannot be typed into. Values that really are read-only, such as the yearly card volume (.affix--static), already use the sunken fill.",
+      "tradeoff": "The masked field is a custom field with no Atlas component behind it, so its look (padlock, monospace text, Show link) is not checked against Atlas and will need redoing once Atlas has the field.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-checkbox-row-flush",
+      "area": "Atlas",
+      "where": "Checkbox rows (step 3 limits tick, step 5 consents, step 7 agreement)",
+      "t": "The checkbox row is flush like Atlas: no row padding or radius, 8px between label and hint, disabled hint in text/disabled",
+      "b": "From the first Atlas audit report (ATLAS-AUDIT-2026-11-16.md, finding 3.3), answered by Ryan on 2026-11-16. Atlas Checkbox (Figma, read from the variant layers) is a 24px target holding a 16px box, 8px gap to the label, no padding or radius on the row. The prototype row had padding 8/16/8/8 and radius 8, which is removed, so the 24px target now sits flush with the text and the box is inset 4px as in Atlas. The hint line under the label is 8px below it (gap/related), as Atlas builds its Content frame, instead of the 4px I had set in the spacing sweep. The disabled hint is text/disabled like the disabled label. The disabled box border was re-read in Figma and is border/default, which the prototype already used. The red ring that was drawn around the whole row in error is removed: Atlas marks an error checkbox with a border/error box and error text only, and the prototype's box already does that.",
+      "tradeoff": "Rows sit 16px closer to the card edge on the right and 8px higher and lower than before, so stacked checkboxes are tighter and the click area is the label and box only, not a padded row. The 8px hint gap overrides the 4px title-plus-subtitle rule of atlas-spacing-by-role for checkboxes, following the component. The error state now relies on the box border and the error message, with no ring around the row.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-currency-input",
+      "area": "Atlas",
+      "where": "Money fields (step 3 card volumes, average and largest payment) and the yearly volume box",
+      "t": "Money fields follow the new Atlas Currency input: Amount/Small text and a plain currency code inside the box",
+      "b": "Atlas added a Currency input component (Figma page Currency input). From its variant layers: the symbol, the typed value and the ISO code are all Amount/Small (Roboto 14/500); the symbol is text/secondary, the value text/primary and the code text/subtle; the box is 40px high with padding 0/12 and an 8px gap; the placeholder stays Body/Default in text/subtle. The prototype had the value and symbol in Roboto Mono 13/400 and the currency code in its own shaded cell (sunken fill, left rule, 12/600 caption). Ryan asked on 2026-11-16 for the amount field to match Atlas, so the mono face is gone, the code is plain text in the same box, and the narrow-column box no longer tightens its gap to 4px. The yearly card volume box (read-only) keeps the Atlas read-only fill and takes the same text. The reason for showing the code at all is unchanged (see currency-code-on-amounts).",
+      "tradeoff": "Digits are no longer in a monospaced face, so amounts rely on Roboto's tabular figures (font-variant-numeric: tabular-nums is kept) to stay aligned. The quarter-width boxes in the volume row are about 192px wide at 1280px, which fits a six-figure amount with the code; I checked that width only, not narrower laptop widths.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-phone-input-one-box",
+      "area": "Atlas",
+      "where": "Every phone number field (step 1 business phone, step 2 owner phones, the invite flow)",
+      "t": "The phone field is one box with a country selector, a divider and the number, with the Atlas Phone country popup",
+      "b": "Atlas added a Phone input (with a Phone country popup and a Flag set). The prototype had two separate boxes, a 124px select with an emoji flag and a number input. It is now one 40px box (fill raised-1, 1px border/input, radius 8, padding 0/12, gap 8) holding the selector (24px high, radius 8, padding 0/8: a 24x16 flag, the dial code in Body/Default text/primary, a 16px chevron in icon/secondary), a 1px border/divider rule and the number. Hover is border/hover; focus or an open list is border/focus with the focus glow; error colours the whole box. The list is the Atlas Phone country popup: raised-2, 1px border, radius 12, a search row on top (Search country or dial code) in the focus ring, then 40px rows with the flag, country name, dial code and a check on the chosen row, and an empty row No results for typed text. Check the spelling. Ryan chose to add the search row. The search finds a country by name or by dial code with or without the plus. Keyboard: Arrow Down or Up on the selector opens the list and moves focus into the search; arrows move the highlight, Enter picks, Escape closes and returns focus to the selector. The flags for the eight countries Atlas draws (US, GB, AU, NZ, FR, DE, IE, ES) are the Atlas artwork exported to assets/flags; Canada and the other four countries (IT, NL, MX, IN) keep the emoji flag until Atlas adds them (Ryan chose that on 2026-11-16). The value format, digit spacing and validation are unchanged (see phone-input-component).",
+      "tradeoff": "Two kinds of flag sit side by side in the list (artwork and emoji), and Canada, one of our two home countries, is an emoji until Atlas draws it. The emoji flags can render differently across operating systems. The search row makes the list longer to build than the plain select it replaces. Focus is moved by a short timer after the list opens, so a very slow device could show the list for a moment before the cursor is in the search box.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "atlas-dialog-status-spacing",
+      "area": "Atlas",
+      "where": "All dialogs (save, confirm, invite, help, document viewer), the in-review timeline spinner, the more-info accepted-documents heading",
+      "t": "Dialogs use the Atlas spacing ladder, and two status screen details use tokens",
+      "b": "From the fourth Atlas audit report (ATLAS-AUDIT-2026-11-16-batch4.md, findings 4.1, 4.2, 3.2 and 3.5), answered by Ryan on 2026-11-16. Dialog padding was 28px, which is not on the ladder; it is now padding/hero (24px). The gap between the header icon and the title was 12px and the space under the header 8px; both are now gap/related (8px), the icon-plus-text rule from atlas-spacing-by-role. The in-review timeline spinner used raw white (#fff and rgba(255,255,255,.4)); it now uses icon/on-brand, with the faint ring made by mixing it at 40%. The Either of these works heading on the more-info screen was Label/Default in text/primary; it is now text/secondary like every other Atlas label, with its 8px margin as gap/related. Atlas has no Dialog component, so the dialog radius (12), width (460) and shadow are the product's own and unchanged.",
+      "tradeoff": "The dialog is 4px less padded on each side, so its content is a little tighter and 8px of width is gained for the invite email box. The icon in a dialog header now sits closer to its title than it did. The document viewer paper inside the wide dialog keeps its own 28/32 padding (the paper is a document, not dialog chrome).",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "account-holder-no-helper",
+      "area": "Payout account",
+      "where": "Step 4, Account holder name (United States and Canada)",
+      "t": "The helper line under Account holder name is removed",
+      "b": "The line This needs to match your legal business name. (organization for a non-profit) under the Account holder name box on the main payout account is removed, for both the United States and Canada versions. Ryan asked for it on 2026-11-16 and gave no reason. The box keeps its placeholder, Exactly as it appears on the account, and its label. The agreement and the checks at step 7 are unchanged. A usability test run before this (sam-okafor) had flagged this line as a minor problem for sole proprietors, whose account may be in their own name; that note is in usability-testing/results/sam-okafor.",
+      "tradeoff": "Nothing now tells the applicant that the account name should match the legal business name, so someone may type a personal or trading name; whether that causes bank verification to fail is for ops to say. The placeholder still says to type the name exactly as the account shows it.",
       "by": "Ryan",
       "when": "2026-11-16"
     }
@@ -3607,6 +3767,10 @@
       // The Atlas-style select list: which select has its list open, and the highlighted row.
       selOpen: "",
       selIdx: 0,
+      // The phone country list: which phone field has it open, what has been typed in its search row, and the highlighted row.
+      phoneOpen: "",
+      phoneQuery: "",
+      phoneIdx: 0,
       // The address lookup: which address field has its suggestions open, and the highlighted row (-1 until the arrow keys are used).
       addrOpen: "",
       addrIdx: -1,
@@ -4014,8 +4178,11 @@
     let c = PHONE_COUNTRIES.find((x) => x[0] === pick && (!code || x[3] === code));
     if (!c && code) c = PHONE_COUNTRIES.find((x) => x[3] === code && x[0] === home) || PHONE_COUNTRIES.find((x) => x[3] === code) || ["", "\u{1F310}", "Other", code];
     if (!c) c = PHONE_COUNTRIES.find((x) => x[0] === home);
-    return { iso: c[0], flag: c[1], code: c[3], digits: digitsOf(m ? m[2] : s) };
+    return { iso: c[0], flag: c[1], name: c[2], code: c[3], digits: digitsOf(m ? m[2] : s) };
   };
+  // Flags: the Atlas Flag artwork (assets/flags, exported from the Atlas Phone input page) for the eight countries Atlas draws, and the emoji flag for the rest until Atlas adds them (decision atlas-phone-input-one-box).
+  const ATLAS_FLAGS = ["US", "GB", "AU", "NZ", "FR", "DE", "IE", "ES"];
+  const flagView = (iso, emoji) => (ATLAS_FLAGS.indexOf(iso) > -1 ? html`<img class="flag" src="assets/flags/${iso.toLowerCase()}.svg" alt="" width="24" height="16">` : html`<span class="flag flag--emoji" aria-hidden="true">${emoji}</span>`);
   const phoneCap = (code) => (code === "1" ? 10 : 12);
   const phoneFmt = (code, d) => [d.slice(0, 3), d.slice(3, 6), d.slice(6)].filter(Boolean).join(" ");
   const phoneJoin = (code, d) => (d ? "+" + code + " " + phoneFmt(code, d) : "");
@@ -4448,7 +4615,7 @@
       const bankFields = (p, main) => ca
         ? [
             fld(p + "bankName", "Bank name", "text", { placeholder: "For example, RBC Royal Bank" }),
-            fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account", hint: main ? "This needs to match your legal " + (isNonprofit() ? "organization" : "business") + " name." : "" }),
+            fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business chequing", "Business savings"] }),
             fld(p + "institution", "Institution number", "mono", { placeholder: "3 digits" }),
             fld(p + "transit", "Transit number", "mono", { placeholder: "5 digits" }),
@@ -4456,7 +4623,7 @@
           ]
         : [
             fld(p + "bankName", "Bank name", "text", { placeholder: "For example, Umpqua Bank" }),
-            fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account", hint: main ? "This needs to match your legal " + (isNonprofit() ? "organization" : "business") + " name." : "" }),
+            fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business checking", "Business savings"] }),
             fld(p + "routing", "ABA routing number", "mono", { placeholder: "9 digits" }),
             fld(p + "accountNumber", "Account number (up to 17 digits)", "masked", { sensitive: true, placeholder: "Up to 17 digits" })
@@ -4758,7 +4925,7 @@
   <button type="button" class="input select-field${value === "" ? " is-unset" : ""}" id="${id}" role="combobox" aria-haspopup="listbox" aria-expanded="${String(open)}" aria-controls="lb-${id}"${described || ""} data-click="${on(() => (open ? setState({ selOpen: "" }) : openIt()))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.selOpen === id) setState({ selOpen: "" }); }, 160))}"><span class="select-text">${closedLabel || (cur > -1 ? options[cur][1] : placeholder)}</span></button>
   <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
   ${open && html`<ul class="combo-list select-list" id="lb-${id}" role="listbox" data-key="lb-${id}">
-    ${options.map((o, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${o[0] === value ? " is-chosen" : ""}" role="option" aria-selected="${String(o[0] === value)}" data-mouseenter="${on(() => { if (state.selIdx !== i) setState({ selIdx: i }); })}" data-click="${on(() => choose(o[0]))}">${o[1]}</li>`)}
+    ${options.map((o, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${o[0] === value ? " is-chosen" : ""}" role="option" aria-selected="${String(o[0] === value)}" data-mouseenter="${on(() => { if (state.selIdx !== i) setState({ selIdx: i }); })}" data-click="${on(() => choose(o[0]))}">${o[1]}${o[0] === value ? icon("check", 16, "combo-opt-check") : ""}</li>`)}
   </ul>`}
 </div>`;
   }
@@ -4819,15 +4986,26 @@
   <input class="input" id="${id}" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${open ? state.comboQuery : f.value}" placeholder="${f.value && open ? f.value : f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ comboOpen: f.id, comboQuery: "", comboIdx: 0 }))}" data-input="${on((e) => setState({ comboOpen: f.id, comboQuery: e.target.value, comboIdx: 0 }))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.comboOpen === f.id) setState({ comboOpen: "", comboQuery: "" }); }, 160))}">
   <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
   ${open && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb">
-    ${shown.length ? shown.map((x, i) => html`${grouped && i === 0 && x.common ? html`<li class="combo-group" role="presentation">Most common</li>` : ""}${grouped && x.common === false && (i === 0 || shown[i - 1].common) ? html`<li class="combo-group" role="presentation">All categories</li>` : ""}<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
+    ${shown.length ? shown.map((x, i) => html`${grouped && i === 0 && x.common ? html`<li class="combo-group" role="presentation">Most common</li>` : ""}${grouped && x.common === false && (i === 0 || shown[i - 1].common) ? html`<li class="combo-group" role="presentation">All categories</li>` : ""}<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}${x.label === f.value ? icon("check", 16, "combo-opt-check") : ""}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
     ${matches.length > shown.length && html`<li class="combo-empty">${matches.length - shown.length} more. Keep typing to narrow the list.</li>`}
   </ul>`}
 </div>`;
         break;
       }
       case "phone": {
-        // Country list plus a number box (decision phone-input-component). The number is spaced as it is typed: 000 000 0000 for +1, groups of three for other countries.
+        // One box holding the country selector, a divider and the number, with the Atlas Phone country popup (a search row above the list) under it (decision atlas-phone-input-one-box).
+        // The number is spaced as it is typed: 000 000 0000 for +1, groups of three for other countries (decision phone-input-component).
         const pp = phoneParts(f.id, f.value);
+        const open = state.phoneOpen === f.id;
+        const q = String(state.phoneQuery || "").trim().toLowerCase();
+        const qd = q.replace(/^\+/, "");
+        // The search row finds a country by name or by dial code, with or without the plus.
+        const shown = open ? PHONE_COUNTRIES.filter((c) => !q || c[2].toLowerCase().indexOf(q) > -1 || (/^\d+$/.test(qd) && c[3].indexOf(qd) === 0)) : [];
+        const idx = Math.min(Math.max(state.phoneIdx, 0), Math.max(shown.length - 1, 0));
+        const searchId = id + "-search";
+        const focusLater = (elId) => setTimeout(() => { const el = document.getElementById(elId); if (el) el.focus(); }, 0);
+        const closePop = (back) => { setState({ phoneOpen: "", phoneQuery: "", phoneIdx: 0 }); if (back) focusLater(id + "-code"); };
+        const openPop = () => { setState({ phoneOpen: f.id, phoneQuery: "", phoneIdx: Math.max(PHONE_COUNTRIES.findIndex((x) => x[0] === pp.iso), 0) }); focusLater(searchId); };
         const onPhone = (e) => {
           let d = digitsOf(e.target.value);
           if (pp.code === "1" && d.length === 11 && d[0] === "1") d = d.slice(1);
@@ -4838,10 +5016,28 @@
         const pickCountry = (iso) => {
           const c = PHONE_COUNTRIES.find((x) => x[0] === iso);
           if (!c) return;
-          setState((s) => ({ phoneIso: Object.assign({}, s.phoneIso, { [f.id]: iso }) }));
+          setState((s) => ({ phoneIso: Object.assign({}, s.phoneIso, { [f.id]: iso }), phoneOpen: "", phoneQuery: "", phoneIdx: 0 }));
           if (pp.digits) set(f.id, phoneJoin(c[3], pp.digits.slice(0, phoneCap(c[3]))));
+          focusLater(id + "-code");
         };
-        control = html`<div class="phone"><div class="phone-code">${selectView({ id: id + "-code", value: pp.iso, placeholder: "Code", closedLabel: pp.flag + " +" + pp.code, described: html` aria-label="Country calling code"`, pick: pickCountry, options: PHONE_COUNTRIES.map((c) => [c[0], c[1] + " " + c[2] + " (+" + c[3] + ")"]) })}</div><input class="input phone-num" id="${id}" type="tel" inputmode="tel" autocomplete="tel-national" value="${phoneFmt(pp.code, pp.digits)}" placeholder="${f.placeholder}"${described} data-input="${on(onPhone)}"></div>`;
+        // Keys in the search row: arrows move the highlight, Enter picks, Escape closes and returns to the selector, Tab leaves.
+        const popKeys = (e) => {
+          const n = shown.length;
+          if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (n) setState({ phoneIdx: (idx + (e.key === "ArrowDown" ? 1 : n - 1)) % n }); }
+          else if (e.key === "Enter") { e.preventDefault(); if (shown[idx]) pickCountry(shown[idx][0]); }
+          else if (e.key === "Escape") { e.stopPropagation(); closePop(true); }
+          else if (e.key === "Tab") { closePop(false); }
+        };
+        const selKeys = (e) => { if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if (!open) openPop(); } };
+        control = html`<div class="phone${open ? " is-open" : ""}">
+  <button type="button" class="phone-sel" id="${id}-code" role="combobox" aria-haspopup="listbox" aria-expanded="${String(open)}" aria-controls="lb-${id}" aria-label="Country calling code, ${pp.name}, plus ${pp.code}" data-click="${on(() => (open ? closePop(true) : openPop()))}" data-keydown="${on(selKeys)}">${flagView(pp.iso, pp.flag)}<span class="phone-dial">+${pp.code}</span>${icon("chev-d", 16)}</button>
+  <span class="phone-div" aria-hidden="true"></span>
+  <input class="phone-num" id="${id}" type="tel" inputmode="tel" autocomplete="tel-national" value="${phoneFmt(pp.code, pp.digits)}" placeholder="${f.placeholder}"${described} data-input="${on(onPhone)}">
+  ${open && html`<div class="phone-pop" data-key="pp-${f.id}">
+    <div class="phone-search">${icon("search", 16)}<input class="phone-search-in" id="${searchId}" type="text" role="combobox" aria-expanded="true" aria-controls="lb-${id}" aria-autocomplete="list" aria-label="Search country or dial code"${shown[idx] ? html` aria-activedescendant="${id}-opt-${idx}"` : ""} placeholder="Search country or dial code" value="${state.phoneQuery}" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ phoneQuery: e.target.value, phoneIdx: 0 }))}" data-keydown="${on(popKeys)}" data-blur="${on(() => setTimeout(() => { if (state.phoneOpen === f.id) closePop(false); }, 160))}"></div>
+    ${shown.length ? html`<ul class="phone-list" id="lb-${id}" role="listbox" aria-label="Countries">${shown.map((c, i) => html`<li class="phone-opt${i === idx ? " is-active" : ""}${c[0] === pp.iso ? " is-chosen" : ""}" id="${id}-opt-${i}" role="option" aria-selected="${String(c[0] === pp.iso)}" data-mouseenter="${on(() => { if (state.phoneIdx !== i) setState({ phoneIdx: i }); })}" data-click="${on(() => pickCountry(c[0]))}">${flagView(c[0], c[1])}<span class="phone-name">${c[2]}</span><span class="phone-dialcode">+${c[3]}</span><span class="phone-check">${c[0] === pp.iso ? icon("check", 16) : ""}</span></li>`)}</ul>` : html`<div class="phone-empty" id="lb-${id}" role="status">No results for "${state.phoneQuery}". Check the spelling</div>`}
+  </div>`}
+</div>`;
         break;
       }
       case "count":
@@ -5003,7 +5199,7 @@
   }
 
   function callout(text, cls) {
-    return html`<div class="callout${cls ? " " + cls : ""}">${icon("lock", 15)}<span>${text}</span></div>`;
+    return html`<div class="callout${cls ? " " + cls : ""}">${icon("lock", 16)}<span>${text}</span></div>`;
   }
 
   function cardView(c) {
@@ -6249,7 +6445,7 @@ ${protoView()}`;
         if (input && input.focus) input.focus({ preventScroll: true });
       }
     }
-    const hot = state.comboOpen && document.querySelector(".combo-opt.is-active");
+    const hot = (state.comboOpen || state.phoneOpen) && document.querySelector(".combo-opt.is-active, .phone-opt.is-active");
     if (hot && hot.scrollIntoView) hot.scrollIntoView({ block: "nearest" });
     // Hand over to enhance.js (animation layer).
     document.dispatchEvent(new CustomEvent("kyb:render", { detail: { screen: state.screen, step: state.step } }));
