@@ -3205,6 +3205,66 @@
       "tradeoff": "Both values come from the token repo and its decision records, not from reading the Figma effect style, so they are only as current as the repo. The old 0024 note (secondary has the cast shadow only) is superseded by 0040, but the prototype comment still said so until now. A focused error field shows only the red border, so focus is carried by the red border alone, as in Atlas. Still unverified in Figma: the disabled button border and the exact effect style values. Tertiary hover tint is still open.",
       "by": "Ryan",
       "when": "2026-11-13"
+    },
+    {
+      "id": "phone-input-component",
+      "area": "Fields",
+      "where": "Business phone number (step 1) and the owner Phone number (step 2)",
+      "t": "Both phone fields are one component: a country list with flag and code, then a number box spaced as it is typed",
+      "b": "Ryan's manager asked for the phone fields to be refined before the build, with the country code separated out and the digits spaced, for example [+1] 000 000 0000. Both fields used to be plain text boxes with a +1 (555) 000-0000 placeholder and no separate code. They now share one component (phoneParts, phoneFmt and phoneJoin in app.js, the phone case in fieldView): a country list on the left that shows a flag and the code (for example +1), and a number box on the right that takes digits only and spaces them 3, 3 and 4 for a +1 number (10 digits, so the area code is included) and the same three groups with the rest in the last group for other countries. The list holds the United States, Canada, the United Kingdom, Australia, New Zealand, France, Germany, Ireland, Italy, the Netherlands, Spain, Mexico and India, and opens as the standard Atlas Select menu. The code starts as +1 in both the US and Canada, with the flag of the region. Pasting a number that begins with 1 and has 11 digits drops the leading 1. The value is still stored as one line, +1 503 555 0148, so the owner prefill from step 1, the review screen and the saved data keep working; numbers already stored in the older +1 (503) 555-0148 shape show correctly spaced. The error is the same sentence, Enter the full number, including the area code., shown when a +1 number has fewer than 10 digits or another country has fewer than 6. The country list does not turn red on an error, only the number box. In the owner form the phone box spans two of the three columns (it was one third, too narrow for the list and the number). Ryan chose a country list over a fixed prefix or a typed code, and the 000 000 0000 spacing.",
+      "tradeoff": "Flags are emoji, which Windows browsers draw as two letters (for example US) instead of a flag, so the closed list reads as US +1 there. The list of 13 countries is a guess at Xplor's markets plus a few near ones, not a full country list or a rule from Product. Digit counts for non-US numbers are loose (6 to 12), so a wrong number can pass. The component is built, not checked against an Atlas Phone input: Atlas Figma was not read for this (the Figma connection was down last session), and the sweep has no Phone input entry.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "done-button-brand-text",
+      "area": "Owner form",
+      "where": "Done button at the foot of each owner section",
+      "t": "The Done button at the foot of an owner section has purple text; its fill, border and shadow are unchanged",
+      "b": "Ryan's manager felt the outlined Done button looked like another input field rather than the button that closes the section, and suggested a subtle colour fill such as light purple. Ryan chose to make the text purple only for now and to sort the Atlas side of it separately. So .owner-sec .sec-actions .btn uses --color-text-brand (the brand text colour) in place of the secondary grey. Nothing else changed: the button is still the white secondary button with the grey border and shadow, small size, and still closes the section without saving or checking anything (see section-done-buttons).",
+      "tradeoff": "The button keeps its white fill and grey border, so it may still read a little like a field next to the inputs above it; purple text is a lighter signal than the subtle fill the manager suggested. The light purple fill was offered and not chosen. Ryan will review the button against Atlas separately.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "limits-tick-confirm-wording",
+      "area": "Copy",
+      "where": "Step 3, tick under Your card volumes",
+      "t": "The limits tick reads I confirm the limits above are correct for my business",
+      "b": "Ryan's manager found I've read the payment and monthly limits for my business confusing and suggested something like I confirm the above payment and monthly limits for my business are correct. Ryan chose the shorter wording, I confirm the limits above are correct for my business. The hint under the tick is unchanged (it still shows the monthly limit and says to ask Xplor to raise it, or says what to enter first while the tick is greyed out), and the behaviour is unchanged (see limits-from-entries and limits-ack-in-volumes): greyed out until the monthly volume and maximum transaction are filled in, cleared if either number changes.",
+      "tradeoff": "The shorter label no longer names payment or monthly limits, so it relies on the hint under the tick to say which limits are meant, and the hint names only the monthly limit. The label says the limits are correct, but the limits come from what the applicant entered, so a reader could wonder what they are confirming. Legal may want the confirmation worded as an acceptance.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "terminated-question-plain-wording",
+      "area": "Copy",
+      "where": "Step 5 · Declarations, and the MATCH consent tick under it",
+      "t": "The termination question says a payment provider ended your agreement to take card payments, not a merchant account being terminated",
+      "b": "Ryan's manager found Has a merchant account of yours been terminated? confusing and asked what merchant means to the applicant: a bank account, a merchant account inside Odin, or the business itself, and whether it is Xplor terminology. Merchant account is processor and card-network wording; an applicant thinks of their business and of whoever lets them take cards. Ryan chose the plain version. The question now reads Has a payment provider ever ended your agreement to take card payments?, and the follow-up box after a Yes reads Provider, date and reason (it was Processor, date and reason). Ryan also agreed to change the consent tick under it the same way: it now reads I agree to a check of the card networks' list of businesses whose card payment agreements were ended (it was a list of closed merchant accounts). The hint under that tick is unchanged, so it still says Also called a MATCH check, or a Terminated Merchant File (TMF) check and that Mastercard requires it for every merchant account. The answers are still stored under priorTermination and matchConsent, so nothing downstream changed. See termination-asked-once for why this is asked only in step 5.",
+      "tradeoff": "The new question is wider than a terminated merchant account: a provider that ended an agreement for any reason, including one the applicant ended themselves, could be read as a Yes. Compliance may want the question to match what the MATCH list actually records. The consent tick wording is Compliance's to confirm, and its hint still says merchant account. The question does not say how far back to look.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "mcc-most-common-first",
+      "area": "Fields",
+      "where": "Step 1 · Merchant category code (MCC) list",
+      "t": "The business category list opens with the most common categories first, then the rest A to Z",
+      "b": "Ryan's manager suggested listing the most common MCCs first so most applicants can see and click theirs at once, or else listing alphabetically or by number. Ryan chose the most common first. With nothing typed, the list now has two headings: Most common (eight categories, in a set order) and All categories (every other code for the division, A to Z by title). When the applicant types, the list is the matches only, with the common ones first and the rest A to Z, and no headings. Each division has its own common set (MCC_COMMON in app.js): Standard has eating places, fast food, beauty and barber shops, miscellaneous retail, membership clubs, medical and health practitioners, miscellaneous personal services and miscellaneous food stores; ClubReady has membership clubs, health and beauty spas, recreation services, commercial sports, miscellaneous personal services, medical and health practitioners, chiropractors and miscellaneous food stores. Only codes already in the division's list can appear. The picker still shows only the division's codes (see mcc-from-division).",
+      "tradeoff": "The order of the common eight is invented for the prototype, not taken from Xplor merchant data, and it has not been checked with Ops or Product; a real build needs a ranking by how many applicants choose each code. The common set cannot show someone whose code is not in it that a better match is a long way down; search is the fallback. With the sample data the chosen code, 7997, is in the common group for both divisions.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "what-happens-next-always-visible",
+      "area": "Step 7",
+      "where": "Step 7 · What happens next",
+      "t": "What happens next is always shown on step 7, not folded away",
+      "b": "Ryan's manager liked What happens next for setting clear expectations and steps, and suggested it be visible on the page rather than an expandable accordion. The heading is now plain text, the toggle button and chevron are gone, and the three steps (Sent to Trulioo, Checks run, Start taking payments) always show. It stays where it was, after Sign it off and above Back and Submit; Ryan chose to keep that place. The wording of the three steps is unchanged. The unused nextOpen state is removed. See next-steps-panel for how the panel is drawn.",
+      "tradeoff": "The panel adds about 150 pixels of height at the bottom of the longest page, below the signature, so some applicants may not reach it before they submit; it was just as far down before, but now it is visible without a click. The wording was not touched, including Your first payout lands the next business day after your first sale, which is a claim that has no sign-off.",
+      "by": "Ryan",
+      "when": "2026-11-16"
     }
   ];
 
@@ -3354,6 +3414,11 @@
     [DIV_STANDARD]: ["5462", "5499", "5651", "5732", "5811", "5812", "5814", "5942", "5947", "5977", "5995", "5999", "7221", "7230", "7298", "7299", "7333", "7349", "7392", "7399", "7699", "7911", "7997", "8011", "8041", "8099", "8111", "8299", "8351", "8398", "8641", "8661"],
     [DIV_CLUBREADY]: ["5499", "5941", "5977", "7230", "7297", "7298", "7299", "7911", "7941", "7997", "7999", "8011", "8041", "8099"]
   };
+  // The codes most applicants pick, most common first (decision mcc-most-common-first). The order is an INVENTED stand-in, not Xplor volume data: replace it with the real ranking when Ops or Product supply one.
+  const MCC_COMMON = {
+    [DIV_STANDARD]: ["5812", "5814", "7230", "5999", "7997", "8099", "7299", "5499"],
+    [DIV_CLUBREADY]: ["7997", "7298", "7999", "7941", "7299", "8099", "8041", "5499"]
+  };
   const divisionMccs = () => { const codes = DIVISION_MCC[ctx.division] || DIVISION_MCC[DIV_STANDARD]; return MCC_LIST.filter((x) => codes.indexOf(x.code) > -1); };
   // Every word typed must appear in the code or title, so "bake" and "5462" both find bakeries. An empty search lists the whole division list.
   // Address lookup stand-ins (fake address-lookup): a short fixed list per country. Typing three or more characters shows the addresses that contain every word typed; the real product would search a postal address service.
@@ -3445,7 +3510,15 @@
   }
   // The parts for an address answer: the ones being typed if they still add up to the stored line, otherwise the line itself taken apart.
   const addrOf = (id, value) => { const p = state.addrParts[id]; return p && addrJoin(p) === String(value || "") ? p : addrParse(value); };
-  const searchMcc = (q) => { const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean); const all = divisionMccs(); return t.length ? all.filter((x) => t.every((w) => x.hay.indexOf(w) > -1)) : all; };
+  const searchMcc = (q) => {
+    const t = String(q || "").toLowerCase().split(/\s+/).filter(Boolean);
+    const hit = divisionMccs().filter((x) => !t.length || t.every((w) => x.hay.indexOf(w) > -1));
+    const common = MCC_COMMON[ctx.division] || MCC_COMMON[DIV_STANDARD];
+    // The common codes first, in their set order; every other code after them, A to Z by title. Typing a search keeps this order.
+    const top = hit.filter((x) => common.indexOf(x.code) > -1).sort((a, b) => common.indexOf(a.code) - common.indexOf(b.code));
+    const rest = hit.filter((x) => common.indexOf(x.code) < 0).sort((a, b) => a.name.localeCompare(b.name));
+    return top.map((x) => Object.assign({}, x, { common: true })).concat(rest.map((x) => Object.assign({}, x, { common: false })));
+  };
 
   // A returning visitor to the emailed link gets a saved business back, so that visit borrows the sample one.
   let restored = false;
@@ -3582,8 +3655,7 @@
     inviteStep: 0,
     inviteOwner: 0,
     returnTo: null,
-    saving: false,
-    nextOpen: false
+    saving: false
   }, freshState());
 
   // Switching the data option starts the run over. A half-filled form crossed
@@ -3899,6 +3971,23 @@
   // 18000 -> 18,000; leaves anything that is not a plain number alone.
   const fmtMoney = (s) => { const n = String(s).replace(/,/g, ""); return /^\d+(\.\d+)?$/.test(n) ? Number(n).toLocaleString("en-US") : String(s); };
   const digitsOf = (s) => String(s == null ? "" : s).replace(/\D/g, "");
+  // Phone number component (decision phone-input-component). One value per field, kept as "+code 000 000 0000" so everything that reads it carries on working.
+  // The country is chosen from a list; the number box takes digits only and spaces them as the applicant types.
+  const PHONE_COUNTRIES = [["US", "\u{1F1FA}\u{1F1F8}", "United States", "1"], ["CA", "\u{1F1E8}\u{1F1E6}", "Canada", "1"], ["GB", "\u{1F1EC}\u{1F1E7}", "United Kingdom", "44"], ["AU", "\u{1F1E6}\u{1F1FA}", "Australia", "61"], ["NZ", "\u{1F1F3}\u{1F1FF}", "New Zealand", "64"], ["FR", "\u{1F1EB}\u{1F1F7}", "France", "33"], ["DE", "\u{1F1E9}\u{1F1EA}", "Germany", "49"], ["IE", "\u{1F1EE}\u{1F1EA}", "Ireland", "353"], ["IT", "\u{1F1EE}\u{1F1F9}", "Italy", "39"], ["NL", "\u{1F1F3}\u{1F1F1}", "Netherlands", "31"], ["ES", "\u{1F1EA}\u{1F1F8}", "Spain", "34"], ["MX", "\u{1F1F2}\u{1F1FD}", "Mexico", "52"], ["IN", "\u{1F1EE}\u{1F1F3}", "India", "91"]];
+  const phoneParts = (id, v) => {
+    const s = String(v == null ? "" : v).trim();
+    const m = /^\+(\d{1,3})[\s(](.*)$/.exec(s);
+    const code = m ? m[1] : null;
+    const home = isCa() ? "CA" : "US";
+    const pick = (state.phoneIso || {})[id];
+    let c = PHONE_COUNTRIES.find((x) => x[0] === pick && (!code || x[3] === code));
+    if (!c && code) c = PHONE_COUNTRIES.find((x) => x[3] === code && x[0] === home) || PHONE_COUNTRIES.find((x) => x[3] === code) || ["", "\u{1F310}", "Other", code];
+    if (!c) c = PHONE_COUNTRIES.find((x) => x[0] === home);
+    return { iso: c[0], flag: c[1], code: c[3], digits: digitsOf(m ? m[2] : s) };
+  };
+  const phoneCap = (code) => (code === "1" ? 10 : 12);
+  const phoneFmt = (code, d) => [d.slice(0, 3), d.slice(3, 6), d.slice(6)].filter(Boolean).join(" ");
+  const phoneJoin = (code, d) => (d ? "+" + code + " " + phoneFmt(code, d) : "");
 
   // What is wrong with an EIN or business number, or "" if it is fine. Used by the field's validation (decision ein-in-registered-details).
   // A Canadian BN is often printed with a program account, such as 123456789RT0001. Only the first 9 digits are the BN, so the
@@ -3953,7 +4042,7 @@
     // An address is complete once it has a street, city, state or province, and ZIP or postal code (decision address-split-fields).
     if (f.kind === "address") { const p = addrOf(f.id, v); if (!p.l1.trim() || !p.city.trim() || !p.region.trim() || !p.postal.trim()) return "Fill in the street, city, " + (ca ? "province and postal code." : "state and ZIP code."); }
     if (key === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v).trim())) return "Enter an email like name@example.com.";
-    if (key === "phone" && (d.length < 10 || d.length > 15)) return "Enter the full number, including the area code.";
+    if (key === "phone") { const pp = phoneParts(f.id, v); if (pp.digits.length < (pp.code === "1" ? 10 : 6)) return "Enter the full number, including the area code."; }
     if (DATE_KEYS.indexOf(key) > -1) { const p = dateProblem(key, v); if (p) return p; }
     if (key === "natId" && d.length !== 9) return ca ? "Enter all 9 digits of your SIN." : "Enter all 9 digits of your SSN.";
     if (key === "routing" && d.length !== 9) return "Enter all 9 digits of your routing number.";
@@ -4200,7 +4289,7 @@
       f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
       // Email and phone close Personal details; there is no separate How to reach them section (decision owner-form-two-sections).
       f("email", "Email address", "text", { placeholder: "name@example.com" }),
-      f("phone", "Phone number", "text", { placeholder: "+1 (555) 000-0000" }),
+      f("phone", "Phone number", "phone", { placeholder: "555 123 4567" }),
       sub("id", "Identity verification"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
       f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "For example, D1234567", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trulioo, our verification partner." }),
@@ -4262,7 +4351,7 @@
           a.tradingSame === "no" ? fld("tradingAddress", "Trading / physical address", "address", { span: true, conditional: true, placeholder: addressPh() }) : null
         ]),
         card("s1-contact", "How we reach you", isNonprofit() ? "For account notices and questions from the people paying you. We won't add you to any marketing." : "For account notices and customer questions. We won't add you to any marketing.", [
-          fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "text", { placeholder: "+1 (555) 000-0000" }),
+          fld("phone", isNonprofit() ? "Organization phone number" : "Business phone number", "phone", { placeholder: "555 123 4567" }),
           fld("email", isNonprofit() ? "Organization email address" : "Business email address", "text", { placeholder: isNonprofit() ? "hello@yourorganization.org" : "hello@yourbusiness.com" }),
           // The website is required. A business with none ticks the box, which fills the box with N/A and locks it (decision website-required-with-none-box).
           fld("website", "Primary website URL", "text", { span: true, locked: a.noWebsite === true ? NO_WEBSITE : undefined, placeholder: isNonprofit() ? "yourorganization.org" : "yourbusiness.com", tick: fld("noWebsite", "I don't have a website", "check", { optional: true }) })
@@ -4295,7 +4384,7 @@
           fld("prior", "Have you accepted card payments before?", "yn", { span: true }),
           a.prior === "yes" ? fld("priorName", "Prior processor name", "text", { conditional: true, placeholder: "For example, Square, Stripe" }) : null,
           a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null,
-          fld("velocityAck", "I've read the payment and monthly limits for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + " " + (isCa() ? "CAD" : "USD") + ", based on the monthly volume you entered. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
+          fld("velocityAck", "I confirm the limits above are correct for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + " " + (isCa() ? "CAD" : "USD") + ", based on the monthly volume you entered. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
         ], { pinId: "underwriting-plain" }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "Primary payment channel" : "Primary sales channel", "select", { placeholder: "Choose a channel", options: ["In-person", "Online", "In-person and online", "Mobile", "Phone / mail order (MOTO)"] }),
@@ -4345,14 +4434,14 @@
         card("s5-dec", "Declarations", "", [
           fld("legalProceedings", "Are there any legal proceedings involving the business right now?", "yn", { span: true }),
           a.legalProceedings === "yes" ? fld("legalProceedingsWhy", "Tell us a bit about it", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
-          fld("priorTermination", "Has a merchant account of yours been terminated?", "yn", { span: true }),
-          a.priorTermination === "yes" ? fld("priorTerminationWhy", "Processor, date and reason", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
+          fld("priorTermination", "Has a payment provider ever ended your agreement to take card payments?", "yn", { span: true }),
+          a.priorTermination === "yes" ? fld("priorTerminationWhy", "Provider, date and reason", "long", { span: true, conditional: true, placeholder: "A sentence or two is fine." }) : null,
           fld("taxLiens", ca ? "Any outstanding tax debts owed to the CRA, or court judgments?" : "Any outstanding tax liens or judgments?", "yn", { span: true }),
           a.taxLiens === "yes" ? fld("taxLiensWhy", "Amount and current status", "long", { span: true, conditional: true, placeholder: "How much, and where it stands now." }) : null,
           ca ? null : fld("msb", "Are you a money service business?", "yn", { span: true, hint: "Check cashing, money transfer, currency exchange or cryptocurrency. Most businesses aren't." })
         ], { pinId: "yes-is-not-no" }),
         card("s5-consent", ca ? "A consent we have to collect" : "Two consents we have to collect", "", [
-          fld("matchConsent", "I agree to a check of the card networks' list of closed merchant accounts", "check", { span: true, hint: "Also called a MATCH check, or a Terminated Merchant File (TMF) check. Mastercard requires it for every merchant account." }),
+          fld("matchConsent", "I agree to a check of the card networks' list of businesses whose card payment agreements were ended", "check", { span: true, hint: "Also called a MATCH check, or a Terminated Merchant File (TMF) check. Mastercard requires it for every merchant account." }),
           ca ? null : fld("ofacAck", "I understand we'll check your name against the US government sanctions list", "check", { span: true, hint: "Known as screening by the Office of Foreign Assets Control (OFAC). Every US merchant goes through it." })
         ], { assurance: ca ? "This is a consent, not a credit check. It doesn't touch your personal credit score." : "These are consents, not credit checks. Neither one touches your personal credit score." })
       ];
@@ -4608,7 +4697,7 @@
   // raised-2 surface, shadow-sm, items at the medium control height with space/padding/item, hover and keyboard highlight on background/hover,
   // normal body weight, and the chosen item on the brand subtle fill in Control/Bold with the normal text colour. Every dropdown in the form uses it, so none falls back to the browser's own list.
   // options is a list of [value, label]; pick receives the chosen value.
-  function selectView({ id, value, options, placeholder, pick, described }) {
+  function selectView({ id, value, options, placeholder, pick, described, closedLabel }) {
     const open = state.selOpen === id;
     const cur = options.findIndex((o) => o[0] === value);
     const idx = open ? Math.min(Math.max(state.selIdx, 0), options.length - 1) : cur;
@@ -4627,7 +4716,7 @@
       }
     };
     return html`<div class="combo combo--select">
-  <button type="button" class="input select-field${value === "" ? " is-unset" : ""}" id="${id}" role="combobox" aria-haspopup="listbox" aria-expanded="${String(open)}" aria-controls="lb-${id}"${described || ""} data-click="${on(() => (open ? setState({ selOpen: "" }) : openIt()))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.selOpen === id) setState({ selOpen: "" }); }, 160))}"><span class="select-text">${cur > -1 ? options[cur][1] : placeholder}</span></button>
+  <button type="button" class="input select-field${value === "" ? " is-unset" : ""}" id="${id}" role="combobox" aria-haspopup="listbox" aria-expanded="${String(open)}" aria-controls="lb-${id}"${described || ""} data-click="${on(() => (open ? setState({ selOpen: "" }) : openIt()))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.selOpen === id) setState({ selOpen: "" }); }, 160))}"><span class="select-text">${closedLabel || (cur > -1 ? options[cur][1] : placeholder)}</span></button>
   <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
   ${open && html`<ul class="combo-list select-list" id="lb-${id}" role="listbox" data-key="lb-${id}">
     ${options.map((o, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${o[0] === value ? " is-chosen" : ""}" role="option" aria-selected="${String(o[0] === value)}" data-mouseenter="${on(() => { if (state.selIdx !== i) setState({ selIdx: i }); })}" data-click="${on(() => choose(o[0]))}">${o[1]}</li>`)}
@@ -4678,6 +4767,8 @@
         const open = state.comboOpen === f.id;
         const matches = open ? searchMcc(state.comboQuery) : [];
         const shown = matches.slice(0, 60);
+        // With nothing typed the list has two headings; once the applicant types it is one list of matches (decision mcc-most-common-first).
+        const grouped = !String(state.comboQuery || "").trim();
         const idx = Math.min(state.comboIdx, Math.max(shown.length - 1, 0));
         const pickIt = (label) => { set(f.id, label); setState({ comboOpen: "", comboQuery: "" }); };
         const keys = (e) => {
@@ -4689,10 +4780,29 @@
   <input class="input" id="${id}" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${open ? state.comboQuery : f.value}" placeholder="${f.value && open ? f.value : f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ comboOpen: f.id, comboQuery: "", comboIdx: 0 }))}" data-input="${on((e) => setState({ comboOpen: f.id, comboQuery: e.target.value, comboIdx: 0 }))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.comboOpen === f.id) setState({ comboOpen: "", comboQuery: "" }); }, 160))}">
   <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
   ${open && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb">
-    ${shown.length ? shown.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
+    ${shown.length ? shown.map((x, i) => html`${grouped && i === 0 && x.common ? html`<li class="combo-group" role="presentation">Most common</li>` : ""}${grouped && x.common === false && (i === 0 || shown[i - 1].common) ? html`<li class="combo-group" role="presentation">All categories</li>` : ""}<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
     ${matches.length > shown.length && html`<li class="combo-empty">${matches.length - shown.length} more. Keep typing to narrow the list.</li>`}
   </ul>`}
 </div>`;
+        break;
+      }
+      case "phone": {
+        // Country list plus a number box (decision phone-input-component). The number is spaced as it is typed: 000 000 0000 for +1, groups of three for other countries.
+        const pp = phoneParts(f.id, f.value);
+        const onPhone = (e) => {
+          let d = digitsOf(e.target.value);
+          if (pp.code === "1" && d.length === 11 && d[0] === "1") d = d.slice(1);
+          d = d.slice(0, phoneCap(pp.code));
+          e.target.value = phoneFmt(pp.code, d);
+          set(f.id, phoneJoin(pp.code, d));
+        };
+        const pickCountry = (iso) => {
+          const c = PHONE_COUNTRIES.find((x) => x[0] === iso);
+          if (!c) return;
+          setState((s) => ({ phoneIso: Object.assign({}, s.phoneIso, { [f.id]: iso }) }));
+          if (pp.digits) set(f.id, phoneJoin(c[3], pp.digits.slice(0, phoneCap(c[3]))));
+        };
+        control = html`<div class="phone"><div class="phone-code">${selectView({ id: id + "-code", value: pp.iso, placeholder: "Code", closedLabel: pp.flag + " +" + pp.code, described: html` aria-label="Country calling code"`, pick: pickCountry, options: PHONE_COUNTRIES.map((c) => [c[0], c[1] + " " + c[2] + " (+" + c[3] + ")"]) })}</div><input class="input phone-num" id="${id}" type="tel" inputmode="tel" autocomplete="tel-national" value="${phoneFmt(pp.code, pp.digits)}" placeholder="${f.placeholder}"${described} data-input="${on(onPhone)}"></div>`;
         break;
       }
       case "currency":
@@ -5451,13 +5561,13 @@
   // What happens after Submit, on the last step.
 
   function nextView(v) {
-    return html`<section class="next-panel${state.nextOpen ? " is-open" : ""}" data-key="s7-next" aria-labelledby="next-h">
-  <h2 class="next-head" id="next-h"><button type="button" class="next-toggle" aria-expanded="${String(!!state.nextOpen)}" aria-controls="next-body" data-click="${on(() => setState({ nextOpen: !state.nextOpen }))}"><span>What happens next</span>${icon("chev-d", 16, "next-chev")}</button></h2>
-  ${state.nextOpen && html`<ol class="next-grid" id="next-body">
+    return html`<section class="next-panel is-open" data-key="s7-next" aria-labelledby="next-h">
+  <h2 class="next-head" id="next-h">What happens next</h2>
+  <ol class="next-grid" id="next-body">
     <li class="next-item is-on"><span class="next-num">1</span><div><div class="next-title">Sent to Trulioo</div><div class="next-body">${v.submitNote}</div></div></li>
     <li class="next-item"><span class="next-num">2</span><div><div class="next-title">Checks run</div><div class="next-body">You can close this window, and we'll email you.</div></div></li>
     <li class="next-item"><span class="next-num">3</span><div><div class="next-title">Start taking payments</div><div class="next-body">Your first payout lands the next business day after your first sale.</div></div></li>
-  </ol>`}
+  </ol>
 </section>`;
   }
 

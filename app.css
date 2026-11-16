@@ -657,6 +657,17 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .combo-opt { display: flex; gap: var(--space-gap-pair); align-items: center; min-height: var(--size-control-medium); padding: 0 var(--space-padding-item); border-radius: var(--radius-default); font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
 .combo-opt:hover, .combo-opt.is-active { background: var(--color-background-hover); }
 .combo-opt.is-chosen { background: var(--color-background-brand-subtle); font: var(--font-control-bold); }
+/* Phone number component (decision phone-input-component): country list at the start, number box fills the rest. */
+.phone { display: flex; gap: 8px; align-items: flex-start; }
+.phone-code { flex: none; width: 124px; }
+.phone-code .combo-list { right: auto; width: 280px; }
+.phone-num { flex: 1; min-width: 0; }
+[data-error] .phone-code .input { box-shadow: none; border-color: var(--color-border-default); }
+/* Done button at the foot of an owner section: purple text only (decision done-button-brand-text). */
+.owner-sec .sec-actions .btn { color: var(--color-text-brand); }
+/* Headings inside the business category list (decision mcc-most-common-first). */
+.combo-group { padding: 8px var(--space-padding-item) 4px; font-size: var(--type-caption-default-size); font-weight: 600; color: var(--color-text-subtle); cursor: default; }
+.combo-group:not(:first-child) { margin-top: 4px; border-top: 1px solid var(--color-border-default); padding-top: 12px; }
 .combo-code { flex: none; width: 36px; font-family: var(--font-mono); font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 /* Step 1 business lookup (decision business-lookup-typeahead). */
 .find-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; align-items: start; }
@@ -866,7 +877,9 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 /* Owner form: every row sits on a grid of thirds, and a row with two boxes fills the first two thirds (decision owner-form-thirds). One box across on a narrow screen. */
 .fields-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px 16px; align-items: start; }
-@media (max-width: 560px) { .fields-row { grid-template-columns: minmax(0,1fr); } }
+/* The owner phone box takes two thirds, so the country list and the number both have room (decision phone-input-component). */
+.fields-row > [data-key$="_phone"] { grid-column: span 2; }
+@media (max-width: 560px) { .fields-row { grid-template-columns: minmax(0,1fr); } .fields-row > [data-key$="_phone"] { grid-column: auto; } }
 /* In an owner card the home address uses the same thirds as every other row: city, state and ZIP or postal code are a third each (decision owner-form-thirds). Other addresses keep their quarter lines. */
 .owner-sec .addr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .owner-sec .addr-cell--sm { grid-column: span 1; }
