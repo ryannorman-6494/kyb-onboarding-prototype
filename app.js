@@ -3265,6 +3265,36 @@
       "tradeoff": "The panel adds about 150 pixels of height at the bottom of the longest page, below the signature, so some applicants may not reach it before they submit; it was just as far down before, but now it is visible without a click. The wording was not touched, including Your first payout lands the next business day after your first sale, which is a claim that has no sign-off.",
       "by": "Ryan",
       "when": "2026-11-16"
+    },
+    {
+      "id": "need-card-nonprofit-id-line",
+      "area": "Copy",
+      "where": "Welcome page · What you'll need · Details of the people who own your organization",
+      "t": "The What you'll need card no longer says a non-profit or government body doesn't need the SSN or SIN",
+      "b": "Rosh, from risk operations, asked for this line to go. His reason: some other businesses try the government or non-profit route to avoid giving the social security number and other details for all their owners, because they see it is not needed on that path. The sentence A non-profit or government body doesn't need the SSN (SIN in Canada) is replaced with For a non-profit or government body, we need each person's title, address and a driver's license or passport (licence in Canada). Ryan chose copy only. The form itself is unchanged: a non-profit's leader cards still have no SSN or SIN box, so the route Rosh describes still avoids the number; only the card no longer advertises it.",
+      "tradeoff": "This hides the gap rather than closing it. A business that chooses non-profit in order to skip the SSN still can, and Rosh's worry is about behaviour, not wording. Closing it would mean asking for the SSN or SIN on non-profit and government leader cards (Ryan did not choose that), or verifying the organisation type some other way, which is a risk and Compliance decision. The card now says address for everyone but only lists it for non-profit and government, although every owner card asks for a home address.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "ach-count-when-volume",
+      "area": "Fields",
+      "where": "Step 3 · Bank transfer volumes",
+      "t": "Once an ACH (EFT in Canada) volume above 0 is entered, a required box asks for the number of payments a month",
+      "b": "Rosh, from risk operations, asked for a question such as the number of ACH transactions in a month. Ryan chose: required once the volume is above 0, and shown only when a number above 0 has been entered in the volume box. So the Estimated monthly ACH volume box (EFT in Canada) stays optional and starts at 0 (see ach-volume-defaults-zero), and a second box, Estimated monthly number of ACH payments (EFT payments in Canada), appears beside it as soon as the volume is above 0. It is required: empty gives Enter how many ACH payments you expect each month, and 0 gives Enter a number above 0. It takes digits only and shows thousands separators as it is typed. If the volume goes back to 0 the box disappears and nothing is asked. The new answer is stored as achCount.",
+      "tradeoff": "The box appears after the applicant types in the volume, so it can push the page down while they are still typing. A count and a volume that do not fit together (for example 1 payment of $50,000) are not checked against each other or against the average payment amount. The ACH average amount is not asked.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "ecommerce-channel-url",
+      "area": "Fields",
+      "where": "Step 3 · How you sell (How you take payments for a non-profit)",
+      "t": "The channel question is How do customers pay you?, Online is E-commerce, and an e-commerce answer asks for a required website or app address",
+      "b": "Rosh, from risk operations, pointed out that in the payments world sales channel means direct sales, ISV, ISO and the like, and asked whether in-person and online is how Club businesses word it; he also asked for Online to be E-commerce, because that is how the card brands categorise it, and for a required URL box when e-commerce is picked. Ryan chose a new label and the card-brand term. The label Primary sales channel (Primary payment channel for a non-profit) is now How do customers pay you? (How do people pay you?). The options are In-person, E-commerce (online), In-person and e-commerce, Mobile and Phone / mail order (MOTO). Picking E-commerce (online) or In-person and e-commerce shows a required box, Website or app where customers pay (people, for a non-profit), under the two pickers. It starts filled with the website from step 1 unless step 1 says there is no website, can be changed, and gets https:// added as the applicant leaves it, like the step 1 website. Empty gives Enter the website or app address where customers pay, and it blocks the step like any required box. The sample business is In-person and e-commerce. Update, 2026-11-16 (Ryan): the box does not block Continue, only the final Submit, like every other required box (see errors-only-for-bad-entries); Rosh had asked for it to be required to progress to the next page, and Ryan chose to keep the prototype consistent. Ryan gave no further reason. I could not say how Club businesses word the channel; that stays Ryan's to confirm.",
+      "tradeoff": "E-commerce (online) keeps online in brackets so an applicant who does not know the card-brand term can still pick it; Rosh asked for the card-brand name alone. The box is not checked for being a real address, only for being filled in. Because it starts from the step 1 website, an applicant may accept it without checking it. The What you'll need card still says in person, online or both. The usability kit and field spreadsheet still hold the old label and options.",
+      "by": "Ryan",
+      "when": "2026-11-16"
     }
   ];
 
@@ -3360,6 +3390,7 @@
     international: "", countries: "", refundPolicy: "",
     prior: "", priorName: "", priorCbRatio: "",
     achVolume: "0",
+    achCount: "",
     velocityAck: false,
     bankName: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
     institution: "", transit: "",
@@ -3393,7 +3424,7 @@
     regAddress: "418 SE Water Ave, Suite 210, Portland, OR 97214",
     tradingSame: "yes",
     monthlyVolume: "42,000", avgTicket: "38", maxTicket: "1,200", cpSplit: "70",
-    channel: "In-person and online", goods: "Services and subscriptions",
+    channel: "In-person and e-commerce", goods: "Services and subscriptions",
     recurring: "yes", trial: "no", marketplace: "no", international: "no",
     refundPolicy: "riversidepilates.com/refunds",
     prior: "no",
@@ -4035,13 +4066,14 @@
     if (f.kind === "select") return v ? "" : (askPhrase(f) ? "Choose " + askPhrase(f) + "." : "Choose one.");
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
-    if (!String(v).trim()) return askPhrase(f) ? "Enter " + askPhrase(f) + "." : "Fill this in to finish this step.";
+    if (!String(v).trim()) return f.id === "ecomUrl" ? "Enter the website or app address where customers pay." : f.id === "achCount" ? "Enter how many " + (isCa() ? "EFT" : "ACH") + " payments you expect each month." : (askPhrase(f) ? "Enter " + askPhrase(f) + "." : "Fill this in to finish this step.");
     const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
     // An address is complete once it has a street, city, state or province, and ZIP or postal code (decision address-split-fields).
     if (f.kind === "address") { const p = addrOf(f.id, v); if (!p.l1.trim() || !p.city.trim() || !p.region.trim() || !p.postal.trim()) return "Fill in the street, city, " + (ca ? "province and postal code." : "state and ZIP code."); }
     if (key === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v).trim())) return "Enter an email like name@example.com.";
+    if (key === "achCount" && Number(d) < 1) return "Enter a number above 0.";
     if (key === "phone") { const pp = phoneParts(f.id, v); if (pp.digits.length < (pp.code === "1" ? 10 : 6)) return "Enter the full number, including the area code."; }
     if (DATE_KEYS.indexOf(key) > -1) { const p = dateProblem(key, v); if (p) return p; }
     if (key === "natId" && d.length !== 9) return ca ? "Enter all 9 digits of your SIN." : "Enter all 9 digits of your SSN.";
@@ -4375,6 +4407,10 @@
       ];
     }
     if (step === 3) {
+      // The number of ACH or EFT payments is asked only once an ACH or EFT volume above 0 has been entered (decision ach-count-when-volume).
+      const achOn = parseFloat(String(a.achVolume || "").replace(/,/g, "")) > 0;
+      // E-commerce channels ask for the address where customers pay (decision ecommerce-channel-url).
+      const ecomOn = ["E-commerce (online)", "In-person and e-commerce"].indexOf(a.channel) > -1;
       return [
         card("s3-vol", "Your card volumes", "Best guesses are fine. These set your limits, not your rate.", [
           fld("monthlyVolume", "Estimated monthly card volume", "currency", { placeholder: "40,000", annual: true }),
@@ -4387,8 +4423,9 @@
           fld("velocityAck", "I confirm the limits above are correct for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + " " + (isCa() ? "CAD" : "USD") + ", based on the monthly volume you entered. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
         ], { pinId: "underwriting-plain" }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
-          fld("channel", isNonprofit() ? "Primary payment channel" : "Primary sales channel", "select", { placeholder: "Choose a channel", options: ["In-person", "Online", "In-person and online", "Mobile", "Phone / mail order (MOTO)"] }),
+          fld("channel", isNonprofit() ? "How do people pay you?" : "How do customers pay you?", "select", { placeholder: "Choose one", options: ["In-person", "E-commerce (online)", "In-person and e-commerce", "Mobile", "Phone / mail order (MOTO)"] }),
           fld("goods", isNonprofit() ? "What people pay or give for" : "Type of goods or services", "select", { placeholder: "Choose a type", options: isNonprofit() ? ["Donations", "Tickets and events", "Memberships and subscriptions", "Services", "Physical goods", "Mixed"] : ["Services", "Services and subscriptions", "Physical goods", "Digital goods", "Mixed"] }),
+          ecomOn ? fld("ecomUrl", isNonprofit() ? "Website or app where people pay" : "Website or app where customers pay", "text", { span: true, conditional: true, dflt: a.website && a.website !== NO_WEBSITE ? a.website : "", placeholder: isNonprofit() ? "yourorganization.org/donate" : "yourbusiness.com/shop", hint: "The page or app where customers pay you online. It starts with your website from step 1, and you can change it." }) : null,
           fld("recurring", isNonprofit() ? "Recurring donations or memberships?" : "Recurring billing or subscriptions?", "yn"),
           fld("trial", "Free trial or deferred billing?", "yn"),
           fld("marketplace", isNonprofit() ? "Do you take payments on behalf of other organizations?" : "Do you take payments on behalf of other businesses?", "yn", { span: true, hint: (isNonprofit() ? "For example, chapters, member groups or fundraisers collecting through you." : "For example, contractors or instructors who invoice through you.") + " If you say yes, we have to ask for more details." }),
@@ -4398,10 +4435,12 @@
         ]),
         ca
           ? card("s3-ach", "Bank transfer volumes", "Only if you'll also take direct debits.", [
-              fld("achVolume", "Estimated monthly EFT volume", "currency", { optional: true, zero: true, placeholder: "10,000" })
+              fld("achVolume", "Estimated monthly EFT volume", "currency", { optional: true, zero: true, placeholder: "10,000" }),
+              achOn ? fld("achCount", "Estimated monthly number of EFT payments", "count", { conditional: true, placeholder: "25" }) : null
             ])
           : card("s3-ach", "Bank transfer volumes", "Only if you'll also take ACH payments.", [
-              fld("achVolume", "Estimated monthly ACH volume", "currency", { optional: true, zero: true, placeholder: "10,000" })
+              fld("achVolume", "Estimated monthly ACH volume", "currency", { optional: true, zero: true, placeholder: "10,000" }),
+              achOn ? fld("achCount", "Estimated monthly number of ACH payments", "count", { conditional: true, placeholder: "25" }) : null
             ])
       ];
     }
@@ -4550,7 +4589,7 @@
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
       needRegistration: (ca ? "Your CRA business number, plus the legal name, registered address and registration date as they appear on your registration." : "Your EIN, plus the legal name, registered address and incorporation details as they appear on your registration.") + " You'll also choose your merchant category from a short list.",
-      needIds: "Owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN. A non-profit or government body doesn't need the SIN." : "a driver's license or passport and an SSN. A non-profit or government body doesn't need the SSN.") + (invitesOn() ? " If it's easier, they can fill in their own details." : " You fill this in for everyone, so have it all ready."),
+      needIds: "Owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN. For a non-profit or government body, we need each person's title, address and a driver's licence or passport." : "a driver's license or passport and an SSN. For a non-profit or government body, we need each person's title, address and a driver's license or passport.") + (invitesOn() ? " If it's easier, they can fill in their own details." : " You fill this in for everyone, so have it all ready."),
       needBank: ca ? "Your institution, transit and account numbers, plus a photo ID for each owner and proof of your bank account." : "Your routing and account numbers, plus a photo ID for each owner and a signed W-9.",
       shellRailNote: isStatus ? "Submitted to our verification partner" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
       remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
@@ -4805,6 +4844,10 @@
         control = html`<div class="phone"><div class="phone-code">${selectView({ id: id + "-code", value: pp.iso, placeholder: "Code", closedLabel: pp.flag + " +" + pp.code, described: html` aria-label="Country calling code"`, pick: pickCountry, options: PHONE_COUNTRIES.map((c) => [c[0], c[1] + " " + c[2] + " (+" + c[3] + ")"]) })}</div><input class="input phone-num" id="${id}" type="tel" inputmode="tel" autocomplete="tel-national" value="${phoneFmt(pp.code, pp.digits)}" placeholder="${f.placeholder}"${described} data-input="${on(onPhone)}"></div>`;
         break;
       }
+      case "count":
+        // A whole number, digits only, shown with thousands separators as it is typed (decision ach-count-when-volume).
+        control = html`<input class="input" id="${id}" inputmode="numeric" autocomplete="off" value="${f.value ? Number(digitsOf(f.value)).toLocaleString("en-US") : ""}" placeholder="${f.placeholder}"${described} data-input="${on((e) => { const d = digitsOf(e.target.value).replace(/^0+(?=\d)/, "").slice(0, 7); e.target.value = d ? Number(d).toLocaleString("en-US") : ""; set(f.id, d); })}">`;
+        break;
       case "currency":
         // The dollar sign alone does not say which dollar, so the currency code closes the field (decision currency-code-on-amounts).
         control = html`<div class="affix affix--money"><span class="affix-prefix" aria-hidden="true">${f.prefix}</span><input id="${id}" value="${f.value}" placeholder="${f.placeholder}" inputmode="decimal" autocomplete="off"${described} data-input="${onInput}"${f.zero ? html` data-blur="${on((e) => { if (!String(e.target.value).trim()) set(f.id, "0"); })}"` : ""}><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>`;
@@ -6251,6 +6294,11 @@ ${protoView()}`;
     if (id === "f-website") {
       const w = String(state.a.website || "").trim();
       if (w && w !== NO_WEBSITE && !/^[a-z][a-z0-9+.-]*:\/\//i.test(w)) set("website", "https://" + w);
+    }
+    // The e-commerce address gets https:// the same way (decision ecommerce-channel-url).
+    if (id === "f-ecomUrl") {
+      const w = String(state.a.ecomUrl || "").trim();
+      if (w && !/^[a-z][a-z0-9+.-]*:\/\//i.test(w)) set("ecomUrl", "https://" + w);
     }
     // A Canadian business number pasted with its program account (123456789RT0001) is cut back to the 9 digits as the person leaves the field (decision ca-bn-program-account).
     if (id === "f-ein" && bnCore(state.a.ein || "") !== (state.a.ein || "")) set("ein", bnCore(state.a.ein));
