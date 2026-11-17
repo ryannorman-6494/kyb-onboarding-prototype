@@ -133,6 +133,13 @@ button:focus-visible, input[type="checkbox"]:focus-visible {
 .callout-actions { display: flex; flex-wrap: wrap; gap: var(--space-gap-related); }
 .btn-small { height: var(--size-control-small); padding: 0 var(--component-button-padding-x-small); flex: none; font: var(--font-control-small); letter-spacing: var(--type-control-small-letter-spacing); } /* Atlas small Button label is 12/500 */
 .callout--warning { background: var(--color-background-warning-subtle); color: var(--color-text-primary); }
+/* The saved payout account (decision bank-saved-as-account): an icon tile, the bank, the account type with the last four digits, the holder, and the Re-enter details button at the end. */
+.bank-acct { display: flex; align-items: center; gap: var(--space-gap-group); margin-top: var(--space-gap-group); padding: var(--space-padding-surface); border-radius: var(--radius-default); background: var(--color-background-shell); }
+.bank-acct-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--space-gap-pair); }
+.bank-acct-name { font: var(--font-body-bold); color: var(--color-text-primary); }
+.bank-acct-meta { font: var(--font-body-default); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+.bank-acct .btn { flex: none; }
+@media (max-width: 480px) { .bank-acct { flex-wrap: wrap; } .bank-acct .btn { margin-left: auto; } }
 .callout--warning > .i { color: var(--color-icon-warning); }
 /* Atlas Callout: the title takes the severity text colour, the description stays text/primary. */
 .callout--warning .callout-title { color: var(--color-text-warning); }
@@ -265,6 +272,7 @@ button.step:hover { background: var(--color-background-hover); }
 .fields { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--space-gap-group); }
 .fields--sign { margin-bottom: 20px; }
 .span-2 { grid-column: span 2; }
+.span-half { grid-column: 1 / -1; width: calc((100% - var(--space-gap-group)) / 2); }
 .field-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .field-head { display: flex; align-items: center; gap: var(--space-gap-related); margin-bottom: var(--space-gap-related); }
 .field-label { display: block; font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); color: var(--color-text-secondary); }
@@ -539,6 +547,7 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
   .next-item:not(:last-child)::before { display: none; }
   .unlock-grid { grid-template-columns: minmax(0,1fr); }
   .span-2 { grid-column: auto; }
+  .span-half { grid-column: auto; width: auto; }
   .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
 

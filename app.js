@@ -484,7 +484,7 @@
       "area": "Flow",
       "where": "Step 4 · Payout account",
       "t": "The payout account is typed in, with no bank connection",
-      "b": "Step 4 asks for the account details directly: bank name, account holder, account type, and the routing and account numbers (institution, transit and account numbers in Canada). The earlier choice between connecting a bank and typing the details in is gone, along with the “30 seconds” and “+1 document” labels, the simulated bank login, and the lines on the welcome page and in step 4 that promised a faster route. Nothing proves the account on the spot any more, so the account is checked by Trulioo after submit (decision bank-verified-by-trulioo); an earlier version asked for a bank letter or voided check in step 6.",
+      "b": "Step 4 asks for the account details directly: bank name, account holder, account type, and the routing and account numbers (institution, transit and account numbers in Canada). The earlier choice between connecting a bank and typing the details in is gone, along with the “30 seconds” and “+1 document” labels, the simulated bank login, and the lines on the welcome page and in step 4 that promised a faster route. Nothing proves the account on the spot any more, so the account is checked by Trulioo after submit (decision bank-verified-by-trulioo); an earlier version asked for a bank letter or voided check in step 6. Update, 2026-11-17: the typed account is saved when Save and continue is pressed with every field in, and shows as a saved account card afterwards (see bank-saved-as-account).",
       "tradeoff": "Typing numbers is slower and easier to get wrong than a bank connection, and a mistyped digit would send money to the wrong place; the check is Trulioo's, after submit. A connection could come back later as a second route, but it is not designed here.",
       "by": "Ryan",
       "when": "2026-10-07"
@@ -494,7 +494,7 @@
       "area": "Trust",
       "where": "Step 4 · Payout account",
       "t": "Say plainly that Xplor may debit the payout account for fees, chargebacks and refunds",
-      "b": "Step 4 used to promise that Xplor could pay into the account but could not take anything out. Ryan decided on 2026-10-26 that this is not true: the merchant agreement lets Xplor Pay collect fees and recover chargebacks, refunds and returns by debit, so the promise is removed. The Settlement account card now says the account is where sales are paid and that Xplor may also take fees, chargebacks and refunds from it, as the agreement at step 7 sets out. The why-we-ask note says the same.",
+      "b": "Step 4 used to promise that Xplor could pay into the account but could not take anything out. Ryan decided on 2026-10-26 that this is not true: the merchant agreement lets Xplor Pay collect fees and recover chargebacks, refunds and returns by debit, so the promise is removed. The Settlement account card now says the account is where sales are paid and that Xplor may also take fees, chargebacks and refunds from it, as the agreement at step 7 sets out. The why-we-ask note says the same. Update, 2026-11-17 (Ryan): the grey callout carrying this line is removed from step 4, both on the form and on the saved account card, so step 4 no longer says the account may be debited for fees, chargebacks and refunds. Ryan gave no reason. The statement is still in the merchant services agreement at step 7, and nothing else on the form says it now.",
       "tradeoff": "The comfort that was the card's main reassurance is gone, so step 4 now asks for a sensitive account with a less comforting note, and the full terms are only read at step 7. The agreement wording is a sample drafted from the debit and recovery points in a ClubReady sub-merchant form Ryan shared. Legal or compliance has not checked it, and Canadian pre-authorized debit rules need their own check.",
       "by": "Ryan",
       "when": "2026-10-26"
@@ -1922,7 +1922,7 @@
       "area": "Flow",
       "where": "Step 4 · Payout account",
       "t": "Onboarding takes one bank account; more are added after approval",
-      "b": "Step 4 asks for one settlement account, the one that must match the legal name. Applicants cannot add further accounts here. The step description says that once approved they can add more accounts for their other merchants. A business such as a golf and country club can have a restaurant with its own bank account, but that is a separate merchant under the same business, set up after approval, not a second payout account on this application. A bank account held by a different legal entity is not an extra account: it needs its own application. Underwriting therefore reviews one legal entity and one verified bank account (decision bank-verified-by-trulioo). This replaces the earlier optional Add another bank account link built on 2026-11-02.",
+      "b": "Step 4 asks for one settlement account, the one that must match the legal name. Applicants cannot add further accounts here. The step description says that once approved they can add more accounts for their other merchants. A business such as a golf and country club can have a restaurant with its own bank account, but that is a separate merchant under the same business, set up after approval, not a second payout account on this application. A bank account held by a different legal entity is not an extra account: it needs its own application. Underwriting therefore reviews one legal entity and one verified bank account (decision bank-verified-by-trulioo). This replaces the earlier optional Add another bank account link built on 2026-11-02. Update, 2026-11-17 (Ryan): the step 4 subtitle now ends Once you're approved, you can add more accounts. with no for your other merchants. Ryan gave no reason; it no longer explains what the other accounts are for.",
       "tradeoff": "Adding accounts and merchants after approval is only described, not built. How underwriting treats a later account (extra check, new underwriting for a different trading name or merchant category) is not decided. A business with several accounts has to wait for approval before setting them up.",
       "by": "Ryan",
       "when": "2026-11-03"
@@ -2401,7 +2401,7 @@
       "area": "Flow",
       "where": "Steps 1 to 6 · Save and continue, and the left column",
       "t": "Save and continue works on any step even if it is incomplete; a step left unfinished shows as Partly done",
-      "b": "Applicants may be waiting on a number, a document or a person, so steps 1 to 6 no longer hold Save and continue back until every required answer is in. The button is always on, and pressing it saves what is there and moves to the next step. The left column now says where each opened step stands: Done with a green tick when everything required is in, or a percentage done when something is missing (changed on 2026-11-09 by step-percent-done: it first said Partly done in the warning colour, with no percentage). Applicants can return to any step they have opened by choosing it in the left column or by pressing Back, and can fill the rest in then. Steps not yet opened cannot be chosen from the left column. On the last step's summary, each section shows a green tick circle only when its step is complete; a step that is only partly done shows a half-filled circle in the warning colour instead. The link at the end of that row says Continue instead of Edit, since the applicant is finishing the step and not changing it (same screen and Save button as Edit). The half circle is the whole icon, the same size as the tick circle, with nothing drawn inside it. Step names stay on one line: the left column is a little wider, and the Partly done label has no icon so it does not take up extra room. Only a bad entry is flagged before the end (decision errors-only-for-bad-entries); a field left empty shows nothing. The final step is different: Submit for verification stays off until every step is complete and the signature is typed, and its hover note lists each earlier step still only partly done as well as what is missing on the page.",
+      "b": "Applicants may be waiting on a number, a document or a person, so steps 1 to 6 no longer hold Save and continue back until every required answer is in. The button is always on, and pressing it saves what is there and moves to the next step. The left column now says where each opened step stands: Done with a green tick when everything required is in, or a percentage done when something is missing (changed on 2026-11-09 by step-percent-done: it first said Partly done in the warning colour, with no percentage). Applicants can return to any step they have opened by choosing it in the left column or by pressing Back, and can fill the rest in then. Steps not yet opened cannot be chosen from the left column. On the last step's summary, each section shows a green tick circle only when its step is complete; a step that is only partly done shows a half-filled circle in the warning colour instead. The link at the end of that row says Continue instead of Edit, since the applicant is finishing the step and not changing it (same screen and Save button as Edit). The half circle is the whole icon, the same size as the tick circle, with nothing drawn inside it. Step names stay on one line: the left column is a little wider, and the Partly done label has no icon so it does not take up extra room. Only a bad entry is flagged before the end (decision errors-only-for-bad-entries); a field left empty shows nothing. The final step is different: Submit for verification stays off until every step is complete and the signature is typed, and its hover note lists each earlier step still only partly done as well as what is missing on the page. Update, 2026-11-17: step 4 is now the exception; Save and continue stays off there until every bank field is in, and it saves the bank account (see bank-saved-as-account).",
       "tradeoff": "Someone can click through all six steps with nothing filled in and only find out what is missing at the end, so the applicant is not nudged to finish a step while the details are fresh. Partly done does not say what is missing, so they have to open the step to find out. The invited owner's own page still needs everything before Send my details.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -2461,7 +2461,7 @@
       "area": "Flow",
       "where": "Steps 1 to 6 · Save and continue, Save & Exit, and every field",
       "t": "Only a wrong entry is an error before the final submit; an empty required field shows nothing, and a wrong entry stops the save and scrolls to it",
-      "b": "Required fields are only enforced at the very end, when the applicant submits, so leaving a field empty no longer shows a message when the applicant clicks into it and out again. A wrong entry still does: an answer that is there but not valid, such as an email without an at sign, a routing number that is not 9 digits, a phone number that is too short or a date in the wrong format. It shows when the field is left. Pressing Save and continue, or Save & Exit, with a wrong entry on the step does not save or move on: the page scrolls to the first field with a problem, puts the cursor in it, and the message stays until it is put right. Empty required answers never stop either button, and the step still shows as Partly done in the left column. On the final step, pressing Submit for verification still lists everything that is missing. Replaces the earlier behaviour (decision partial-steps-allowed, first version) where each empty field flagged itself when it was left.",
+      "b": "Required fields are only enforced at the very end, when the applicant submits, so leaving a field empty no longer shows a message when the applicant clicks into it and out again. A wrong entry still does: an answer that is there but not valid, such as an email without an at sign, a routing number that is not 9 digits, a phone number that is too short or a date in the wrong format. It shows when the field is left. Pressing Save and continue, or Save & Exit, with a wrong entry on the step does not save or move on: the page scrolls to the first field with a problem, puts the cursor in it, and the message stays until it is put right. Empty required answers never stop either button, and the step still shows as Partly done in the left column. On the final step, pressing Submit for verification still lists everything that is missing. Replaces the earlier behaviour (decision partial-steps-allowed, first version) where each empty field flagged itself when it was left. Update, 2026-11-17: on step 4 an empty required field does stop Save and continue, because the back end only stores a complete bank account (see bank-saved-as-account).",
       "tradeoff": "Someone who skips a required field gets no warning that it is needed until the left column says Partly done or they reach the final step, so a missed field can be found late. A wrong entry blocks saving, so a person who is waiting on the correct number cannot save a half-right one and has to clear the box to move on.",
       "by": "Ryan",
       "when": "2026-11-09"
@@ -3291,7 +3291,7 @@
       "area": "Fields",
       "where": "Step 3 · How you sell (How you take payments for a non-profit)",
       "t": "The channel question is How do customers pay you?, Online is E-commerce, and an e-commerce answer asks for a required website or app address",
-      "b": "Rosh, from risk operations, pointed out that in the payments world sales channel means direct sales, ISV, ISO and the like, and asked whether in-person and online is how Club businesses word it; he also asked for Online to be E-commerce, because that is how the card brands categorise it, and for a required URL box when e-commerce is picked. Ryan chose a new label and the card-brand term. The label Primary sales channel (Primary payment channel for a non-profit) is now How do customers pay you? (How do people pay you?). The options are In-person, E-commerce (online), In-person and e-commerce, Mobile and Phone / mail order (MOTO). Picking E-commerce (online) or In-person and e-commerce shows a required box, Website or app where customers pay (people, for a non-profit), under the two pickers. It starts filled with the website from step 1 unless step 1 says there is no website, can be changed, and gets https:// added as the applicant leaves it, like the step 1 website. Empty gives Enter the website or app address where customers pay, and it blocks the step like any required box. The sample business is In-person and e-commerce. Update, 2026-11-16 (Ryan): the box does not block Continue, only the final Submit, like every other required box (see errors-only-for-bad-entries); Rosh had asked for it to be required to progress to the next page, and Ryan chose to keep the prototype consistent. Ryan gave no further reason. I could not say how Club businesses word the channel; that stays Ryan's to confirm.",
+      "b": "Rosh, from risk operations, pointed out that in the payments world sales channel means direct sales, ISV, ISO and the like, and asked whether in-person and online is how Club businesses word it; he also asked for Online to be E-commerce, because that is how the card brands categorise it, and for a required URL box when e-commerce is picked. Ryan chose a new label and the card-brand term. The label Primary sales channel (Primary payment channel for a non-profit) is now How do customers pay you? (How do people pay you?). The options are In-person, E-commerce (online), In-person and e-commerce, Mobile and Phone / mail order (MOTO). Picking E-commerce (online) or In-person and e-commerce shows a required box, Website or app where customers pay (people, for a non-profit), under the two pickers. It starts filled with the website from step 1 unless step 1 says there is no website, can be changed, and gets https:// added as the applicant leaves it, like the step 1 website. Empty gives Enter the website or app address where customers pay, and it blocks the step like any required box. The sample business is In-person and e-commerce. Update, 2026-11-16 (Ryan): the box does not block Continue, only the final Submit, like every other required box (see errors-only-for-bad-entries); Rosh had asked for it to be required to progress to the next page, and Ryan chose to keep the prototype consistent. Ryan gave no further reason. I could not say how Club businesses word the channel; that stays Ryan's to confirm. Update, 2026-11-17 (Ryan): the helper text under the address box is removed and the box is half width on its own row (see ecommerce-url-half-width).",
       "tradeoff": "E-commerce (online) keeps online in brackets so an applicant who does not know the card-brand term can still pick it; Rosh asked for the card-brand name alone. The box is not checked for being a real address, only for being filled in. Because it starts from the step 1 website, an applicant may accept it without checking it. The What you'll need card still says in person, online or both. The usability kit and field spreadsheet still hold the old label and options.",
       "by": "Ryan",
       "when": "2026-11-16"
@@ -3685,6 +3685,26 @@
       "tradeoff": "A business or person that trades only under their own legal name now has to type something, and nothing says whether repeating the legal name is acceptable. The Riverside Pilates example is a business name, which is odd for a sole proprietor using their own name. The prototype's sample business already has a DBA, so the rule only shows when it is cleared.",
       "by": "Ryan",
       "when": "2026-11-17"
+    },
+    {
+      "id": "bank-saved-as-account",
+      "area": "Payout account",
+      "where": "Step 4, Payout account: the form, Save and continue, and a saved account card",
+      "t": "Step 4 must be complete before Save and continue, which saves the bank account; coming back shows a saved account card with Re-enter details",
+      "b": "Ryan, 2026-11-17: the back end can only store the bank account once everything is entered, so step 4 has to be filled in completely before Save and continue. Pressing it saves the details as a bank account, and if the applicant goes back to step 4 they see a saved account card with a button to change it. Changing it clears every field (Ryan chose Everything when asked which fields to clear, and noted that this is really adding a new account again, which is fine because they are limited to one), so the button is Re-enter details. How it works: (1) While the form shows, Save and continue is off until every field is in and valid, and its hover note lists what is missing. This is the one step that holds the button back; every other step still works while incomplete (partial-steps-allowed, errors-only-for-bad-entries). (2) A warning callout above the form says Fill in every field to continue, and We can only save your bank account once all of its details are in. When every field is filled, Save and continue saves the account for you. The step subtitle says We need every detail before we can save it. (3) Save and continue saves the account, shows a Bank account saved toast and moves to step 5. (4) On return, the form is replaced by a Payout account card with a green Saved badge, the bank name, the account type with the last four digits (for example Business checking · •••• 4417), the account holder, and a Re-enter details button; the fuller number is never shown again. Save and continue is on, and the left column shows step 4 as Done. (5) Re-enter details clears every bank answer and shows the form with a callout, Enter your bank details again, that says the saved account stays as it is until a new one is saved, with a Keep my saved account button that puts the card back. Until the new details are all in, the step shows a percentage and Save and continue is off. (6) Ryan chose: details typed but not yet saved are kept in the browser only, so nothing counts as saved until Save and continue; and if the applicant starts re-entering and does not finish, the old account stays saved. (7) Editing step 4 from the review page works the same way, and its Save button is off until the form is complete. The prototype's sample business starts with the form filled in and not yet saved, so the first Save and continue is what saves it. The callout wording, the Saved badge, the button names Re-enter details (Ryan's suggestion) and Keep my saved account, and the toast are mine. Update, 2026-11-17 (Ryan): the grey callout under the form, and under the saved account card, is removed, leaving the orange callout at the top as the only notice on the step. The subtitle also drops for your other merchants (see extra-bank-accounts). Ryan gave no reason for either. Update, 2026-11-17 (Ryan, later): the orange callout was first built above the Payout account card; Ryan said it should sit inside the card, at the bottom of the form, where the grey lock note used to be. It now does, in both the first-time form and the Re-enter details form (the Keep my saved account button comes with it). The saved account card has no callout.",
+      "tradeoff": "An applicant who is waiting on a bank number cannot move past step 4 and has no way to park it except Save and exit, which keeps what they typed only in the browser, so they may lose a half-filled form on another device. Re-enter details throws away the bank name, holder and type as well as the numbers, so fixing one wrong digit means typing everything again. The warning callout and the disabled button say the same thing twice. How the real back end handles a saved account that is replaced, and what the saved card should show for a Canadian account (institution and transit numbers), is not decided; the card shows only the type and last four digits in both regions.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "ecommerce-url-half-width",
+      "area": "Step 3",
+      "where": "Step 3, How you sell, the Website or app where customers pay box",
+      "t": "The e-commerce address box has no helper text and takes half the row, on its own row",
+      "b": "Ryan, 2026-11-17: remove the helper text under the Website or app where customers pay box (The page or app where customers pay you online. It starts with your website from step 1, and you can change it.), and make the box 50% wide instead of full width. The box is now half the width of the row, the same as the two boxes above it. Left as a half-width box in the grid it would have shared a row with Recurring billing and left Free trial alone on the next row, so it sits on its own row with the right half empty, and Recurring billing and Free trial stay paired below it. It still starts filled with the website from step 1 (ecommerce-channel-url), only now nothing says so. Below 560px the page is one column and the box fills it, as every box does. Ryan gave no reason.",
+      "tradeoff": "Nothing now tells the applicant the box was filled in for them or that it can be changed, so someone may not notice it holds their step 1 website, and may not know a different page or app is allowed. The empty right half of the row is deliberate, to keep the pairs below it level.",
+      "by": "Ryan",
+      "when": "2026-11-17"
     }
   ];
 
@@ -4018,6 +4038,9 @@
       openOwner: 1,
       // The furthest step the applicant has opened. Steps up to here can be returned to from the left column; later ones cannot (decision partial-steps-allowed).
       maxStep: 1,
+      // The payout account once Save and continue has saved it (decision bank-saved-as-account): { values } is a copy of the bank answers, or null while nothing is saved. bankEditing is true while the applicant is re-entering the details of a saved account.
+      bankSaved: null,
+      bankEditing: false,
       // Owner form sections the applicant has opened, keyed by the section's heading id. The first starts open and the rest closed until chosen (decision owner-form-accordion).
       secOpen: {},
       openCards: {},
@@ -4196,14 +4219,45 @@
     });
     return true;
   }
+  // The payout account (decision bank-saved-as-account). The back end can only store a bank account once every detail is in, so step 4 is the one step that holds Save and continue back until the form is complete, and pressing it saves the account.
+  const BANK_KEYS = ["bankName", "accountHolder", "accountType", "routing", "institution", "transit", "accountNumber"];
+  const bankFormOn = () => !state.bankSaved || state.bankEditing;
+  const bankLast4 = (raw) => String(raw || "").replace(/\D/g, "").slice(-4);
+  const snapshotBank = () => { const values = {}; BANK_KEYS.forEach((k) => { values[k] = state.a[k] || ""; }); return { values }; };
+  // Re-enter details clears every bank answer, because a saved account cannot be changed in part. The old account stays saved until a new one is.
+  function reenterBank() {
+    const a = Object.assign({}, state.a);
+    const touched = Object.assign({}, state.touched);
+    BANK_KEYS.forEach((k) => { a[k] = ""; delete touched[k]; });
+    setState({ bankEditing: true, a, touched, tried: Object.assign({}, state.tried, { 4: false }), revealed: Object.assign({}, state.revealed, { accountNumber: false }) });
+  }
+  function cancelBankEdit() {
+    const a = Object.assign({}, state.a, state.bankSaved ? state.bankSaved.values : {});
+    const touched = Object.assign({}, state.touched);
+    BANK_KEYS.forEach((k) => { delete touched[k]; });
+    setState({ bankEditing: false, a, touched, tried: Object.assign({}, state.tried, { 4: false }) });
+  }
   const next = () => {
     if (state.step < 7 && blockedByProblems()) return;
+    if (state.step === 4 && bankFormOn()) {
+      if (Object.keys(stepErrors(4, false)).length) return;
+      setState({ bankSaved: snapshotBank(), bankEditing: false, step: 5 });
+      showToast("Bank account saved");
+      return;
+    }
     if (state.step < 7) { setState({ step: state.step + 1 }); return; }
     if (stepGaps().length) return;
     attempt(() => setState({ screen: "submitted", submittedAt: stampDate() + ", " + new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZoneName: "short" }) }));
   };
   const editFromReview = (step) => setState({ step, editing: true, saveOpen: false });
-  const saveEdit = () => setState({ step: 7, editing: false });
+  const saveEdit = () => {
+    if (state.step === 4 && bankFormOn()) {
+      if (Object.keys(stepErrors(4, false)).length) return;
+      setState({ bankSaved: snapshotBank(), bankEditing: false, step: 7, editing: false });
+      return;
+    }
+    setState({ step: 7, editing: false });
+  };
   const back = () => (state.step <= 1 ? setState({ screen: "bizType" }) : setState({ step: state.step - 1 }));
 
   // Legal structure choices (decision company-structure-nine-types). Each maps to one ODIN ownership type; sole proprietor, tax-exempt and government come from the card and the pills.
@@ -4530,6 +4584,8 @@
       if (a.acceptAgreement !== true && !problemsOnly) errs.acceptAgreement = "Accept the agreement to sign.";
       if (state.sign === "" && !problemsOnly) errs.sign = "Draw your signature, or upload an image of it.";
     }
+    // A saved payout account counts every one of its answers as in (decision bank-saved-as-account).
+    if (step === 4 && !bankFormOn() && tally) { const n = isCa() ? 6 : 5; tally.total += n; tally.done += n; }
     // Every card counts, including the step 1 sections still hidden behind the business lookup (decision business-lookup-typeahead).
     cardsFor(step, true).forEach((c) => c && c.fields.forEach(add));
     return errs;
@@ -4636,6 +4692,8 @@
       // A text box that shows a fixed value and cannot be typed in (the website box once "I don't have a website" is ticked).
       locked: o.locked !== undefined,
       span: !!o.span,
+      // A field on its own row at half the width of the row (decision ecommerce-url-half-width).
+      half: !!o.half,
       annual: !!o.annual,
       // An optional amount that is stored as 0 when left empty (the ACH or EFT volume; decision ach-volume-defaults-zero).
       zero: !!o.zero,
@@ -4807,7 +4865,7 @@
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "How do people pay you?" : "How do customers pay you?", "select", { placeholder: "Choose one", options: ["In-person", "E-commerce (online)", "In-person and e-commerce", "Mobile", "Phone / mail order (MOTO)"] }),
           fld("goods", isNonprofit() ? "What people pay or give for" : "Type of goods or services", "select", { placeholder: "Choose a type", options: isNonprofit() ? ["Donations", "Tickets and events", "Memberships and subscriptions", "Services", "Physical goods", "Mixed"] : ["Services", "Services and subscriptions", "Physical goods", "Digital goods", "Mixed"] }),
-          ecomOn ? fld("ecomUrl", isNonprofit() ? "Website or app where people pay" : "Website or app where customers pay", "text", { span: true, conditional: true, dflt: a.website && a.website !== NO_WEBSITE ? a.website : "", placeholder: isNonprofit() ? "yourorganization.org/donate" : "yourbusiness.com/shop", hint: "The page or app where customers pay you online. It starts with your website from step 1, and you can change it." }) : null,
+          ecomOn ? fld("ecomUrl", isNonprofit() ? "Website or app where people pay" : "Website or app where customers pay", "text", { half: true, conditional: true, dflt: a.website && a.website !== NO_WEBSITE ? a.website : "", placeholder: isNonprofit() ? "yourorganization.org/donate" : "yourbusiness.com/shop" }) : null,
           fld("recurring", isNonprofit() ? "Recurring donations or memberships?" : "Recurring billing or subscriptions?", "yn"),
           fld("trial", "Free trial or deferred billing?", "yn"),
           fld("marketplace", isNonprofit() ? "Do you take payments on behalf of other organizations?" : "Do you take payments on behalf of other businesses?", "yn", { span: true, hint: (isNonprofit() ? "For example, chapters, member groups or fundraisers collecting through you." : "For example, contractors or instructors who invoice through you.") + " If you say yes, we have to ask for more details." }),
@@ -4843,10 +4901,13 @@
             fld(p + "routing", "ABA routing number", "mono", { placeholder: "9 digits" }),
             fld(p + "accountNumber", "Account number (up to 17 digits)", "masked", { sensitive: true, placeholder: "Up to 17 digits" })
           ];
+      // Once the account is saved the form gives way to the saved account card (bankSavedView, decision bank-saved-as-account).
+      if (!bankFormOn()) return [];
       return [
         card("s4-manual", "Payout account", "", bankFields("", true), {
           pinId: "bank-no-debit",
-          assurance: "We send your payouts to this account. We may also take fees, chargebacks and refunds from it, as the agreement at step 7 explains."
+          // The orange notice lives inside the card, below the fields, where the grey lock note used to be (decision bank-notice-inside-card).
+          foot: bankNoticeView()
         })
       ];
     }
@@ -4954,7 +5015,8 @@
     // On the final step, earlier steps left partly done hold the submit back and are named in the hover note.
     const gaps = isFlow && st.step === 7 ? stepGaps() : [];
     gaps.slice().reverse().forEach((n) => missing.unshift("Step " + n + ", " + stepName(STEPS[n - 1]) + ", is only partly done"));
-    const canNext = !isFlow ? stepComplete : (st.step === 7 ? stepComplete && gaps.length === 0 : true);
+    // Step 4 is the one step that holds Save and continue back until every field is in, because the back end only stores a complete bank account (decision bank-saved-as-account).
+    const canNext = !isFlow ? stepComplete : (st.step === 7 ? stepComplete && gaps.length === 0 : st.step === 4 ? stepComplete : true);
     // The signatory follows the step 2 answer unless edited on step 7.
     const selfOwner = owners.filter((o) => o.self)[0];
     const defaultSigner = a.sigSame === "no" ? (a.sigName || "") : (ownerVal(st.owners[0] || {}, "name") || "");
@@ -4986,7 +5048,7 @@
         1: "",
         2: isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : "."),
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
-        4: "Add the account your payouts should go to. Once you're approved, you can add more accounts for your other merchants.",
+        4: st.bankSaved && !st.bankEditing ? "This is the account your payouts go to. Once you're approved, you can add more accounts." : "Add the account your payouts should go to. We need every detail before we can save it. Once you're approved, you can add more accounts.",
         5: "Every application includes these. If you answer yes to any of them, a person reviews your application.",
         6: "Add each file we ask for. You can add as many as you need to each one.",
         7: "Check everything you've told us. When you sign, we send everything at once."
@@ -5007,7 +5069,7 @@
           : "Add everyone who owns 25% or more.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
-      payoutAccountLabel: a.bankName ? a.bankName + " •••• 4417" : "Not set",
+      payoutAccountLabel: st.bankSaved ? st.bankSaved.values.bankName + " •••• " + bankLast4(st.bankSaved.values.accountNumber) : a.bankName ? a.bankName + " •••• " + (bankLast4(a.accountNumber) || "4417") : "Not set",
       submittedWhen: st.submittedAt ? st.submittedAt : "just now",
       checkNote: "Checking " + [!isSole() && "your " + orgWord() + " details", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
       receivedNote: st.submittedAt ? "Sent to our verification partner on " + st.submittedAt : "Sent to our verification partner",
@@ -5165,7 +5227,7 @@
   <div class="affix affix--money affix--static" role="group" aria-labelledby="l-${f.id}-yearly"><span class="affix-prefix" aria-hidden="true">$</span><span class="affix-value">${yearly}</span><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>
 </div></div>`;
     }
-    const wrap = (f.span ? "span-2" : "") + (f.tall ? " field--tall" : "");
+    const wrap = (f.span ? "span-2" : f.half ? "span-half" : "") + (f.tall ? " field--tall" : "");
     // Every control writes straight into state; values are escaped on the way
     // back out by html``, so typed markup is shown as text and never run.
     const onInput = on((e) => set(f.id, isDateKey(f.id) ? formatDateInput(e.target.value) : e.target.value));
@@ -5418,6 +5480,33 @@
     </div>
   </div>
 </div>`;
+  }
+
+  // Step 4 (decision bank-saved-as-account). While the form is showing, a warning callout says plainly that every field is needed; while an account is being replaced it also offers to keep the saved one.
+  function bankNoticeView() {
+    if (!bankFormOn()) return "";
+    const editing = state.bankEditing;
+    return html`<div class="callout callout--warning callout--card bank-notice" data-key="bank-notice" role="note">${icon("alert", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">${editing ? "Enter your bank details again" : "Fill in every field to continue"}</strong><span>${editing ? "Your saved account stays as it is until you save a new one. Fill in every field to replace it." : "We can only save your bank account once all of its details are in. When every field is filled, Save and continue saves the account for you."}</span></div>${editing && html`<div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(cancelBankEdit)}">Keep my saved account</button></div>`}</div></div>`;
+  }
+  // The saved account: the bank, the type of account and the last four digits. The full number is never shown again.
+  function bankSavedView() {
+    if (bankFormOn()) return "";
+    const b = state.bankSaved.values;
+    return html`<section class="card" data-key="s4-saved">
+  <div class="card-head card-head--flush">
+    <div class="grow"><h2 class="card-title">Payout account${pin("bank-no-debit")}</h2></div>
+    <span class="pill pill--positive">${icon("check", 13, "i-b")}Saved</span>
+  </div>
+  <div class="bank-acct">
+    <span class="icon-tile" aria-hidden="true">${icon("building", 18)}</span>
+    <div class="bank-acct-text">
+      <div class="bank-acct-name">${b.bankName}</div>
+      <div class="bank-acct-meta">${b.accountType} · •••• ${bankLast4(b.accountNumber)}</div>
+      <div class="bank-acct-meta">Account holder: ${b.accountHolder}</div>
+    </div>
+    <button type="button" class="btn btn-outline btn-sm" aria-label="Re-enter the details of your ${b.bankName} account" data-click="${on(reenterBank)}">Re-enter details</button>
+  </div>
+</section>`;
   }
 
   function callout(text, cls) {
@@ -6061,6 +6150,8 @@
         <p class="step-sub">${v.stepSubtitle}${v.stepSubtitle ? " " : ""}${whyView(v)}</p>
       </header>
       ${state.stepEdit && state.stepEdit.step === step && html`<div class="callout edit-note" data-key="step-edit" role="status">${icon("info", 16)}<span>${state.stepEdit.by} updated their details at ${state.stepEdit.at}. You're seeing their latest answers.</span></div>`}
+
+      ${step === 4 && bankSavedView()}
       ${step === 2 && step2View(v)}
       ${step === 6 && step6View(v)}
       ${step === 7 && reviewView(v)}
@@ -6070,7 +6161,7 @@
       ${step === 7 && Object.keys(ERR).length > 0 && html`<p class="footer-error" data-key="err-summary" role="alert">${icon("alert", 16)}${Object.keys(ERR).length === 1 ? "One thing needs a look before you can submit." : Object.keys(ERR).length + " things need a look before you can submit."}</p>`}
       <div class="footer" data-key="footer">
         ${state.editing ? html`<div class="footer-end" data-key="end">
-          ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" data-click="${on(saveEdit)}">Save</button>`)}
+          ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" ${v.canNext ? "" : "disabled"} data-click="${on(saveEdit)}">Save</button>`)}
         </div>` : html`${html`<button type="button" class="btn btn-neutral btn-lg back-btn" data-key="back" data-click="${on(back)}">${icon("chev-l", 17)}Back</button>`}
         <div class="footer-end" data-key="end">
           ${gateView(v, html`<button type="button" class="btn btn-primary btn-lg btn-next" ${v.canNext ? "" : "disabled"} data-click="${on(next)}">${v.nextLabel}${icon("chev-r", 18)}</button>`)}
