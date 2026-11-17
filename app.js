@@ -1561,7 +1561,7 @@
       "area": "Fields",
       "where": "Step 3 · Your card volumes, the limits tick",
       "t": "The transaction limits come from the applicant's own answers, and the tick waits until they are filled in",
-      "b": "The limits under the tick on step 3 (moved into Your card volumes, see limits-ack-in-volumes) are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it. Update, 2026-11-11: the hint under the tick now reads “We block any single transaction over $X. Your monthly limit is $Y. Both are based on what you entered above. Ask us any time to raise them.” (see max-ticket-hard-block).",
+      "b": "The limits under the tick on step 3 (moved into Your card volumes, see limits-ack-in-volumes) are no longer fixed sample numbers. The per-transaction limit is what the applicant entered as their maximum single transaction, and the monthly limit is their estimated monthly card volume, so the hint changes as they type. The label reads I've read the transaction and monthly limits for my business, because those are the two limits shown. Until both fields are filled in, the tick is greyed out and cannot be used, and the hint under it says what to enter above and that the tick opens up afterwards. The tick does not show the usual Tick this to continue error while it is waiting, because the two fields above already show their own errors. If either limit changes after the tick was given, or a field is emptied, the tick clears, so the applicant has to read the new numbers and tick again. Retyping the same amount in a different format, such as 40000 for 40,000, does not clear it. Update, 2026-11-11: the hint under the tick now reads “We block any single transaction over $X. Your monthly limit is $Y. Both are based on what you entered above. Ask us any time to raise them.” (see max-ticket-hard-block). Update, 2026-11-17: the tick was removed (see limits-tick-removed).",
       "tradeoff": "The limits simply repeat what the applicant estimated, so a low guess becomes a low limit and Xplor still has to decide the real limits. Someone who corrects a figure has to tick again; that is deliberate, since the tick is about specific numbers.",
       "by": "Ryan",
       "when": "2026-10-22"
@@ -2351,7 +2351,7 @@
       "area": "Flow",
       "where": "Step 3 · Your card volumes",
       "t": "The limits tick moves into the card volumes section, under the numbers that set the limits",
-      "b": "The tick I've read the transaction and monthly limits for my business used to sit at the bottom of the How you'll appear to customers section, away from the numbers. It is now the last item in Your card volumes, directly under Estimated monthly card volume, Average transaction amount, Maximum single transaction and Card present %. It behaves as before (see limits-from-entries): greyed out until the monthly volume and maximum transaction are filled in, showing the two limits as the applicant types, and clearing if either number changes. Update, 2026-11-11: Have you accepted card payments before? and its follow-ups now sit in this section too, above the tick, so the tick is still the last item (see card-history-in-volumes).",
+      "b": "The tick I've read the transaction and monthly limits for my business used to sit at the bottom of the How you'll appear to customers section, away from the numbers. It is now the last item in Your card volumes, directly under Estimated monthly card volume, Average transaction amount, Maximum single transaction and Card present %. It behaves as before (see limits-from-entries): greyed out until the monthly volume and maximum transaction are filled in, showing the two limits as the applicant types, and clearing if either number changes. Update, 2026-11-11: Have you accepted card payments before? and its follow-ups now sit in this section too, above the tick, so the tick is still the last item (see card-history-in-volumes). Update, 2026-11-17: the tick was removed (see limits-tick-removed).",
       "tradeoff": "The tick now follows a Card present % box that has nothing to do with the limits, so the applicant may think the percentage feeds them too. The reassurance line at the foot of the card (nothing breaks if you go over) now sits below the tick instead of the numbers.",
       "by": "Ryan",
       "when": "2026-11-06"
@@ -3231,7 +3231,7 @@
       "area": "Copy",
       "where": "Step 3, tick under Your card volumes",
       "t": "The limits tick reads I confirm the limits above are correct for my business",
-      "b": "Ryan's manager found I've read the payment and monthly limits for my business confusing and suggested something like I confirm the above payment and monthly limits for my business are correct. Ryan chose the shorter wording, I confirm the limits above are correct for my business. The hint under the tick is unchanged (it still shows the monthly limit and says to ask Xplor to raise it, or says what to enter first while the tick is greyed out), and the behaviour is unchanged (see limits-from-entries and limits-ack-in-volumes): greyed out until the monthly volume and maximum transaction are filled in, cleared if either number changes.",
+      "b": "Ryan's manager found I've read the payment and monthly limits for my business confusing and suggested something like I confirm the above payment and monthly limits for my business are correct. Ryan chose the shorter wording, I confirm the limits above are correct for my business. The hint under the tick is unchanged (it still shows the monthly limit and says to ask Xplor to raise it, or says what to enter first while the tick is greyed out), and the behaviour is unchanged (see limits-from-entries and limits-ack-in-volumes): greyed out until the monthly volume and maximum transaction are filled in, cleared if either number changes. Update, 2026-11-17: the tick was removed (see limits-tick-removed).",
       "tradeoff": "The shorter label no longer names payment or monthly limits, so it relies on the hint under the tick to say which limits are meant, and the hint names only the monthly limit. The label says the limits are correct, but the limits come from what the applicant entered, so a reader could wonder what they are confirming. Legal may want the confirmation worded as an acceptance.",
       "by": "Ryan",
       "when": "2026-11-16"
@@ -3605,6 +3605,36 @@
       "tradeoff": "The cell takes about 52px of each money box, so the digits have less room than with a plain suffix; 99,999,999 still fits at 1200px with about 10px to spare, but a longer number in the quarter-width boxes just above 1100px would be tight. Atlas notes the read-only box and cell share one fill, so the divider alone separates them, and leaves that open for the designer. Checked afterwards (2026-11-17): the error look (red 1px ring wrapping the cell, message with icon), the focus look (brand ring and glow wrapping the cell) and the phone layout at 375px (boxes stack, 287px wide, 199px for digits, no sideways scroll) all read correctly.",
       "by": "Ryan",
       "when": "2026-11-17"
+    },
+    {
+      "id": "email-forms-novalidate",
+      "area": "Atlas",
+      "where": "The sign-in form, the save-and-exit dialog and the invite dialog (every email box in the flow)",
+      "t": "The three email forms turn off the browser's own validation so the app's error text shows",
+      "b": "Found on 2026-11-17 while checking the invite dialog at 375px. All three forms have an email box with type=\"email\" and no novalidate attribute, so pressing Send invite (or Save, or Sign in) with an entry like not-an-email showed the browser's own speech bubble (\"Please include an '@'\") and the app never ran its own check. The app already has its own wording and its own error place for this (\"Enter an email like name@example.com.\", the field-error line under the box, role alert), written to the content rules and to errors-only-for-bad-entries, and the browser bubble bypassed all of it and reads differently in every browser and language. Each form now has novalidate, so the submit reaches the app, which shows its own message. Checked in the Browser pane on the invite dialog (real Return key with a bad entry shows the app's red line and no bubble); the login form reports noValidate true. The save dialog has the same attribute and runs the same kind of check, but was not driven with a bad entry by eye.",
+      "tradeoff": "novalidate also switches off the browser's other checks on these forms (required, pattern), so the app's own checks are the only ones. That is the intent here, and each of the three forms already checks its email itself, but any new field added to these forms must be checked by the app too. The type=\"email\" attribute stays, so phones still show the email keyboard.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "lookup-focus-after-reset",
+      "area": "Atlas",
+      "where": "Step 1 business lookup, the \"Search for my business instead\" link and the change link on the picked-business callout",
+      "t": "Focus goes to the search box when the business search comes back",
+      "b": "Found on 2026-11-17 in the check of the unchecked items. lookup-focus-after-pick sends focus on after a pick or after the manual route, but going the other way (\"Search for my business instead\", or the change link on the green callout) removed the link that had focus and left focus on the page body, so a keyboard user had to tab in again from the top of the page. The reset handler in bizFindView now focuses the search box (f-bizFind) 60ms after the state change, the same short wait the other two paths use, so the new box is on the page. Checked in the Browser pane with the real keys: manual route puts focus in Legal name, then the link puts focus in the search box (activeElement f-bizFind).",
+      "tradeoff": "The search box opens its suggestion list when it gets focus, so the list is open straight after the reset. That matches what happens when anyone tabs into the box, and Escape closes it. The change link on the picked callout was not driven by eye, only the manual-route link, though both call the same handler.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "limits-tick-removed",
+      "area": "Flow",
+      "where": "Step 3 · Your card volumes, the limits tick (state key velocityAck)",
+      "t": "The limits tick is removed from step 3",
+      "b": "Ryan asked on 2026-11-17 to remove the tick I confirm the limits above are correct for my business, after asking why it was there. The register had no reason for adding it (limits-from-entries, limits-ack-in-volumes and limits-tick-confirm-wording record only how it behaves and where it sits), and Ryan gave no reason for removing it either beyond not being able to work out why it was needed. What the project does record: PRD-DESIGN-GAP-INVENTORY.md item 5.9 lists it as in the design but not in the PRDs, because Provisioning FR-01 places the daily and monthly limit acknowledgement at merchant creation, after approval, not inside the application form. Removed with the tick: its hint (Your monthly limit is $Y, based on the monthly volume you entered. Ask us any time to raise it., or the Enter ... to see your limits text while it waited), the code that cleared it when the monthly volume or largest payment changed, the limitsFrom helper, the velocityAck answer and its sample value, and the row in tools/build-field-spec-v2.py. Your card volumes now ends with Have you accepted card payments before? and its follow-ups. Step 3 saves and continues without it. The step 3 progress count is worked out from the fields on the page, so it needs no change.",
+      "tradeoff": "The applicant is no longer told anywhere what their limits are or that they can ask to raise them, and nothing records that they saw them. If Legal or Compliance wanted that confirmation, it now has to happen after approval at merchant creation, as the Provisioning PRD has it. Onboarding-field-specification-v2.xlsx still lists the row until it is rebuilt from the Python builder (there is no Python on this machine, so it was not rebuilt). REQ-121, REQ-200 and the other requirement entries about the tick in REQUIREMENTS-DRAFT.md are left as they are, since the register is the archive.",
+      "by": "Ryan",
+      "when": "2026-11-17"
     }
   ];
 
@@ -3701,7 +3731,6 @@
     prior: "", priorName: "", priorCbRatio: "",
     achVolume: "0",
     achCount: "",
-    velocityAck: false,
     bankName: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
     institution: "", transit: "",
     legalProceedings: "", legalProceedingsWhy: "", priorTermination: "", priorTerminationWhy: "",
@@ -3738,7 +3767,6 @@
     recurring: "yes", trial: "no", marketplace: "no", international: "no",
     refundPolicy: "riversidepilates.com/refunds",
     prior: "no",
-    velocityAck: true,
     bankName: "Umpqua Bank", accountHolder: "Riverside Pilates LLC",
     accountType: "Business checking", routing: "323075880",
     accountNumber: "1234 5678 4417", institution: "003", transit: "00172",
@@ -4049,26 +4077,12 @@
       const key = ni[1] + "natId", zeros = noNatIdValue();
       a[key] = v === true ? zeros : (s.a[key] === zeros ? "" : s.a[key]);
     }
-    // The limits tick is about the numbers shown from these two answers, so it clears when either limit changes, or is emptied (decision limits-from-entries). Compared as numbers, so 40000 and 40,000 count as the same.
-    if (id === "monthlyVolume" || id === "maxTicket") {
-      const before = limitsFrom(s.a), after = limitsFrom(a);
-      if (!after.ready || before.perTx !== after.perTx || before.monthly !== after.monthly) a.velocityAck = false;
-    }
     return { a: a };
   });
   // The value stored in the website answer when the applicant says they have no website.
   const NO_WEBSITE = "N/A";
   // The value stored in an owner's SSN or SIN answer when they have none: all zeros in the usual layout for the country.
   const noNatIdValue = () => (isCa() ? "000 000 000" : "000-00-0000");
-  // The transaction limits come from the step 3 answers: the biggest single sale is the per-transaction limit and the estimated monthly card volume is the monthly limit.
-  function limitsFrom(a) {
-    const num = (x) => parseFloat(String(x || "").replace(/,/g, ""));
-    const monthly = num(a.monthlyVolume), perTx = num(a.maxTicket);
-    const missing = [];
-    if (!(monthly > 0)) missing.push("your estimated monthly card volume");
-    if (!(perTx > 0)) missing.push("your largest single payment");
-    return { ready: missing.length === 0, missing: missing, monthly: monthly, perTx: perTx };
-  }
   const go = (screen, step) => setState({ screen, step: step || state.step, saveOpen: false });
 
   // Where the link lands once the applicant has signed in (decision 91): the welcome page for someone new, otherwise wherever the
@@ -4737,8 +4751,7 @@
           fld("maxTicket", "Largest single payment", "currency", { placeholder: "1,200", hint: isNonprofit() ? "Your largest single payment or donation, even if it only happens now and then." : "Your largest single payment, even if it only happens now and then." }),
           fld("prior", "Have you accepted card payments before?", "yn", { span: true }),
           a.prior === "yes" ? fld("priorName", "Prior processor name", "text", { conditional: true, placeholder: "For example, Square, Stripe" }) : null,
-          a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null,
-          fld("velocityAck", "I confirm the limits above are correct for my business", "check", { span: true, disabled: !limitsFrom(a).ready, hint: limitsFrom(a).ready ? "Your monthly limit is $" + fmtMoney(limitsFrom(a).monthly) + " " + (isCa() ? "CAD" : "USD") + ", based on the monthly volume you entered. Ask us any time to raise it." : "Enter " + limitsFrom(a).missing.join(" and ") + " to see your limits. You can tick this once you have." })
+          a.prior === "yes" ? fld("priorCbRatio", "Chargeback ratio at prior processor", "mono", { conditional: true, placeholder: "0.4%" }) : null
         ], { pinId: "underwriting-plain" }),
         card("s3-sell", isNonprofit() ? "How you take payments" : "How you sell", "", [
           fld("channel", isNonprofit() ? "How do people pay you?" : "How do customers pay you?", "select", { placeholder: "Choose one", options: ["In-person", "E-commerce (online)", "In-person and e-commerce", "Mobile", "Phone / mail order (MOTO)"] }),
@@ -4989,7 +5002,11 @@
   // The step 1 business lookup (decision business-lookup-typeahead). The typed text goes only to the fixed list above; nothing leaves the page.
   let findTimer = 0;
   function bizFindView() {
-    const reset = () => setState({ findPicked: null, findManual: false, findQ: "", findResults: [], findOpen: false, findBusy: false });
+    // The link that calls this one disappears when the search box comes back, so focus goes to the box (decision lookup-focus-after-reset).
+    const reset = () => {
+      setState({ findPicked: null, findManual: false, findQ: "", findResults: [], findOpen: false, findBusy: false });
+      setTimeout(() => { const el = document.getElementById("f-bizFind"); if (el) el.focus(); }, 60);
+    };
     if (state.findPicked) {
       const x = state.findPicked;
       return html`<div class="callout callout--positive find-picked" role="status" data-key="find-picked">${icon("circle-check", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">${x.name}</strong><span>${x.address}. We filled in the name and address below. Check they match your registration.</span></div><div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(reset)}">Search again</button></div></div></div>`;
@@ -5500,7 +5517,7 @@
       <span class="tag tag--purple">${icon("lock", 13)}Secure sign-in</span>
       <h1 class="welcome-title">Sign in with your email and password${pin("login-default-start")}</h1>
       <p class="welcome-lede">${isReturning() ? "Sign in to pick up where you left off." : "Use the temporary password we sent you to get started."}</p>
-      <form class="card entry-card" data-submit="${on(submitLogin)}"${state.loginErr ? html` data-error="1"` : ""}>
+      <form class="card entry-card" novalidate data-submit="${on(submitLogin)}"${state.loginErr ? html` data-error="1"` : ""}>
         <div class="stack">
           <div><label class="field-label field-label--block" for="login-email">Email</label>
           <input class="input" id="login-email" type="email" autocomplete="username" placeholder="name@host.com" value="${state.loginEmail}" data-input="${on((e) => setState({ loginEmail: e.target.value, loginErr: "" }))}"></div>
@@ -6243,7 +6260,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     <p class="dialog-body">Log back in any time with the link in your welcome email, and you'll carry on where you left off.${pin("return-by-login")}</p>
     ${invitesOn() && html`
     <p class="dialog-body">Send a link to whoever should pick it up, such as your bookkeeper for the bank details or a co-owner for their own ID. They'll land exactly where you left off and see only their part.</p>
-    <form class="dialog-form" data-submit="${on(() => { if (!SAVE_EMAIL_OK.test(state.saveEmail.trim())) { setState({ saveEmailErr: "Enter an email like name@example.com." }); return; } closeSave(); })}"${state.saveEmailErr ? html` data-error="1"` : ""}>
+    <form class="dialog-form" novalidate data-submit="${on(() => { if (!SAVE_EMAIL_OK.test(state.saveEmail.trim())) { setState({ saveEmailErr: "Enter an email like name@example.com." }); return; } closeSave(); })}"${state.saveEmailErr ? html` data-error="1"` : ""}>
       <label class="sr-only" for="save-email">Email address to send the link to</label>
       <input class="input" id="save-email" type="email" value="${state.saveEmail}" placeholder="name@example.com" autocomplete="email" spellcheck="false" data-input="${on((e) => setState({ saveEmail: e.target.value, saveEmailErr: "" }))}" data-blur="${on(() => setState({ saveEmailErr: state.saveEmail.trim() && !SAVE_EMAIL_OK.test(state.saveEmail.trim()) ? "Enter an email like name@example.com." : "" }))}">
       <button type="submit" class="btn btn-primary btn-md">Send link</button>
@@ -6294,7 +6311,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
       <button type="button" class="icon-btn" aria-label="Close" data-click="${on(closeDelegate)}">${icon("x", 16)}</button>
     </div>
     <p class="dialog-body">Enter the email of the person who'll fill in these details. They won't see the rest of your application. Carry on in the meantime, and we'll show you here when they're done.</p>
-    <form class="dialog-form" data-submit="${on(sendDelegate)}"${state.delegateErr ? html` data-error="1"` : ""}>
+    <form class="dialog-form" novalidate data-submit="${on(sendDelegate)}"${state.delegateErr ? html` data-error="1"` : ""}>
       <label class="sr-only" for="delegate-email">Email address to send the link to</label>
       <input class="input" id="delegate-email" type="email" value="${state.delegateEmail}" placeholder="name@example.com" autocomplete="off" spellcheck="false" data-input="${on((e) => setState({ delegateEmail: e.target.value, delegateErr: "" }))}" data-blur="${on(() => setState({ delegateErr: inviteEmailProblem(state.delegateEmail) }))}">
       <button type="submit" class="btn btn-primary btn-md">${changing ? "Update and resend" : "Send invite"}</button>
