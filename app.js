@@ -446,7 +446,7 @@
     prior: "", priorName: "", priorCbRatio: "",
     achVolume: "0",
     achCount: "",
-    bankName: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
+    bankName: "", bankNickname: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
     institution: "", transit: "",
     legalProceedings: "", legalProceedingsWhy: "", priorTermination: "", priorTerminationWhy: "",
     taxLiens: "", taxLiensWhy: "", msb: "",
@@ -482,7 +482,7 @@
     recurring: "yes", trial: "no", marketplace: "no", international: "no",
     refundPolicy: "riversidepilates.com/refunds",
     prior: "no",
-    bankName: "Umpqua Bank", accountHolder: "Riverside Pilates LLC",
+    bankName: "Umpqua Bank", bankNickname: "Studio operating account", accountHolder: "Riverside Pilates LLC",
     accountType: "Business checking", routing: "323075880",
     accountNumber: "1234 5678 4417", institution: "003", transit: "00172",
     legalProceedings: "no", priorTermination: "no", taxLiens: "no", msb: "no",
@@ -865,7 +865,7 @@
     return true;
   }
   // The payout account (decision bank-saved-as-account). The back end can only store a bank account once every detail is in, so step 4 is the one step that holds Save and continue back until the form is complete, and pressing it saves the account.
-  const BANK_KEYS = ["bankName", "accountHolder", "accountType", "routing", "institution", "transit", "accountNumber"];
+  const BANK_KEYS = ["bankName", "bankNickname", "accountHolder", "accountType", "routing", "institution", "transit", "accountNumber"];
   const bankFormOn = () => !state.bankSaved || state.bankEditing;
   const bankLast4 = (raw) => String(raw || "").replace(/\D/g, "").slice(-4);
   const snapshotBank = () => { const values = {}; BANK_KEYS.forEach((k) => { values[k] = state.a[k] || ""; }); return { values }; };
@@ -1230,7 +1230,7 @@
       if (state.sign === "" && !problemsOnly) errs.sign = "Draw your signature, or upload an image of it.";
     }
     // A saved payout account counts every one of its answers as in (decision bank-saved-as-account).
-    if (step === 4 && !bankFormOn() && tally) { const n = isCa() ? 6 : 5; tally.total += n; tally.done += n; }
+    if (step === 4 && !bankFormOn() && tally) { const n = isCa() ? 7 : 6; tally.total += n; tally.done += n; }
     // Every card counts, including the step 1 sections still hidden behind the business lookup (decision business-lookup-typeahead).
     cardsFor(step, true).forEach((c) => c && c.fields.forEach(add));
     return errs;
@@ -1533,6 +1533,7 @@
       const bankFields = (p, main) => ca
         ? [
             fld(p + "bankName", "Bank name", "text", { placeholder: "For example, RBC Royal Bank" }),
+            fld(p + "bankNickname", "Bank account nickname", "text", { placeholder: "For example, Restaurant bank account", hint: "The name for this account in Xplor Pay. It can differ from the bank’s." }),
             fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business chequing", "Business savings"] }),
             fld(p + "institution", "Institution number", "mono", { placeholder: "3 digits" }),
@@ -1541,6 +1542,7 @@
           ]
         : [
             fld(p + "bankName", "Bank name", "text", { placeholder: "For example, Umpqua Bank" }),
+            fld(p + "bankNickname", "Bank account nickname", "text", { placeholder: "For example, Restaurant bank account", hint: "The name for this account in Xplor Pay. It can differ from the bank’s." }),
             fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business checking", "Business savings"] }),
             fld(p + "routing", "ABA routing number", "mono", { placeholder: "9 digits" }),
@@ -1714,7 +1716,7 @@
           : "Add everyone who owns 25% or more.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
-      payoutAccountLabel: st.bankSaved ? st.bankSaved.values.bankName + " •••• " + bankLast4(st.bankSaved.values.accountNumber) : a.bankName ? a.bankName + " •••• " + (bankLast4(a.accountNumber) || "4417") : "Not set",
+      payoutAccountLabel: st.bankSaved ? st.bankSaved.values.bankNickname + " •••• " + bankLast4(st.bankSaved.values.accountNumber) : a.bankName ? a.bankName + " •••• " + (bankLast4(a.accountNumber) || "4417") : "Not set",
       submittedWhen: st.submittedAt ? st.submittedAt : "just now",
       checkNote: "Checking " + [!isSole() && "your " + orgWord() + " details", "who you are", "your bank account", "sanctions lists"].filter(Boolean).join(", ").replace(/, ([^,]*)$/, " and $1"),
       receivedNote: st.submittedAt ? "Sent to our verification partner on " + st.submittedAt : "Sent to our verification partner",
@@ -2145,11 +2147,11 @@
   <div class="bank-acct">
     <span class="icon-tile" aria-hidden="true">${icon("building", 18)}</span>
     <div class="bank-acct-text">
-      <div class="bank-acct-name">${b.bankName}</div>
-      <div class="bank-acct-meta">${b.accountType} · •••• ${bankLast4(b.accountNumber)}</div>
+      <div class="bank-acct-name">${b.bankNickname}</div>
+      <div class="bank-acct-meta">${b.bankName} · ${b.accountType} · •••• ${bankLast4(b.accountNumber)}</div>
       <div class="bank-acct-meta">Account holder: ${b.accountHolder}</div>
     </div>
-    <button type="button" class="btn btn-outline btn-sm" aria-label="Re-enter the details of your ${b.bankName} account" data-click="${on(reenterBank)}">Re-enter details</button>
+    <button type="button" class="btn btn-outline btn-sm" aria-label="Re-enter the details of your ${b.bankNickname} account" data-click="${on(reenterBank)}">Re-enter details</button>
   </div>
 </section>`;
   }
