@@ -1389,7 +1389,7 @@
       "area": "Visual",
       "where": "All non-clickable cards",
       "t": "Cards that aren't clickable sit almost flat",
-      "b": "Cards that can't be clicked (the main surface cards, owner cards, the review summary, the status hero card, document rows and the what-you-need panel) now carry almost no drop shadow, down from the Atlas xs elevation to a 1px faint contact line, so the 1px border does the work of separating them from the page. Anything clickable keeps its shadow and hover treatment: buttons, the business-type radio cards, the Yes / No control. The shadow is one variable, --lift-static in app.css, so it can be nudged in one place.",
+      "b": "Cards that can't be clicked (the main surface cards, owner cards, the review summary, the status hero card, document rows and the what-you-need panel) now carry almost no drop shadow, down from the Atlas xs elevation to a 1px faint contact line, so the 1px border does the work of separating them from the page. Anything clickable keeps its shadow and hover treatment: buttons, the business-type radio cards, the Yes / No control. The shadow is one variable, --lift-static in app.css, so it can be nudged in one place. Update, 2026-11-17: --lift-static is removed and the cards carry no shadow at all (see foundations-raw-values-sweep).",
       "tradeoff": "With less shadow the cards sit flatter on the page, so the page leans more on the border and the white-on-grey contrast to separate them. If that looks too flat on a bright screen, raise --lift-static a notch rather than going back to the old value.",
       "by": "Ryan",
       "when": "2026-10-21"
@@ -2681,7 +2681,7 @@
       "area": "Flow",
       "where": "More info needed",
       "t": "Every request for more information has the same file upload and message box, and nothing on it is required",
-      "b": "On the in-app More info needed screen every reason keeps its own title, its line on why we need it and its list of what we accept, but all of them are answered the same way: a Choose file button (Add another file once there is one) and a Message for our team box. Cards such as the website address, check your sales numbers, tell us when customers get what they pay for, remove the credit freeze and update your website no longer have their own fields or buttons. No card shows a Required, Write an answer or Done badge, nothing is pre-filled from step 3, and nothing is checked. Send to our team is on once any card has a file or a message and nothing is still uploading. Ryan's reason: Trulioo does not check this information again, a person only reviews it, so a text box is enough, even for a request such as Enter your website. The message box label has no (optional) tag any more, because nothing around it is required. Update, 2026-11-11: Ryan says applicants must reply to every request to be able to send. Send to our team now stays off until every card has a file or a message (and nothing is still uploading), and the line under it reads Add a file or write a message for every request to send. This replaces the line above saying Send is on once any card has a file or a message. Nothing on a card is marked Required, and nothing checks what the reply says.",
+      "b": "On the in-app More info needed screen every reason keeps its own title, its line on why we need it and its list of what we accept, but all of them are answered the same way: a Choose file button (Add another file once there is one) and a Message for our team box. Cards such as the website address, check your sales numbers, tell us when customers get what they pay for, remove the credit freeze and update your website no longer have their own fields or buttons. No card shows a Required, Write an answer or Done badge, nothing is pre-filled from step 3, and nothing is checked. Send to our team is on once any card has a file or a message and nothing is still uploading. Ryan's reason: Trulioo does not check this information again, a person only reviews it, so a text box is enough, even for a request such as Enter your website. The message box label has no (optional) tag any more, because nothing around it is required. Update, 2026-11-11: Ryan says applicants must reply to every request to be able to send. Send to our team now stays off until every card has a file or a message (and nothing is still uploading), and the line under it reads Add a file or write a message for every request to send. This replaces the line above saying Send is on once any card has a file or a message. Nothing on a card is marked Required, and nothing checks what the reply says. Update, 2026-11-16: the Choose file and Add another file buttons are replaced by the File drop zone (see more-info-file-drop).",
       "tradeoff": "An applicant can send without answering every card, and the screen will not say that a request was left unanswered, so Ops has to read the messages and files against what they asked. Typed answers are free text, so Ops cannot rely on a number or a web address arriving in a usable format. The credit freeze and website cards no longer have a button to say the job is done, so the applicant has to say so in the message. Update, 2026-11-11: an applicant with nothing to send for one request (for example, a credit freeze they have already removed) now has to write that in its message box before they can send any of the others.",
       "by": "Ryan",
       "when": "2026-11-11"
@@ -3422,7 +3422,7 @@
       "where": "Money fields (step 3 card volumes, average and largest payment) and the yearly volume box",
       "t": "Money fields follow the new Atlas Currency input: Amount/Small text and a plain currency code inside the box",
       "b": "Atlas added a Currency input component (Figma page Currency input). From its variant layers: the symbol, the typed value and the ISO code are all Amount/Small (Roboto 14/500); the symbol is text/secondary, the value text/primary and the code text/subtle; the box is 40px high with padding 0/12 and an 8px gap; the placeholder stays Body/Default in text/subtle. The prototype had the value and symbol in Roboto Mono 13/400 and the currency code in its own shaded cell (sunken fill, left rule, 12/600 caption). Ryan asked on 2026-11-16 for the amount field to match Atlas, so the mono face is gone, the code is plain text in the same box, and the narrow-column box no longer tightens its gap to 4px. The yearly card volume box (read-only) keeps the Atlas read-only fill and takes the same text. The reason for showing the code at all is unchanged (see currency-code-on-amounts).",
-      "tradeoff": "Digits are no longer in a monospaced face, so amounts rely on Roboto's tabular figures (font-variant-numeric: tabular-nums is kept) to stay aligned. The quarter-width boxes in the volume row are about 192px wide at 1280px, which fits a six-figure amount with the code; I checked that width only, not narrower laptop widths.",
+      "tradeoff": "Digits are no longer in a monospaced face, so amounts rely on Roboto's tabular figures (font-variant-numeric: tabular-nums is kept) to stay aligned. The quarter-width boxes in the volume row are about 192px wide at 1280px, which fits a six-figure amount with the code; I checked that width only, not narrower laptop widths. Update, 2026-11-17: Atlas changed the component again, so the Amount/Small text and the plain suffix are replaced (see atlas-currency-input-code-cell).",
       "by": "Ryan",
       "when": "2026-11-16"
     },
@@ -3455,6 +3455,156 @@
       "tradeoff": "Nothing now tells the applicant that the account name should match the legal business name, so someone may type a personal or trading name; whether that causes bank verification to fail is for ops to say. The placeholder still says to type the name exactly as the account shows it.",
       "by": "Ryan",
       "when": "2026-11-16"
+    },
+    {
+      "id": "more-info-file-drop",
+      "area": "Atlas",
+      "where": "More info needed screen (the card for each request, and the bare Just uploads and notes option)",
+      "t": "The More info needed screen uses the File drop zone, not a small Choose file button",
+      "b": "From the fourth Atlas audit report (ATLAS-AUDIT-2026-11-16-batch4.md, finding 3.4), answered by Ryan on 2026-11-16. Every request card, and every card on the bare screen, used a small outline Choose file button (Add another file once there was one) while step 6 uses the Atlas File drop zone. Both now use the same zone: dashed border, upload icon, Drag a file here, or browse, hover tint and the drop-to-upload state. Clicking it adds the canned file as before; dropping real files adds one entry for each, using only the file name, and a repeated name gets -2, -3 added. On the request cards the zone stays under the text after a file is in, with the uploaded files listed below it, so any number of files can be added (the Add another file button is gone). On the bare screen each card still holds one file, so the zone is replaced by the file name and Remove file once a file is in. The zone has no hint line, as in atlas-file-drop-hint-line, because the prototype has no real file type or size rules. It is built once (dropZoneView) and the document cards use the same function. Ryan gave no reason beyond matching the rest of the product.",
+      "tradeoff": "The zone is about 126px tall, so each request card is taller than with a button, and a card for a request that only wants a short message now shows a large upload area. The bare screen's card now has a zone only until a file is in, so its layout shifts when a file arrives.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "approved-screen-atlas-type",
+      "area": "Atlas",
+      "where": "Approved screen",
+      "t": "The approved card uses the Atlas page title and the 24px card padding",
+      "b": "From the fourth Atlas audit report (finding 3.8), answered by Ryan on 2026-11-16. The title Welcome to Xplor Pay was 34px bold with a 1.14 line height and a raw -0.02em letter spacing, and the card padding was 36px, which is not on the spacing ladder. The title now uses the Atlas page-title style (Roboto 600, 30px on a 36px line, -0.3px letter spacing, the same as every other page title) and the card padding is padding/hero (24px). Not changed: the dark gradient card, its raw white and rgba colours and the light buttons on it, which stay in the foundations raw-values list for a later call.",
+      "tradeoff": "The approved moment is a little less prominent than at 34px, and on a wide screen 24px padding makes the dark card feel tighter around the text and button.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "dialog-focus-trap",
+      "area": "Atlas",
+      "where": "All dialogs (save, confirm, invite, help, document viewer)",
+      "t": "Tab stays inside an open dialog, and focus always moves into it when it opens",
+      "b": "From the fourth Atlas audit report (finding 4.5), answered by Ryan on 2026-11-16 (test all five dialogs and fix the gaps). Checked in the Browser pane: Escape and focus returning to the control that opened the dialog already worked. Two gaps were found and fixed. First, nothing kept Tab inside a dialog, so a keyboard user could tab to the page behind the dimmed area. Tab now wraps from the last control to the first and Shift+Tab from the first to the last, and focus that has ended up outside the dialog is pulled back in. Second, the save dialog moved focus to its email box only in Slice 2; in Slice 1 it has no email box, so focus stayed on the Save and exit button behind the dialog. Every dialog now moves focus to its named control and falls back to the first control in the dialog on top (the Close button for the save dialog in Slice 1). Checked on the save and help dialogs. The confirm, invite and document viewer dialogs use the same code and were not opened by eye.",
+      "tradeoff": "The trap looks only at the dialog on top and at buttons, links and fields that are visible, so a control added to a dialog later is covered, but anything not focusable by those rules is not. The help dialog has one control (Close), so Tab never leaves it.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "hero-icon-pulse-kept",
+      "area": "Atlas",
+      "where": "Under review screen, the hero icon",
+      "t": "The hero icon on the under review screen keeps its slow pulse",
+      "b": "From the fourth Atlas audit report (finding 3.3), answered by Ryan on 2026-11-16: keep it. The brand-colour ring pulses without end (xpulse, 2.4 seconds) around the hero icon, as it does on the current step dot. It is not an Atlas pattern, since Atlas defines no pulse. A global rule at the top of the stylesheet turns it off for people who ask their device for reduced motion. Ryan gave no reason beyond keeping it.",
+      "tradeoff": "A pulse that never ends can distract on a screen the applicant may leave open for hours, and it is a motion Atlas does not define.",
+      "by": "Ryan",
+      "when": "2026-11-16"
+    },
+    {
+      "id": "foundations-raw-values-sweep",
+      "area": "Atlas",
+      "where": "Static cards, the typed-signature box (unused), the welcome title on phones",
+      "t": "Three raw foundation values from the first audit report are gone",
+      "b": "From the first Atlas audit report (ATLAS-AUDIT-2026-11-16.md, section 1), answered by Ryan on 2026-11-17. (1) The --lift-static shadow (0 1px 1px, 2% black) is removed from every static card, the document rows, the what-you-need panels, the person and summary cards and the hero card; the 1px border/default now does all the separating, which is what static-cards-flat intended. Atlas shadow-xs was not used. (2) The .sign-input rule (typed signature box, 22px italic, 52px high) now takes the Atlas control height and padding from .input and the section-title size (20px), keeping the italic. Nothing in the prototype uses that class any more, because the signature is drawn or uploaded (signature-draw-or-upload), so it only matters if a typed signature comes back. (3) The phone-width override that made the welcome title 32px, larger than the 30px desktop page title, is deleted, so the title is the Atlas page-title style at every width.",
+      "tradeoff": "Cards sit completely flat, a hair flatter than the 2% shadow they had, so on a very bright screen the white-on-grey contrast and the border carry everything. A typed-signature box at 20px is smaller than the old 22px.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "approved-on-dark-deviation",
+      "area": "Atlas",
+      "where": "Approved screen: the dark card and its buttons",
+      "t": "The dark approved card is kept, with Atlas tokens where Atlas has them",
+      "b": "From the first Atlas audit report, answered by Ryan on 2026-11-17: keep the dark gradient card and tokenise what exists. Text is now text/on-brand (white); the body text, the green tag fill and the outline button border are mixes of those tokens (a percentage of the token over transparent) instead of rgba values; the light button uses the white primitive with neutral-1200 text; the outline buttons use the white-a10 and white-a30 primitives. The gradient already used deep space, purple-900 and purple-700. What stays a deviation: Atlas has no on-dark surface and no on-dark Button, so .btn-light, .btn-light-outline and .btn-on-dark are the product's own and are the first things to replace if Atlas adds them. .btn-on-dark uses white-a30 for its border and .btn-light-outline uses white-a10 for its hover fill, which match the old values; the 45% border and 70% hover border of .btn-light-outline are token mixes with no Atlas equivalent.",
+      "tradeoff": "Anyone changing the white primitive changes this card too. The percentages (16, 45, 70) are still the prototype's own numbers, not Atlas ones.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "division-marker-atlas-tokens",
+      "area": "Atlas",
+      "where": "Step 6, documents that only one division asks for",
+      "t": "The division-only document marker uses Atlas colours, not orange",
+      "b": "From the first Atlas audit report, answered by Ryan on 2026-11-17. A document that only one division asks for (for example ClubReady only) had a dashed orange outline (#e8590c) and an orange tag (#b4440a on #fff1e6), none of them Atlas colours. The tag is now the Atlas badge look: bg/brand/subtle fill, text/brand, label style, 24px tall with cell padding, radius small. The dashed outline stays, 2px (border/thick), in border/brand. Decisions division-option and clubready-lease-by-division are unchanged.",
+      "tradeoff": "The marker now shares its colour with the brand-purple tags and the selected look elsewhere, so it no longer stands out as a special case the way orange did; the dashed outline is what still sets those cards apart. Atlas Badge has no variant of exactly this look, so the tag is styled by hand to match.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "ring-progress-deviation",
+      "area": "Atlas",
+      "where": "Step rail and document status, the small circular progress ring",
+      "t": "The circular progress ring stays; Atlas has no circular progress",
+      "b": "From the first Atlas audit report, answered by Ryan on 2026-11-17: keep it and record it. The ring (.ring, 14px, and .ring--lg, 22px, a conic gradient cut by a mask) shows a share done where a tick would otherwise go. Its colours are tokens (background/success/default and border/default); its sizes and the 2.5px and 3.5px ring thickness are the product's own, because Atlas Progress bar is a straight bar only. If Atlas adds a circular progress, this is the thing to replace.",
+      "tradeoff": "A third progress look next to the straight Progress bar and the percentage text; the sizes are not on any Atlas scale.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "listbox-active-descendant",
+      "area": "Accessibility",
+      "where": "Every select, search box and combobox with a pop-up list (province, country, MCC, address search, business lookup)",
+      "t": "The highlighted option in a pop-up list is announced to screen readers",
+      "b": "From the fifth Atlas audit report (ATLAS-AUDIT-2026-11-16-batch5.md, finding 5.1), answered by Ryan on 2026-11-17 (fix 5.1 to 5.3). The lists marked the highlighted row only with a class, so someone using a screen reader heard nothing change as they pressed Arrow Down. Every option now has an id (lb-<field id>-opt-<number>), and the field carries aria-activedescendant pointing at the highlighted option while the list is open. This covers the Select, the MCC combobox, the address search and the business lookup (including its Can't find it row); the phone country pop-up already did this. Checked in the Browser pane on the Province select, the MCC box and the business lookup: the attribute names the same row that carries the highlight. Atlas describes none of this, so the pattern is the standard combobox one, not an Atlas rule.",
+      "tradeoff": "Not tested with a real screen reader, only by reading the attribute against the highlighted row. The lists that show no highlight yet (the lookup before the first arrow press shows the first row as active) announce that first row as soon as the list opens.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "lookup-focus-after-pick",
+      "area": "Accessibility",
+      "where": "Step 1, Find your business",
+      "t": "After a keyboard pick in the business lookup, focus moves to the next control",
+      "b": "From the fifth Atlas audit report (finding 5.2), answered by Ryan on 2026-11-17. Picking a business replaces the search box with a green callout, which dropped focus to the page body, so a keyboard user had to tab from the top. Focus now goes to the Search again button in the callout (the control that undoes the choice). Choosing Can't find it? Enter details manually moves focus to the Legal name box, the first thing to type. The move runs 60 milliseconds after the pick so the new content has been drawn. Checked on the pick (the active element is Search again); the manual route was not driven by eye.",
+      "tradeoff": "A mouse user who clicks a result also gets focus on Search again, so a focus ring may appear on that button after a click. If the page draws very slowly the 60ms wait could be too short and focus would stay on the page body.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "biz-card-type-tokens",
+      "area": "Atlas",
+      "where": "What type of business are you? cards",
+      "t": "The business type cards use the Atlas Body fonts and a computed indent",
+      "b": "From the fifth Atlas audit report (finding 5.3), answered by Ryan on 2026-11-17. The card label was 16px with no set line height (about 19px); it now uses the Body/Large font (16px on 24px) with the bold weight. The description had a 1.45 line height (18.85px); it now uses Body/Small (13px on 20px). The question that opens under a card (the kind of company) was indented 42px; it is now the card padding plus the radio size plus the related gap (16 + 16 + 8 = 40px), which puts its left edge exactly under the label (checked: both start at the same x), and its bottom padding is the card padding (16px) instead of 20. Not changed: the 8px radio dot and its 2px top margin (Atlas Radio was not re-read), and the cards themselves, which stay the product's own because Atlas has no selectable card.",
+      "tradeoff": "Each card is about 5px taller for the label and 1px taller for the description, so the page is slightly longer. The open card has 4px less space under its question.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "volume-boxes-widen-narrow",
+      "area": "Atlas",
+      "where": "Step 3, the monthly and yearly card volume boxes",
+      "t": "Below a 1100px page the volume boxes take the whole row so large amounts fit",
+      "b": "From the fifth Atlas audit report (ATLAS-AUDIT-2026-11-16-batch5.md, finding 5.4), answered by Ryan on 2026-11-17: break the row sooner. At a 1024px window the monthly volume box was a quarter of the form, 130px, which left 56px for the digits, so 1,000,000 or more was cut off (99,999,999 needs 74px). Now, when the page container is 1099px or narrower, the monthly and yearly pair takes the whole row, half each: the boxes are 277px wide at 1024px and 99,999,999 fits with room to spare (202px for the digits). The labels fit on one line there, so the two-line label height that kept the row aligned is dropped at that width, for the pair and for Card present percentage. Above 1100px nothing changes (at 1280px the box is 192px). At 420px and narrower the two boxes already stacked. This builds on yearly-volume-shown.",
+      "tradeoff": "Below 1100px the row order reads monthly and yearly, then Card present percentage and Average payment amount side by side, then Largest single payment with an empty space beside it, so the step is one row longer than before. Between 1100px and about 1200px the quarter-width boxes still wrap the monthly label to two lines, as before.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "step-rail-collapses-narrow",
+      "area": "Flow",
+      "where": "The step list beside the form, on tablet and phone widths",
+      "t": "On narrow screens the step list is folded away behind a Show steps button",
+      "b": "From the fifth Atlas audit report (finding 5.5), answered by Ryan on 2026-11-17: collapse it with a toggle. Below a 760px page the seven-row step list used to run full width, 414px tall, so the first question started about 750px down a tablet screen (and the same on a phone). Now the progress bar and the saved note stay, and under them one row shows the current step's name with a small Show steps button (Hide steps once open; aria-expanded and aria-controls are set). The list and Get help button are hidden until the button is pressed, and the list closes again whenever the applicant moves to another step. The rail grows from about 414px to 116px tall, and the first question moves up by about 200px at 768px wide. At and above 760px the row is never shown and the rail is exactly as before (checked at 1280px). The step number and total are not repeated in the row because the Step 3 of 7 line above the title already says them.",
+      "tradeoff": "The other steps and their minutes or Done marks are one tap away instead of always visible, so an applicant on a phone cannot see their overall route at a glance. The folded state is a prototype decision; Atlas has no stepper to follow.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "add-row-control-height",
+      "area": "Atlas",
+      "where": "Step 2, the Add another owner or director and Add myself rows",
+      "t": "The add rows are 40px tall like every other control",
+      "b": "From the fifth Atlas audit report (finding 5.6), answered by Ryan on 2026-11-17. The dashed add rows were 50px tall (16px padding top and bottom around a line height of normal). They now have a 40px minimum height, side padding of 16px (padding/surface) and the Control/Default font (14px, weight 500, 20px line); computed height is 40px. The dashed border, radius, brand-coloured text and hover tint are unchanged. Atlas has no add row, so the shape is still the product's own.",
+      "tradeoff": "The row is a little less prominent next to the large owner cards above it, and the dashed shape now matches the control height rather than the card padding.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "atlas-currency-input-code-cell",
+      "area": "Atlas",
+      "where": "Money fields (step 3 card volumes, average and largest payment) and the yearly volume box",
+      "t": "Money fields follow the updated Atlas Currency input: Body/Default text and the currency code in its own cell",
+      "b": "Ryan said on 2026-11-17 that the Currency input had changed in Atlas. Read again from the Figma variant layers (set 3587:167, 12 variants, medium and large): the symbol, the typed value and the ISO code are now all Body/Default (Roboto 14/400 on a 20px line), because the designer decided Amount styles are for amounts outside an input. The symbol is text/secondary, the typed value text/primary, the placeholder text/subtle. The ISO code is back in its own cell at the right end of the box: surface/sunken fill, a 1px border/divider rule on its left, text/secondary, padding-x (12px at large) on both sides, and the box has no right padding, so the cell sits inside the 1px border and the border and focus glow wrap it. In the prototype the symbol, value and code use the Body/Default font; .affix-code is the cell (stretches the box height, inset by the border width on top, right and bottom, radius 0 and 7px on its right corners, border-left in border/divider, sunken fill, text/secondary, 12px side padding); the box has padding-right 0. The yearly volume box (read-only) keeps its sunken fill, so only the divider separates it from its cell, as in the Atlas read-only variant. Checked in the Browser pane: box 40px, cell 38px high and 52px wide, 1px inset on top and right, all text 14/400/20, and a nine-digit amount still fits at 1200px and at 1100px (where the volume pair already takes the full row, see volume-boxes-widen-narrow). Tokens were rebuilt from the Atlas-tokens repo and had not changed. This replaces the plain-suffix and Amount/Small parts of atlas-currency-input.",
+      "tradeoff": "The cell takes about 52px of each money box, so the digits have less room than with a plain suffix; 99,999,999 still fits at 1200px with about 10px to spare, but a longer number in the quarter-width boxes just above 1100px would be tight. Atlas notes the read-only box and cell share one fill, so the divider alone separates them, and leaves that open for the designer. Checked afterwards (2026-11-17): the error look (red 1px ring wrapping the cell, message with icon), the focus look (brand ring and glow wrapping the cell) and the phone layout at 375px (boxes stack, 287px wide, 199px for digits, no sideways scroll) all read correctly.",
+      "by": "Ryan",
+      "when": "2026-11-17"
     }
   ];
 
@@ -3831,6 +3981,7 @@
   const state = Object.assign({
     infoOpen: false,
     saveOpen: false,
+    railOpen: false, // the step list under the progress bar, folded away on narrow screens (decision step-rail-collapses-narrow)
     helpOpen: false,
     protoOpen: false,
     openNote: "",
@@ -4853,7 +5004,9 @@
     const rows = !typed ? suggestBiz(region) : state.findBusy ? [] : state.findResults.slice(0, 5);
     const total = rows.length + 1; // the last row is always "Can't find it?"
     const idx = Math.min(state.findIdx, total - 1);
-    const manual = () => setState({ findManual: true, findRevealed: true, findOpen: false });
+    // The search box disappears when a result is picked or the manual route is chosen, so focus is sent on to the next control (decision lookup-focus-after-pick).
+    const focusLater = (find) => setTimeout(() => { const el = find(); if (el) el.focus(); }, 60);
+    const manual = () => { setState({ findManual: true, findRevealed: true, findOpen: false }); focusLater(() => document.getElementById("f-legalName")); };
     const pick = (x) => {
       // Fills the legal name and the registered address and opens the address boxes so the parts can be checked. Nothing else is filled in.
       setState((s) => ({
@@ -4863,6 +5016,7 @@
         addrManual: Object.assign({}, s.addrManual, { regAddress: true }),
         addrQ: Object.assign({}, s.addrQ, { regAddress: "" })
       }));
+      focusLater(() => document.querySelector(".find-picked button"));
     };
     const onType = (e) => {
       const q = e.target.value;
@@ -4887,12 +5041,12 @@
   <div class="find-country"><div class="field-head"><label class="field-label" for="f-findRegion">${isCa() ? "Province" : "State"}</label></div>${selectView({ id: "f-findRegion", value: region, placeholder: isCa() ? "Any province" : "Any state", pick: onRegion, options: [["", isCa() ? "Any province" : "Any state"]].concat((isCa() ? CA_REGIONS : US_REGIONS).map((r) => [r[0], r[1]])) })}</div>
   <div class="find-name"><div class="field-head"><label class="field-label" for="f-bizFind">Business name</label></div>
     <div class="combo combo--lead">
-      <input class="input" id="f-bizFind" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-bizFind" aria-autocomplete="list" aria-busy="${String(state.findBusy)}" value="${state.findQ}" placeholder="Start typing your business name" autocomplete="off" spellcheck="false" data-click="${on(() => setState({ findOpen: true }))}" data-focus="${on(() => { if (!state.findOpen) setState({ findOpen: true, findIdx: 0 }); })}" data-input="${on(onType)}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.findOpen) setState({ findOpen: false }); }, 160))}">
+      <input class="input" id="f-bizFind" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-bizFind" aria-autocomplete="list" aria-busy="${String(state.findBusy)}"${open && !(typed && state.findBusy) ? html` aria-activedescendant="lb-bizFind-opt-${idx}"` : ""} value="${state.findQ}" placeholder="Start typing your business name" autocomplete="off" spellcheck="false" data-click="${on(() => setState({ findOpen: true }))}" data-focus="${on(() => { if (!state.findOpen) setState({ findOpen: true, findIdx: 0 }); })}" data-input="${on(onType)}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.findOpen) setState({ findOpen: false }); }, 160))}">
       <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
       ${open && html`<ul class="combo-list find-list" id="lb-bizFind" role="listbox" data-key="lb-find">
-        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.findIdx !== i) setState({ findIdx: i }); })}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span></li>`) : html`<li class="combo-empty" role="status">${typed ? "No business found for “" + state.findQ.trim() + "”. Check the spelling, or enter your details yourself." : "No businesses to suggest here. Type the name, or enter your details yourself."}</li>`}
+        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" id="lb-bizFind-opt-${i}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.findIdx !== i) setState({ findIdx: i }); })}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span></li>`) : html`<li class="combo-empty" role="status">${typed ? "No business found for “" + state.findQ.trim() + "”. Check the spelling, or enter your details yourself." : "No businesses to suggest here. Type the name, or enter your details yourself."}</li>`}
         ${typed && !state.findBusy && state.findResults.length > rows.length && html`<li class="combo-empty">${state.findResults.length - rows.length} more. Keep typing to narrow the list.</li>`}
-        <li class="combo-opt find-manual-opt${idx === rows.length ? " is-active" : ""}" role="option" aria-selected="${String(idx === rows.length)}" data-mouseenter="${on(() => { if (state.findIdx !== rows.length) setState({ findIdx: rows.length }); })}" data-click="${on(manual)}">Can't find it? Enter details manually</li>
+        <li class="combo-opt find-manual-opt${idx === rows.length ? " is-active" : ""}" id="lb-bizFind-opt-${rows.length}" role="option" aria-selected="${String(idx === rows.length)}" data-mouseenter="${on(() => { if (state.findIdx !== rows.length) setState({ findIdx: rows.length }); })}" data-click="${on(manual)}">Can't find it? Enter details manually</li>
       </ul>`}
     </div>
   </div>
@@ -4922,10 +5076,10 @@
       }
     };
     return html`<div class="combo combo--select">
-  <button type="button" class="input select-field${value === "" ? " is-unset" : ""}" id="${id}" role="combobox" aria-haspopup="listbox" aria-expanded="${String(open)}" aria-controls="lb-${id}"${described || ""} data-click="${on(() => (open ? setState({ selOpen: "" }) : openIt()))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.selOpen === id) setState({ selOpen: "" }); }, 160))}"><span class="select-text">${closedLabel || (cur > -1 ? options[cur][1] : placeholder)}</span></button>
+  <button type="button" class="input select-field${value === "" ? " is-unset" : ""}" id="${id}" role="combobox" aria-haspopup="listbox" aria-expanded="${String(open)}" aria-controls="lb-${id}"${open ? html` aria-activedescendant="lb-${id}-opt-${idx}"` : ""}${described || ""} data-click="${on(() => (open ? setState({ selOpen: "" }) : openIt()))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.selOpen === id) setState({ selOpen: "" }); }, 160))}"><span class="select-text">${closedLabel || (cur > -1 ? options[cur][1] : placeholder)}</span></button>
   <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
   ${open && html`<ul class="combo-list select-list" id="lb-${id}" role="listbox" data-key="lb-${id}">
-    ${options.map((o, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${o[0] === value ? " is-chosen" : ""}" role="option" aria-selected="${String(o[0] === value)}" data-mouseenter="${on(() => { if (state.selIdx !== i) setState({ selIdx: i }); })}" data-click="${on(() => choose(o[0]))}">${o[1]}${o[0] === value ? icon("check", 16, "combo-opt-check") : ""}</li>`)}
+    ${options.map((o, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${o[0] === value ? " is-chosen" : ""}" id="lb-${id}-opt-${i}" role="option" aria-selected="${String(o[0] === value)}" data-mouseenter="${on(() => { if (state.selIdx !== i) setState({ selIdx: i }); })}" data-click="${on(() => choose(o[0]))}">${o[1]}${o[0] === value ? icon("check", 16, "combo-opt-check") : ""}</li>`)}
   </ul>`}
 </div>`;
   }
@@ -4983,10 +5137,10 @@
           else if (e.key === "Escape") { e.stopPropagation(); setState({ comboOpen: "", comboQuery: "" }); }
         };
         control = html`<div class="combo">
-  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${open ? state.comboQuery : f.value}" placeholder="${f.value && open ? f.value : f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ comboOpen: f.id, comboQuery: "", comboIdx: 0 }))}" data-input="${on((e) => setState({ comboOpen: f.id, comboQuery: e.target.value, comboIdx: 0 }))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.comboOpen === f.id) setState({ comboOpen: "", comboQuery: "" }); }, 160))}">
+  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-${f.id}" aria-autocomplete="list"${open && shown.length ? html` aria-activedescendant="lb-${f.id}-opt-${idx}"` : ""} value="${open ? state.comboQuery : f.value}" placeholder="${f.value && open ? f.value : f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ comboOpen: f.id, comboQuery: "", comboIdx: 0 }))}" data-input="${on((e) => setState({ comboOpen: f.id, comboQuery: e.target.value, comboIdx: 0 }))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.comboOpen === f.id) setState({ comboOpen: "", comboQuery: "" }); }, 160))}">
   <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
   ${open && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb">
-    ${shown.length ? shown.map((x, i) => html`${grouped && i === 0 && x.common ? html`<li class="combo-group" role="presentation">Most common</li>` : ""}${grouped && x.common === false && (i === 0 || shown[i - 1].common) ? html`<li class="combo-group" role="presentation">All categories</li>` : ""}<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}${x.label === f.value ? icon("check", 16, "combo-opt-check") : ""}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
+    ${shown.length ? shown.map((x, i) => html`${grouped && i === 0 && x.common ? html`<li class="combo-group" role="presentation">Most common</li>` : ""}${grouped && x.common === false && (i === 0 || shown[i - 1].common) ? html`<li class="combo-group" role="presentation">All categories</li>` : ""}<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" id="lb-${f.id}-opt-${i}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}${x.label === f.value ? icon("check", 16, "combo-opt-check") : ""}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
     ${matches.length > shown.length && html`<li class="combo-empty">${matches.length - shown.length} more. Keep typing to narrow the list.</li>`}
   </ul>`}
 </div>`;
@@ -5111,10 +5265,10 @@
           const typed = q.trim().length >= 3;
           const startManual = () => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: true }), addrOpen: "", addrIdx: -1 })); setTimeout(() => { const el = document.getElementById(id); if (el) el.focus(); }, 40); };
           control = html`<div class="addr" data-key="addr-${f.id}"><div class="addr-search"><div class="combo combo--lead">
-  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list" value="${q}" placeholder="Start typing to search for the address" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => setState((s) => ({ addrQ: Object.assign({}, s.addrQ, { [f.id]: e.target.value }), addrOpen: f.id, addrIdx: -1 })))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
+  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list"${open && typed && matches[idx] ? html` aria-activedescendant="lb-${f.id}-opt-${idx}"` : ""} value="${q}" placeholder="Start typing to search for the address" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => setState((s) => ({ addrQ: Object.assign({}, s.addrQ, { [f.id]: e.target.value }), addrOpen: f.id, addrIdx: -1 })))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
   <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
   ${open && typed && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb-addr">
-    ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.addrIdx !== i) setState({ addrIdx: i }); })}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
+    ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" id="lb-${f.id}-opt-${i}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.addrIdx !== i) setState({ addrIdx: i }); })}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
   </ul>`}
 </div>
 </div></div>`;
@@ -5425,11 +5579,13 @@
       }
       return html`<li><div class="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
     });
-    return html`<nav class="rail" data-key="rail" aria-label="Verification steps">
+    const cur = STEPS[state.step - 1];
+    return html`<nav class="rail${state.railOpen ? " is-open" : ""}" data-key="rail" aria-label="Verification steps">
   <div class="progress-head"><span class="progress-title" id="progress-label">Your progress</span><span class="progress-pct">${v.pct}%</span></div>
   <div class="meter" role="progressbar" aria-labelledby="progress-label" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${v.pct}"><span class="meter-fill" data-width="${v.pct}"></span></div>
   <p class="progress-note">${v.remainingLabel} · <span class="save-tell${state.saving ? " is-saving" : ""}" data-key="save-tell" role="status">${state.saving ? html`<span class="save-spinner" aria-hidden="true"></span>` : icon("check", 12)}${state.saving ? "Saving…" : "Saved"}</span></p>
-  <ol class="steps">${items}</ol>
+  <div class="rail-now" data-key="rail-now"><span class="rail-now-text">${stepName(cur)}</span><button type="button" class="btn btn-neutral btn-sm" aria-expanded="${String(!!state.railOpen)}" aria-controls="rail-steps" data-click="${on(() => setState({ railOpen: !state.railOpen }))}">${state.railOpen ? "Hide steps" : "Show steps"}</button></div>
+  <ol class="steps" id="rail-steps">${items}</ol>
   <button type="button" class="btn btn-neutral btn-sm rail-help" data-click="${on(openHelp)}">${icon("help", 15)}Get help</button>
 </nav>`;
   }
@@ -5545,18 +5701,18 @@
     return html`<div class="callout callout--error doc-fail" role="alert" data-key="file-${f.name}">${icon("alert", 16)}<span class="doc-fail-text"><strong>${f.name}</strong> didn't upload. Check the file and try again.</span></div>`;
   }
 
+  // The Atlas File drop zone, shared by the document cards and the More info needed screen (decisions document-drop-zone, more-info-file-drop).
+  // add gets the names of any files dropped on it, or an empty list when it is clicked (the prototype then adds a canned file).
+  const dropZoneView = (label, add) => html`<button type="button" class="dropzone" aria-label="${label}" data-click="${on(() => add([]))}" data-drop="${on((e) => add(Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => String(f.name).slice(0, 120))))}"><span class="dz-icon" aria-hidden="true">${icon("upload", 24)}</span><span class="dz-text"><span class="dz-prompt">Drag a file here</span><span class="dz-drop">Drop to upload</span><span class="dz-action">or <span class="dz-link">browse</span></span></span></button>`;
+
   function docView(d) {
     const s = d.skip ? "skipped" : doc(d.key).state;
     const cur = doc(d.key);
     const cls = s === "done" ? " is-done" : s === "skipped" ? " is-skipped" : s === "idle" || s === "failed" ? "" : " is-busy";
     // The drop zone stays under the text of every card, so any number of files can be added (decision document-drop-zone).
     // Clicking it adds the canned file. Dropping real files adds one tile for each, using only the file's name: nothing is read or sent.
-    const drop = (e) => {
-      const names = Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => String(f.name).slice(0, 120));
-      (names.length ? names : [d.file]).forEach((n) => upload(d.key, n));
-    };
     const action = s === "skipped" ? html`<span class="state-pill state-pill--muted">Not needed</span>` : "";
-    const zone = s === "skipped" ? "" : html`<button type="button" class="dropzone" aria-label="Add a file for ${d.title}" data-click="${on(() => upload(d.key, d.file))}" data-drop="${on(drop)}"><span class="dz-icon" aria-hidden="true">${icon("upload", 24)}</span><span class="dz-text"><span class="dz-prompt">Drag a file here</span><span class="dz-drop">Drop to upload</span><span class="dz-action">or <span class="dz-link">browse</span></span></span></button>`;
+    const zone = s === "skipped" ? "" : dropZoneView("Add a file for " + d.title, (names) => (names.length ? names : [d.file]).forEach((n) => upload(d.key, n)));
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
@@ -5923,16 +6079,22 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   }
 
   // Simulated upload: no picker opens and nothing is read. The file shows as uploading for a moment, then ready.
-  function pendAddFile(r) {
+  function pendAddFile(r, dropped) {
     const have = rfiOf(r.id).files.map((f) => f.name);
     // A write-an-answer card has no file of its own; its optional document gets a generic name.
     const base = r.file || "supporting-document.pdf";
-    let i = 1, name = base;
-    while (have.indexOf(name) > -1) { i++; name = base.replace(/\.pdf$/, "-" + i + ".pdf"); }
-    setRfi(r.id, { files: rfiOf(r.id).files.concat([{ name: name, busy: true }]) });
+    const added = [];
+    // Dropped files keep their own names (only the name is used); a click adds the canned file. A repeated name gets -2, -3 added.
+    (dropped && dropped.length ? dropped : [base]).forEach((n) => {
+      let i = 1, name = n;
+      while (have.indexOf(name) > -1) { i++; name = n.replace(/(\.[^.]+)?$/, "-" + i + "$1"); }
+      have.push(name);
+      added.push(name);
+    });
+    setRfi(r.id, { files: rfiOf(r.id).files.concat(added.map((name) => ({ name: name, busy: true }))) });
     setTimeout(() => setState((s) => {
       const c = s.rfi[r.id];
-      return c ? { rfi: Object.assign({}, s.rfi, { [r.id]: Object.assign({}, c, { files: c.files.map((f) => (f.name === name ? { name: name, busy: false } : f)) }) }) } : {};
+      return c ? { rfi: Object.assign({}, s.rfi, { [r.id]: Object.assign({}, c, { files: c.files.map((f) => (added.indexOf(f.name) > -1 ? { name: f.name, busy: false } : f)) }) }) } : {};
     }), 1400);
   }
   function sendPend() {
@@ -5944,8 +6106,8 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   function pendRespondView(r) {
     const c = rfiOf(r.id);
     return html`<div class="pend-respond" data-key="resp-${r.id}">
+  <div class="pend-field" data-key="file-btn-${r.id}">${dropZoneView("Add a file for " + pendText(r, r.title), (names) => pendAddFile(r, names))}</div>
   ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
-  <div class="pend-field" data-key="file-btn-${r.id}"><button type="button" class="btn btn-outline btn-sm" data-click="${on(() => pendAddFile(r))}">${icon("upload", 15)}${c.files.length ? "Add another file" : "Choose file"}</button></div>
   <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">Message for our team</label><textarea class="input" id="pend-${r.id}-note" rows="3" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
 </div>`;
   }
@@ -5973,8 +6135,8 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   // Each card has an optional file and an optional message. At least one card needs a file or a message before it can be sent.
   const simpleUpdate = (id, patch) => setState((s) => ({ rfiDocs: s.rfiDocs.map((d) => (d.id === id ? Object.assign({}, d, patch) : d)) }));
   // Simulated upload: no picker opens and nothing is read. The file shows as uploading for a moment, then ready.
-  function simpleChooseFile(id) {
-    simpleUpdate(id, { name: "document-" + id + ".pdf", busy: true });
+  function simpleChooseFile(id, dropped) {
+    simpleUpdate(id, { name: dropped || "document-" + id + ".pdf", busy: true });
     setTimeout(() => simpleUpdate(id, { busy: false }), 1400);
   }
   // Add a document stands in for choosing a file: the new card arrives with its file already uploading, since the real button
@@ -6000,7 +6162,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     </div>
     <div class="pend-field" data-key="simple-file-${d.id}">${d.name
       ? html`<div class="doc-file"><span class="doc-file-name">${d.name}</span>${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleUpdate(d.id, { name: "", busy: false }))}">Remove file</button>`}</div>`
-      : html`<button type="button" class="btn btn-outline btn-sm" data-click="${on(() => simpleChooseFile(d.id))}">${icon("upload", 15)}Choose file</button>`}</div>
+      : dropZoneView("Add a file", (names) => simpleChooseFile(d.id, names[0]))}</div>
   </section>`)}
   <div><button type="button" class="btn btn-outline btn-sm" data-click="${on(simpleAddCard)}">${icon("plus", 15)}Add a document</button></div>
 </div>
@@ -6376,8 +6538,18 @@ ${protoView()}`;
   let last = { screen: null, step: null, saveOpen: false };
   let opener = null;
 
+// Focus goes to the named control when a dialog opens, or to the first control in the dialog on top when that control is not there
+// (the save dialog has no email box in Slice 1), so focus is never left on the page behind it (decision dialog-focus-trap).
+function focusDialog(id) {
+  let el = document.getElementById(id);
+  if (!el) { const d = document.querySelectorAll(".backdrop .dialog"); el = d.length ? d[d.length - 1].querySelector("button:not([disabled]), input:not([disabled]), select, textarea, a[href]") : null; }
+  if (el) el.focus();
+}
+
   function render() {
     handlers = [];
+    // The folded step list closes again when the applicant moves to another step.
+    if (state.railOpen && state.step !== last.step) state.railOpen = false;
     const tpl = document.createElement("template");
     tpl.innerHTML = appView().s;
     morphChildren(root, tpl.content);
@@ -6401,36 +6573,31 @@ ${protoView()}`;
     // Move focus into the dialog when it opens and back to the opener when it closes.
     if (state.saveOpen && !last.saveOpen) {
       opener = document.activeElement;
-      const field = document.getElementById("save-email");
-      if (field) field.focus();
+      focusDialog("save-email");
     } else if (!state.saveOpen && last.saveOpen && opener && document.contains(opener)) {
       opener.focus();
     }
     if (state.delegateOpen && !last.delegateOpen) {
       opener = document.activeElement;
-      const field = document.getElementById("delegate-email");
-      if (field) field.focus();
+      focusDialog("delegate-email");
     } else if (!state.delegateOpen && last.delegateOpen && opener && document.contains(opener)) {
       opener.focus();
     }
     if (state.confirm && !last.confirm) {
       opener = document.activeElement;
-      const cancel = document.getElementById("confirm-cancel");
-      if (cancel) cancel.focus();
+      focusDialog("confirm-cancel");
     } else if (!state.confirm && last.confirm && opener && document.contains(opener)) {
       opener.focus();
     }
     if (state.helpOpen && !last.helpOpen) {
       opener = document.activeElement;
-      const close = document.getElementById("help-close");
-      if (close) close.focus();
+      focusDialog("help-close");
     } else if (!state.helpOpen && last.helpOpen && opener && document.contains(opener)) {
       opener.focus();
     }
     if (state.viewDoc && !last.viewDoc) {
       opener = document.activeElement;
-      const close = document.getElementById("docv-close");
-      if (close) close.focus();
+      focusDialog("docv-close");
     } else if (!state.viewDoc && last.viewDoc && opener && document.contains(opener)) {
       opener.focus();
     }
@@ -6519,6 +6686,21 @@ ${protoView()}`;
     else if (key === "delegate") closeDelegate();
     else if (key === "save") setState({ saveOpen: false });
     else if (key === "notes-list") setState({ notesListOpen: false });
+  });
+  // Tab stays inside the open dialog (decision dialog-focus-trap). The dialog on top is the last one in the page. With no
+  // dialog open this does nothing. Focus that has somehow ended up outside the dialog is pulled back to its first or last control.
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab") return;
+    const dialogs = document.querySelectorAll(".backdrop .dialog");
+    const dlg = dialogs[dialogs.length - 1];
+    if (!dlg) return;
+    const items = Array.from(dlg.querySelectorAll("a[href], button:not([disabled]), input:not([disabled]):not([type=hidden]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex=\"-1\"])"))
+      .filter((el) => el.offsetParent !== null);
+    if (!items.length) { e.preventDefault(); return; }
+    const firstEl = items[0], lastEl = items[items.length - 1], at = document.activeElement;
+    if (!dlg.contains(at)) { e.preventDefault(); (e.shiftKey ? lastEl : firstEl).focus(); }
+    else if (e.shiftKey && at === firstEl) { e.preventDefault(); lastEl.focus(); }
+    else if (!e.shiftKey && at === lastEl) { e.preventDefault(); firstEl.focus(); }
   });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
