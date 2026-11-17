@@ -229,9 +229,18 @@ button.step:hover { background: var(--color-background-hover); }
 .is-current .step-meta { color: var(--color-text-brand); }
 .is-current .step-meta--pct { display: inline-flex; align-items: center; gap: var(--space-gap-related); font-weight: var(--type-control-default-weight); }
 .is-opened .step-meta { display: inline-flex; align-items: center; gap: var(--space-gap-related); color: var(--color-text-primary); font-weight: var(--type-control-default-weight); }
-.rail-help { margin-top: 16px; }
-.btn-neutral.rail-help { background: var(--color-background-surface-raised-1); }
-.btn-neutral.rail-help:hover { background: var(--color-background-hover); }
+/* Get help and Save and exit sit together at the right of the top bar, both Atlas Button medium (decision get-help-in-top-nav). */
+.topnav-actions { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: center; gap: var(--space-gap-related); flex: none; } /* equal columns, so the two buttons are the same width as well as the same height */
+.btn-neutral.topnav-help { background: var(--color-background-surface-raised-1); }
+.btn-neutral.topnav-help:hover { background: var(--color-background-hover); }
+/* On a phone the logo and the two equal buttons would not fit, so the buttons take the Atlas medium side padding (12px) and the logo is a little smaller (decision get-help-in-top-nav). */
+@media (max-width: 480px) {
+  .topnav--flow { --nav-pad: 20px; }
+  .topnav-inner { gap: 12px; }
+  .topnav-logo { height: 20px; }
+  .topnav-actions { gap: 6px; }
+  .topnav-actions .btn { padding-left: var(--component-button-padding-x-medium); padding-right: var(--component-button-padding-x-medium); }
+}
 
 /* main column */
 .main { min-width: 0; display: flex; flex-direction: column; gap: 20px; }
@@ -520,7 +529,7 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
 @container content (max-width: 759px) {
   .rail-now { display: flex; align-items: center; justify-content: space-between; gap: var(--space-gap-group); margin-bottom: var(--space-gap-related); }
   .rail-now-text { font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); color: var(--color-text-primary); min-width: 0; }
-  .rail:not(.is-open) .steps, .rail:not(.is-open) .rail-help { display: none; }
+  .rail:not(.is-open) .steps { display: none; }
   .topnav--flow { --nav-pad: 20px; }
   .flow { --flow-top: 28px; padding: var(--flow-top) 20px 64px; }
   .flow-grid { grid-template-columns: minmax(0,1fr); gap: 28px; }

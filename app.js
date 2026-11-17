@@ -465,7 +465,7 @@
       "area": "Copy",
       "where": "Step 3 · How you take payments",
       "t": "Underwriting questions in plain English, with “best guesses are fine” said first",
-      "b": "Volume questions read as a test people can fail, so they stall on them or inflate them. Stating up front that estimates are expected, that they set limits rather than rates, and that going over one changes nothing, removes the reason to stall. Update, 2026-11-11 (Ryan): the line under the numbers saying that going over one of the limits breaks nothing has been removed from Your card volumes, because the maximum single transaction is now a hard block (see max-ticket-hard-block). The title, the “Best guesses are fine” line and the plain wording of the questions stay; only the promise that going over changes nothing is withdrawn.",
+      "b": "Volume questions read as a test people can fail, so they stall on them or inflate them. Stating up front that estimates are expected, that they set limits rather than rates, and that going over one changes nothing, removes the reason to stall. Update, 2026-11-11 (Ryan): the line under the numbers saying that going over one of the limits breaks nothing has been removed from Your card volumes, because the maximum single transaction is now a hard block (see max-ticket-hard-block). The title, the “Best guesses are fine” line and the plain wording of the questions stay; only the promise that going over changes nothing is withdrawn. Update, 2026-11-17 (Ryan): the line These set your limits, not your rate. is gone, because applicants are not to be told their answers set their limits (see limits-never-mentioned).",
       "by": "Claude",
       "when": "2026-09-23"
     },
@@ -1049,7 +1049,7 @@
       "area": "Visual",
       "where": "Step list · Get help, every step · Why are we asking, Step 2 · Owners",
       "t": "Get help and “Why are we asking?” are quieter, and the empty owner list has no note",
-      "b": "The Get help button in the step list now has the Back button's dark grey text and outline instead of purple, and keeps its white background. The “Why are we asking?” line under each step's description is in normal text colour and turns purple only on hover or keyboard focus. Its size and the purple question icon are unchanged. The “No one added yet. Add each owner…” note on step 2 is removed, for both company and non-profit wording, so an empty list shows just the add button.",
+      "b": "The Get help button in the step list now has the Back button's dark grey text and outline instead of purple, and keeps its white background. The “Why are we asking?” line under each step's description is in normal text colour and turns purple only on hover or keyboard focus. Its size and the purple question icon are unchanged. The “No one added yet. Add each owner…” note on step 2 is removed, for both company and non-profit wording, so an empty list shows just the add button. Update, 2026-11-17 (Ryan): Get help moved into the top bar beside Save and exit, and is no longer under the step list (see get-help-in-top-nav).",
       "tradeoff": "Purple no longer hints that the why note can be opened, so it relies on its question icon and the pointer cursor. With no note, a first-time applicant gets the explanation of 25% owners and send-a-link only from the step description and the add button.",
       "by": "Ryan",
       "when": "2026-10-06"
@@ -2221,7 +2221,7 @@
       "area": "Layout",
       "where": "Every screen except the welcome email · top of the page",
       "t": "A thin top bar carries the logo and Save & Exit",
-      "b": "Every screen except the welcome email has a thin bar across the full width of the window, with the Xplor Pay logo at the left and a Save & Exit button at the right, lined up with the edges of the step content below. It stays in view as the page scrolls, and the progress list and the pinned step title sit under it. Save & Exit shows only where there is an application to save: the seven steps (changed on 2026-11-09 by save-exit-after-first-step: it no longer shows on the welcome page or the business type page). The sign-in screens, the business picker, the status screens and the invited owner's screens show the logo alone. Save & Exit replaces the Finish later button in the footer, so the footer now holds only Back and Save and continue. It opens the same dialog, which says the answers are saved and how to log back in. The logo that sat above the progress list moved into the bar.",
+      "b": "Every screen except the welcome email has a thin bar across the full width of the window, with the Xplor Pay logo at the left and a Save & Exit button at the right, lined up with the edges of the step content below. It stays in view as the page scrolls, and the progress list and the pinned step title sit under it. Save & Exit shows only where there is an application to save: the seven steps (changed on 2026-11-09 by save-exit-after-first-step: it no longer shows on the welcome page or the business type page). The sign-in screens, the business picker, the status screens and the invited owner's screens show the logo alone. Save & Exit replaces the Finish later button in the footer, so the footer now holds only Back and Save and continue. It opens the same dialog, which says the answers are saved and how to log back in. The logo that sat above the progress list moved into the bar. Update, 2026-11-17 (Ryan): Get help moved into the top bar beside Save and exit, and is no longer under the step list (see get-help-in-top-nav).",
       "tradeoff": "The way out is at the top of the page while the footer holds the way forward, so someone who has scrolled to the bottom to stop has to look up for it. Nothing is lost by leaving, because answers already save as they are entered. The invited owner's screens have no Save & Exit even though their answers save too; that is open if Slice 2 needs one.",
       "by": "Ryan",
       "when": "2026-11-05"
@@ -3635,6 +3635,36 @@
       "tradeoff": "The applicant is no longer told anywhere what their limits are or that they can ask to raise them, and nothing records that they saw them. If Legal or Compliance wanted that confirmation, it now has to happen after approval at merchant creation, as the Provisioning PRD has it. Onboarding-field-specification-v2.xlsx still lists the row until it is rebuilt from the Python builder (there is no Python on this machine, so it was not rebuilt). REQ-121, REQ-200 and the other requirement entries about the tick in REQUIREMENTS-DRAFT.md are left as they are, since the register is the archive.",
       "by": "Ryan",
       "when": "2026-11-17"
+    },
+    {
+      "id": "select-keydown-no-key",
+      "area": "Fields",
+      "where": "Every dropdown (selectView), the keyboard handler",
+      "t": "The dropdown's keyboard handler no longer throws when a key event arrives with no key",
+      "b": "Found on 2026-11-17 in the Browser console while checking the lookup and dialogs: Cannot read properties of undefined (reading 'length') from the dropdown's keydown handler. The type-a-letter-to-jump branch read e.key.length and e.key.toLowerCase() without checking that e.key exists. Some events reach a handler with no key at all (a browser autofill choice, a synthetic or automated key event), so the handler threw and, for those events, the rest of the handler did nothing. The branch now starts with e.key && ... so a key-less event is ignored. Checked in the Browser pane on the step 3 channel dropdown: a key-less keydown dispatched at it gives no error, the real ArrowDown still opens the list, and a real m still moves the highlight to Mobile. The other keydown handlers in the app only compare e.key with fixed names (===), which is safe when it is missing, so none of them needed a change.",
+      "tradeoff": "A key-less event does nothing, which is the right result for an event with no key, but if a real device ever sends letter input this way the type-ahead would not work for it. Nothing about this was reproduced with a real autofill, only with a synthetic event, so the exact trigger Ryan's browser had is not confirmed.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "limits-never-mentioned",
+      "area": "Copy",
+      "where": "Step 3 · Your card volumes subtitle, and the Why are we asking? popover for step 3",
+      "t": "Nothing on the form tells the applicant that their answers set their limits",
+      "b": "Ryan, 2026-11-17: remove the line These set your limits, not your rate. We don't want applicants to know these set their limits, so any mention of it must go. The subtitle under Your card volumes now reads only Best guesses are fine. In the step 3 Why are we asking? popover, the sentence Your answers help us set sensible limits and see what a normal day looks like for you, so real payments don't get held up. now reads Your answers help us see what a normal day looks like for you. The held-up clause went with it because it points at limits too. A search of app.js for the word limit finds nothing else in applicant-facing copy (only Limited liability company and partnership in the structure lists, and the register text). This follows the removal of the limits tick the same day (limits-tick-removed). Ryan's reason is recorded as he gave it; the register does not say why applicants should not know.",
+      "tradeoff": "The line existed to calm people who might stall on the volume questions (see underwriting-plain), so the reassurance that these numbers are not about the rate is gone from the card; the popover still says None of it changes the rate you pay, which is a statement about pricing and is locked wording that needs Legal and Compliance (CONTENT-AUDIT-2026-11-13.md 7.1). Applicants may now wonder what the volume answers are for, and may inflate or stall on them. The popover's reason is thinner too: it says only that the answers show what a normal day looks like. The historical files CONTENT-AUDIT-2026-11-13.md and TONE-OF-VOICE-CHANGES.csv still quote the old lines and were left as a record.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "get-help-in-top-nav",
+      "area": "Layout",
+      "where": "Top bar on the seven steps, and the step list on the left",
+      "t": "Get help moves from the step list into the top bar, left of Save and exit, the same size",
+      "b": "Ryan, 2026-11-17: move the Get help button into the top nav at the top right, just to the left of Save and exit, and make sure they are the same size. Ryan gave no other reason. Get help now sits in a group with Save and exit at the right end of the bar, with the question-mark icon at 16px. Both are the same Atlas neutral Button at the prototype's medium size (40px high, 14px medium-weight label, 20px side padding), with an 8px gap, and the group is two equal columns, so they are also the same width (125.25px each on a desktop window), the Get help box being widened to match the longer label. Get help has a raised-1 white fill and the hover fill, like the Get help it replaces. The button that sat under the step list is removed, along with its styles, and the folded step list on a narrow screen no longer has it. It opens the same Talk to a person dialog and focus returns to the button when the dialog closes (checked with Escape). It shows wherever Save and exit shows, which is the seven steps. At 480px or narrower the logo drops from 24px to 20px, the bar's side padding matches the 20px page gutter, and the two buttons take the Atlas medium side padding (12px) so they fit on one line at 375px (109.25px each, no horizontal scroll). The Get help button on the welcome page, left of Let's get started, is unchanged.",
+      "tradeoff": "On a phone the buttons have 12px side padding where the rest of the prototype's medium buttons have 20px, and the logo is smaller, which are small departures to make two equal buttons fit beside the logo. The two buttons are the same width because of equal columns, not because the labels are the same length, so a longer label in another language would widen both. Get help is now in view all the time on the steps, including on a phone where it used to be inside the folded step list, so it is easier to find and takes top-bar room. The welcome page and the business type page still have no Get help in the bar (the welcome page has its own button in the page; the business type page has none, as before).",
+      "by": "Ryan",
+      "when": "2026-11-17"
     }
   ];
 
@@ -4744,7 +4774,7 @@
       // E-commerce channels ask for the address where customers pay (decision ecommerce-channel-url).
       const ecomOn = ["E-commerce (online)", "In-person and e-commerce"].indexOf(a.channel) > -1;
       return [
-        card("s3-vol", "Your card volumes", "Best guesses are fine. These set your limits, not your rate.", [
+        card("s3-vol", "Your card volumes", "Best guesses are fine.", [
           fld("monthlyVolume", "Estimated monthly card volume", "currency", { placeholder: "40,000", annual: true }),
           fld("cpSplit", "Card present percentage", "mono", { placeholder: "70", tall: true, hint: "In person, on a card machine." }),
           fld("avgTicket", "Average payment amount", "currency", { placeholder: "38" }),
@@ -4823,7 +4853,7 @@
     return {
       1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. Type these details as they appear on your registration.", p: ["We use these to confirm the " + orgWord() + " exists", "Typing them as they appear on your registration avoids questions later"] },
       2: { t: "Why are we asking?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trulioo, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
-      3: { t: "Why are we asking?", b: "This isn't a credit check. Your answers help us set sensible limits and see what a normal day looks like for you, so real payments don't get held up.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
+      3: { t: "Why are we asking?", b: "This isn't a credit check. Your answers help us see what a normal day looks like for you.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why are we asking?", b: ca ? "This is the account your payouts are paid into. We ask for proof of it in step 6, then check it after you submit." : "This is the account your payouts are paid into. Trulioo, our verification partner, checks it after you submit, so your payouts go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
       5: { t: "Why are we asking?", b: "Card networks and regulators require these exact questions on every application. If you answer yes to any of them, a person reviews your application.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
       6: { t: "Why are we asking?", b: "Documents are how Trulioo, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
@@ -5086,8 +5116,8 @@
       else if (e.key === "Enter" || e.key === " ") { e.preventDefault(); if (open) choose(options[idx][0]); else openIt(); }
       else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ selOpen: "" }); } }
       else if (e.key === "Home" || e.key === "End") { if (open) { e.preventDefault(); setState({ selIdx: e.key === "Home" ? 0 : n - 1 }); } }
-      // Typing a letter jumps to the next item that starts with it, like the browser's own select.
-      else if (e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey && e.key !== " ") {
+      // Typing a letter jumps to the next item that starts with it, like the browser's own select. Some events (browser autofill, synthetic keys) arrive with no e.key, so it is checked before use (decision select-keydown-no-key).
+      else if (e.key && e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey && e.key !== " ") {
         const k = e.key.toLowerCase();
         for (let step = 1; step <= n; step++) { const j = ((open ? idx : cur) + step) % n; if (String(options[j][1]).toLowerCase().indexOf(k) === 0) { setState({ selOpen: id, selIdx: j }); break; } }
       }
@@ -5603,7 +5633,6 @@
   <p class="progress-note">${v.remainingLabel} · <span class="save-tell${state.saving ? " is-saving" : ""}" data-key="save-tell" role="status">${state.saving ? html`<span class="save-spinner" aria-hidden="true"></span>` : icon("check", 12)}${state.saving ? "Saving…" : "Saved"}</span></p>
   <div class="rail-now" data-key="rail-now"><span class="rail-now-text">${stepName(cur)}</span><button type="button" class="btn btn-neutral btn-sm" aria-expanded="${String(!!state.railOpen)}" aria-controls="rail-steps" data-click="${on(() => setState({ railOpen: !state.railOpen }))}">${state.railOpen ? "Hide steps" : "Show steps"}</button></div>
   <ol class="steps" id="rail-steps">${items}</ol>
-  <button type="button" class="btn btn-neutral btn-sm rail-help" data-click="${on(openHelp)}">${icon("help", 15)}Get help</button>
 </nav>`;
   }
 
@@ -6442,7 +6471,10 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     return html`<header class="topnav topnav--${navW}${state.screen === "flow" ? " topnav--flow" : ""}" data-key="topnav">
   <div class="topnav-inner">
     <img class="topnav-logo" src="assets/xplor-pay-logo.png" alt="Xplor Pay" width="1354" height="295">
-    ${canSave && html`<button type="button" class="btn btn-neutral btn-md topnav-exit" data-click="${on(openSave)}">Save and exit</button>`}
+    ${canSave && html`<div class="topnav-actions">
+      <button type="button" class="btn btn-neutral btn-md topnav-help" data-click="${on(openHelp)}">${icon("help", 16)}Get help</button>
+      <button type="button" class="btn btn-neutral btn-md topnav-exit" data-click="${on(openSave)}">Save and exit</button>
+    </div>`}
   </div>
 </header>`;
   }
