@@ -367,6 +367,7 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
 .spinner { width: 13px; height: 13px; border-radius: var(--radius-full); border: 2px solid var(--color-border-default); border-top-color: var(--color-border-brand); animation: xspin 700ms linear infinite; }
 .doc-file { margin-top: var(--space-gap-group); padding: var(--space-padding-item) var(--space-padding-surface); border-radius: var(--radius-default); background: var(--color-background-shell); display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .doc-file-name { font-size: var(--type-caption-default-size); font-family: var(--font-mono); color: var(--color-text-secondary); }
+.doc-file-ok { display: flex; flex: none; color: var(--color-icon-success); }
 .doc-file .btn-link { margin-left: auto; }
 /* Step 6 documents are cards in two columns (decision document-drop-zone). Each card is three rows: the text, the drop zone, the uploaded files.
    The rows are shared with the card beside it (subgrid), so two cards in a row keep their drop zones level whatever their text or files. */

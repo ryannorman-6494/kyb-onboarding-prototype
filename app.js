@@ -3665,6 +3665,26 @@
       "tradeoff": "On a phone the buttons have 12px side padding where the rest of the prototype's medium buttons have 20px, and the logo is smaller, which are small departures to make two equal buttons fit beside the logo. The two buttons are the same width because of equal columns, not because the labels are the same length, so a longer label in another language would widen both. Get help is now in view all the time on the steps, including on a phone where it used to be inside the folded step list, so it is easier to find and takes top-bar room. The welcome page and the business type page still have no Get help in the bar (the welcome page has its own button in the page; the business type page has none, as before).",
       "by": "Ryan",
       "when": "2026-11-17"
+    },
+    {
+      "id": "uploaded-file-check-icon",
+      "area": "Documents",
+      "where": "Uploaded file tile on step 6 document cards, More info needed request cards, and the simple More info needed screen",
+      "t": "An uploaded file shows a green check-circle icon beside its name",
+      "b": "Ryan, 2026-11-17: add a check circle icon within the file uploaded component, next to the file name, as a signifier that the file has uploaded successfully. Every uploaded file tile (doc-file) now starts with the Atlas circle-check icon, 16px, in icon/success, before the file name. It appears only once the upload has finished: while the file is Uploading the tile shows the spinner pill and no icon, and a failed file keeps its red callout. The icon is decorative; a screen-reader-only Uploaded word follows the name so the state is not carried by colour or shape alone. Ryan gave no other reason.",
+      "tradeoff": "The tile now says uploaded three ways at once: the icon, the Remove link replacing the Uploading pill, and the card losing its Required badge (no-uploaded-badge). That is more signal than strictly needed, but Ryan asked for the icon. Nothing is read or checked at upload (documents-not-scanned), so the icon means the file arrived, not that it is valid.",
+      "by": "Ryan",
+      "when": "2026-11-17"
+    },
+    {
+      "id": "dba-required",
+      "area": "Business",
+      "where": "Step 1, Registered details, Doing business as (DBA) box (Trading name for a sole proprietor)",
+      "t": "Doing business as (DBA) is required for every business type, including a sole proprietor's Trading name",
+      "b": "Ryan, 2026-11-17: make the doing business as field mandatory, and when asked whether a sole proprietor's Trading name should stay optional, said make it required. The box now carries the red asterisk for every business type, and counts towards step 1, so a step 1 with it empty shows as unfinished (90% in the sample business) and holds Submit back, like any other required field (partial-steps-allowed). Ryan gave no reason. The sole proprietor box used to carry the hint If you trade under a different name; that hint was written for an optional box, so it now shows the same example as the others (For example, Riverside Pilates), which is my wording.",
+      "tradeoff": "A business or person that trades only under their own legal name now has to type something, and nothing says whether repeating the legal name is acceptable. The Riverside Pilates example is a business name, which is odd for a sole proprietor using their own name. The prototype's sample business already has a DBA, so the rule only shows when it is cleared.",
+      "by": "Ryan",
+      "when": "2026-11-17"
     }
   ];
 
@@ -4734,8 +4754,9 @@
         card("s1-reg", isSole() ? "Your details" : "Registered details", "Enter these as they appear on " + (isSole() ? "your tax records." : "your registration."), [
           fld("legalName", isSole() ? "Your full legal name" : "Legal " + orgWord() + " name", "text", { span: isSole() || isNonprofit(), placeholder: isSole() ? "As it appears on your tax records" : isNonprofit() ? "For example, Riverside Community Foundation" : "For example, Riverside Pilates LLC" }),
           // The EIN or business number is typed here like any other detail; nothing is looked up from it (decision ein-in-registered-details). A company or non-profit has to give one; a sole proprietor may not have one.
-          isCompany() ? fld("dba", "Doing business as (DBA)", "text", { optional: true, placeholder: "For example, Riverside Pilates" }) : einField(ca),
-          isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { optional: true, placeholder: isSole() ? "If you trade under a different name" : "For example, Riverside Pilates" }),
+          // Doing business as is required for every business type, and a sole proprietor's Trading name too (decision dba-required).
+          isCompany() ? fld("dba", "Doing business as (DBA)", "text", { placeholder: "For example, Riverside Pilates" }) : einField(ca),
+          isCompany() ? einField(ca) : fld("dba", isSole() ? "Trading name" : "Doing business as (DBA)", "text", { placeholder: "For example, Riverside Pilates" }),
           isSole() ? null : fld("incorporated", isNonprofit() ? "Date registered" : "Date of incorporation", "mono", { placeholder: datePh() }),
           ca || isSole() ? null : fld("stateInc", isNonprofit() ? "State registered in" : "State of incorporation", "select", { placeholder: "Choose a state", options: US_STATES })
         ]),
@@ -5770,7 +5791,7 @@
     ${action}
   </div>
   ${zone}
-  ${cur.files.length > 0 && html`<div class="doc-files" data-key="files-${d.key}">${cur.files.map((f) => f.failed ? failedFileView(d, f) : html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name" title="${f.name}">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name)))}">Remove</button>`}</div>`)}</div>`}
+  ${cur.files.length > 0 && html`<div class="doc-files" data-key="files-${d.key}">${cur.files.map((f) => f.failed ? failedFileView(d, f) : html`<div class="doc-file" data-key="file-${f.name}">${!f.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name" title="${f.name}">${f.name}</span>${!f.busy && html`<span class="sr-only">Uploaded</span>`}${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setDocFiles(d.key, (fs) => fs.filter((x) => x.name !== f.name)))}">Remove</button>`}</div>`)}</div>`}
 </article>`;
   }
 
@@ -6153,7 +6174,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const c = rfiOf(r.id);
     return html`<div class="pend-respond" data-key="resp-${r.id}">
   <div class="pend-field" data-key="file-btn-${r.id}">${dropZoneView("Add a file for " + pendText(r, r.title), (names) => pendAddFile(r, names))}</div>
-  ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}"><span class="doc-file-name">${f.name}</span>${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
+  ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}">${!f.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name">${f.name}</span>${!f.busy && html`<span class="sr-only">Uploaded</span>`}${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
   <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">Message for our team</label><textarea class="input" id="pend-${r.id}-note" rows="3" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
 </div>`;
   }
@@ -6207,7 +6228,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     ${docs.length > 1 && html`<button type="button" class="icon-btn" aria-label="Remove this document" data-click="${on(() => simpleRemoveCard(d.id))}">${icon("trash", 16)}</button>`}
     </div>
     <div class="pend-field" data-key="simple-file-${d.id}">${d.name
-      ? html`<div class="doc-file"><span class="doc-file-name">${d.name}</span>${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleUpdate(d.id, { name: "", busy: false }))}">Remove file</button>`}</div>`
+      ? html`<div class="doc-file">${!d.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name">${d.name}</span>${!d.busy && html`<span class="sr-only">Uploaded</span>`}${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleUpdate(d.id, { name: "", busy: false }))}">Remove file</button>`}</div>`
       : dropZoneView("Add a file", (names) => simpleChooseFile(d.id, names[0]))}</div>
   </section>`)}
   <div><button type="button" class="btn btn-outline btn-sm" data-click="${on(simpleAddCard)}">${icon("plus", 15)}Add a document</button></div>
