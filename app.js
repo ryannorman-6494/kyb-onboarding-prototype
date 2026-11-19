@@ -706,11 +706,19 @@
       // True while someone is fixing one section from the final review. Progress
       // stays where it was and the footer collapses to a single Save.
       editing: false,
-      // The signature: empty, drawn in the box (strokes kept as 0 to 1 points so it redraws at any size) or an uploaded image (decision signature-draw-or-upload).
-      sign: "",
-      signStrokes: [],
-      signImgName: "",
-      signErr: "",
+      // Signing in the Docusign window (decision docusign-sign-in-modal). signStatus is idle, loading, ready, signed, declined, cancelled, expired or error. signConfirm says whether our system has confirmed a "signed" (decision docusign-signed-only-when-confirmed): "" , "checking", "delayed" or "confirmed".
+      signStatus: "idle",
+      signConfirm: "",
+      signModal: false,
+      signLeaveAsk: false,
+      signTabDone: false,
+      signHold: false,
+      signFor: null,
+      signAt: "",
+      signSay: "",
+      // Mock mode switches (decision docusign-mock-mode): the next request for a signing link fails, and our system is slow to confirm a signature.
+      signMockUrlFails: false,
+      signMockPending: false,
       submittedAt: "",
       // True when Ops has asked for more information by email, which changes the waiting screen (decision more-info-by-email).
       askedMore: false,
@@ -735,6 +743,7 @@
     whyOpen: false,
     fieldWhy: "",
     nextTip: false,
+    signTip: false,
     editMasked: "",
     viewDoc: "",
     delegateOpen: false,
@@ -1218,16 +1227,10 @@
         if (!problemsOnly && !d.skip && d.requirement === "Required" && doc(d.key).state !== "done") errs["doc_" + d.key] = "Add this file to finish this step.";
       });
     }
-    // Signing is the last thing on the last step (decision sign-back-on-step-7): the signatory's name and title, the two document ticks and a signature.
+    // Signing is the last thing on the last step (decisions sign-back-on-step-7, docusign-sign-in-modal). It only counts once our system has confirmed it. The person who was sent the application signs, so there is no name or title to fill in (decision docusign-signer-is-the-recipient).
     if (step === 7) {
-      const signatory = (a.signatoryName !== undefined ? a.signatoryName : (a.sigSame === "no" ? (a.sigName || "") : (ownerVal(state.owners[0] || {}, "name") || ""))).trim();
-      const title = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((owners.filter((o) => o.self)[0] || state.owners[0]) || {}).role || ""));
-      unit(true, !!signatory); unit(true, !!String(title).trim()); unit(true, state.sign !== "");
-      unit(true, a.acceptAgreement === true);
-      if (!signatory && !problemsOnly) errs.signatoryName = "Enter the signatory's full legal name.";
-      if (!String(title).trim() && !problemsOnly) errs.signatoryTitle = "Enter the signatory's title.";
-      if (a.acceptAgreement !== true && !problemsOnly) errs.acceptAgreement = "Accept the agreement to sign.";
-      if (state.sign === "" && !problemsOnly) errs.sign = "Draw your signature, or upload an image of it.";
+      unit(true, signedConfirmed());
+      if (!signedConfirmed() && !problemsOnly) errs.sign = "Sign the agreement to submit your application.";
     }
     // A saved payout account counts every one of its answers as in (decision bank-saved-as-account).
     if (step === 4 && !bankFormOn() && tally) { const n = isCa() ? 7 : 6; tally.total += n; tally.done += n; }
@@ -1646,7 +1649,7 @@
     // are shown on the fields themselves, as each is left (see touched), not on the button. Only bad entries are; missing answers are not.
     const stepComplete = !errStep || Object.keys(allErrs).length === 0;
     // What is still needed, in the applicant's own words, for the hover note on the disabled button (decision 78).
-    const labelOf = { signatoryName: "Signatory name", signatoryTitle: "Signatory title", sign: "Your signature", acceptAgreement: "Accept the merchant services agreement, privacy policy and terms of service" };
+    const labelOf = { signatoryName: "Signatory name", signatoryTitle: "Signatory title", sign: "Sign the agreement" };
     cards.forEach((c) => c.fields.forEach((f) => { labelOf[f.id] = f.label; }));
     if (errStep === 2) st.owners.forEach((o) => { const n = String(ownerInfo(o).name || "").trim(); ownerFields(o).forEach((f) => { labelOf[f.id] = (n && n !== "New owner" ? n : "Owner") + ": " + f.label; }); });
     docList.forEach((d) => { labelOf["doc_" + d.key] = "File: " + d.title; });
@@ -1669,8 +1672,8 @@
     const defaultSigner = a.sigSame === "no" ? (a.sigName || "") : (ownerVal(st.owners[0] || {}, "name") || "");
     const signatoryName = a.signatoryName !== undefined ? a.signatoryName : defaultSigner;
     const signatoryTitle = a.signatoryTitle !== undefined ? a.signatoryTitle : (a.sigSame === "no" ? (a.sigTitle || "") : (((selfOwner || st.owners[0]) || {}).role || ""));
-    // "Signed by" is only true once a signature has been drawn or uploaded.
-    const signedNow = !!signatoryName.trim() && st.sign !== "";
+    // "Signed by" is only true once our system has confirmed the signature in the Docusign window.
+    const signedNow = !!signatoryName.trim() && signedConfirmed();
 
     return {
       ca, isWelcome, isBizType, isFlow, isStatus, cur, pct, owners, cards, docList,
@@ -1703,6 +1706,8 @@
       stepComplete: stepComplete,
       canNext: canNext,
       missing: missing,
+      // Review and sign waits until every earlier step is complete, so nobody signs off an incomplete application (decision docusign-sign-needs-complete-application).
+      signHold: gaps.map((n) => "Step " + n + ", " + stepName(STEPS[n - 1]) + ", is only partly done"),
       nextLabel: st.step === 7 ? "Submit for verification" : "Save and continue",
       submitNote: "We send one complete package to Trulioo, our verification partner, when you submit.",
       saveProgressNote: isWelcome ? "You haven't started yet, so there's nothing to lose." : "Last saved on step " + st.step + ", a moment ago.",
@@ -2643,117 +2648,210 @@
 </div>`;
   }
 
-  // The last part of step 7 (decisions sign-back-on-step-7, terms-as-signing-checkboxes, signature-draw-or-upload). The two documents are read through links in their checkboxes; the signature is drawn in the box or uploaded as an image.
-  function signView(v) {
-    const link = (key, text) => html`<button type="button" class="btn-link check-link" data-click="${on(() => openDoc(key))}">${text}</button>`;
-    // A tick box whose text holds a link. A button inside a label is interactive content, so pressing the link opens the document and does not toggle the box.
-    const tick = (id, lead, key, text) => html`<div${ERR[id] ? html` data-error="1"` : ""} data-key="${id}"><label class="check"><input type="checkbox" id="f-${id}"${attr("checked", state.a[id] === true)} data-change="${on((e) => set(id, e.target.checked))}"><span><span class="check-label">${lead}${link(key, text)}${REQ}</span></span></label>${errView(id)}</div>`;
-    return html`<section class="card" data-key="s7-sign">
-  <h2 class="card-title sign-title">Sign it off${pin("sign-last")}</h2>
-  <div class="fields fields--sign">
-    <div${ERR.signatoryName ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryName">Authorized signatory name${REQ}</label><input class="input" id="f-signatoryName" value="${v.signatoryName}" placeholder="As printed on your ID" data-input="${on((e) => set("signatoryName", e.target.value))}">${errView("signatoryName")}</div>
-    <div${ERR.signatoryTitle ? html` data-error="1"` : ""}><label class="field-label field-label--block" for="f-signatoryTitle">Title${REQ}</label><input class="input" id="f-signatoryTitle" value="${v.signatoryTitle}" placeholder="For example, Owner and CEO" data-input="${on((e) => set("signatoryTitle", e.target.value))}">${errView("signatoryTitle")}</div>
-  </div>
-  <h3 class="fields-sub sign-sub">What you're agreeing to${pin("read-before-accept")}</h3>
-  <div class="sign-checks">
-    ${tick("acceptAgreement", "I accept the ", "agreement", "Xplor Pay merchant services agreement, privacy policy and terms of service")}
-  </div>
-  <div class="sig"${ERR.sign ? html` data-error="1"` : ""} data-key="sig">
-    <span class="field-label field-label--block" id="sig-label">Your signature${REQ}</span>
-    <div class="sig-pad-wrap">
-      <canvas id="sig-pad" class="sig-pad" width="1200" height="300" role="img" aria-labelledby="sig-label" aria-describedby="sig-help"></canvas>
-      ${state.sign === "" && html`<span class="sig-ph" aria-hidden="true">Sign here</span>`}
-    </div>
-    <p class="sig-help small-note" id="sig-help">Draw your signature in the box with a mouse, finger or stylus.${state.sign === "image" && state.signImgName ? " Using the image " + state.signImgName + "." : ""}</p>
-    <div class="sig-actions">
-      <button type="button" class="btn btn-outline btn-sm" data-click="${on(() => { const i = document.getElementById("sig-file"); if (i) i.click(); })}">${icon("upload", 15)}Upload image of signature</button>
-      <input type="file" id="sig-file" class="sr-only" accept="image/png,image/jpeg" tabindex="-1" aria-label="Upload image of signature">
-      ${state.sign !== "" && html`<button type="button" class="btn-link" data-click="${on(clearSignature)}">Clear</button>`}
-    </div>
-    ${state.signErr && errMsg(state.signErr)}
-    ${errView("sign")}
-  </div>
-</section>`;
-  }
+  // ---------------------------------------------------------------------------
+  // Signing (decisions docusign-sign-in-modal, docusign-signed-only-when-confirmed, docusign-mock-mode).
+  // The applicant signs one short agreement in a Docusign window that opens on top of the page: no redirect and no new tab. It replaces the
+  // accept-the-agreement tick and the drawn signature. This prototype has no Docusign account behind it, so the window is a MOCK that looks
+  // like the focused-view layout and has controls for every outcome. The words for engineers, the typed hook and the stubbed API are in docusign-signing/.
+  // ---------------------------------------------------------------------------
 
-  // ---- The signature box ----
-  // An uploaded image is decoded in the browser and drawn onto the same canvas; it never leaves the page.
-  let sigBitmap = null;
-  const SIG_MAX_BYTES = 2 * 1024 * 1024;
-  function clearSignature() {
-    sigBitmap = null;
-    setState({ sign: "", signStrokes: [], signImgName: "", signErr: "" });
+  // Every word the signing card and window show, in one place for content review. docusign-signing/src/strings.ts holds the same words for the real build.
+  const SIGN_COPY = {
+    title: "Sign it off",
+    intro: "Review and sign the agreement to finish your application. It includes our terms and confirms that everything you've provided is true. It opens in a window on this page.",
+    docTitle: "[Agreement title]",
+    badge: { checking: "Checking", signed: "Signed" },
+    statement: "I confirm that everything I've provided in this onboarding is true.",
+    review: "Review and sign",
+    retry: "Try again",
+    reviewAgain: "Review the agreement again",
+    recheck: "Check again",
+    close: "Close",
+    opening: "Opening the agreement",
+    mustSign: "Sign the agreement to submit your application.",
+    holdHead: "Still needed before you can sign",
+    delayedTitle: "We're still confirming your signature",
+    delayedBody: "This can take a moment. You can submit once it's confirmed.",
+    signedBody: (name, when) => "Signed by " + name + " on " + when + ".",
+    outcome: {
+      declined: { title: "You declined to sign", card: "Your application hasn't been submitted. You can review the agreement again whenever you're ready.", modal: "You declined to sign, so your application hasn't been submitted. Review the agreement again when you're ready, or close this window and contact us if you have questions." },
+      cancelled: { title: "Signing wasn't finished", card: "Nothing was signed. You can start again whenever you're ready.", modal: "Nothing was signed. Start again to get a fresh agreement to review." },
+      expired: { title: "The signing window timed out", card: "It was open too long, so it closed. Nothing was signed. Start again to get a fresh one.", modal: "The signing window was open too long, so it closed. Nothing was signed. Start again to get a fresh one." },
+      error: { title: "We couldn't open the agreement", card: "Nothing was signed. Try again, or contact us if it keeps happening.", modal: "Nothing was signed. Try again, or contact us if it keeps happening." }
+    },
+    contact: () => "Call us on " + SUPPORT_PHONE + " or email support@xplorpay.example.",
+    modal: { loadingTitle: "Opening your agreement", loadingSub: "The agreement will appear here when it's ready.", readySub: "Read the agreement, then sign.", closeLabel: "Close the signing window", leaveTitle: "Leave without signing?", leaveBody: "Nothing in this window is kept. You can open the agreement again at any time.", keep: "Keep signing", leave: "Leave" },
+    mock: { badge: "Mock mode", note: "Prototype only. The real window is Docusign's, and these buttons stand in for what it reports back.", frameNote: "Approximates the focused-view layout.", signTab: "Sign here", signedTab: "Signed", urlFails: "The next request for a signing link fails", backendPending: "Our system is slow to confirm the signature (the first check says pending)" },
+    say: { loading: "Opening the agreement.", ready: "The agreement is ready to sign.", declined: "You declined to sign.", cancelled: "Signing wasn't finished.", expired: "The signing window timed out.", error: "We couldn't open the agreement.", checking: "Signing complete. Checking your signature.", delayed: "We're still confirming your signature.", signed: "Signed. You can submit your application." }
+  };
+  // The Docusign window's own style options, the only ones the docs list (docusign-signing/README.md section 5). The colours are the Atlas primary button's light-mode values; Docusign does not follow our light and dark modes.
+  const SIGN_STYLE = { primaryButton: { color: "#ffffff", backgroundColor: "#793ef7" }, signingNavigationButton: { finishText: "Sign and finish", position: "bottom-right" } };
+
+  const SIGN_FAILED = ["declined", "cancelled", "expired", "error"];
+  let signTimers = [];
+  const signClear = () => { signTimers.forEach(clearTimeout); signTimers = []; };
+  const signLater = (ms, fn) => { signTimers.push(setTimeout(fn, ms)); };
+  const signedConfirmed = () => state.signStatus === "signed" && state.signConfirm === "confirmed";
+
+  // Review & sign. The real build asks the back end for a one-time signing link now, not when the step loads, because the link works once and expires after about 5 minutes.
+  function openSigning(name) {
+    // Nobody signs an incomplete application: the button is off until every earlier step is complete, and this covers any other way in.
+    if (stepGaps().length) return;
+    signClear();
+    setState({ signModal: true, signStatus: "loading", signLeaveAsk: false, signTabDone: false, signHold: false, signConfirm: "", signFor: { name: String(name || "").trim() }, signSay: SIGN_COPY.say.loading });
+    signLater(700, () => {
+      if (state.signStatus !== "loading") return;
+      // A failed request for the signing link is the hook's error state.
+      if (state.signMockUrlFails) { signEnd("exception"); return; }
+      signLater(800, () => { if (state.signStatus === "loading" && !state.signHold) signReady(); });
+    });
   }
-  function paintSignature(c) {
-    const ctx = c.getContext("2d");
-    ctx.clearRect(0, 0, c.width, c.height);
-    if (state.sign === "image" && sigBitmap) {
-      // Fit the whole image inside the box, centred, without stretching it.
-      const k = Math.min(c.width / sigBitmap.width, c.height / sigBitmap.height);
-      const w = sigBitmap.width * k, h = sigBitmap.height * k;
-      ctx.drawImage(sigBitmap, (c.width - w) / 2, (c.height - h) / 2, w, h);
+  const signReady = () => setState({ signStatus: "ready", signHold: false, signLeaveAsk: false, signSay: SIGN_COPY.say.ready });
+
+  // The mock's version of Docusign's sessionEnd event. The window is removed when it fires. Only "signing_complete" leads on, and even that is not proof: the step waits for the back end to say the envelope is completed.
+  function signEnd(type) {
+    signClear();
+    if (type === "signing_complete") {
+      setState({ signModal: false, signStatus: "signed", signLeaveAsk: false, signSay: SIGN_COPY.say.checking });
+      checkSigning();
       return;
     }
-    state.signStrokes.forEach((st) => drawStroke(c, st));
+    const map = { decline: "declined", cancel: "cancelled", viewing_complete: "cancelled", session_timeout: "expired", ttl_expired: "expired" };
+    const status = map[type] || "error";
+    setState({ signStatus: status, signLeaveAsk: false, signSay: SIGN_COPY.say[status] });
   }
-  function drawStroke(c, pts) {
-    const ctx = c.getContext("2d");
-    ctx.strokeStyle = getComputedStyle(c).color;
-    ctx.fillStyle = ctx.strokeStyle;
-    ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.lineJoin = "round";
-    if (pts.length === 1) { ctx.beginPath(); ctx.arc(pts[0][0] * c.width, pts[0][1] * c.height, 2, 0, Math.PI * 2); ctx.fill(); return; }
-    ctx.beginPath();
-    pts.forEach((p, i) => { if (i) ctx.lineTo(p[0] * c.width, p[1] * c.height); else ctx.moveTo(p[0] * c.width, p[1] * c.height); });
-    ctx.stroke();
+  // GET signing-status in the real build. Only "completed" counts as signed.
+  function checkSigning() {
+    signClear();
+    setState({ signConfirm: "checking" });
+    signLater(900, () => {
+      // Mock mode: the pending switch holds for one check only, so Check again can be tried afterwards.
+      if (state.signMockPending) { setState({ signConfirm: "delayed", signMockPending: false, signSay: SIGN_COPY.say.delayed }); return; }
+      setState({ signConfirm: "confirmed", signAt: new Date().toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }), signSay: SIGN_COPY.say.signed });
+    });
   }
-  // Called after every render. The canvas keeps its size attributes, so the morph keeps the element; its listeners are attached once per element.
-  function initSignature() {
-    const c = document.getElementById("sig-pad");
-    if (!c) return;
-    paintSignature(c);
-    if (!c._sigInit) {
-      c._sigInit = true;
-      let cur = null;
-      const at = (e) => { const r = c.getBoundingClientRect(); return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))]; };
-      c.addEventListener("pointerdown", (e) => {
-        e.preventDefault();
-        c.setPointerCapture(e.pointerId);
-        // Drawing over an uploaded image replaces it.
-        if (state.sign === "image") { sigBitmap = null; state.sign = ""; state.signStrokes = []; paintSignature(c); }
-        cur = [at(e)];
-        drawStroke(c, cur);
-      });
-      c.addEventListener("pointermove", (e) => {
-        if (!cur) return;
-        cur.push(at(e));
-        drawStroke(c, cur.slice(-2));
-      });
-      const end = () => {
-        if (!cur) return;
-        const done = cur; cur = null;
-        setState((st) => ({ sign: "drawn", signStrokes: st.signStrokes.concat([done]), signImgName: "", signErr: "" }));
-      };
-      c.addEventListener("pointerup", end);
-      c.addEventListener("pointercancel", end);
+  // The close button and Escape never leave the applicant stuck: mid-signing they ask once, anywhere else they just close.
+  function requestCloseSigning() {
+    if (state.signStatus === "ready") { setState({ signLeaveAsk: true }); return; }
+    closeSigning();
+  }
+  function closeSigning() {
+    signClear();
+    const s = state.signStatus;
+    setState({ signModal: false, signLeaveAsk: false, signStatus: s === "loading" ? "idle" : s === "ready" ? "cancelled" : s, signSay: s === "ready" ? SIGN_COPY.say.cancelled : "" });
+  }
+  function escapeSigning() {
+    if (state.signLeaveAsk) setState({ signLeaveAsk: false });
+    else requestCloseSigning();
+  }
+  function simulateSigning(what) {
+    if (what === "loading") { signClear(); setState({ signStatus: "loading", signHold: true, signTabDone: false, signLeaveAsk: false, signSay: SIGN_COPY.say.loading }); }
+    else if (what === "ready") signReady();
+    else signEnd(what);
+  }
+
+  // The last part of step 7, built on the shared card component like every other card (card() and cardView(), decision docusign-card-component):
+  // the title and the description come from the card, and the agreement container sits in its foot. The person who was sent the application is the
+  // person who signs, so there is no name, title or "change who signs" (decision docusign-signer-is-the-recipient).
+  function signView(v) {
+    const S = state.signStatus, C = state.signConfirm;
+    const done = signedConfirmed();
+    const failed = SIGN_FAILED.indexOf(S) >= 0 && !state.signModal;
+    const busy = S === "loading" || S === "ready";
+    const name = done && state.signFor ? state.signFor.name : String(v.signatoryName || "").trim();
+    // The right-hand end of the container: the button until the applicant has signed, then a badge that says where it stands (decision docusign-button-in-document-row).
+    let end;
+    if (done) end = html`<span class="pill pill--positive">${icon("check", 13, "i-b")}${SIGN_COPY.badge.signed}</span>`;
+    else if (S === "signed") end = html`<span class="pill pill--info">${C === "checking" && html`<span class="spinner" aria-hidden="true"></span>`}${SIGN_COPY.badge.checking}</span>`;
+    else {
+      const hold = v.signHold || [];
+      const goBtn = html`<button type="button" class="btn btn-primary btn-md sign-go" id="sign-open"${attr("disabled", busy || hold.length > 0)} data-click="${on(() => openSigning(name))}">${busy ? html`<span class="spinner spinner--on-brand" aria-hidden="true"></span>${SIGN_COPY.opening}` : html`${icon("pen", 17)}${failed && S !== "declined" ? SIGN_COPY.retry : SIGN_COPY.review}`}</button>`;
+      // Off until every earlier step is complete. A disabled button cannot be hovered, so the reason is on a wrapper that can (decision docusign-sign-needs-complete-application).
+      end = gateView(v, goBtn, { missing: hold, tip: "signTip", head: SIGN_COPY.holdHead, key: "sign-gate" });
     }
-    const fi = document.getElementById("sig-file");
-    if (fi && !fi._sigInit) {
-      fi._sigInit = true;
-      fi.addEventListener("change", async () => {
-        const file = fi.files && fi.files[0];
-        fi.value = "";
-        if (!file) return;
-        // Input handling: only a PNG or JPG under 2 MB is accepted, by the type the browser reports. The file is decoded locally and never sent anywhere.
-        if (!/^image\/(png|jpeg)$/.test(file.type)) { setState({ signErr: "Choose a PNG or JPG image." }); return; }
-        if (file.size > SIG_MAX_BYTES) { setState({ signErr: "Choose an image smaller than 2 MB." }); return; }
-        try {
-          sigBitmap = await createImageBitmap(file);
-          setState({ sign: "image", signStrokes: [], signImgName: file.name, signErr: "" });
-        } catch (err) {
-          setState({ signErr: "We couldn't read that image. Try another one." });
-        }
-      });
+    // Only what needs more than a badge gets a message under the container.
+    let status = "";
+    if (S === "signed" && !done && C !== "checking") {
+      status = html`<div class="callout callout--warning callout--card" data-key="sign-delayed">${icon("clock", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">${SIGN_COPY.delayedTitle}</strong><span>${SIGN_COPY.delayedBody}</span></div><div><button type="button" class="btn btn-outline btn-sm" data-click="${on(checkSigning)}">${SIGN_COPY.recheck}</button></div></div></div>`;
+    } else if (failed) {
+      const o = SIGN_COPY.outcome[S];
+      status = html`<div class="callout ${S === "error" ? "callout--error" : "callout--warning"} callout--card" data-key="sign-failed">${icon("alert", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">${o.title}</strong><span>${o.card}</span>${S === "error" && html`<span>${SIGN_COPY.contact()}</span>`}</div></div></div>`;
     }
+    const foot = html`<div class="sign-doc" data-key="sign-doc" tabindex="-1">
+    <span class="icon-tile icon-tile--neutral" aria-hidden="true">${icon("file", 18)}</span>
+    <div class="grow"><div class="sign-doc-title">${SIGN_COPY.docTitle}</div>${done && html`<div class="sign-doc-meta">${SIGN_COPY.signedBody(name, state.signAt)}</div>`}</div>
+    <span class="sign-end">${end}</span>
+  </div>
+  <div class="sr-only" role="status" aria-live="polite">${state.signModal ? "" : state.signSay}</div>
+  ${status}
+  ${ERR.sign && !busy && !done && S !== "signed" && html`<div data-error="1" data-key="sign-action">${errMsg(SIGN_COPY.mustSign)}</div>`}`;
+    return card("s7-sign", SIGN_COPY.title, SIGN_COPY.intro, [], { pinId: "docusign-sign-in-modal", foot });
+  }
+
+  // The window. It holds what Docusign mounts (here, the mock), a loading state until Docusign says it is ready, and a result for every way it can end.
+  function signModalView() {
+    const S = state.signStatus;
+    const who = state.signFor || { name: "" };
+    const failed = SIGN_FAILED.indexOf(S) >= 0;
+    const title = S === "loading" ? SIGN_COPY.modal.loadingTitle : failed ? SIGN_COPY.outcome[S].title : SIGN_COPY.docTitle;
+    const sub = S === "loading" ? SIGN_COPY.modal.loadingSub : failed ? "" : SIGN_COPY.modal.readySub;
+    const pos = SIGN_STYLE.signingNavigationButton.position.replace("bottom-", "");
+    const sim = (what, label) => html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => simulateSigning(what))}">${label}</button>`;
+    let body;
+    if (S === "loading") {
+      body = html`<div class="sign-loading" data-key="sign-loading"><span class="spinner spinner--lg" aria-hidden="true"></span><p>${SIGN_COPY.opening}</p></div>`;
+    } else if (S === "ready") {
+      body = html`<div class="sign-frame" data-key="sign-frame" role="group" aria-label="Mock of the signing window. ${SIGN_COPY.mock.frameNote}">
+    <div class="sign-paper" tabindex="0" role="document" aria-label="${SIGN_COPY.docTitle}">
+      <h3 class="docv-h">${SIGN_COPY.docTitle}</h3>
+      <p class="docv-p">[Terms for using Xplor Pay. The real window shows the agreement PDF here.]</p>
+      <p class="docv-p">[More of the agreement.]</p>
+      <p class="sign-statement">${SIGN_COPY.statement}</p>
+      <button type="button" class="sign-tab${state.signTabDone ? " is-done" : ""}" aria-pressed="${String(!!state.signTabDone)}" data-click="${on(() => setState({ signTabDone: true }))}">${state.signTabDone ? html`<span class="sign-tab-name">${who.name}</span><span class="sign-tab-note">${SIGN_COPY.mock.signedTab}</span>` : html`${icon("pen", 15)}${SIGN_COPY.mock.signTab}`}</button>
+    </div>
+    <div class="sign-nav sign-nav--${pos}"><button type="button" class="btn btn-primary btn-md" style="background:${SIGN_STYLE.primaryButton.backgroundColor};color:${SIGN_STYLE.primaryButton.color}"${attr("disabled", !state.signTabDone)} data-click="${on(() => signEnd("signing_complete"))}">${SIGN_STYLE.signingNavigationButton.finishText}</button></div>
+  </div>`;
+    } else if (failed) {
+      const o = SIGN_COPY.outcome[S];
+      body = html`<div class="sign-result" data-key="sign-result">
+    <span class="icon-tile ${S === "error" ? "icon-tile--neg" : "icon-tile--warn"}" aria-hidden="true">${icon(S === "declined" ? "x" : "alert", 18)}</span>
+    <p class="sign-result-body">${o.modal}</p>
+    ${S === "error" && html`<p class="sign-result-body">${SIGN_COPY.contact()}</p>`}
+    <div class="sign-result-actions">
+      <button type="button" class="btn btn-primary btn-md" id="sign-retry" data-click="${on(() => openSigning(who.name))}">${S === "declined" ? SIGN_COPY.reviewAgain : SIGN_COPY.retry}</button>
+      <button type="button" class="btn btn-outline btn-md" data-click="${on(closeSigning)}">${SIGN_COPY.close}</button>
+    </div>
+  </div>`;
+    }
+    return html`<div class="backdrop backdrop--sign" data-key="sign">
+  <div class="dialog dialog--sign" role="dialog" aria-modal="true" aria-labelledby="sign-title" aria-describedby="sign-sub" aria-busy="${String(S === "loading")}">
+    <div class="dialog-head">
+      <span class="icon-tile" aria-hidden="true">${icon("pen", 18)}</span>
+      <div class="grow">
+        <h2 class="dialog-title" id="sign-title" tabindex="-1">${title}</h2>
+        <p class="dialog-sub" id="sign-sub">${sub}</p>
+      </div>
+      <button type="button" class="icon-btn" id="sign-close" aria-label="${SIGN_COPY.modal.closeLabel}" data-click="${on(requestCloseSigning)}">${icon("x", 16)}</button>
+    </div>
+    <div class="sr-only" role="status" aria-live="polite">${state.signSay}</div>
+    <div class="sign-body">${body}</div>
+    ${state.signLeaveAsk && html`<div class="sign-leave" data-key="sign-leave" role="alert">
+      <div><strong>${SIGN_COPY.modal.leaveTitle}</strong><span>${SIGN_COPY.modal.leaveBody}</span></div>
+      <div class="sign-leave-actions">
+        <button type="button" class="btn btn-primary btn-sm" id="sign-keep" data-click="${on(() => setState({ signLeaveAsk: false }))}">${SIGN_COPY.modal.keep}</button>
+        <button type="button" class="btn btn-outline btn-sm" data-click="${on(closeSigning)}">${SIGN_COPY.modal.leave}</button>
+      </div>
+    </div>`}
+    <div class="sign-mock" data-key="sign-mock">
+      <div class="sign-mock-head"><span class="pill pill--info">${SIGN_COPY.mock.badge}</span><span class="small-note">${SIGN_COPY.mock.note}</span></div>
+      <div class="sign-mock-btns">${sim("loading", "Loading")}${sim("ready", "Ready")}${sim("signing_complete", "Signed")}${sim("decline", "Declined")}${sim("cancel", "Cancelled")}${sim("ttl_expired", "Link expired")}${sim("session_timeout", "Timed out")}${sim("exception", "Error")}</div>
+      <div class="sign-mock-opts">
+        <label class="check"><input type="checkbox"${attr("checked", !!state.signMockUrlFails)} data-change="${on((e) => setState({ signMockUrlFails: e.target.checked }))}"><span><span class="check-label">${SIGN_COPY.mock.urlFails}</span></span></label>
+        <label class="check"><input type="checkbox"${attr("checked", !!state.signMockPending)} data-change="${on((e) => setState({ signMockPending: e.target.checked }))}"><span><span class="check-label">${SIGN_COPY.mock.backendPending}</span></span></label>
+      </div>
+    </div>
+  </div>
+</div>`;
   }
 
   // What happens after Submit, on the last step.
@@ -2770,11 +2868,15 @@
   }
 
   // A disabled button cannot be hovered or focused, so it sits in a wrapper that can. The note names what is still needed.
-  function gateView(v, btn) {
-    if (v.canNext || !v.missing.length) return btn;
-    const shown = v.missing.slice(0, 6);
-    const more = v.missing.length - shown.length;
-    return html`<span class="gate" data-key="gate" tabindex="0" data-mouseenter="${on(() => setState({ nextTip: true }))}" data-mouseleave="${on(() => setState({ nextTip: false }))}" data-focus="${on(() => setState({ nextTip: true }))}" data-blur="${on(() => setState({ nextTip: false }))}">${btn}${state.nextTip && html`<span class="gate-pop" data-key="gate-pop" role="note"><span class="gate-pop-body"><span class="gate-head">Still needed to submit</span><ul class="gate-list">${shown.map((m) => html`<li>${m}</li>`)}${more > 0 && html`<li>and ${more} more</li>`}</ul>${v.missing.some((m) => m.indexOf("Waiting on ") === 0) && html`<span class="gate-foot">Fill it in yourself on the Owners step, or remove their access.</span>`}</span></span>`}</span>`;
+  // Used for Submit (the default) and for Review and sign (decision docusign-sign-needs-complete-application), which passes its own list, switch, heading and key.
+  function gateView(v, btn, o) {
+    o = o || {};
+    const list = o.missing || v.missing;
+    const tip = o.tip || "nextTip";
+    if (o.missing ? !list.length : (v.canNext || !list.length)) return btn;
+    const shown = list.slice(0, 6);
+    const more = list.length - shown.length;
+    return html`<span class="gate" data-key="${o.key || "gate"}" tabindex="0" data-mouseenter="${on(() => setState({ [tip]: true }))}" data-mouseleave="${on(() => setState({ [tip]: false }))}" data-focus="${on(() => setState({ [tip]: true }))}" data-blur="${on(() => setState({ [tip]: false }))}">${btn}${state[tip] && html`<span class="gate-pop" data-key="gate-pop" role="note"><span class="gate-pop-body"><span class="gate-head">${o.head || "Still needed to submit"}</span><ul class="gate-list">${shown.map((m) => html`<li>${m}</li>`)}${more > 0 && html`<li>and ${more} more</li>`}</ul>${list.some((m) => m.indexOf("Waiting on ") === 0) && html`<span class="gate-foot">Fill it in yourself on the Owners step, or remove their access.</span>`}</span></span>`}</span>`;
   }
 
   // The "why we ask" note for the step, shown as hoverable text at the end of the step's description (decision 73).
@@ -2803,8 +2905,8 @@
       ${step === 6 && step6View(v)}
       ${step === 7 && reviewView(v)}
       ${v.cards.map(cardView)}
-      ${step === 7 && signView(v)}
-      ${step === 7 && nextView(v)}
+      ${step === 7 && cardView(signView(v))}
+      ${step === 7 && signedConfirmed() && nextView(v)}
       ${step === 7 && Object.keys(ERR).length > 0 && html`<p class="footer-error" data-key="err-summary" role="alert">${icon("alert", 16)}${Object.keys(ERR).length === 1 ? "One thing needs a look before you can submit." : Object.keys(ERR).length + " things need a look before you can submit."}</p>`}
       <div class="footer" data-key="footer">
         ${state.editing ? html`<div class="footer-end" data-key="end">
@@ -3261,6 +3363,7 @@ ${state.confirm && confirmView()}
 ${state.helpOpen && helpView()}
 ${state.notesListOpen && notesListView()}
 ${state.viewDoc && docViewerView(v)}
+${state.signModal && signModalView()}
 ${protoView()}`;
   }
 
@@ -3362,7 +3465,6 @@ function focusDialog(id) {
     tpl.innerHTML = appView().s;
     morphChildren(root, tpl.content);
     applyWidths();
-    initSignature();
 
     // The "someone else updated this step" note goes once the applicant leaves the step.
     if (state.stepEdit && (state.screen !== "flow" || state.step !== state.stepEdit.step)) state.stepEdit = null;
@@ -3403,13 +3505,30 @@ function focusDialog(id) {
     } else if (!state.helpOpen && last.helpOpen && opener && document.contains(opener)) {
       opener.focus();
     }
+    // The signing window takes focus when it opens and gives it back to Review & sign when it closes (decision docusign-sign-in-modal). Asking to leave moves focus to Keep signing.
+    if (state.signModal && !last.signModal) {
+      opener = document.activeElement;
+      focusDialog("sign-title");
+    } else if (!state.signModal && last.signModal) {
+      // Back on Review and sign, or on the agreement row once the button has gone because the agreement is signed.
+      const back = document.getElementById("sign-open") || document.querySelector("[data-key=sign-doc]");
+      if (back) { if (!back.matches("button")) back.setAttribute("tabindex", "-1"); back.focus(); } else if (opener && document.contains(opener)) opener.focus();
+    }
+    // When Check again or the signing check finishes and the button that had focus is gone, focus goes to the status line so a keyboard user is not dropped at the top of the page.
+    if (state.signConfirm !== last.signConfirm && state.signConfirm && !state.signModal && (!document.activeElement || document.activeElement === document.body)) {
+      const st = document.querySelector("[data-key=sign-doc]");
+      if (st) st.focus({ preventScroll: true });
+    }
+    if (state.signLeaveAsk && !last.signLeaveAsk) focusDialog("sign-keep");
+    else if (!state.signLeaveAsk && last.signLeaveAsk && state.signModal) focusDialog("sign-close");
+    if (state.signModal && last.signModal && last.signStatus !== state.signStatus && (state.signStatus === "declined" || state.signStatus === "cancelled" || state.signStatus === "expired" || state.signStatus === "error")) focusDialog("sign-retry");
     if (state.viewDoc && !last.viewDoc) {
       opener = document.activeElement;
       focusDialog("docv-close");
     } else if (!state.viewDoc && last.viewDoc && opener && document.contains(opener)) {
       opener.focus();
     }
-    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, confirm: state.confirm, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, loginStage: state.loginStage };
+    last = { screen: state.screen, step: state.step, inviteStep: state.inviteStep, delegateOpen: state.delegateOpen, confirm: state.confirm, saveOpen: state.saveOpen, helpOpen: state.helpOpen, viewDoc: state.viewDoc, signModal: state.signModal, signLeaveAsk: state.signLeaveAsk, signStatus: state.signStatus, signConfirm: state.signConfirm, loginStage: state.loginStage };
     // A save that was stopped by a bad entry takes the applicant to the first one (decision errors-only-for-bad-entries).
     if (pendingScroll) {
       pendingScroll = false;
@@ -3490,6 +3609,7 @@ function focusDialog(id) {
     const key = t.getAttribute("data-key");
     if (key === "confirm") closeConfirm();
     else if (key === "doc-view") closeDoc();
+    else if (key === "sign") requestCloseSigning();
     else if (key === "help") closeHelp();
     else if (key === "delegate") closeDelegate();
     else if (key === "save") setState({ saveOpen: false });
@@ -3512,7 +3632,8 @@ function focusDialog(id) {
   });
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
-    if (state.confirm) closeConfirm();
+    if (state.signModal) escapeSigning();
+    else if (state.confirm) closeConfirm();
     else if (state.menuOwner) closeMenu();
     else if (state.viewDoc) closeDoc();
     else if (state.helpOpen) closeHelp();
@@ -3521,6 +3642,7 @@ function focusDialog(id) {
     else if (state.whyOpen) setState({ whyOpen: false });
     else if (state.fieldWhy) setState({ fieldWhy: "" });
     else if (state.nextTip) setState({ nextTip: false });
+    else if (state.signTip) setState({ signTip: false });
     else if (state.infoOpen) setState({ infoOpen: false });
     else if (state.protoOpen) setState({ protoOpen: false });
   });
