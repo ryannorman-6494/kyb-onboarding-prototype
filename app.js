@@ -308,7 +308,8 @@
       data: q.get("data") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW,
-      pend: pendFromUrl(q.get("pend"))
+      pend: pendFromUrl(q.get("pend")),
+      opsOwn: q.get("opsmsg") === "1" // Ops wrote their own message (decision more-info-ops-own-message)
     };
   }
   function writeContext() {
@@ -323,6 +324,7 @@
     if (ctx.showNotes) q.set("notes", "1");
     Object.keys(LINKS).forEach((k) => { if (ctx.link === LINKS[k]) q.set("link", k); });
     if (ctx.pend.join() !== PEND_DEFAULT.join()) q.set("pend", ctx.pend.join(","));
+    if (ctx.opsOwn) q.set("opsmsg", "1");
     const qs = q.toString();
     try { history.replaceState(null, "", qs ? "?" + qs : location.pathname); } catch (e) { /* file:// can refuse; the context still applies */ }
   }
@@ -392,7 +394,7 @@
     "approved-add-merchant", "no-jump-bar", "approved-welcome",
     "status-optical-centre", "approval-time-confirmed", "pend-reasons-as-requests",
     "pend-send-once", "pend-reasons-open", "pend-note-cards-optional-upload",
-    "moreinfo-simple-trial", "email-logo-above-card", "review-screen-email-then-respond",
+    "moreinfo-simple-trial", "more-info-ops-own-message", "email-logo-above-card", "review-screen-email-then-respond",
     "top-nav-follows-content-column", "more-info-by-email", "tokenized-ids",
     "no-field-count", "spacing-air", "roboto",
     "nothing-claimed-early", "full-width-description", "shape-language",
@@ -726,7 +728,9 @@
       saveEmail: sample ? "finance@riversidepilates.com" : "",
 
       // SIMPLE TRIAL: the cards on the simple More info screen, { id, name (the file, "" for none), busy, note }. Starts with one empty card.
-      rfiDocs: [{ id: 1, name: "", busy: false, note: "" }],
+      rfiDocs: [], rfiNote: "",
+      // A follow-up from Ops that is their own wording, not a template (decision more-info-ops-own-message). Sample wording, edited in Prototype options.
+      opsMsgText: "Thanks for sending that. The bank letter has a different business name from the one on your application. Can you tell us why, and send the document that shows the name change?",
       // Extra bank accounts on step 4: just their numbers (1, 2, ...). Each one's answers live in a as x<n>_bankName and so on.
       a: Object.assign({}, sample ? SAMPLE_ANSWERS : EMPTY_ANSWERS, sample && isCa() ? Object.assign({ structure: "Private corporation", legalName: CA_NAME, accountHolder: CA_NAME }, CA_SAMPLE_BUSINESS) : {})
     };
@@ -2959,14 +2963,17 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   // { files: [{ name, busy }], vals: { note: text } }.
   // Slice 1 does not offer the reasons marked slice "2". If Ops had only picked those, the screen falls back to the default request.
   const pendAvailable = () => PEND_REASONS.filter((r) => r.slice !== "2" || invitesOn());
+  // A follow-up from Ops that is a written message, not a template: one request whose body is Ops' own words, and a reply is expected.
+  const opsReason = () => ({ id: "ops-message", name: "Message from Ops", reply: true, title: "our team's message", file: "supporting-document.pdf" });
   const pendReasons = () => {
+    if (ctx.opsOwn) return [opsReason()];
     const picked = pendAvailable().filter((r) => ctx.pend.indexOf(r.id) > -1);
     return picked.length ? picked : PEND_REASONS.filter((r) => PEND_DEFAULT.indexOf(r.id) > -1);
   };
   const rfiOf = (id) => state.rfi[id] || { files: [], vals: {} };
   const setRfi = (id, patch) => setState((s) => ({ rfi: Object.assign({}, s.rfi, { [id]: Object.assign({ files: [], vals: {} }, s.rfi[id], patch) }) }));
   // A request has an answer when it has a file or a message. Nothing on a card is required (decision more-info-one-response).
-  const pendHas = (r) => { const c = rfiOf(r.id); return c.files.length > 0 || String(c.vals.note || "").trim() !== ""; };
+  const pendHas = (r) => { const c = rfiOf(r.id); if (r.reply) return String(c.vals.note || "").trim() !== ""; return c.files.length > 0 || String(c.vals.note || "").trim() !== ""; };
   // Who a person-level request is about (a reason with person: true): the owner Ops picked in Prototype options, else the
   // applicant, else the first named owner. With no owner named yet (an empty run) it falls back to the sample applicant.
   function pendPerson() {
@@ -3015,12 +3022,21 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     return html`<div class="pend-respond" data-key="resp-${r.id}">
   <div class="pend-field" data-key="file-btn-${r.id}">${dropZoneView("Add a file for " + pendText(r, r.title), (names) => pendAddFile(r, names))}</div>
   ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}">${!f.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name">${f.name}</span>${!f.busy && html`<span class="sr-only">Uploaded</span>`}${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
-  <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">Message for our team</label><textarea class="input" id="pend-${r.id}-note" rows="3" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
+  <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">${r.reply ? "Your reply" : "Message for our team"}</label><textarea class="input" id="pend-${r.id}-note" rows="3" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
 </div>`;
   }
 
   // One request: a short title, why we need it, what we'll accept, then the same file and message boxes (decisions pend-reasons-as-requests, more-info-one-response).
   function pendCardView(r) {
+    if (r.reply) return html`<section class="card card--p20 pend" data-key="pend-${r.id}">
+  <div class="doc-row">
+    <div class="grow">
+      <div class="doc-titlebar"><h2 class="rfi-title">Message from our team</h2></div>
+      <p class="rfi-body pend-ops-msg">${state.opsMsgText}</p>
+      ${pendRespondView(r)}
+    </div>
+  </div>
+</section>`;
     return html`<section class="card card--p20 pend" data-key="pend-${r.id}">
   <div class="doc-row">
     <div class="grow">
@@ -3039,39 +3055,32 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
 
   /* SIMPLE TRIAL:START */
   // The whole request (what we need and why) is in the email, so this screen is only a place to send files and messages.
-  // Each card has an optional file and an optional message. At least one card needs a file or a message before it can be sent.
-  const simpleUpdate = (id, patch) => setState((s) => ({ rfiDocs: s.rfiDocs.map((d) => (d.id === id ? Object.assign({}, d, patch) : d)) }));
-  // Simulated upload: no picker opens and nothing is read. The file shows as uploading for a moment, then ready.
-  function simpleChooseFile(id, dropped) {
-    simpleUpdate(id, { name: dropped || "document-" + id + ".pdf", busy: true });
-    setTimeout(() => simpleUpdate(id, { busy: false }), 1400);
+  // One message box and one drop zone that takes any number of files. A file or a message is needed before it can be sent.
+  const simpleFile = (id, patch) => setState((s) => ({ rfiDocs: s.rfiDocs.map((d) => (d.id === id ? Object.assign({}, d, patch) : d)) }));
+  // Simulated upload: no picker opens and nothing is read. Each file shows as uploading for a moment, then ready. The one drop zone stays on the page, so any number of files can be added.
+  function simpleAddFiles(names) {
+    const list = names && names.length ? names : [null];
+    let id = state.rfiDocs.reduce((m, d) => Math.max(m, d.id), 0);
+    const added = list.map((n) => { id += 1; return { id: id, name: n || "document-" + id + ".pdf", busy: true }; });
+    setState((s) => ({ rfiDocs: s.rfiDocs.concat(added) }));
+    added.forEach((f) => setTimeout(() => simpleFile(f.id, { busy: false }), 1400));
   }
-  // Add a document stands in for choosing a file: the new card arrives with its file already uploading, since the real button
-  // would open the file picker.
-  function simpleAddCard() {
-    const id = state.rfiDocs.reduce((m, d) => Math.max(m, d.id), 0) + 1;
-    setState({ rfiDocs: state.rfiDocs.concat([{ id: id, name: "", busy: false, note: "" }]) });
-    simpleChooseFile(id);
-  }
-  const simpleRemoveCard = (id) => setState((s) => ({ rfiDocs: s.rfiDocs.filter((d) => d.id !== id) }));
+  const simpleRemoveFile = (id) => setState((s) => ({ rfiDocs: s.rfiDocs.filter((d) => d.id !== id) }));
   function rfiSimpleView() {
     const docs = state.rfiDocs;
-    const ready = docs.every((d) => !d.busy) && docs.some((d) => d.name || d.note.trim());
+    const ready = docs.every((d) => !d.busy) && (docs.length > 0 || String(state.rfiNote || "").trim());
     return html`<header data-key="rfi-head">
   <h1 class="step-title">Send us what we asked for</h1>
-  <p class="step-sub">The email we sent you lists everything we need. Add a file, write a message, or both. If you have more than one document, add another below.</p>
+  <p class="step-sub">The email we sent you lists everything we need. Add files, write a message, or both.</p>
 </header>
 <div class="stack" data-key="rfi-simple-docs">
-  ${docs.map((d) => html`<section class="card card--p20 pend simple-doc${d.name && !d.busy ? " is-done" : ""}" data-key="simple-doc-${d.id}">
-    <div class="simple-top">
-    <div class="pend-field" data-key="simple-note-${d.id}"><label class="field-label field-label--block" for="simple-note-${d.id}">Message for our team</label><textarea class="input" id="simple-note-${d.id}" rows="3" data-input="${on((e) => simpleUpdate(d.id, { note: e.target.value }))}">${d.note}</textarea></div>
-    ${docs.length > 1 && html`<button type="button" class="icon-btn" aria-label="Remove this document" data-click="${on(() => simpleRemoveCard(d.id))}">${icon("trash", 16)}</button>`}
+  <section class="card card--p20 pend simple-doc" data-key="simple-doc">
+    <div class="pend-field" data-key="simple-note"><label class="field-label field-label--block" for="simple-note">Message for our team</label><textarea class="input" id="simple-note" rows="3" data-input="${on((e) => setState({ rfiNote: e.target.value }))}">${state.rfiNote || ""}</textarea></div>
+    <div class="pend-field" data-key="simple-files">
+      ${docs.map((d) => html`<div class="doc-file" data-key="simple-file-${d.id}">${!d.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name">${d.name}</span>${!d.busy && html`<span class="sr-only">Uploaded</span>`}${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleRemoveFile(d.id))}">Remove file</button>`}</div>`)}
+      ${dropZoneView("Add a file", simpleAddFiles)}
     </div>
-    <div class="pend-field" data-key="simple-file-${d.id}">${d.name
-      ? html`<div class="doc-file">${!d.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name">${d.name}</span>${!d.busy && html`<span class="sr-only">Uploaded</span>`}${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleUpdate(d.id, { name: "", busy: false }))}">Remove file</button>`}</div>`
-      : dropZoneView("Add a file", (names) => simpleChooseFile(d.id, names[0]))}</div>
-  </section>`)}
-  <div><button type="button" class="btn btn-outline btn-sm" data-click="${on(simpleAddCard)}">${icon("plus", 15)}Add a document</button></div>
+  </section>
 </div>
 <div class="rfi-actions" data-key="rfi-actions">
   <div class="btn-row">
@@ -3088,14 +3097,14 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     const ready = list.every(pendHas) && list.every((r) => rfiOf(r.id).files.every((f) => !f.busy));
     return html`<header data-key="rfi-head">
   <h1 class="step-title">${pendTitle()}${pin("rfi-not-restart")}</h1>
-  <p class="step-sub">${list.length === 1 ? "Add this item and we'll carry on with your checks." : "Add these and we'll carry on with your checks."}</p>
+  <p class="step-sub">${list[0].reply ? "Reply to our message and we'll carry on with your checks." : list.length === 1 ? "Add this item and we'll carry on with your checks." : "Add these and we'll carry on with your checks."}</p>
 </header>
 <div class="stack" data-key="rfi-cards">${list.map((r) => pendCardView(r))}</div>
 <div class="rfi-actions" data-key="rfi-actions">
   <div class="btn-row">
     <button type="button" class="btn btn-primary btn-md"${attr("disabled", !ready)} data-click="${on(sendPend)}">Send to our team</button>
   </div>
-  ${!ready && html`<p class="pend-hint">Add a file or write a message for every request to send.</p>`}
+  ${!ready && html`<p class="pend-hint">${list[0].reply ? "Write a reply to send." : "Add a file or write a message for every request to send."}</p>`}
 </div>`;
   }
 
@@ -3306,6 +3315,8 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${state.screen === "rfi" && html`<hr class="proto-rule">
     ${select("More info needed screen", "moreInfo", "moreinfo-simple-trial")}
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
+    <label class="proto-check" data-key="ops-own"><input type="checkbox"${attr("checked", ctx.opsOwn)} data-change="${on((e) => setCtx({ opsOwn: e.target.checked }))}">Ops sends their own message${pin("more-info-ops-own-message")}</label>
+    ${ctx.opsOwn && html`<div data-key="ops-own-text"><label class="field-label field-label--block" for="f-ops-msg">Ops message</label><textarea class="input" id="f-ops-msg" rows="4" data-input="${on((e) => setState({ opsMsgText: e.target.value }))}">${state.opsMsgText}</textarea><p class="proto-note">A follow-up in Ops' own words. It replaces the picks below.</p></div>`}
     ${ctx.moreInfo === MOREINFO_SIMPLE && html`<p class="proto-note">The bare screen ignores Ops picks. Pick A card for each request to use them.</p>`}
     <div class="proto-pend" data-key="pend-list">${pendAvailable().map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
     ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<div data-key="pend-for"><label class="field-label field-label--block" for="f-pend-for">Request is about</label>${selectView({ id: "f-pend-for", value: String(pendPerson().id), placeholder: "", pick: (v) => setState({ pendFor: Number(v) }), options: state.owners.map((o) => [String(o.id), ownerInfo(o).name]) })}</div>`}`}
