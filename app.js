@@ -447,7 +447,7 @@
     international: "", countries: "", refundPolicy: "",
     prior: "", priorName: "", priorCbRatio: "",
     achVolume: "0",
-    achCount: "",
+    achAvg: "",
     bankName: "", bankNickname: "", accountHolder: "", accountType: "", routing: "", accountNumber: "",
     institution: "", transit: "",
     legalProceedings: "", legalProceedingsWhy: "", priorTermination: "", priorTerminationWhy: "",
@@ -829,8 +829,8 @@
     }
     // More info needed: in Slice 1 the applicant answers on a screen in the product; in Slice 2 Ops asks by email, so the applicant sees the waiting screen with a note to check their inbox (decisions more-info-by-email, more-info-slice-swap).
     const asked = ctx.link === LINKS.info;
-    const screen = asked && !invitesOn() ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
-    setState({ screen, submittedAt: stampDate() + ", 9:12 AM ET", askedMore: asked && invitesOn() });
+    const screen = asked && (!invitesOn() || ctx.opsOwn) ? "rfi" : ctx.link === LINKS.approved ? "approved" : "submitted";
+    setState({ screen, submittedAt: stampDate() + ", 9:12 AM ET", askedMore: asked && invitesOn() && !ctx.opsOwn });
   }
 
   // Login (decision login-default-start): a temporary password always forces a change, same as a real first sign-in
@@ -1058,6 +1058,10 @@
   };
   const US_STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
   // The applicant's own country comes first (decision country-list-own-first).
+  // Every country and territory with an ISO 3166-1 code (249), for Nationality and Country of residence (decision all-countries-no-other). No "Other". Names are the common English ones, with "and" for "&".
+  const ALL_COUNTRIES = ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bonaire, Sint Eustatius and Saba", "Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territory", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo (Democratic Republic)", "Congo (Republic)", "Cook Islands", "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Curaçao", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Heard Island and McDonald Islands", "Holy See (Vatican City)", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "North Korea", "North Macedonia", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn Islands", "Poland", "Portugal", "Puerto Rico", "Qatar", "Réunion", "Romania", "Russia", "Rwanda", "Saint Barthélemy", "Saint Helena, Ascension and Tristan da Cunha", "Saint Kitts and Nevis", "Saint Lucia", "Saint Martin", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "São Tomé and Príncipe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Sint Maarten", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Türkiye", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "United States Minor Outlying Islands", "United States Virgin Islands", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe", "Åland Islands"].sort((a, b) => a.localeCompare(b, "en"));
+  // The applicant's own country first (decision country-list-own-first), then the rest A to Z.
+  const allCountries = () => { const home = isCa() ? "Canada" : "United States"; return [home].concat(ALL_COUNTRIES.filter((c) => c !== home)); };
   const countries = () => (isCa() ? ["Canada", "United States", "United Kingdom", "Australia", "Other"] : ["United States", "Canada", "United Kingdom", "Australia", "Other"]);
   // Date order follows the region, so the placeholder is the instruction.
   const datePh = () => (isCa() ? "DD / MM / YYYY" : "MM / DD / YYYY");
@@ -1160,14 +1164,13 @@
     if (f.kind === "select") return v ? "" : (askPhrase(f) ? "Choose " + askPhrase(f) + "." : "Choose one.");
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
-    if (!String(v).trim()) return f.id === "ecomUrl" ? "Enter the website or app address where customers pay." : f.id === "achCount" ? "Enter how many " + (isCa() ? "EFT" : "ACH") + " payments you expect each month." : (askPhrase(f) ? "Enter " + askPhrase(f) + "." : "Fill this in to finish this step.");
+    if (!String(v).trim()) return f.id === "ecomUrl" ? "Enter the website or app address where customers pay." : f.id === "achAvg" ? "Enter your average " + (isCa() ? "EFT" : "ACH") + " payment amount." : (askPhrase(f) ? "Enter " + askPhrase(f) + "." : "Fill this in to finish this step.");
     const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
     // An address is complete once it has a street, city, state or province, and ZIP or postal code (decision address-split-fields).
     if (f.kind === "address") { const p = addrOf(f.id, v); if (!p.l1.trim() || !p.city.trim() || !p.region.trim() || !p.postal.trim()) return "Fill in the street, city, " + (ca ? "province and postal code." : "state and ZIP code."); }
     if (key === "email" && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(v).trim())) return "Enter an email like name@example.com.";
-    if (key === "achCount" && Number(d) < 1) return "Enter a number above 0.";
     if (key === "phone") { const pp = phoneParts(f.id, v); if (pp.digits.length < (pp.code === "1" ? 10 : 6)) return "Enter the full number, including the area code."; }
     if (DATE_KEYS.indexOf(key) > -1) { const p = dateProblem(key, v); if (p) return p; }
     if (key === "natId" && d.length !== 9) return ca ? "Enter all 9 digits of your SIN." : "Enter all 9 digits of your SSN.";
@@ -1346,7 +1349,7 @@
       span: !!o.span,
       // A field on its own row at half the width of the row (decision ecommerce-url-half-width).
       half: !!o.half,
-      annual: !!o.annual,
+      annual: !!o.annual, annualLabel: o.annualLabel || "",
       // An optional amount that is stored as 0 when left empty (the ACH or EFT volume; decision ach-volume-defaults-zero).
       zero: !!o.zero,
       tall: !!o.tall,
@@ -1408,8 +1411,8 @@
       isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "For example, 40", hint: isSole() ? "" : "We need owners who hold 25% or more." }),
       // Facts about the person.
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
-      f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: countries() }),
-      f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: countries() }),
+      f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: allCountries() }),
+      f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: allCountries() }),
       f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
       // Email and phone close Personal details; there is no separate How to reach them section (decision owner-form-two-sections).
       f("email", "Email address", "text", { placeholder: "name@example.com" }),
@@ -1500,7 +1503,7 @@
       ];
     }
     if (step === 3) {
-      // The number of ACH or EFT payments is asked only once an ACH or EFT volume above 0 has been entered (decision ach-count-when-volume).
+      // The average ACH or EFT payment amount is asked only once an ACH or EFT volume above 0 has been entered (decisions ach-count-when-volume, ach-average-and-yearly).
       const achOn = parseFloat(String(a.achVolume || "").replace(/,/g, "")) > 0;
       // E-commerce channels ask for the address where customers pay (decision ecommerce-channel-url).
       const ecomOn = ["E-commerce (online)", "In-person and e-commerce"].indexOf(a.channel) > -1;
@@ -1527,12 +1530,12 @@
         ]),
         ca
           ? card("s3-ach", "Bank transfer volumes", "Only if you'll also take direct debits.", [
-              fld("achVolume", "Estimated monthly EFT volume", "currency", { optional: true, zero: true, placeholder: "10,000" }),
-              achOn ? fld("achCount", "Estimated monthly number of EFT payments", "count", { conditional: true, placeholder: "25" }) : null
+              fld("achVolume", "Estimated monthly EFT volume", "currency", { optional: true, zero: true, placeholder: "10,000", annual: true, annualLabel: "Yearly EFT volume" }),
+              achOn ? fld("achAvg", "Average EFT payment amount", "currency", { conditional: true, placeholder: "250" }) : null
             ])
           : card("s3-ach", "Bank transfer volumes", "Only if you'll also take ACH payments.", [
-              fld("achVolume", "Estimated monthly ACH volume", "currency", { optional: true, zero: true, placeholder: "10,000" }),
-              achOn ? fld("achCount", "Estimated monthly number of ACH payments", "count", { conditional: true, placeholder: "25" }) : null
+              fld("achVolume", "Estimated monthly ACH volume", "currency", { optional: true, zero: true, placeholder: "10,000", annual: true, annualLabel: "Yearly ACH volume" }),
+              achOn ? fld("achAvg", "Average ACH payment amount", "currency", { conditional: true, placeholder: "250" }) : null
             ])
       ];
     }
@@ -1879,7 +1882,7 @@
       const monthly = parseFloat(String(f.value).replace(/,/g, ""));
       const yearly = monthly > 0 ? fmtMoney(String(Math.round(monthly * 12 * 100) / 100)) : "";
       return html`<div class="field-pair field-pair--vol" data-key="${f.id}-pair">${fieldView(Object.assign({}, f, { annual: false }))}<div data-key="${f.id}-yearly">
-  <div class="field-head"><span class="field-label" id="l-${f.id}-yearly">Yearly card volume</span></div>
+  <div class="field-head"><span class="field-label" id="l-${f.id}-yearly">${f.annualLabel || "Yearly card volume"}</span></div>
   <div class="affix affix--money affix--static" role="group" aria-labelledby="l-${f.id}-yearly"><span class="affix-prefix" aria-hidden="true">$</span><span class="affix-value">${yearly}</span><span class="affix-code">${isCa() ? "CAD" : "USD"}</span></div>
 </div></div>`;
     }
@@ -2964,9 +2967,11 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   // Slice 1 does not offer the reasons marked slice "2". If Ops had only picked those, the screen falls back to the default request.
   const pendAvailable = () => PEND_REASONS.filter((r) => r.slice !== "2" || invitesOn());
   // A follow-up from Ops that is a written message, not a template: one request whose body is Ops' own words, and a reply is expected.
+  // Slice 2 only (decision more-info-ops-own-message). Slice 1 has the templated requests alone; anything more goes by email.
+  const ownMsgOn = () => ctx.opsOwn && invitesOn();
   const opsReason = () => ({ id: "ops-message", name: "Message from Ops", reply: true, title: "our team's message", file: "supporting-document.pdf" });
   const pendReasons = () => {
-    if (ctx.opsOwn) return [opsReason()];
+    if (ownMsgOn()) return [opsReason()];
     const picked = pendAvailable().filter((r) => ctx.pend.indexOf(r.id) > -1);
     return picked.length ? picked : PEND_REASONS.filter((r) => PEND_DEFAULT.indexOf(r.id) > -1);
   };
@@ -3312,11 +3317,12 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Division", "division", "division-option")}
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
     ${select("Link opened as", "link")}
+    ${invitesOn() && ctx.link === LINKS.info && (state.screen === "rfi" || state.screen === "submitted") && html`<hr class="proto-rule"><div class="proto-sub">More info needed: Slice 2</div>
+    <label class="proto-check" data-key="ops-own"><input type="checkbox"${attr("checked", ctx.opsOwn)} data-change="${on((e) => { setCtx({ opsOwn: e.target.checked }); setState({ screen: e.target.checked ? "rfi" : "submitted", askedMore: !e.target.checked }); })}">Ops sends their own message${pin("more-info-ops-own-message")}</label>
+    ${ownMsgOn() && html`<div data-key="ops-own-text"><label class="field-label field-label--block" for="f-ops-msg">Ops message</label><textarea class="input" id="f-ops-msg" rows="4" data-input="${on((e) => setState({ opsMsgText: e.target.value }))}">${state.opsMsgText}</textarea><p class="proto-note">A follow-up in Ops' own words. It replaces the picks below.</p></div>`}`}
     ${state.screen === "rfi" && html`<hr class="proto-rule">
     ${select("More info needed screen", "moreInfo", "moreinfo-simple-trial")}
     <div class="proto-sub">More info needed: Ops picks${pin("pend-reasons-as-requests")}</div>
-    <label class="proto-check" data-key="ops-own"><input type="checkbox"${attr("checked", ctx.opsOwn)} data-change="${on((e) => setCtx({ opsOwn: e.target.checked }))}">Ops sends their own message${pin("more-info-ops-own-message")}</label>
-    ${ctx.opsOwn && html`<div data-key="ops-own-text"><label class="field-label field-label--block" for="f-ops-msg">Ops message</label><textarea class="input" id="f-ops-msg" rows="4" data-input="${on((e) => setState({ opsMsgText: e.target.value }))}">${state.opsMsgText}</textarea><p class="proto-note">A follow-up in Ops' own words. It replaces the picks below.</p></div>`}
     ${ctx.moreInfo === MOREINFO_SIMPLE && html`<p class="proto-note">The bare screen ignores Ops picks. Pick A card for each request to use them.</p>`}
     <div class="proto-pend" data-key="pend-list">${pendAvailable().map((r) => html`<label class="proto-check" data-key="pend-opt-${r.id}"><input type="checkbox"${attr("checked", ctx.pend.indexOf(r.id) > -1)} data-change="${on((e) => togglePend(r.id, e.target.checked))}">${r.name}</label>`)}</div>
     ${ctx.pend.some((id) => PEND_REASONS.some((r) => r.id === id && r.person)) && state.owners.length > 1 && html`<div data-key="pend-for"><label class="field-label field-label--block" for="f-pend-for">Request is about</label>${selectView({ id: "f-pend-for", value: String(pendPerson().id), placeholder: "", pick: (v) => setState({ pendFor: Number(v) }), options: state.owners.map((o) => [String(o.id), ownerInfo(o).name]) })}</div>`}`}
