@@ -399,8 +399,8 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
 .dz-action { font: var(--font-body-default); color: var(--color-text-secondary); }
 .dz-link { color: var(--color-text-link-default); text-decoration: underline; text-underline-offset: 2px; }
 .dropzone:hover .dz-link, .dropzone.is-over .dz-link { color: var(--color-text-link-hover); }
-.dropzone:hover, .dropzone.is-over { background: var(--color-background-brand-subtle); border-color: var(--color-border-brand); }
-.dropzone.is-over { border-style: solid; box-shadow: inset 0 0 0 var(--border-default) var(--color-border-brand); }
+.dropzone:hover { border-color: var(--color-border-brand); }
+.dropzone.is-over { background: var(--color-background-brand-subtle); border-color: var(--color-border-brand); border-style: solid; box-shadow: inset 0 0 0 var(--border-default) var(--color-border-brand); }
 .dropzone.is-over .dz-prompt { display: none; }
 .dropzone.is-over .dz-drop { display: block; }
 .dropzone.is-over .dz-action { visibility: hidden; }
@@ -534,14 +534,17 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
 }
 /* The step list is folded away on narrow screens: the current step and a Show steps button take its place, so the first question is not pushed down by seven rows (decision step-rail-collapses-narrow). Wide screens never see the row. */
 .rail-now { display: none; }
-@container content (max-width: 759px) {
+/* The side panel moves above the step at 960px, so the owner form keeps room for a phone number in a third (decision step-rail-on-top-960). The rest of the narrow layout still starts at 760px. */
+@container content (max-width: 959px) {
   .rail-now { display: flex; align-items: center; justify-content: space-between; gap: var(--space-gap-group); margin-bottom: var(--space-gap-related); }
   .rail-now-text { font: var(--font-label-default); letter-spacing: var(--type-label-default-letter-spacing); color: var(--color-text-primary); min-width: 0; }
   .rail:not(.is-open) .steps { display: none; }
-  .topnav--flow { --nav-pad: 20px; }
-  .flow { --flow-top: 28px; padding: var(--flow-top) 20px 64px; }
   .flow-grid { grid-template-columns: minmax(0,1fr); gap: 28px; }
   .rail { position: static; max-height: none; }
+}
+@container content (max-width: 759px) {
+  .topnav--flow { --nav-pad: 20px; }
+  .flow { --flow-top: 28px; padding: var(--flow-top) 20px 64px; }
   .fields, .choice-grid, .two-up, .next-grid { grid-template-columns: minmax(0,1fr); }
   .next-item:not(:last-child)::before { display: none; }
   .unlock-grid { grid-template-columns: minmax(0,1fr); }
@@ -675,7 +678,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .footer-hint { margin: 0; text-align: right; font-size: var(--type-body-small-size); color: var(--color-text-subtle); }
 /* Success toast, top right. Fades itself out at the end of its 4.5 seconds; app.js removes it then. */
 /* Atlas Toast (decision atlas-sweep-toast-badges): 400px wide, padding surface on every side, radius large, 1px border, Shadow/md. Header row = 16px icon plus Title in Body/Bold in the severity text colour; the message sits 8px below in Body/Default; a 24px dismiss button; a 6px bar on the left edge that drains downward over the 5 second hang time. Success sits on the success wash, info on the neutral raised surface. */
-.toast { position: fixed; top: 20px; right: 20px; z-index: 60; display: flex; align-items: flex-start; gap: var(--space-gap-related); width: 400px; max-width: calc(100vw - 40px); padding: var(--space-padding-surface); border-radius: var(--radius-large); background: var(--color-background-surface-raised-2); color: var(--color-text-primary); font: var(--font-body-default); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default), var(--shadow-md); animation: xtoast 5s ease both; --toast-accent: var(--color-icon-info); --toast-title: var(--color-text-info); }
+.toast { position: fixed; top: 20px; right: 20px; z-index: 60; display: flex; align-items: flex-start; gap: var(--space-gap-related); width: var(--component-toast-max-width); max-width: calc(100vw - 40px); padding: var(--space-padding-surface); border-radius: var(--radius-large); background: var(--color-background-surface-raised-2); color: var(--color-text-primary); font: var(--font-body-default); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default), var(--shadow-md); animation: xtoast 5s ease both; --toast-accent: var(--color-icon-info); --toast-title: var(--color-text-info); }
 .toast--success { background: var(--color-background-success-subtle); --toast-accent: var(--color-icon-success); --toast-title: var(--color-text-success); }
 .toast-timer { position: absolute; inset: 0; border-radius: var(--radius-large); overflow: hidden; pointer-events: none; }
 .toast-timer::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--toast-accent); transform-origin: bottom; animation: xdrain 5s linear both; }
@@ -683,6 +686,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .toast-head { display: flex; align-items: center; gap: var(--space-gap-pair); font: var(--font-body-bold); color: var(--toast-title); }
 .toast-head > .i { flex: none; color: var(--toast-accent); }
 .toast-msg { font: var(--font-body-default); color: var(--color-text-primary); }
+.toast--success .toast-msg { color: var(--toast-title); } /* Atlas Toast: the message takes the severity text colour, like the title */
 .toast-close { flex: none; display: inline-flex; align-items: center; justify-content: center; width: var(--size-icon-large); height: var(--size-icon-large); padding: 0; border: none; border-radius: var(--radius-default); background: transparent; color: var(--color-icon-secondary); cursor: pointer; }
 .toast-close:hover { background: var(--color-background-hover); }
 @keyframes xtoast { 0% { opacity: 0; transform: translateX(16px) } 5% { opacity: 1; transform: none } 92% { opacity: 1 } 100% { opacity: 0 } }
@@ -696,32 +700,32 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .combo .combo-chev--lead { right: auto; left: 12px; }
 .combo-chev { position: absolute; right: 12px; top: 12px; color: var(--color-text-subtle); pointer-events: none; display: flex; }
 .combo-list { position: absolute; z-index: 5; left: 0; right: 0; top: calc(100% + 4px); margin: 0; padding: 1px; list-style: none; min-width: var(--component-menu-min-width); max-height: var(--component-menu-max-height); overflow-y: auto; background: var(--color-background-surface-raised-2); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-sm); }
-.combo-opt { display: flex; gap: var(--space-gap-pair); align-items: center; min-height: var(--size-control-medium); padding: 0 var(--space-padding-item); border-radius: 0; font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
+.combo-opt { display: flex; gap: var(--space-gap-pair); align-items: center; min-height: var(--size-control-medium); padding: 0 var(--space-padding-item); border-radius: 0; font: var(--font-control-default); color: var(--color-text-primary); cursor: pointer; }
 .combo-opt:hover, .combo-opt.is-active { background: var(--color-background-hover); }
 .combo-opt.is-chosen { background: var(--color-background-brand-subtle); font: var(--font-control-bold); }
 /* Atlas Combobox popup: chosen row ends with a 16px brand check. */
 .combo-opt-check { flex: none; margin-left: auto; color: var(--color-icon-brand); }
 /* Atlas Phone input (Figma, large): one box, fill raised-1, 1px border/input, radius 8, padding 0/12, gap 8. Inside: the country selector (24px high, radius 8, padding 0/8, gap 4: 24x16 flag, dial code Body/Default text/primary, 16px chevron icon/secondary), a 1px border/divider rule and the number. Hover = border/hover. Focus or list open = border/focus with the focus glow. The selector gets bg/hover while the list is open. (decision atlas-phone-input-one-box) */
-.phone { position: relative; display: flex; align-items: center; gap: var(--component-input-gap); height: var(--size-control-large); padding: 0 var(--component-input-padding-x-large); border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); }
+.phone { position: relative; display: flex; align-items: stretch; gap: 0; height: var(--size-control-large); padding: var(--border-default) var(--component-input-padding-x-large) var(--border-default) var(--border-default); border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-input); }
 .phone:hover { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-hover); }
 .phone:focus-within, .phone.is-open { box-shadow: inset 0 0 0 var(--border-default) var(--color-border-focus), 0 0 0 var(--border-focus-width) var(--component-input-focus-glow); }
-.phone-sel { flex: none; display: flex; align-items: center; gap: var(--space-gap-pair); height: 24px; padding: 0 var(--space-padding-cell); border: 0; border-radius: var(--radius-default); background: transparent; font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
+.phone-sel { flex: none; display: flex; align-items: center; gap: var(--space-gap-pair); height: auto; padding: 0 var(--component-input-padding-x-large); border: 0; border-radius: calc(var(--radius-default) - var(--border-default)) 0 0 calc(var(--radius-default) - var(--border-default)); background: transparent; font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
 .phone-sel .i { color: var(--color-icon-secondary); }
 .phone.is-open .phone-sel { background: var(--color-background-hover); }
-.phone-sel:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: var(--border-focus-offset); }
-.phone-div { flex: none; align-self: stretch; width: 1px; margin: 1px 0; background: var(--color-border-divider); }
-.phone-num { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: none; background: transparent; font: var(--font-body-default); color: var(--color-text-primary); }
+.phone-sel:focus-visible { outline: var(--border-focus-width) solid var(--color-border-focus); outline-offset: calc(-1 * var(--border-focus-width)); }
+.phone-div { flex: none; align-self: stretch; width: var(--border-divider); margin: 0; background: var(--color-border-divider); }
+.phone-num { flex: 1; min-width: 0; height: auto; padding: 0 0 0 var(--component-input-padding-x-large); border: 0; outline: none; background: transparent; font: var(--font-body-default); color: var(--color-text-primary); }
 .phone-num::placeholder { color: var(--color-text-subtle); }
 .phone-num:focus, .phone-search-in:focus { box-shadow: none; }
-.flag { flex: none; display: block; width: 24px; height: 16px; border-radius: 2px; }
-.flag--emoji { display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 16px; }
+.flag { flex: none; display: block; width: 16px; height: 16px; border-radius: var(--radius-full); object-fit: cover; outline: 1px solid rgba(0,0,0,.15); outline-offset: -1px; }
+.flag--emoji { display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 12px; line-height: 16px; outline: 0; background: var(--color-background-hover); }
 /* Atlas Phone country popup (Figma): the Combobox popup chrome (raised-2, 1px border/default, radius 12, small shadow) with a search row on top (8px around a 40px box in the focus ring), then rows of 40px: 24x16 flag, country name, dial code Caption text/subtle, and a 16px check slot. The chosen row is bg/brand/subtle. Empty: one status row. */
 .phone-pop { position: absolute; z-index: 5; left: 0; top: calc(100% + 4px); width: 320px; max-width: calc(100vw - 48px); padding: 1px; overflow: hidden; background: var(--color-background-surface-raised-2); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default), var(--shadow-sm); }
 .phone-search { display: flex; align-items: center; gap: var(--component-input-gap); height: 40px; margin: var(--space-padding-cell); padding: 0 var(--component-input-padding-x-large); border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-focus), 0 0 0 var(--border-focus-width) var(--component-input-focus-glow); color: var(--color-icon-secondary); }
 .phone-search-in { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: none; background: transparent; font: var(--font-body-default); color: var(--color-text-primary); }
 .phone-search-in::placeholder { color: var(--color-text-subtle); }
 .phone-list { margin: 0; padding: 0; list-style: none; max-height: var(--component-menu-max-height); overflow-y: auto; }
-.phone-opt { display: flex; align-items: center; gap: var(--space-gap-related); height: 40px; padding: 0 var(--space-padding-item); border-radius: var(--radius-default); font: var(--font-body-default); color: var(--color-text-primary); cursor: pointer; }
+.phone-opt { display: flex; align-items: center; gap: var(--space-gap-related); height: 40px; padding: 0 var(--space-padding-item); border-radius: var(--radius-default); font: var(--font-control-default); color: var(--color-text-primary); cursor: pointer; }
 .phone-opt:hover, .phone-opt.is-active { background: var(--color-background-hover); }
 .phone-opt.is-chosen { background: var(--color-background-brand-subtle); font: var(--font-control-bold); }
 .phone-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -736,6 +740,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 /* Step 1 business lookup (decision business-lookup-typeahead). */
 .find-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 16px; align-items: start; }
 @media (max-width: 560px) { .find-row { grid-template-columns: minmax(0, 1fr); } }
+.find-row--ca { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) auto; align-items: end; }
+@media (max-width: 560px) { .find-row--ca { grid-template-columns: minmax(0, 1fr); } }
 .find-list { padding-bottom: 0; }
 .find-opt { flex-direction: column; align-items: flex-start; gap: var(--space-gap-pair); padding-top: 8px; padding-bottom: 8px; height: auto; }
 .find-opt-name { font: var(--font-control-default); color: var(--color-text-primary); }
@@ -812,6 +818,11 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 /* Sales intake form: the fee amounts sit three to a row. */
 .fields--3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
 @media (max-width: 720px) { .fields--3 { grid-template-columns: minmax(0,1fr); } }
+/* Personal details keeps two thirds for the wide boxes until the card is narrow (the 759px rule above would otherwise shrink them to one third). */
+.fields--3 > .span-2 { grid-column: span 2; }
+.fields-pair { grid-column: span 2; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--space-gap-group); align-items: start; }
+@container content (max-width: 639px) { .fields--3 { grid-template-columns: minmax(0,1fr); } .fields--3 > .span-2, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
+@media (max-width: 720px) { .fields--3 > .span-2, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
 .s-contract { margin-bottom: var(--space-gap-group); }
 
 /* Why we ask on a sensitive field: icon + label, popover on hover. Popover text is body-small to match the step-level note. */
@@ -917,7 +928,6 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .sec-label { flex: 1; display: flex; align-items: center; gap: var(--space-gap-related); }
 
 /* Owner card header (decision owner-card-click-to-open): the whole header opens and closes the card, so it shows a pointer. Remove is the Atlas tertiary negative button (no fill, error text, subtle error fill on hover or press), and the chevron-only toggle sits at the far right and turns over when the card is open. */
-.person-head { cursor: pointer; }
 .btn-tertiary-negative { background: transparent; border-color: transparent; color: var(--color-text-error); box-shadow: none; }
 .btn-tertiary-negative:hover { background: var(--color-background-error-subtle); }
 .btn-tertiary-negative:active { background: var(--color-background-error-subtle); }
@@ -944,9 +954,8 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 
 /* Owner form: every row sits on a grid of thirds, and a row with two boxes fills the first two thirds (decision owner-form-thirds). One box across on a narrow screen. */
 .fields-row { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--space-gap-group); align-items: start; }
-/* The owner phone box takes two thirds, so the country list and the number both have room (decision phone-input-component). */
-.fields-row > [data-key$="_phone"] { grid-column: span 2; }
-@media (max-width: 560px) { .fields-row { grid-template-columns: minmax(0,1fr); } .fields-row > [data-key$="_phone"] { grid-column: auto; } }
+/* The owner phone box takes the middle third (decision owner-phone-middle-third). */
+@media (max-width: 560px) { .fields-row { grid-template-columns: minmax(0,1fr); } }
 /* In an owner card the home address uses the same thirds as every other row: city, state and ZIP or postal code are a third each (decision owner-form-thirds). Other addresses keep their quarter lines. */
 .owner-sec .addr-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .owner-sec .addr-cell--sm { grid-column: span 1; }
@@ -1025,3 +1034,7 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .pill--brand { background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
 .sec-status { flex: none; }
 .pend-ops-msg { white-space: pre-line; }
+.multi-chips { display: flex; flex-wrap: wrap; gap: var(--space-gap-pair); margin: 8px 0 0; padding: 0; list-style: none; }
+.chip--pick { gap: 4px; padding-right: 4px; background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
+.chip-x { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: var(--radius-small); background: transparent; color: inherit; cursor: pointer; }
+.chip-x:hover { background: var(--color-background-hover); }

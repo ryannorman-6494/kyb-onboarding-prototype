@@ -394,7 +394,7 @@
     "approved-add-merchant", "no-jump-bar", "approved-welcome",
     "status-optical-centre", "approval-time-confirmed", "pend-reasons-as-requests",
     "pend-send-once", "pend-reasons-open", "pend-note-cards-optional-upload",
-    "moreinfo-simple-trial", "more-info-ops-own-message", "email-logo-above-card", "review-screen-email-then-respond",
+    "moreinfo-simple-trial", "more-info-ops-own-message", "countries-sold-to-multiselect", "step-rail-on-top-960", "owner-phone-middle-third", "atlas-realign-2026-11-23", "email-logo-above-card", "review-screen-email-then-respond",
     "top-nav-follows-content-column", "more-info-by-email", "tokenized-ids",
     "no-field-count", "spacing-air", "roboto",
     "nothing-claimed-early", "full-width-description", "shape-language",
@@ -543,6 +543,8 @@
       { name: "Prairie Dental Corp.", address: "350 Portage Ave, Winnipeg, MB R3C 0C4" }
     ]
   };
+  // Canada uses Trulioo Business Search, not KYB Prefill (decision ca-business-search). Its candidates carry a registration number, the jurisdiction of incorporation and a status, so the stand-ins do too. The numbers are made up for the prototype.
+  BIZ_STUBS["Canada"].forEach((x, i) => { x.prov = (/,\s*([A-Z]{2})\s+[A-Z0-9]/.exec(x.address) || [])[1] || ""; x.reg = x.prov + (1000100 + i * 37); x.status = i === 5 ? "Out of Business" : "Active"; });
   const bizList = () => BIZ_STUBS[isCa() ? "Canada" : "United States"];
   // The country is already known before the applicant starts, so the lookup asks for the state or province instead, to narrow the search (decision business-lookup-state). "" means no state chosen. A saved choice that belongs to the other country is ignored.
   const findRegionCode = () => {
@@ -561,7 +563,7 @@
     return m[1] + code + " " + postal;
   };
   // The businesses the search looks through: the country's list, with addresses moved to the chosen state when there is one. Same-name businesses stay same-name, so the "others share this name" warnings do not change with the state.
-  const bizScope = (code) => (code ? bizList().map((x) => Object.assign({}, x, { address: reState(x.address, code) })) : bizList());
+  const bizScope = (code) => (isCa() ? (code ? bizList().filter((x) => x.prov === code) : bizList()) : code ? bizList().map((x) => Object.assign({}, x, { address: reState(x.address, code) })) : bizList());
   const withDups = (x, scope) => Object.assign({}, x, { dups: (scope || bizList()).filter((y) => y !== x && y.name.toLowerCase() === x.name.toLowerCase()).length });
   // A few businesses shown as soon as the box is opened, before anything is typed (decision business-lookup-typeahead). The same few for every state.
   const suggestBiz = (code) => {
@@ -657,6 +659,7 @@
       toast: null,
       // The searchable category picker: which field is open, what has been typed, and the highlighted row.
       comboOpen: "",
+      multiOpen: "", multiQuery: "", multiIdx: 0,
       comboQuery: "",
       comboIdx: 0,
       // The Atlas-style select list: which select has its list open, and the highlighted row.
@@ -682,6 +685,7 @@
       findManual: false,
       findRevealed: false,
       findState: "",
+      findSearched: "",
       openOwner: 1,
       // The furthest step the applicant has opened. Steps up to here can be returned to from the left column; later ones cannot (decision partial-steps-allowed).
       maxStep: 1,
@@ -1059,7 +1063,7 @@
   const US_STATES = ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"];
   // The applicant's own country comes first (decision country-list-own-first).
   // Every country and territory with an ISO 3166-1 code (249), for Nationality and Country of residence (decision all-countries-no-other). No "Other". Names are the common English ones, with "and" for "&".
-  const ALL_COUNTRIES = ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Bonaire, Sint Eustatius and Saba", "Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territory", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo (Democratic Republic)", "Congo (Republic)", "Cook Islands", "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Curaçao", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Heard Island and McDonald Islands", "Holy See (Vatican City)", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "North Korea", "North Macedonia", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn Islands", "Poland", "Portugal", "Puerto Rico", "Qatar", "Réunion", "Romania", "Russia", "Rwanda", "Saint Barthélemy", "Saint Helena, Ascension and Tristan da Cunha", "Saint Kitts and Nevis", "Saint Lucia", "Saint Martin", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "São Tomé and Príncipe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Sint Maarten", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Türkiye", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "United States Minor Outlying Islands", "United States Virgin Islands", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe", "Åland Islands"].sort((a, b) => a.localeCompare(b, "en"));
+  const ALL_COUNTRIES = ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", "Anguilla", "Antarctica", "Antigua and Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", "Caribbean Netherlands", "Bosnia and Herzegovina", "Botswana", "Bouvet Island", "Brazil", "British Indian Ocean Territory", "British Virgin Islands", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia", "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China", "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo (Democratic Republic)", "Congo (Republic)", "Cook Islands", "Costa Rica", "Côte d'Ivoire", "Croatia", "Cuba", "Curaçao", "Cyprus", "Czechia", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Falkland Islands", "Faroe Islands", "Fiji", "Finland", "France", "French Guiana", "French Polynesia", "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Heard Island and McDonald Islands", "Holy See (Vatican City)", "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique", "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria", "Niue", "Norfolk Island", "North Korea", "North Macedonia", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Pitcairn Islands", "Poland", "Portugal", "Puerto Rico", "Qatar", "Réunion", "Romania", "Russia", "Rwanda", "Saint Barthélemy", "Saint Helena", "Saint Kitts and Nevis", "Saint Lucia", "Saint Martin", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "São Tomé and Príncipe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Sint Maarten", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Georgia and the South Sandwich Islands", "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Svalbard and Jan Mayen", "Sweden", "Switzerland", "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Türkiye", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "United States Minor Outlying Islands", "United States Virgin Islands", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe", "Åland Islands"].sort((a, b) => a.localeCompare(b, "en"));
   // The applicant's own country first (decision country-list-own-first), then the rest A to Z.
   const allCountries = () => { const home = isCa() ? "Canada" : "United States"; return [home].concat(ALL_COUNTRIES.filter((c) => c !== home)); };
   const countries = () => (isCa() ? ["Canada", "United States", "United Kingdom", "Australia", "Other"] : ["United States", "Canada", "United Kingdom", "Australia", "Other"]);
@@ -1113,7 +1117,7 @@
   };
   // Flags: the Atlas Flag artwork (assets/flags, exported from the Atlas Phone input page) for the eight countries Atlas draws, and the emoji flag for the rest until Atlas adds them (decision atlas-phone-input-one-box).
   const ATLAS_FLAGS = ["US", "GB", "AU", "NZ", "FR", "DE", "IE", "ES"];
-  const flagView = (iso, emoji) => (ATLAS_FLAGS.indexOf(iso) > -1 ? html`<img class="flag" src="assets/flags/${iso.toLowerCase()}.svg" alt="" width="24" height="16">` : html`<span class="flag flag--emoji" aria-hidden="true">${emoji}</span>`);
+  const flagView = (iso, emoji) => (ATLAS_FLAGS.indexOf(iso) > -1 ? html`<img class="flag" src="assets/flags/${iso.toLowerCase()}.svg" alt="" width="16" height="16">` : html`<span class="flag flag--emoji" aria-hidden="true">${emoji}</span>`);
   const phoneCap = (code) => (code === "1" ? 10 : 12);
   const phoneFmt = (code, d) => [d.slice(0, 3), d.slice(3, 6), d.slice(6)].filter(Boolean).join(" ");
   const phoneJoin = (code, d) => (d ? "+" + code + " " + phoneFmt(code, d) : "");
@@ -1164,7 +1168,7 @@
     if (f.kind === "select") return v ? "" : (askPhrase(f) ? "Choose " + askPhrase(f) + "." : "Choose one.");
     if (f.kind === "combo") return v ? "" : "Choose the closest business category.";
     if (f.kind === "masked" && String(v).indexOf("•") > -1) return "";
-    if (!String(v).trim()) return f.id === "ecomUrl" ? "Enter the website or app address where customers pay." : f.id === "achAvg" ? "Enter your average " + (isCa() ? "EFT" : "ACH") + " payment amount." : (askPhrase(f) ? "Enter " + askPhrase(f) + "." : "Fill this in to finish this step.");
+    if (!String(v).trim()) return f.id === "ecomUrl" ? "Enter the website or app address where customers pay." : f.id === "countries" ? "Choose at least one country." : f.id === "achAvg" ? "Enter your average " + (isCa() ? "EFT" : "ACH") + " payment amount." : (askPhrase(f) ? "Enter " + askPhrase(f) + "." : "Fill this in to finish this step.");
     const key = f.id.replace(/^o\d+_/, "");
     const d = digitsOf(v);
     const ca = isCa();
@@ -1255,6 +1259,14 @@
   }
 
   // The same tally as stepPct, as counts: how many answers the step needs and how many are in. A step with no problems reports every answer as done (decision summary-counts-only).
+  // Time left (decision minutes-left-per-field): 15 seconds for every answer still needed across all seven steps, and the figure only moves once another 6 answers are in, so it does not flicker on every keystroke.
+  const SECONDS_PER_ANSWER = 15, ANSWERS_PER_TICK = 6;
+  function minutesLeft() {
+    let total = 0, done = 0;
+    for (let n = 1; n <= 7; n++) { const c = stepCount(n); total += c.total; done += c.done; }
+    const shown = Math.max(0, total - Math.floor(done / ANSWERS_PER_TICK) * ANSWERS_PER_TICK);
+    return Math.max(1, Math.ceil((shown * SECONDS_PER_ANSWER) / 60));
+  }
   function stepCount(step) {
     const tally = { total: 0, done: 0 };
     const complete = !Object.keys(stepErrors(step, false, tally)).length;
@@ -1366,6 +1378,7 @@
       viewKey: o.viewKey || "",
       placeholder: o.placeholder || "",
       sensitive: !!o.sensitive,
+      maskShort: !!o.maskShort,
       prefix: o.prefix || "$",
       options: o.options || [],
       revealed: !!state.revealed[id],
@@ -1419,7 +1432,7 @@
       f("phone", "Phone number", "phone", { placeholder: "555 123 4567" }),
       sub("id", "Identity verification"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
-      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "For example, D1234567", why: "We match this to the photo of your ID in step 6 to confirm who you are. It goes to Trulioo, our verification partner." }),
+      f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "For example, D1234567" }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: countries() }),
       // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
@@ -1430,8 +1443,7 @@
         // Two thirds wide, the box taking half of it and the tick the other half (decision tick-beside-field).
         span: true, tickHalf: true,
         tick: f("noNatId", ca ? "This person doesn't have a SIN" : "This person doesn't have an SSN", "check", { optional: true, dflt: false }),
-        placeholder: ca ? "000 000 000" : "000-00-0000",
-        why: (ca ? "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". Sent straight to Trulioo, our verification partner. Never stored on Xplor systems." : "Anti-money-laundering rules mean we have to confirm who owns and runs the " + orgWord() + ". ITIN is fine if you're a US tax resident without an SSN. Sent straight to Trulioo, our verification partner, and never stored by Xplor.")
+        placeholder: ca ? "000 000 000" : "000-00-0000"
       }),
       // Full row, so it starts on a new line below the SSN or SIN (decision owner-form-two-sections).
       f("pep", "Is this person a politically exposed person?", "yn", {
@@ -1525,7 +1537,7 @@
           fld("trial", "Free trial or deferred billing?", "yn"),
           fld("marketplace", isNonprofit() ? "Do you take payments on behalf of other organizations?" : "Do you take payments on behalf of other businesses?", "yn", { span: true, hint: (isNonprofit() ? "For example, chapters, member groups or fundraisers collecting through you." : "For example, contractors or instructors who invoice through you.") + " If you say yes, we have to ask for more details." }),
           fld("international", isNonprofit() ? "Do you take payments from outside " + (ca ? "Canada" : "the US") + "?" : "Do you sell outside " + (ca ? "Canada" : "the US") + "?", "yn"),
-          a.international === "yes" ? fld("countries", isNonprofit() ? "Countries payments come from" : "Countries sold to", "text", { conditional: true, placeholder: "For example, Canada, United Kingdom" }) : null,
+          a.international === "yes" ? fld("countries", isNonprofit() ? "Countries payments come from" : "Countries sold to", "multi", { conditional: true, span: true, placeholder: "Search for a country" }) : null,
           fld("refundPolicy", "Refund or return policy URL", "text", { span: true, optional: true, placeholder: isNonprofit() ? "yourorganization.org/refunds" : "yourbusiness.com/refunds", hint: "A clear policy helps if a customer disputes a payment. Leave it blank if you don't have one." })
         ]),
         ca
@@ -1546,8 +1558,8 @@
             fld(p + "bankNickname", "Bank account nickname", "text", { placeholder: "For example, Restaurant bank account", hint: "The name for this account in Xplor Pay. It can differ from the bank’s." }),
             fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business chequing", "Business savings"] }),
-            fld(p + "institution", "Institution number", "mono", { placeholder: "3 digits" }),
-            fld(p + "transit", "Transit number", "mono", { placeholder: "5 digits" }),
+            fld(p + "institution", "Institution number", "masked", { sensitive: true, maskShort: true, placeholder: "3 digits" }),
+            fld(p + "transit", "Transit number", "masked", { sensitive: true, maskShort: true, placeholder: "5 digits" }),
             fld(p + "accountNumber", "Account number", "masked", { sensitive: true, placeholder: "7 to 12 digits" })
           ]
         : [
@@ -1555,7 +1567,7 @@
             fld(p + "bankNickname", "Bank account nickname", "text", { placeholder: "For example, Restaurant bank account", hint: "The name for this account in Xplor Pay. It can differ from the bank’s." }),
             fld(p + "accountHolder", "Account holder name", "text", { placeholder: "Exactly as it appears on the account" }),
             fld(p + "accountType", "Account type", "select", { placeholder: "Choose an account type", options: ["Business checking", "Business savings"] }),
-            fld(p + "routing", "ABA routing number", "mono", { placeholder: "9 digits" }),
+            fld(p + "routing", "ABA routing number", "masked", { sensitive: true, maskShort: true, placeholder: "9 digits" }),
             fld(p + "accountNumber", "Account number (up to 17 digits)", "masked", { sensitive: true, placeholder: "Up to 17 digits" })
           ];
       // Once the account is saved the form gives way to the saved account card (bankSavedView, decision bank-saved-as-account).
@@ -1595,13 +1607,14 @@
       3: { t: "Why are we asking?", b: "This isn't a credit check. Your answers help us see what a normal day looks like for you.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why are we asking?", b: ca ? "This is the account your payouts are paid into. We ask for proof of it in step 6, then check it after you submit." : "This is the account your payouts are paid into. Trulioo, our verification partner, checks it after you submit, so your payouts go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
       5: { t: "Why are we asking?", b: "Card networks and regulators require these exact questions on every application. If you answer yes to any of them, a person reviews your application.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
-      6: { t: "Why are we asking?", b: "Documents are how Trulioo, our verification partner, confirms the details you've given are real. Add each file we ask for, and as many as you need.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
+      6: { t: "Why are we asking?", b: "Documents are how Trulioo, our verification partner, confirms the details you've given are real. Add each file we ask for.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
     }[step];
   }
 
   function docListFor(owners, ca, idOnly) {
     const a = state.a;
+    // A government photo ID is asked for each person listed at step 2 (decision photo-id-asked-at-step-6, which replaces id-only-when-trulioo-cannot-match).
     const idRows = owners.map((o) => ({
       key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Required",
       hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's " + licWord() + ". Include all four corners and avoid glare.",
@@ -1692,8 +1705,8 @@
       needRegistration: (ca ? "Your CRA business number, plus the legal name, registered address and registration date as they appear on your registration." : "Your EIN, plus the legal name, registered address and incorporation details as they appear on your registration.") + " You'll also choose your merchant category from a short list.",
       needIds: "Owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN. For a non-profit or government body, we need each person's title, address and a driver's licence or passport." : "a driver's license or passport and an SSN. For a non-profit or government body, we need each person's title, address and a driver's license or passport.") + (invitesOn() ? " If it's easier, they can fill in their own details." : " You fill this in for everyone, so have it all ready."),
       needBank: ca ? "Your institution, transit and account numbers, plus a photo ID for each owner and proof of your bank account." : "Your routing and account numbers, plus a photo ID for each owner and a signed W-9.",
-      shellRailNote: isStatus ? "Submitted to our verification partner" : "Step " + progStep + " of 7 · about " + Math.max(2, 17 - progStep * 2) + " min left",
-      remainingLabel: "About " + Math.max(2, 17 - (progStep - 1) * 2) + " minutes left",
+      shellRailNote: isStatus ? "Submitted to our verification partner" : "Step " + progStep + " of 7 · about " + minutesLeft() + " min left",
+      remainingLabel: "About " + minutesLeft() + (minutesLeft() === 1 ? " minute" : " minutes") + " left",
       stepCounter: "Step " + st.step + " of 7",
       stepTitle: {
         1: isNonprofit() ? "Tell us about your organization" : "Tell us about your business", 2: isSole() ? "Tell us about you" : isNonprofit() ? "Who runs the organization?" : "Who owns the business?",
@@ -1703,11 +1716,11 @@
       }[st.step],
       stepSubtitle: {
         1: "",
-        2: isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : "."),
+        2: (isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".")) + (isCa() ? "" : " An ITIN is fine for a US tax resident without an SSN."),
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: st.bankSaved && !st.bankEditing ? "This is the account your payouts go to. Once you're approved, you can add more accounts." : "Add the account your payouts should go to. We need every detail before we can save it. Once you're approved, you can add more accounts.",
         5: "Every application includes these. If you answer yes to any of them, a person reviews your application.",
-        6: "Add each file we ask for. You can add as many as you need to each one.",
+        6: "Add each file we ask for. You can add up to 5 files to each one. We take PDF, PNG and JPEG files, up to 5MB each.",
         7: "Check everything you've told us. When you sign, we send everything at once."
       }[st.step],
       stepComplete: stepComplete,
@@ -1752,7 +1765,9 @@
   // ---------------------------------------------------------------------------
 
   // Show only the last four characters of a sensitive value.
-  function maskValue(s) {
+  // The bank numbers (decision bank-numbers-masked) hide a value of four characters or fewer completely, so the 3-digit institution number is not left in plain sight.
+  function maskValue(s, all) {
+    if (all && typeof s === "string" && s.length > 0 && s.length <= 4) return s.replace(/[^ ]/g, "•");
     return typeof s === "string" && s.length > 4 ? s.slice(0, s.length - 4).replace(/[^ ]/g, "•") + s.slice(-4) : s;
   }
 
@@ -1776,21 +1791,23 @@
   function bizFindView() {
     // The link that calls this one disappears when the search box comes back, so focus goes to the box (decision lookup-focus-after-reset).
     const reset = () => {
-      setState({ findPicked: null, findManual: false, findQ: "", findResults: [], findOpen: false, findBusy: false });
+      setState({ findPicked: null, findManual: false, findQ: "", findSearched: "", findResults: [], findOpen: false, findBusy: false });
       setTimeout(() => { const el = document.getElementById("f-bizFind"); if (el) el.focus(); }, 60);
     };
     if (state.findPicked) {
       const x = state.findPicked;
-      return html`<div class="callout callout--positive find-picked" role="status" data-key="find-picked">${icon("circle-check", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">${x.name}</strong><span>${x.address}. We filled in the name and address below. Check they match your registration.</span></div><div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(reset)}">Search again</button></div></div></div>`;
+      return html`<div class="callout callout--positive find-picked" role="status" data-key="find-picked">${icon("circle-check", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">${x.name}</strong><span>${x.address}.${x.reg ? " Registration number " + x.reg + "." : ""} We filled in the name and address below. Check they match your registration.</span></div><div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(reset)}">Search again</button></div></div></div>`;
     }
     if (state.findManual) {
       return html`<p class="small-note find-manual-note" data-key="find-manual">You're entering your details yourself. <button type="button" class="btn-link" data-click="${on(reset)}">Search for my business instead</button></p>`;
     }
     const typed = state.findQ.trim().length >= 3;
     // Opening the box before typing lists a few businesses; from three characters the list is the search.
-    const open = state.findOpen;
+    // Canada searches when the applicant presses Search or Enter, not as they type: Trulioo's Business Search page does not describe search-as-you-type (decision ca-business-search).
+    const caSearch = isCa();
+    const open = state.findOpen && (!caSearch || !!state.findSearched);
     const region = findRegionCode();
-    const rows = !typed ? suggestBiz(region) : state.findBusy ? [] : state.findResults.slice(0, 5);
+    const rows = caSearch ? (state.findSearched && !state.findBusy ? state.findResults.slice(0, 5) : []) : !typed ? suggestBiz(region) : state.findBusy ? [] : state.findResults.slice(0, 5);
     const total = rows.length + 1; // the last row is always "Can't find it?"
     const idx = Math.min(state.findIdx, total - 1);
     // The search box disappears when a result is picked or the manual route is chosen, so focus is sent on to the next control (decision lookup-focus-after-pick).
@@ -1799,7 +1816,7 @@
     const pick = (x) => {
       // Fills the legal name and the registered address and opens the address boxes so the parts can be checked. Nothing else is filled in.
       setState((s) => ({
-        findPicked: x, findRevealed: true, findOpen: false, findQ: "", findResults: [], findBusy: false,
+        findPicked: x, findRevealed: true, findOpen: false, findQ: "", findSearched: "", findResults: [], findBusy: false,
         a: Object.assign({}, s.a, { legalName: x.name, regAddress: x.address }),
         addrParts: Object.assign({}, s.addrParts, { regAddress: addrParse(x.address) }),
         addrManual: Object.assign({}, s.addrManual, { regAddress: true }),
@@ -1807,8 +1824,17 @@
       }));
       focusLater(() => document.querySelector(".find-picked button"));
     };
+    // Canada: one search request per press. A new province re-runs the search that was shown.
+    const runSearch = (code) => {
+      const q = state.findQ.trim();
+      if (q.length < 3) return;
+      clearTimeout(findTimer);
+      setState({ findSearched: q, findOpen: true, findIdx: 0, findBusy: true, findResults: [] });
+      findTimer = setTimeout(() => setState({ findBusy: false, findResults: searchBiz(q, code !== undefined ? code : findRegionCode()) }), 350);
+    };
     const onType = (e) => {
       const q = e.target.value;
+      if (caSearch) { clearTimeout(findTimer); setState({ findQ: q, findSearched: "", findOpen: false, findBusy: false, findResults: [] }); return; }
       const t = q.trim().length >= 3;
       setState({ findQ: q, findOpen: true, findIdx: 0, findBusy: t, findResults: t ? state.findResults : [] });
       clearTimeout(findTimer);
@@ -1817,28 +1843,30 @@
     };
     const keys = (e) => {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); setState({ findOpen: true, findIdx: (idx + (e.key === "ArrowDown" ? 1 : total - 1)) % total }); }
-      else if (e.key === "Enter") { if (open) { e.preventDefault(); if (idx < rows.length) pick(rows[idx]); else manual(); } }
+      else if (e.key === "Enter") { if (caSearch && state.findQ.trim() !== state.findSearched) { e.preventDefault(); runSearch(); } else if (open) { e.preventDefault(); if (idx < rows.length) pick(rows[idx]); else manual(); } }
       else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ findOpen: false }); } }
     };
     // Choosing a state or province narrows the search; the country is not asked because it is already known (decision business-lookup-state).
     const onRegion = (code) => {
       const t = state.findQ.trim().length >= 3;
       clearTimeout(findTimer);
+      if (caSearch) { setState({ findState: code, findIdx: 0, findOpen: false, findBusy: false, findResults: [] }); if (state.findSearched) runSearch(code); return; }
       setState({ findState: code, findIdx: 0, findOpen: false, findBusy: false, findResults: t ? searchBiz(state.findQ, code) : [] });
     };
-    return html`<div class="find-row" data-key="find-search">
+    return html`<div class="find-row${caSearch ? " find-row--ca" : ""}" data-key="find-search">
   <div class="find-country"><div class="field-head"><label class="field-label" for="f-findRegion">${isCa() ? "Province" : "State"}</label></div>${selectView({ id: "f-findRegion", value: region, placeholder: isCa() ? "Any province" : "Any state", pick: onRegion, options: [["", isCa() ? "Any province" : "Any state"]].concat((isCa() ? CA_REGIONS : US_REGIONS).map((r) => [r[0], r[1]])) })}</div>
   <div class="find-name"><div class="field-head"><label class="field-label" for="f-bizFind">Business name</label></div>
     <div class="combo combo--lead">
-      <input class="input" id="f-bizFind" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-bizFind" aria-autocomplete="list" aria-busy="${String(state.findBusy)}"${open && !(typed && state.findBusy) ? html` aria-activedescendant="lb-bizFind-opt-${idx}"` : ""} value="${state.findQ}" placeholder="Start typing your business name" autocomplete="off" spellcheck="false" data-click="${on(() => setState({ findOpen: true }))}" data-focus="${on(() => { if (!state.findOpen) setState({ findOpen: true, findIdx: 0 }); })}" data-input="${on(onType)}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.findOpen) setState({ findOpen: false }); }, 160))}">
+      <input class="input" id="f-bizFind" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-bizFind" aria-autocomplete="list" aria-busy="${String(state.findBusy)}"${open && !(typed && state.findBusy) ? html` aria-activedescendant="lb-bizFind-opt-${idx}"` : ""} value="${state.findQ}" placeholder="${caSearch ? "Your registered business name" : "Start typing your business name"}" autocomplete="off" spellcheck="false" data-click="${on(() => setState({ findOpen: true }))}" data-focus="${on(() => { if (!state.findOpen) setState({ findOpen: true, findIdx: 0 }); })}" data-input="${on(onType)}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.findOpen) setState({ findOpen: false }); }, 160))}">
       <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
       ${open && html`<ul class="combo-list find-list" id="lb-bizFind" role="listbox" data-key="lb-find">
-        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" id="lb-bizFind-opt-${i}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.findIdx !== i) setState({ findIdx: i }); })}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span></li>`) : html`<li class="combo-empty" role="status">${typed ? "No business found for “" + state.findQ.trim() + "”. Check the spelling, or enter your details yourself." : "No businesses to suggest here. Type the name, or enter your details yourself."}</li>`}
+        ${typed && state.findBusy ? html`<li class="combo-empty" role="status">Searching…</li>` : rows.length ? rows.map((x, i) => html`<li class="combo-opt find-opt${i === idx ? " is-active" : ""}" id="lb-bizFind-opt-${i}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.findIdx !== i) setState({ findIdx: i }); })}" data-click="${on(() => pick(x))}"><span class="find-opt-name">${x.name}</span><span class="find-opt-addr">${x.address}</span>${x.reg && html`<span class="find-opt-addr">Registration number ${x.reg} · ${x.status}</span>`}</li>`) : html`<li class="combo-empty" role="status">${typed ? "No business found for “" + state.findQ.trim() + "”." + (caSearch ? " Try the legal name instead of a trade name, or a different province, or enter your details yourself." : " Check the spelling, or enter your details yourself.") : "No businesses to suggest here. Type the name, or enter your details yourself."}</li>`}
         ${typed && !state.findBusy && state.findResults.length > rows.length && html`<li class="combo-empty">${state.findResults.length - rows.length} more. Keep typing to narrow the list.</li>`}
         <li class="combo-opt find-manual-opt${idx === rows.length ? " is-active" : ""}" id="lb-bizFind-opt-${rows.length}" role="option" aria-selected="${String(idx === rows.length)}" data-mouseenter="${on(() => { if (state.findIdx !== rows.length) setState({ findIdx: rows.length }); })}" data-click="${on(manual)}">Can't find it? Enter details manually</li>
       </ul>`}
     </div>
   </div>
+  ${caSearch && html`<div class="find-go"><button type="button" class="btn btn-outline btn-md" data-click="${on(() => runSearch())}">${icon("search", 16)}Search</button></div>`}
 </div>`;
   }
 
@@ -1895,7 +1923,7 @@
       // Read-before-accept: the View button lives inside the grey container.
       // It is interactive content, so clicking it never toggles the checkbox.
       const view = f.viewKey && html`<button type="button" class="btn btn-outline btn-xs check-view" aria-label="View ${f.label.replace(/^I accept the /, "")}" data-click="${on(() => openDoc(f.viewKey))}">${icon("eye", 14)}View</button>`;
-      return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}><label class="check${f.disabled ? " is-disabled" : ""}"><input type="checkbox" id="${id}"${attr("checked", f.value === true)}${attr("disabled", f.disabled)}${f.disabled && f.hint ? html` aria-describedby="h-${f.id}"` : ""} data-change="${on((e) => set(f.id, e.target.checked))}"><span><span class="check-label">${f.label}${f.required && REQ}</span>${f.hint && html`<span class="check-hint" id="h-${f.id}">${f.hint}</span>`}</span>${view}</label>${errView(f.id)}</div>`;
+      return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}><label class="check${f.disabled ? " is-disabled" : ""}"><input type="checkbox" id="${id}"${attr("checked", f.value === true)}${attr("disabled", f.disabled)}${f.disabled && f.hint ? html` aria-describedby="h-${f.id}"` : ""} data-change="${on((e) => set(f.id, e.target.checked))}"><span><span class="check-label">${f.label}${f.required && REQ}</span>${f.hint && !ERR[f.id] && html`<span class="check-hint" id="h-${f.id}">${f.hint}</span>`}</span>${view}</label>${errView(f.id)}</div>`;
     }
 
     if (f.kind === "heading") return html`<h3 class="fields-sub span-2" data-key="${f.id}">${f.label}</h3>`;
@@ -1932,6 +1960,33 @@
     ${shown.length ? shown.map((x, i) => html`${grouped && i === 0 && x.common ? html`<li class="combo-group" role="presentation">Most common</li>` : ""}${grouped && x.common === false && (i === 0 || shown[i - 1].common) ? html`<li class="combo-group" role="presentation">All categories</li>` : ""}<li class="combo-opt${i === idx ? " is-active" : ""}${x.label === f.value ? " is-chosen" : ""}" id="lb-${f.id}-opt-${i}" role="option" aria-selected="${String(x.label === f.value)}" data-mouseenter="${on(() => { if (state.comboIdx !== i) setState({ comboIdx: i }); })}" data-click="${on(() => pickIt(x.label))}"><span class="combo-code">${x.code}</span>${x.name}${x.label === f.value ? icon("check", 16, "combo-opt-check") : ""}</li>`) : html`<li class="combo-empty">No match. Try a different word, or the four-digit code.</li>`}
     ${matches.length > shown.length && html`<li class="combo-empty">${matches.length - shown.length} more. Keep typing to narrow the list.</li>`}
   </ul>`}
+</div>`;
+        break;
+      }
+      case "multi": {
+        // A searchable country list where any number can be picked (ARIA combobox, multiselectable). The answer is the names joined by ", ", and the picks show as removable chips under the box (decision countries-sold-to-multiselect).
+        const open = state.multiOpen === f.id;
+        const picked = String(f.value || "").split(", ").filter(Boolean);
+        const norm = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+        const q = norm(state.multiQuery || "").trim();
+        const home = isCa() ? "Canada" : "United States";
+        const shown = open ? ALL_COUNTRIES.filter((c) => c !== home && (!q || norm(c).indexOf(q) > -1)) : [];
+        const idx = Math.min(state.multiIdx, Math.max(shown.length - 1, 0));
+        const refocus = () => setTimeout(() => { const el = document.getElementById(id); if (el) el.focus(); }, 0);
+        const toggle = (c) => { set(f.id, (picked.indexOf(c) > -1 ? picked.filter((x) => x !== c) : picked.concat([c])).join(", ")); setState({ multiQuery: "" }); refocus(); };
+        const keys = (e) => {
+          if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); const n = shown.length || 1; setState({ multiOpen: f.id, multiIdx: (idx + (e.key === "ArrowDown" ? 1 : n - 1)) % n }); }
+          else if (e.key === "Enter") { e.preventDefault(); if (open && shown[idx]) toggle(shown[idx]); }
+          else if (e.key === "Escape") { if (open) { e.stopPropagation(); setState({ multiOpen: "", multiQuery: "" }); } }
+          else if (e.key === "Backspace" && !state.multiQuery && picked.length) set(f.id, picked.slice(0, -1).join(", "));
+        };
+        control = html`<div class="combo">
+  <input class="input" id="${id}" role="combobox" aria-expanded="${String(open)}" aria-controls="lb-${f.id}" aria-autocomplete="list"${open && shown.length ? html` aria-activedescendant="lb-${f.id}-opt-${idx}"` : ""} value="${open ? state.multiQuery : ""}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ multiOpen: f.id, multiQuery: "", multiIdx: 0 }))}" data-input="${on((e) => setState({ multiOpen: f.id, multiQuery: e.target.value, multiIdx: 0 }))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { const a = document.activeElement; if (state.multiOpen === f.id && !(a && a.id === id)) setState({ multiOpen: "", multiQuery: "" }); }, 160))}">
+  <span class="combo-chev" aria-hidden="true">${icon("chev-d", 16)}</span>
+  ${open && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" aria-multiselectable="true" data-key="lb">
+    ${shown.length ? shown.map((c, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}${picked.indexOf(c) > -1 ? " is-chosen" : ""}" id="lb-${f.id}-opt-${i}" role="option" aria-selected="${String(picked.indexOf(c) > -1)}" data-mouseenter="${on(() => { if (state.multiIdx !== i) setState({ multiIdx: i }); })}" data-click="${on(() => toggle(c))}">${c}${picked.indexOf(c) > -1 ? icon("check", 16, "combo-opt-check") : ""}</li>`) : html`<li class="combo-empty">No match. Try a different spelling.</li>`}
+  </ul>`}
+  ${picked.length > 0 && html`<ul class="multi-chips" data-key="chips">${picked.map((c) => html`<li class="chip chip--pick" data-key="chip-${c}">${c}<button type="button" class="chip-x" aria-label="Remove ${c}" data-click="${on(() => set(f.id, picked.filter((x) => x !== c).join(", ")))}">${icon("x", 12)}</button></li>`)}</ul>`}
 </div>`;
         break;
       }
@@ -2005,7 +2060,7 @@
         const encClose = () => { if (state.fieldWhy === encKey) setState({ fieldWhy: "" }); };
         // The padlock inside the field opens the Encrypted note on hover or focus (decision encrypted-lock-tooltip).
         const lock = html`<span class="lock-wrap" data-mouseenter="${on(encOpen)}" data-mouseleave="${on(encClose)}"><button type="button" class="lock-trigger" aria-label="Encrypted: what this means" aria-expanded="${String(state.fieldWhy === encKey)}" data-click="${on(encOpen)}" data-focus="${on(encOpen)}" data-blur="${on(encClose)}">${icon("lock", 16)}</button>${state.fieldWhy === encKey && html`<span class="field-why-pop lock-pop" role="note"><span class="field-why-body">${ENCRYPTED_NOTE}</span></span>`}</span>`;
-        control = html`<div class="affix affix--secure${f.locked ? " is-locked" : ""}">${lock}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${attr("disabled", f.locked)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && !f.locked && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
+        control = html`<div class="affix affix--secure${f.locked ? " is-locked" : ""}">${lock}<input id="${id}"${attr("class=\"masked-edit\"", dots)} value="${editing ? f.value : maskValue(f.value, f.maskShort)}" placeholder="${f.placeholder}" autocomplete="off" spellcheck="false"${attr("readonly", !editing)}${attr("disabled", f.locked)}${described} data-input="${onInput}" data-focus="${on(() => { if (f.value !== "" && !state.revealed[f.id]) setState({ editMasked: f.id }); })}" data-blur="${on(() => { if (state.editMasked === f.id) setState({ editMasked: "" }); schedule(); })}">${f.value !== "" && !f.locked && html`<button type="button" class="btn-link" aria-controls="${id}" aria-label="${(f.revealed ? "Hide " : "Show ") + f.label}" data-click="${on(() => toggleReveal(f.id))}">${f.revealed ? "Hide" : "Show"}</button>`}</div>`;
         break;
       }
       case "long":
@@ -2078,7 +2133,7 @@
   ${f.tick ? html`<div class="control-row${f.tickHalf ? " control-row--half" : ""}">${control}${fieldView(f.tick)}</div>` : control}
   ${errView(f.id)}
   ${f.why && fieldWhyView(f)}
-  ${f.hint && html`<p class="field-hint" id="${hintId}">${f.hint}</p>`}
+  ${f.hint && !ERR[f.id] && html`<p class="field-hint" id="${hintId}">${f.hint}</p>`}
   ${after}
 </div>`;
   }
@@ -2147,7 +2202,7 @@
     const editing = state.bankEditing;
     return html`<div class="callout callout--warning callout--card bank-notice" data-key="bank-notice" role="note">${icon("alert", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">${editing ? "Enter your bank details again" : "Fill in every field to continue"}</strong><span>${editing ? "Your saved account stays as it is until you save a new one. Fill in every field to replace it." : "We can only save your bank account once all of its details are in. When every field is filled, Save and continue saves the account for you."}</span></div>${editing && html`<div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(cancelBankEdit)}">Keep my saved account</button></div>`}</div></div>`;
   }
-  // The saved account: the bank, the type of account and the last four digits. The full number is never shown again.
+  // The saved account: the nickname and the last four digits of the account number, and nothing else, because every other bank detail is encrypted once saved (decision bank-numbers-masked).
   function bankSavedView() {
     if (bankFormOn()) return "";
     const b = state.bankSaved.values;
@@ -2160,8 +2215,7 @@
     <span class="icon-tile" aria-hidden="true">${icon("building", 18)}</span>
     <div class="bank-acct-text">
       <div class="bank-acct-name">${b.bankNickname}</div>
-      <div class="bank-acct-meta">${b.bankName} · ${b.accountType} · •••• ${bankLast4(b.accountNumber)}</div>
-      <div class="bank-acct-meta">Account holder: ${b.accountHolder}</div>
+      <div class="bank-acct-meta">•••• ${bankLast4(b.accountNumber)}</div>
     </div>
     <button type="button" class="btn btn-outline btn-sm" aria-label="Re-enter the details of your ${b.bankNickname} account" data-click="${on(reenterBank)}">Re-enter details</button>
   </div>
@@ -2196,7 +2250,7 @@
     return html`<div class="welcome" data-key="welcome">
   <div class="welcome-inner">
     <div class="welcome-title-row"><h1 class="welcome-title">Let's get you set up to take payments${pin("step-count-7")}</h1><span class="tag tag--green">${icon("bolt", 13)}Faster approval</span></div>
-    <p class="welcome-lede">We'll walk you through seven steps. It takes about 15 minutes, and you can stop and pick up right where you left off.${pin("welcome-length")} ${infoNote}</p>
+    <p class="welcome-lede">We'll walk you through seven steps. It takes about ${minutesLeft()} ${minutesLeft() === 1 ? "minute" : "minutes"}, and you can stop and pick up right where you left off.${pin("welcome-length")} ${infoNote}</p>
     <div class="need-bar">
       <h2 class="need-head">What you'll need</h2>
     </div>
@@ -2415,8 +2469,16 @@
     // Every owner field sits on a grid of thirds (decision owner-form-thirds). Each row holds one idea; a row with two boxes fills the first two thirds and the next row starts on a new line. The address and the yes / no question take the full width.
     const keyOf = (f) => f.id.replace(/^o\d+_/, "");
     const ROWS = [["first", "middle", "last"], ["role", "pct"], ["dob", "nationality", "residence"], ["email", "phone"], ["idType", "idNumber"], ["idExpiry", "idCountry"], ["natId"]];
-    const gridView = (fields) => fields.map((f) => {
+    // Personal details sits on a grid of thirds (decision personal-details-one-column): the three name boxes fill one row, Title and Ownership percentage share a row, Email and Phone share a row (a third each), and every other box spans two thirds. Identity verification keeps its rows of two.
+    const PAIRS = [["role", "pct"], ["email", "phone"]];
+    const gridView = (fields, single) => fields.map((f) => {
       const k = keyOf(f);
+      if (single) {
+        if (["first", "middle", "last"].indexOf(k) > -1) return fieldView(f);
+        const pr = PAIRS.filter((x) => x.indexOf(k) > -1 && x.every((n) => fields.some((y) => keyOf(y) === n)))[0];
+        if (pr) return k === pr[0] ? html`<div class="fields-pair" data-key="row-${f.id}">${fieldView(f)}${fieldView(fields.filter((y) => keyOf(y) === pr[1])[0])}</div>` : "";
+        return html`<div class="span-2" data-key="one-${f.id}">${fieldView(f)}</div>`;
+      }
       const row = ROWS.filter((r) => r.indexOf(k) > -1)[0];
       if (row) {
         const inRow = fields.filter((x) => row.indexOf(keyOf(x)) > -1);
@@ -2444,17 +2506,16 @@
       };
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
   <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}${status}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
-  ${!closed && html`<div class="fields">${gridView(sec.fields)}</div>`}
-  ${!closed && !(recipient && last) && html`<div class="sec-actions" data-key="done-${sec.h.id}"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(doneClick)}">Done</button></div>`}
+  ${!closed && html`<div class="fields${/hdg_id$/.test(sec.h.id) ? "" : " fields--3"}">${gridView(sec.fields, !/hdg_id$/.test(sec.h.id))}</div>`}
+  ${!closed && !last && html`<div class="sec-actions" data-key="done-${sec.h.id}"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(doneClick)}">Done</button></div>`}
 </section>`;
     }) }</div>`;
   }
 
   function ownerView(o, recipient) {
-    const isOpen = state.openOwner === o.id;
-    const toggle = () => setState({ openOwner: state.openOwner === o.id ? 0 : o.id });
-    // Done (decisions owner-done-button, section-done-buttons): the owner is already kept as each field is committed, so this only closes the card.
-    const closeOwner = () => setState({ openOwner: 0 });
+    // The owner card no longer collapses (decision owner-card-no-accordion): it is always open, and the header holds only the name, the status and the remove icon.
+    const isOpen = true;
+    const closeOwner = () => {};
     const nm = ownerInfo(o).name;
     const known = !!nm && nm !== "New owner";
     const invited = o.status === "invited";
@@ -2470,7 +2531,7 @@
     if (items.length) items.push({ sep: true });
     items.push({ label: "Remove owner", ic: "trash", danger: true, go: () => removeOwnerClick(o.id) });
     return html`<article class="person${isOpen ? " is-open" : ""}${menuOpen ? " has-menu" : ""}" data-key="owner-${o.id}">
-  <div class="person-head" data-click="${on(toggle)}">
+  <div class="person-head">
     <span class="avatar" aria-hidden="true">${o.initials === "—" || o.initials === "?" ? icon("user", 16) : o.initials}</span>
     <div class="grow">
       <h3 class="person-name">${o.name}</h3>
@@ -2484,7 +2545,6 @@
     ${!recipient && invitesOn() && o.status === "pending" && !isSole() && !o.self && html`<button type="button" class="btn btn-outline btn-xs" data-click="${on(() => openDelegate(o.id))}">${icon("mail", 14)}${o.revoked ? "Send a new invite" : "Send invite"}</button>`}
     ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs btn-tertiary-negative btn-icon-only" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}</button>`}
     ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
-    <button type="button" class="icon-btn person-chev-btn" aria-expanded="${String(isOpen)}" aria-label="${isOpen ? "Collapse" : "Open"} ${known ? nm : "this owner"}" data-click="${on(toggle)}">${icon("chev-d", 20, "person-chev")}</button>
   </div>
   ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o, recipient, closeOwner)}</div>`}
 </article>`;
@@ -2518,7 +2578,28 @@
 
   // The Atlas File drop zone, shared by the document cards and the More info needed screen (decisions document-drop-zone, more-info-file-drop).
   // add gets the names of any files dropped on it, or an empty list when it is clicked (the prototype then adds a canned file).
-  const dropZoneView = (label, add) => html`<button type="button" class="dropzone" aria-label="${label}" data-click="${on(() => add([]))}" data-drop="${on((e) => add(Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => String(f.name).slice(0, 120))))}"><span class="dz-icon" aria-hidden="true">${icon("upload", 24)}</span><span class="dz-text"><span class="dz-prompt">Drag a file here</span><span class="dz-drop">Drop to upload</span><span class="dz-action">or <span class="dz-link">browse</span></span></span></button>`;
+  // Upload limits agreed with the back end (decision upload-limits): each file up to 5MB and up to 5 files on any one drop zone. files is what was dropped as { name, size }, or an empty list when the zone is clicked (the prototype then adds a canned file).
+  const FILE_MAX_BYTES = 5 * 1024 * 1024, FILE_MAX_COUNT = 5;
+  function takeFiles(files, have, add) {
+    const room = FILE_MAX_COUNT - (have || 0);
+    if (room <= 0) { showToast("You can add up to " + FILE_MAX_COUNT + " files here", "Remove one if you need to add another."); return; }
+    if (!files.length) { add([]); return; }
+    // Only PDF, PNG and JPEG files are taken (decision upload-limits). A dropped file is judged by its extension.
+    const typed = files.filter((f) => /\.(pdf|png|jpe?g)$/i.test(f.name));
+    if (typed.length < files.length) {
+      const bad = files.filter((f) => !/\.(pdf|png|jpe?g)$/i.test(f.name));
+      showToast(bad.length === 1 ? bad[0].name + " can't be added" : bad.length + " files can't be added", "We take PDF, PNG and JPEG files.");
+      files = typed;
+      if (!files.length) return;
+    }
+    const small = files.filter((f) => f.size <= FILE_MAX_BYTES);
+    const big = files.length - small.length;
+    const keep = small.slice(0, room);
+    if (big) showToast(big === 1 ? files.filter((f) => f.size > FILE_MAX_BYTES)[0].name + " is over 5MB" : big + " files are over 5MB", "Each file can be up to 5MB. Try a smaller one.");
+    else if (small.length > keep.length) showToast("Only " + keep.length + " added", "You can add up to " + FILE_MAX_COUNT + " files here.");
+    if (keep.length) add(keep.map((f) => f.name));
+  }
+  const dropZoneView = (label, add, have) => html`<button type="button" class="dropzone" aria-label="${label}" data-click="${on(() => takeFiles([], have, add))}" data-drop="${on((e) => takeFiles(Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => ({ name: String(f.name).slice(0, 120), size: f.size })), have, add))}"><span class="dz-icon" aria-hidden="true">${icon("upload", 24)}</span><span class="dz-text"><span class="dz-prompt">Drag a file here</span><span class="dz-drop">Drop to upload</span><span class="dz-action">or <span class="dz-link">browse</span></span></span></button>`;
 
   function docView(d) {
     const s = d.skip ? "skipped" : doc(d.key).state;
@@ -2527,7 +2608,7 @@
     // The drop zone stays under the text of every card, so any number of files can be added (decision document-drop-zone).
     // Clicking it adds the canned file. Dropping real files adds one tile for each, using only the file's name: nothing is read or sent.
     const action = s === "skipped" ? html`<span class="state-pill state-pill--muted">Not needed</span>` : "";
-    const zone = s === "skipped" ? "" : dropZoneView("Add a file for " + d.title, (names) => (names.length ? names : [d.file]).forEach((n) => upload(d.key, n)));
+    const zone = s === "skipped" ? "" : dropZoneView("Add a file for " + d.title, (names) => (names.length ? names : [d.file]).forEach((n) => upload(d.key, n)), cur.files.filter((f) => !f.failed).length);
     return html`<article class="card card--p20 doc${cls}${d.division ? " is-division" : ""}" data-key="doc-${d.key}"${ERR["doc_" + d.key] ? html` data-error="1"` : ""}>
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
@@ -3025,7 +3106,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
   function pendRespondView(r) {
     const c = rfiOf(r.id);
     return html`<div class="pend-respond" data-key="resp-${r.id}">
-  <div class="pend-field" data-key="file-btn-${r.id}">${dropZoneView("Add a file for " + pendText(r, r.title), (names) => pendAddFile(r, names))}</div>
+  <div class="pend-field" data-key="file-btn-${r.id}">${dropZoneView("Add a file for " + pendText(r, r.title), (names) => pendAddFile(r, names), rfiOf(r.id).files.length)}</div>
   ${c.files.map((f) => html`<div class="doc-file" data-key="file-${f.name}">${!f.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name">${f.name}</span>${!f.busy && html`<span class="sr-only">Uploaded</span>`}${f.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${f.name}" data-click="${on(() => setRfi(r.id, { files: rfiOf(r.id).files.filter((x) => x.name !== f.name) }))}">Remove</button>`}</div>`)}
   <div class="pend-field" data-key="note-${r.id}"><label class="field-label field-label--block" for="pend-${r.id}-note">${r.reply ? "Your reply" : "Message for our team"}</label><textarea class="input" id="pend-${r.id}-note" rows="3" data-input="${on((e) => setRfi(r.id, { vals: Object.assign({}, rfiOf(r.id).vals, { note: e.target.value }) }))}">${c.vals.note || ""}</textarea></div>
 </div>`;
@@ -3049,7 +3130,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
       <p class="rfi-body">${pendText(r, r.why)}</p>
       <div class="pend-accept">
         <h3 class="pend-h">${r.lead}</h3>
-        <ul class="pend-list">${r.accept.filter((t) => !(r.id === "kyc" && isNonprofit() && /Social Security/.test(t))).map((t) => html`<li>${pendText(r, t)}</li>`)}</ul>
+        <ul class="pend-list">${r.accept.filter((t) => !(r.id === "kyc" && (isNonprofit() || isCa()) && /Social Security/.test(t))).map((t) => html`<li>${pendText(r, r.id === "kyc" && isCa() ? t.replace("U.S. passport", "passport").replace("license", "licence") : t)}</li>`)}</ul>
         ${r.note && html`<p class="pend-note">${r.note}</p>`}
       </div>
       ${pendRespondView(r)}
@@ -3083,7 +3164,7 @@ ${v.invitedOwners.length ? html`<div class="stack" data-key="submitted-invited">
     <div class="pend-field" data-key="simple-note"><label class="field-label field-label--block" for="simple-note">Message for our team</label><textarea class="input" id="simple-note" rows="3" data-input="${on((e) => setState({ rfiNote: e.target.value }))}">${state.rfiNote || ""}</textarea></div>
     <div class="pend-field" data-key="simple-files">
       ${docs.map((d) => html`<div class="doc-file" data-key="simple-file-${d.id}">${!d.busy && html`<span class="doc-file-ok" aria-hidden="true">${icon("circle-check", 16)}</span>`}<span class="doc-file-name">${d.name}</span>${!d.busy && html`<span class="sr-only">Uploaded</span>`}${d.busy ? html`<span class="state-pill state-pill--busy" role="status"><span class="spinner" aria-hidden="true"></span>Uploading</span>` : html`<button type="button" class="btn-link" aria-label="Remove ${d.name}" data-click="${on(() => simpleRemoveFile(d.id))}">Remove file</button>`}</div>`)}
-      ${dropZoneView("Add a file", simpleAddFiles)}
+      ${dropZoneView("Add a file", simpleAddFiles, docs.length)}
     </div>
   </section>
 </div>

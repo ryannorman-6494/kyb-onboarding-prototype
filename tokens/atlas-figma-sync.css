@@ -1,0 +1,27 @@
+/* Atlas changes read from the Atlas Figma file on 2026-11-23 (file 6JIDVBvL8BFSCzWyIbRFar, Semantic - Color Light values and the Component collection)
+   that the Atlas token repo has not absorbed yet (its push from Tokens Studio was still held). Loaded after atlas.css, so these win.
+   Delete this file once `node tools/build-atlas-tokens.mjs` produces the same values from the repo (decision atlas-figma-sync-2026-11-23). */
+:root {
+  /* Info is blue, not grey (Atlas decision 0096). Also the accent-blue family, which reads the new blue ramp. */
+  --color-text-info: #1060ec;
+  --color-text-on-info: #ffffff;
+  --color-background-info-default: #0052ce;
+  --color-background-info-hover: #003da2;
+  --color-background-info-active: #002a79;
+  --color-background-info-subtle: #f1f5ff;
+  --color-border-info: #1060ec;
+  --color-icon-info: #1060ec;
+  --color-background-accent-blue-default: #003da2;
+  --color-background-accent-blue-subtle: #f1f5ff;
+  --color-text-accent-blue: #003da2;
+  --color-icon-accent-blue: #0052ce;
+  --color-border-accent-blue: #1060ec;
+  /* The error wash changed. */
+  --color-background-error-subtle: #fff4f2;
+  /* Four tokens added in the V1 sign-off (nothing in the prototype reads them yet). */
+  --space-padding-overlay: 24px;
+  --component-toast-max-width: 480px;
+  --component-dialog-width-medium: 560px;
+  --component-dialog-max-width: 560px;
+  --component-tooltip-max-width: 320px;
+}
