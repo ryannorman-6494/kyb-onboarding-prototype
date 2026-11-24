@@ -961,7 +961,7 @@
     if (!email) return "";
     if (!SAVE_EMAIL_OK.test(email)) return "Enter an email like name@example.com.";
     const same = (x) => String(x || "").trim().toLowerCase() === email.toLowerCase();
-    if (state.owners.some((o) => o.self && same(ownerVal(o, "email"))) || same(state.a.email)) return "That's your own email. Use Add myself as an owner instead.";
+    if (state.owners.some((o) => o.self && same(ownerVal(o, "email"))) || same(state.a.email)) return "That's your own email. Use Add myself instead.";
     if (state.owners.some((o) => o.id !== state.delegateTarget && o.status === "invited" && same(o.inviteEmail))) return "That address is already invited for another owner.";
     return "";
   }
@@ -2578,7 +2578,7 @@
 <div class="stack" data-key="s2-owners">
   ${v.owners.map((o) => ownerView(o))}
   ${errView("owners")}
-  ${!isSole() && !v.owners.some((o) => o.self) && html`<button type="button" class="add-row" data-key="add-self" data-click="${on(addSelf)}">${icon("user", 16)}${isNonprofit() ? "Add myself as a director or trustee" : "Add myself as an owner"}</button>`}
+  ${!isSole() && !v.owners.some((o) => o.self) && html`<button type="button" class="add-row" data-key="add-self" data-click="${on(addSelf)}">${icon("user", 16)}${"Add myself"}</button>`}
   ${!isSole() && html`<button type="button" class="add-row" data-key="add-owner" data-click="${on(addOwner)}">${icon("plus", 16)}${addLabel}</button>`}${isSole() ? "" : pin("owner-self-serve")}
 </div>`;
   }
