@@ -1365,7 +1365,7 @@ window.DECISIONS = [
     "area": "Step 2",
     "where": "Step 2 · Ownership percentage",
     "t": "Every owner with 25% or more is listed, and nobody under 25% can be",
-    "b": "An ownership percentage below 25 now shows an error (Enter 25 or more. We only need owners with 25% or more.), because owners under 25% are not asked about. A new owner, including from Add myself, starts at the share still unaccounted for, and never below 25. Ryan's reason: every owner at 25% or more must be accounted for (see one-owner-signs), and anyone below that is of no interest. See ownership-no-question: the step does not ask whether everyone has been listed.",
+    "b": "An ownership percentage below 25 now shows an error (Enter 25 or more. We only need owners with 25% or more.), because owners under 25% are not asked about. A new owner, including from Add myself, starts at the share still unaccounted for, and never below 25. Ryan's reason: every owner at 25% or more must be accounted for (see one-owner-signs), and anyone below that is of no interest. See ownership-no-question: the step does not ask whether everyone has been listed. 2026-11-24 (Ryan): the helper text under Ownership percentage (We need owners who hold 25% or more.) is removed; the error message is enough. The applicant's own box keeps its hint, Enter your share, even if it's under 25%.",
     "tradeoff": "Starting at the share left can put a number in that is wrong for the person, so a glance at it is still needed. When 25 is the floor and the share left is lower, the new owner starts at 25 and the total goes over 100%, which then shows an error.",
     "by": "Ryan",
     "when": "2026-10-26"
@@ -3707,6 +3707,36 @@ window.DECISIONS = [
     "t": "The documents that were dropped as unnecessary are back on step 6, all optional",
     "b": "Ryan, 2026-11-24: if documents are optional, add them all back. Restored from the register: the EIN confirmation letter for the US (ein-bn-document-removed), the CRA business number confirmation for Canada (ca-bn-confirmation-document), and Bank account verification for the US as well as Canada (bank-verified-by-trulioo, ca-bank-proof-row). Step 6 now offers, in order: a photo ID per person, EIN letter (US) or Business number confirmation (Canada), W-9 (US), Bank account verification, processing statements (only if the business has processed cards before), and the ClubReady lease (division only). Claude's calls: the wording is the draft from the earlier entries, not approved copy; the CRA row lists the four options from the old entry; every row shows for every business type, including sole proprietors, since none is required; Club Essentials financial history stays out because that option was removed. The Excel spec has the new rows.",
     "tradeoff": "More files are on offer, and the reasons they were dropped still stand: Trulioo validates the number and, in the US, the bank account.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "owner-id-scan-trial",
+    "area": "Owners",
+    "where": "Step 2, a new owner's card (Prototype options: Add an owner by ID scan)",
+    "t": "Trial: a new owner opens on a choice between scanning their ID and entering the details by hand",
+    "b": "Ryan, 2026-11-24, from a wireframe: when the applicant adds an owner, the card first asks how they would like to add them. Two Atlas cards: Scan their ID (recommended, brand border and subtle brand fill, Take photo and Upload a file) and Enter details manually (Start typing). It is off by default and switched on in Prototype options or with ?idscan=1, so the normal flow is unchanged. Nothing is read from a photo: choosing a scan shows 'Reading the ID' for a moment, then fills first, middle and last name, date of birth, home address, ID type, ID number, expiry, issuing country and country of residence with a made-up person (Jordan A. Reyes), adds the ID to step 6 as that owner's photo ID, and shows a toast asking the applicant to check each detail and add the rest. Add myself gets the same screen worded for the applicant. Ryan said to leave out the wireframe's 'Not the owner? Send them a secure link' line. I also left out the wireframe's retention note ('The photo is only used to read their details'), which the wireframe itself marks as wording to confirm with Compliance, so no claim about what happens to the photo is made. Claude's calls: Take photo and Upload a file behave the same in the prototype (no camera opens); the made-up values; the card shows for Add myself too. Open for the real build: whether Trulioo or another service reads the ID, where the photo is kept, and whether the scanned ID replaces the step 6 upload. Update, 2026-11-24 (Ryan): the two choice cards look the same (no brand border or fill on the recommended one) and the Recommended badge is the info blue pill. After a scan the card shows a green success callout (ID scanned: driver-licence.jpg, We filled in 8 details below, Rescan), a Read from their ID card (full name, date of birth, ID type, ID number as dots and the last 4, expiry, issuing country, nationality, home address) with Edit details, a box reading These details match their ID, then Still needed: only the boxes an ID does not give (title, ownership percentage, email, phone, SSN or SIN with the no-SSN tick, politically exposed person). No Done buttons below, and no toast (the callout says it). Edit details opens the whole form. Claude's calls: the match box is not required; nationality and country of residence are filled from the made-up scan; the wireframe's 4 left to do chip was not built. Update, 2026-11-24 (Ryan): the way back. Typing the details yourself shows a bar, You're entering their details yourself, with Scan their ID instead (back to the choice). Editing the scanned details shows You're editing the details we read from the ID, with Back to summary and Rescan.",
+    "tradeoff": "A scan that fills fields could be taken as a verified answer; the applicant still has to check every box.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "owner-form-id-first",
+    "area": "Owners",
+    "where": "Step 2, every owner card (default view and the scan trial's Edit details)",
+    "t": "The owner form is grouped by what an ID shows, then what is left",
+    "b": "Ryan, 2026-11-24, after seeing the ID scan trial: group the fields by what is on their ID, then everything else, so a person can fill in the first part from the card in their hand and then the rest, and show the same layout when Edit details is chosen after a scan. The two sections are now Details from the ID (first, middle and last name, date of birth, nationality, home address, ID type, ID number, expiry, issuing country) and Other details (title, ownership percentage, country of residence, email, phone, SSN or SIN with the no-SSN tick, politically exposed person). This replaces Personal details and Identity verification (owner-form-two-sections). The same layout rules apply to both sections: the three name boxes share a row, Title and Ownership percentage share a row, Email and Phone share a row, every other box is two thirds, and the home address is full width inside. The scan trial's summary shows the first section as read from the ID, and Still needed shows the second. Claude's calls: nationality sits with the ID (passports show it, driving licences do not); country of residence sits in Other details because an ID does not show it, though the scan trial fills it from the address; the section names are neutral so they read for Add myself. The Excel spec's row order and note are updated.",
+    "tradeoff": "Nationality is on a passport but not a driving licence, so for some IDs the first section asks for one thing the card does not show.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "links-beside-fields",
+    "area": "Forms",
+    "where": "Address questions (step 1, step 2 owner cards)",
+    "t": "A link that belongs to a field sits beside it, not under it",
+    "b": "Ryan, 2026-11-24: Enter address manually, or any other link that lives underneath a field, should sit next to the field rather than below it. Enter address manually is now to the right of the address search box on the same line (it wraps under the box only when the row is too narrow). Clear and search again, shown once the address boxes are open, now sits on the label line, just after the label, instead of under the boxes. This replaces address-links-below-hint and the earlier below-the-field placement. Claude's call: the only other link under a field that I found is the You're entering your details yourself note on step 1, which replaces the business search rather than sitting under a field, so I left it; the SSN tick is a checkbox, not a link.",
+    "tradeoff": "On a narrow screen the link drops below the box again, so it is next to the field only when there is room.",
     "by": "Ryan",
     "when": "2026-11-24"
   }

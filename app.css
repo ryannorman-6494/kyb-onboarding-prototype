@@ -417,7 +417,12 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
 .doc-files .doc-file .btn-link, .doc-files .doc-file .state-pill { flex: none; margin-left: auto; }
 
 /* Address: a search box, then one box for each part (decision address-split-fields). */
-.addr-manual, .addr-reset { display: inline-block; margin-top: 8px; font: var(--font-label-default); }
+/* Links that belong to a field sit beside it, not under it (decision links-beside-fields): Enter address manually to the right of the search box, Clear and search again to the right of the label. */
+.addr-manual, .addr-reset { display: inline-block; font: var(--font-label-default); white-space: nowrap; }
+.addr--row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-gap-related) var(--space-gap-group); }
+.addr--row .addr-search { flex: 1 1 220px; min-width: 0; }
+.addr--row .addr-manual { flex: none; }
+.field-head .addr-reset { margin-left: var(--space-gap-group); }
 /* Four equal columns with the same 16px gap as the card grid, so the city, state and ZIP boxes land on the quarter lines; the search box and street boxes run the full width (decision address-on-quarter-grid). */
 .addr-search .combo { min-width: 0; }
 .addr-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-gap-group); }
@@ -1046,3 +1051,35 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .chip--pick { gap: 4px; padding-right: 4px; background: var(--color-background-brand-subtle); color: var(--color-text-brand); }
 .chip-x { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; padding: 0; border: 0; border-radius: var(--radius-small); background: transparent; color: inherit; cursor: pointer; }
 .chip-x:hover { background: var(--color-background-hover); }
+
+/* Owner ID scan trial (decision owner-id-scan-trial): a new owner opens on a choice between scanning an ID and typing the details. Two Atlas cards (radius large, 1px default border); the recommended one has the brand border and the subtle brand fill. Stacks below 640px. */
+.idscan { padding-bottom: var(--space-padding-hero); }
+.idscan-lede { margin: 0 0 var(--space-gap-group); font: var(--font-body-default); color: var(--color-text-secondary); }
+.idscan-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-gap-group); align-items: stretch; }
+.idscan-card { display: flex; flex-direction: column; gap: var(--space-gap-related); padding: var(--space-padding-hero); border-radius: var(--radius-large); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default); }
+.idscan-top { display: flex; align-items: center; justify-content: space-between; min-height: var(--size-control-small); }
+.idscan-ico { display: flex; color: var(--color-icon-brand); }
+.idscan-ico--plain { color: var(--color-icon-secondary); }
+.idscan-title { margin: 0; font: var(--font-card-title); letter-spacing: var(--type-card-title-letter-spacing); color: var(--color-text-primary); }
+.idscan-text { margin: 0; font: var(--font-body-default); color: var(--color-text-secondary); }
+.idscan-actions { display: flex; flex-direction: column; gap: var(--space-gap-related); margin-top: auto; padding-top: var(--space-gap-related); }
+.idscan-actions .btn { width: 100%; }
+/* After a scan: the green Atlas callout, the read-only summary in a card, then only the boxes an ID does not give (decision owner-id-scan-trial). */
+.scan-done { display: flex; flex-direction: column; gap: var(--space-gap-group); padding-bottom: var(--space-padding-hero); }
+.scan-read { padding: var(--space-padding-hero); border-radius: var(--radius-large); background: var(--color-background-surface-raised-1); box-shadow: inset 0 0 0 var(--border-default) var(--color-border-default); }
+.scan-read-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-gap-related); margin-bottom: var(--space-gap-group); }
+.scan-read-title, .scan-still { margin: 0; font: var(--font-card-title); letter-spacing: var(--type-card-title-letter-spacing); color: var(--color-text-primary); }
+.scan-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-gap-group); margin: 0; }
+.scan-item dt { font: var(--font-caption-default); color: var(--color-text-secondary); }
+.scan-item dd { margin: 2px 0 0; font: var(--font-body-default); color: var(--color-text-primary); overflow-wrap: anywhere; }
+.scan-confirm { margin-top: var(--space-gap-group); padding-top: var(--space-gap-group); box-shadow: inset 0 1px 0 var(--color-border-subtle); }
+@container content (max-width: 639px) { .scan-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) { .scan-grid { grid-template-columns: minmax(0, 1fr); } }
+.idscan--reading { display: flex; align-items: center; gap: var(--space-gap-related); padding-top: var(--space-gap-group); }
+.idscan--reading .idscan-lede { margin: 0; }
+.idscan-spin { width: 20px; height: 20px; flex: none; border-radius: var(--radius-full); border: 2px solid var(--color-border-default); border-top-color: var(--color-border-brand); animation: idscan-spin 0.8s linear infinite; }
+@keyframes idscan-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .idscan-spin { animation: none; } }
+@container content (max-width: 639px) { .idscan-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) { .idscan-grid { grid-template-columns: minmax(0, 1fr); } }
+.scan-bar { margin-bottom: var(--space-gap-group); }

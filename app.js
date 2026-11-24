@@ -293,6 +293,9 @@
   // or the existing-user email and business picker. The sample business is the Fields start as option, not a start.
   const START_LOGIN = "New Odin User";
   const START_EXISTING = "Existing Odin user: New business";
+  // Owner ID scan trial (decision owner-id-scan-trial): a new owner opens on a choice between scanning their ID and typing the details. Off unless switched on in Prototype options.
+  const IDSCAN_OFF = "Off";
+  const IDSCAN_ON = "On: scan an ID or type";
 
   // Only whitelisted values are read from the URL, so query-string input
   // never reaches the markup or the state.
@@ -307,6 +310,7 @@
       lookup: q.get("lookup") === "off" ? LOOKUP_OFF : LOOKUP_ON,
       data: q.get("data") === "sample" ? "Sample business" : "Empty",
       showNotes: q.get("notes") === "1",
+      idscan: q.get("idscan") === "1" ? IDSCAN_ON : IDSCAN_OFF,
       link: Object.prototype.hasOwnProperty.call(LINKS, q.get("link")) ? LINKS[q.get("link")] : LINK_NEW,
       pend: pendFromUrl(q.get("pend")),
       opsOwn: q.get("opsmsg") === "1" // Ops wrote their own message (decision more-info-ops-own-message)
@@ -322,6 +326,7 @@
     if (ctx.lookup === LOOKUP_OFF) q.set("lookup", "off");
     if (ctx.data === "Sample business") q.set("data", "sample");
     if (ctx.showNotes) q.set("notes", "1");
+    if (ctx.idscan === IDSCAN_ON) q.set("idscan", "1");
     Object.keys(LINKS).forEach((k) => { if (ctx.link === LINKS[k]) q.set("link", k); });
     if (ctx.pend.join() !== PEND_DEFAULT.join()) q.set("pend", ctx.pend.join(","));
     if (ctx.opsOwn) q.set("opsmsg", "1");
@@ -344,6 +349,7 @@
     moreInfo: [MOREINFO_CARDS, MOREINFO_SIMPLE], // SIMPLE TRIAL
     start: [START_LOGIN, START_EXISTING],
     lookup: [LOOKUP_ON, LOOKUP_OFF],
+    idscan: [IDSCAN_OFF, IDSCAN_ON],
     region: ["United States", "Canada"],
     data: ["Empty", "Sample business"],
     link: [LINK_NEW].concat(Object.keys(LINKS).map((k) => LINKS[k]))
@@ -1420,28 +1426,27 @@
     const ca = isCa();
     const f = (key, label, kind, opts) => fld(p + key, label, kind, Object.assign({ dflt: d[key] }, opts));
     const sub = (key, label) => ({ id: p + "hdg_" + key, label: label, kind: "heading", required: false });
+    // Two sections (decision owner-form-id-first): everything an ID shows comes first, so a person can fill it in from the card in their hand, then whatever is left.
     return [
-      sub("personal", "Personal details"),
+      sub("id", "Details from the ID"),
       // First and last name are required, the middle name is not (decision owner-name-three-fields). Together they are the name on the ID.
       f("first", "First name", "text", { placeholder: "As printed on their ID" }),
       f("middle", "Middle name", "text", { optional: true }),
       f("last", "Last name", "text", { placeholder: "As printed on their ID" }),
-      // Their place in the business: title, then ownership percentage (decision owner-personal-details-grouped). Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
-      f("role", "Title or role", "text", { placeholder: "For example, Director" }),
-      isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "For example, 40", hint: isSole() ? "" : (o && o.self ? "Enter your share, even if it's under 25%." : "We need owners who hold 25% or more.") }),
-      // Facts about the person.
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: allCountries() }),
-      f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: allCountries() }),
       f("home", "Home address", "address", { span: true, placeholder: addressPh() }),
-      // Email and phone close Personal details; there is no separate How to reach them section (decision owner-form-two-sections).
-      f("email", "Email address", "text", { placeholder: "name@example.com" }),
-      f("phone", "Phone number", "phone", { placeholder: "555 123 4567" }),
-      sub("id", "Identity verification"),
       f("idType", "Government ID type", "select", { placeholder: "Choose an ID type", options: ["Driver's " + licWord(), "Passport", "National ID card"] }),
       f("idNumber", "Government ID number", "masked", { sensitive: true, placeholder: "For example, D1234567" }),
       f("idExpiry", "ID expiry date", "mono", { placeholder: datePh() }),
       f("idCountry", "ID issuing country", "select", { placeholder: "Choose a country", options: countries() }),
+      sub("other", "Other details"),
+      // Their place in the business: title, then ownership percentage (decision owner-personal-details-grouped). Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
+      f("role", "Title or role", "text", { placeholder: "For example, Director" }),
+      isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "For example, 40", hint: isSole() ? "" : (o && o.self ? "Enter your share, even if it's under 25%." : "") }),
+      f("residence", "Country of residence", "select", { placeholder: "Choose a country", options: allCountries() }),
+      f("email", "Email address", "text", { placeholder: "name@example.com" }),
+      f("phone", "Phone number", "phone", { placeholder: "555 123 4567" }),
       // Non-profits and government bodies are not asked for an SSN or SIN (decision nonprofit-no-national-id).
       // Ticking the box under it fills the number with zeros and locks it, like the website box (decision no-ssn-tick). The locked value is never real PII, only zeros.
       isNonprofit() ? null : f("natId", ca ? "Social Insurance Number (SIN)" : "Social Security Number (SSN)", "masked", {
@@ -1938,6 +1943,7 @@
     const hintId = f.hint ? "h-" + f.id : "";
     const described = hintId ? html` aria-describedby="${hintId}"` : "";
     let control;
+    let headExtra = ""; // a link that sits beside the label, on the same line (decision links-beside-fields)
     let after = ""; // a link or button that sits below the helper text, outside the input component (decision address-links-below-hint)
     switch (f.kind) {
       case "mono":
@@ -2101,7 +2107,7 @@
     ${cell("postal", ca ? "Postal code" : "ZIP code", " addr-cell--sm")}
   </div>
 </div>`;
-          after = html`<button type="button" class="btn-link addr-reset" data-click="${on(() => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: false }), addrParts: Object.assign({}, s.addrParts, { [f.id]: null }), addrQ: Object.assign({}, s.addrQ, { [f.id]: "" }) })); set(f.id, ""); })}">Clear and search again</button>`;
+          headExtra = html`<button type="button" class="btn-link addr-reset" data-click="${on(() => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: false }), addrParts: Object.assign({}, s.addrParts, { [f.id]: null }), addrQ: Object.assign({}, s.addrQ, { [f.id]: "" }) })); set(f.id, ""); })}">Clear and search again</button>`;
         } else {
           const q = state.addrQ[f.id] || "";
           const open = state.addrOpen === f.id;
@@ -2115,16 +2121,15 @@
           };
           const typed = q.trim().length >= 3;
           const startManual = () => { setState((s) => ({ addrManual: Object.assign({}, s.addrManual, { [f.id]: true }), addrOpen: "", addrIdx: -1 })); setTimeout(() => { const el = document.getElementById(id); if (el) el.focus(); }, 40); };
-          control = html`<div class="addr" data-key="addr-${f.id}"><div class="addr-search"><div class="combo combo--lead">
+          control = html`<div class="addr addr--row" data-key="addr-${f.id}"><div class="addr-search"><div class="combo combo--lead">
   <input class="input" id="${id}" role="combobox" aria-expanded="${String(open && typed)}" aria-controls="lb-${f.id}" aria-autocomplete="list"${open && typed && matches[idx] ? html` aria-activedescendant="lb-${f.id}-opt-${idx}"` : ""} value="${q}" placeholder="Start typing to search for the address" autocomplete="off" spellcheck="false"${described} data-click="${on(() => setState({ addrOpen: f.id, addrIdx: -1 }))}" data-input="${on((e) => setState((s) => ({ addrQ: Object.assign({}, s.addrQ, { [f.id]: e.target.value }), addrOpen: f.id, addrIdx: -1 })))}" data-keydown="${on(keys)}" data-blur="${on(() => setTimeout(() => { if (state.addrOpen === f.id) setState({ addrOpen: "", addrIdx: -1 }); }, 160))}">
   <span class="combo-chev combo-chev--lead" aria-hidden="true">${icon("search", 16)}</span>
   ${open && typed && html`<ul class="combo-list" id="lb-${f.id}" role="listbox" data-key="lb-addr">
     ${matches.length ? matches.map((x, i) => html`<li class="combo-opt${i === idx ? " is-active" : ""}" id="lb-${f.id}-opt-${i}" role="option" aria-selected="${String(i === idx)}" data-mouseenter="${on(() => { if (state.addrIdx !== i) setState({ addrIdx: i }); })}" data-click="${on(() => pickIt(x))}">${x}</li>`) : html`<li class="combo-empty">No address found. Keep typing, or enter it manually below.</li>`}
   </ul>`}
 </div>
-</div></div>`;
-          // The manual link sits below the field, like Clear and search again (decision address-on-quarter-grid).
-          after = html`<button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button>`;
+</div><button type="button" class="btn-link addr-manual" data-click="${on(startManual)}">Enter address manually</button></div>`;
+          // The manual link sits beside the search box, on the same line (decision links-beside-fields).
         }
         break;
       }
@@ -2136,7 +2141,7 @@
       ? html`<span class="field-label" id="l-${f.id}">${f.label}${f.required && REQ}</span>`
       : html`<label class="field-label" for="${id}">${f.label}${f.required && REQ}</label>`;
     return html`<div class="${wrap}" data-key="${f.id}"${ERR[f.id] ? html` data-error="1"` : ""}>
-  <div class="field-head">${label}${f.chip && html`<span class="chip">${f.chip}</span>`}</div>
+  <div class="field-head">${label}${f.chip && html`<span class="chip">${f.chip}</span>`}${headExtra}</div>
   ${f.tick ? html`<div class="control-row${f.tickHalf ? " control-row--half" : ""}">${control}${fieldView(f.tick)}</div>` : control}
   ${errView(f.id)}
   ${f.why && fieldWhyView(f)}
@@ -2497,6 +2502,24 @@
       }
       return fieldView(f);
     });
+    // After a scan (decision owner-id-scan-trial): what was read from the ID, a box to say it matches, then only the boxes an ID does not give. Edit details opens the whole form.
+    if (o.scanned && !o.editing && !recipient) {
+      const READ = ["first", "middle", "last", "dob", "nationality", "residence", "home", "idType", "idNumber", "idExpiry", "idCountry"];
+      const rest = ownerFields(o).filter((f) => f.kind !== "heading" && READ.indexOf(keyOf(f)) < 0);
+      const idn = String(ownerVal(o, "idNumber") || "");
+      const rows = [["Full name", ownerVal(o, "name")], ["Date of birth", ownerVal(o, "dob")], ["ID type", ownerVal(o, "idType")], ["ID number", idn ? "\u2022\u2022\u2022\u2022 " + idn.slice(-4) : ""], ["Expires", ownerVal(o, "idExpiry")], ["Issuing country", ownerVal(o, "idCountry")], ["Nationality", ownerVal(o, "nationality")], ["Home address", ownerVal(o, "home")]];
+      const me = !!o.me;
+      return html`<div class="owner-secs scan-done" data-key="scan-${o.id}">
+  <div class="callout callout--positive scan-callout" role="status" data-key="scan-ok-${o.id}">${icon("circle-check", 16)}<div class="callout-content"><div class="callout-text"><strong class="callout-title">ID scanned: ${SCAN_FILE}</strong><span>We filled in ${rows.length} details below.</span></div><div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(() => scanOwner(o))}">Rescan</button></div></div></div>
+  <section class="scan-read" aria-label="Read from the ID" data-key="scan-read-${o.id}">
+    <div class="scan-read-head"><h4 class="scan-read-title">${me ? "Read from your ID" : "Read from their ID"}</h4><button type="button" class="btn-link btn-link--md" data-click="${on(() => setState((st) => ({ owners: st.owners.map((x) => (x.id === o.id ? Object.assign({}, x, { editing: true }) : x)) })))}">Edit details</button></div>
+    <dl class="scan-grid">${rows.map((r) => html`<div class="scan-item"><dt>${r[0]}</dt><dd>${r[1] || "\u2014"}</dd></div>`)}</dl>
+    <div class="scan-confirm"><label class="check"><input type="checkbox"${attr("checked", !!o.scanOk)} data-change="${on((e) => { const v = e.target.checked; setState((st) => ({ owners: st.owners.map((x) => (x.id === o.id ? Object.assign({}, x, { scanOk: v }) : x)) })); })}"><span><span class="check-label">${me ? "These details match my ID" : "These details match their ID"}</span></span></label></div>
+  </section>
+  <h4 class="scan-still">Still needed</h4>
+  <div class="fields fields--3">${gridView(rest, "personal")}</div>
+</div>`;
+    }
     return html`<div class="owner-secs" data-key="secs-${o.id}">${secs.map((sec, idx) => {
       const hasErr = sec.fields.some((x) => ERR[x.id]);
       // Until the applicant opens or closes a section it follows the default: Personal details is open, the others are closed. One holding a problem stays open.
@@ -2517,10 +2540,72 @@
       };
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
   <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}${status}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
-  ${!closed && html`<div class="fields fields--3">${gridView(sec.fields, /hdg_id$/.test(sec.h.id) ? "id" : "personal")}</div>`}
+  ${!closed && html`<div class="fields fields--3">${gridView(sec.fields, "personal")}</div>`}
   ${!closed && html`<div class="sec-actions" data-key="done-${sec.h.id}"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(doneClick)}">Done</button></div>`}
 </section>`;
     }) }</div>`;
+  }
+
+  // Owner ID scan trial (decision owner-id-scan-trial). A new owner opens on a choice: scan or upload their ID, or type the details. Nothing is read from a photo in the prototype: choosing a scan waits a moment, then fills the boxes an ID would give with the sample person's details (never real data) and adds the ID to step 6. The applicant checks every box and adds the rest.
+  // Pretend to read an ID: wait a moment, then fill the boxes an ID gives with a made-up person (never real data), and add the ID to step 6.
+  function scanOwner(o) {
+    setState((st) => ({ owners: st.owners.map((x) => (x.id === o.id ? Object.assign({}, x, { chooser: "reading", editing: false, typed: false }) : x)) }));
+    setTimeout(() => {
+      // A made-up person, so no real data and no clash with the sample owners.
+      const seed = isCa() ? { name: "Jordan A. Reyes", dob: "03 / 22 / 1984", home: "880 Hornby St, Vancouver, BC V6Z 2C5" } : { name: "Jordan A. Reyes", dob: "03 / 22 / 1984", home: "2210 NW Lovejoy St, Portland, OR 97210" };
+      const parts = splitName(seed.name);
+      const country = isCa() ? "Canada" : "United States";
+      const put = {};
+      ["first", "middle", "last"].forEach((k) => { put["o" + o.id + "_" + k] = parts[k] || ""; });
+      put["o" + o.id + "_dob"] = seed.dob; put["o" + o.id + "_home"] = seed.home;
+      put["o" + o.id + "_idType"] = "Driver's " + licWord(); put["o" + o.id + "_idNumber"] = "D1234567";
+      put["o" + o.id + "_idExpiry"] = "08 / 15 / 2029"; put["o" + o.id + "_idCountry"] = country;
+      put["o" + o.id + "_nationality"] = country; put["o" + o.id + "_residence"] = country;
+      setState((st) => ({ a: Object.assign({}, st.a, put), owners: st.owners.map((x) => (x.id === o.id ? Object.assign({}, x, { chooser: "", scanned: true, editing: false, scanOk: false }) : x)) }));
+      setDocFiles("id_" + o.id, () => [{ name: SCAN_FILE }]);
+    }, 1600);
+  }
+  const SCAN_FILE = "driver-licence.jpg";
+  function idScanView(o) {
+    const me = !!o.me;
+    if (o.chooser === "reading") {
+      return html`<div class="idscan idscan--reading" data-key="idscan-${o.id}" role="status"><span class="idscan-spin" aria-hidden="true"></span><p class="idscan-lede">Reading the ID. This takes a moment.</p></div>`;
+    }
+    const startScan = () => scanOwner(o);
+    const startTyping = () => setState((st) => ({ owners: st.owners.map((x) => (x.id === o.id ? Object.assign({}, x, { chooser: "", typed: true }) : x)) }));
+    return html`<div class="idscan" data-key="idscan-${o.id}">
+  <p class="idscan-lede">${me ? "How would you like to add yourself? We need your identity details to verify the business." : "How would you like to add this owner? We need their identity details to verify the business."}</p>
+  <div class="idscan-grid">
+    <section class="idscan-card" aria-labelledby="idscan-scan-${o.id}">
+      <div class="idscan-top"><span class="idscan-ico">${icon("camera", 24)}</span><span class="pill pill--info">Recommended</span></div>
+      <h4 class="idscan-title" id="idscan-scan-${o.id}">${me ? "Scan your ID" : "Scan their ID"}</h4>
+      <p class="idscan-text">Take a photo or upload a file. We fill in what we can and you check it.</p>
+      <div class="idscan-actions">
+        <button type="button" class="btn btn-primary btn-lg" data-click="${on(startScan)}">Take photo</button>
+        <button type="button" class="btn btn-neutral btn-lg" data-click="${on(startScan)}">Upload a file</button>
+      </div>
+    </section>
+    <section class="idscan-card" aria-labelledby="idscan-type-${o.id}">
+      <div class="idscan-top"><span class="idscan-ico idscan-ico--plain">${icon("pen", 24)}</span></div>
+      <h4 class="idscan-title" id="idscan-type-${o.id}">Enter details manually</h4>
+      <p class="idscan-text">${me ? "Type everything in yourself. Best if you don't have your ID to hand." : "Type everything in yourself. Best if you don't have their ID to hand."}</p>
+      <div class="idscan-actions idscan-actions--end">
+        <button type="button" class="btn btn-neutral btn-lg" data-click="${on(startTyping)}">Start typing</button>
+      </div>
+    </section>
+  </div>
+</div>`;
+  }
+
+  // The way back (decision owner-id-scan-trial): when the owner is being typed in, or the scanned details are being edited, a bar at the top offers the scan again, or the summary.
+  function idScanBar(o, recipient) {
+    if (recipient || (!o.typed && !(o.scanned && o.editing))) return "";
+    const me = !!o.me;
+    const patch = (p) => setState((st) => ({ owners: st.owners.map((x) => (x.id === o.id ? Object.assign({}, x, p) : x)) }));
+    if (o.scanned && o.editing) {
+      return html`<div class="callout scan-bar" data-key="scan-bar-${o.id}">${icon("pen", 16)}<div class="callout-content"><div class="callout-text"><span>You're editing the details we read from the ID.</span></div><div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(() => patch({ editing: false }))}">Back to summary</button><button type="button" class="btn btn-outline btn-small" data-click="${on(() => scanOwner(o))}">Rescan</button></div></div></div>`;
+    }
+    return html`<div class="callout scan-bar" data-key="scan-bar-${o.id}">${icon("pen", 16)}<div class="callout-content"><div class="callout-text"><span>${me ? "You're entering your details yourself." : "You're entering their details yourself."}</span></div><div class="callout-actions"><button type="button" class="btn btn-outline btn-small" data-click="${on(() => patch({ chooser: "choose", typed: false }))}">${me ? "Scan your ID instead" : "Scan their ID instead"}</button></div></div></div>`;
   }
 
   function ownerView(o, recipient) {
@@ -2557,7 +2642,7 @@
     ${!recipient && !isSole() && !invitesOn() && html`<button type="button" class="btn btn-xs btn-tertiary-negative btn-icon-only" aria-label="Remove ${known ? nm : "this owner"}" data-click="${on(() => removeOwnerClick(o.id))}">${icon("trash", 14)}</button>`}
     ${!recipient && !isSole() && invitesOn() && html`<span class="kebab-wrap" data-key="menu-${o.id}"><button type="button" class="btn btn-xs person-toggle kebab" aria-label="More actions for ${known ? nm : "this owner"}" aria-haspopup="menu" aria-expanded="${String(menuOpen)}" data-click="${on(() => setState({ menuOwner: menuOpen ? 0 : o.id }))}">${icon("more", 16)}</button>${menuOpen && html`<ul class="action-menu" role="menu" data-key="menu-list">${items.map((it) => it.sep ? html`<li class="action-sep" role="separator"></li>` : html`<li role="none"><button type="button" role="menuitem" class="action-opt${it.danger ? " action-opt--danger" : ""}" data-click="${on(it.go)}">${icon(it.ic, 16)}${it.label}</button></li>`)}</ul>`}</span>`}
   </div>
-  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${ownerSectionsView(o, recipient, closeOwner)}</div>`}
+  ${isOpen && html`<div class="person-body" data-key="body">${!recipient && invited && html`<p class="small-note invite-note">${known ? nm + " has been invited." : "They've been invited."} Anything you add here counts toward the application.</p>`}${o.chooser ? idScanView(o) : html`${idScanBar(o, recipient)}${ownerSectionsView(o, recipient, closeOwner)}`}</div>`}
 </article>`;
   }
 
@@ -2565,12 +2650,12 @@
     // Add myself starts at the share still unaccounted for, but never below 25 (decision owner-share-minimum). A plain new owner starts with the same share and nothing else (decision status-chip-counts-prefilled).
     const shareLeft = () => Math.max(25, 100 - v.owners.reduce((x, o) => x + o.pct, 0));
     const addOwner = () => { const id = Date.now(); setState({
-      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isCompany() ? shareLeft() : 100, role: "", status: "pending", self: false, added: true }]),
+      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isCompany() ? shareLeft() : 100, role: "", status: "pending", self: false, added: true, chooser: ctx.idscan === IDSCAN_ON ? "choose" : "" }]),
       openOwner: id
     }); };
     // "Add myself": the applicant is often the owner too. It fills in what step 1 already gave (email, phone), a sensible title, and the share still unaccounted for (never below 25). Nothing else is guessed, and every field stays editable.
     const addSelf = () => { const id = Date.now(); setState({
-      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isNonprofit() ? 10 : shareLeft(), role: isNonprofit() ? "Director" : "Owner and CEO", status: "pending", self: true, added: true, me: true }]),
+      owners: state.owners.concat([{ id: id, name: "New owner", initials: "—", pct: isNonprofit() ? 10 : shareLeft(), role: isNonprofit() ? "Director" : "Owner and CEO", status: "pending", self: true, added: true, me: true, chooser: ctx.idscan === IDSCAN_ON ? "choose" : "" }]),
       openOwner: id
     }); };
     const addLabel = isNonprofit() ? (v.owners.length ? "Add another director or trustee" : "Add a director or trustee") : (v.owners.length ? "Add another owner or director" : "Add an owner or director");
@@ -3405,6 +3490,7 @@ ${invitesOn() && html`<section class="unlock" data-key="approved-unlock" aria-la
     ${select("Flow starts as", "start", "start-as-option")}
     ${select("Region", "region")}
     ${select("Business lookup (step 1)", "lookup", "business-lookup-typeahead")}
+    ${select("Add an owner by ID scan (step 2)", "idscan")}
     ${select("Fields start as", "data")}
     ${select("Division", "division", "division-option")}
     ${divisionOn() && html`<p class="proto-note" data-key="division-note">Shows only the step this division changes (step 6), with the sample business filled in. The dashed orange outline marks what is different.</p>`}
