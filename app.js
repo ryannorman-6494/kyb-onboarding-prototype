@@ -2506,14 +2506,14 @@
       // Done at the foot of each section (decision section-done-buttons): on every section but the last it closes this one and opens the next; on the last it closes the whole owner card. Nothing is saved or checked, since each field is kept as it is filled in. The invited owner's own page has no card to close, so its last section has no button.
       const last = idx === secs.length - 1;
       const doneClick = () => {
-        if (last) { closeOwner(); return; }
+        if (last) { setState((st) => ({ secOpen: Object.assign({}, st.secOpen, { [sec.h.id]: false }) })); return; }
         const nextId = secs[idx + 1].h.id;
         setState((st) => ({ secOpen: Object.assign({}, st.secOpen, { [sec.h.id]: false, [nextId]: true }) }));
       };
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
   <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}${status}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
   ${!closed && html`<div class="fields fields--3">${gridView(sec.fields, /hdg_id$/.test(sec.h.id) ? "id" : "personal")}</div>`}
-  ${!closed && !last && html`<div class="sec-actions" data-key="done-${sec.h.id}"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(doneClick)}">Done</button></div>`}
+  ${!closed && html`<div class="sec-actions" data-key="done-${sec.h.id}"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(doneClick)}">Done</button></div>`}
 </section>`;
     }) }</div>`;
   }
