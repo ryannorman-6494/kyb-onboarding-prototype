@@ -820,9 +820,10 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 @media (max-width: 720px) { .fields--3 { grid-template-columns: minmax(0,1fr); } }
 /* Personal details keeps two thirds for the wide boxes until the card is narrow (the 759px rule above would otherwise shrink them to one third). */
 .fields--3 > .span-2 { grid-column: span 2; }
+.fields--3 > .span-3 { grid-column: 1 / -1; }
 .fields-pair { grid-column: span 2; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--space-gap-group); align-items: start; }
-@container content (max-width: 639px) { .fields--3 { grid-template-columns: minmax(0,1fr); } .fields--3 > .span-2, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
-@media (max-width: 720px) { .fields--3 > .span-2, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
+@container content (max-width: 639px) { .fields--3 { grid-template-columns: minmax(0,1fr); } .fields--3 > .span-2, .fields--3 > .span-3, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
+@media (max-width: 720px) { .fields--3 > .span-2, .fields--3 > .span-3, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
 .s-contract { margin-bottom: var(--space-gap-group); }
 
 /* Why we ask on a sensitive field: icon + label, popover on hover. Popover text is body-small to match the step-level note. */

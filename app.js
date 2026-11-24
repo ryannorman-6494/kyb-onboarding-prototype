@@ -2473,8 +2473,12 @@
     const PAIRS = [["role", "pct"], ["email", "phone"]];
     const gridView = (fields, single) => fields.map((f) => {
       const k = keyOf(f);
+      // Identity verification (decision personal-details-one-column): every box is two thirds wide on its own row.
+      if (single === "id") return html`<div class="span-2" data-key="one-${f.id}">${fieldView(f)}</div>`;
       if (single) {
         if (["first", "middle", "last"].indexOf(k) > -1) return fieldView(f);
+        // The home address takes the full width so its search box and street boxes are two thirds and city, state and ZIP a third each, as in owner-address-two-thirds.
+        if (f.kind === "address") return html`<div class="span-3" data-key="one-${f.id}">${fieldView(f)}</div>`;
         const pr = PAIRS.filter((x) => x.indexOf(k) > -1 && x.every((n) => fields.some((y) => keyOf(y) === n)))[0];
         if (pr) return k === pr[0] ? html`<div class="fields-pair" data-key="row-${f.id}">${fieldView(f)}${fieldView(fields.filter((y) => keyOf(y) === pr[1])[0])}</div>` : "";
         return html`<div class="span-2" data-key="one-${f.id}">${fieldView(f)}</div>`;
@@ -2506,7 +2510,7 @@
       };
       return html`<section class="owner-sec${closed ? "" : " is-open"}" data-key="${sec.h.id}">
   <h3 class="sec-head"><button type="button" class="sec-toggle" aria-expanded="${String(!closed)}" data-click="${on(toggle)}"><span class="sec-label">${icon(/hdg_id$/.test(sec.h.id) ? "shield" : "user", 18, "sec-icon")}${sec.h.label}${status}</span>${icon("chev-d", 16, "sec-chev")}</button></h3>
-  ${!closed && html`<div class="fields${/hdg_id$/.test(sec.h.id) ? "" : " fields--3"}">${gridView(sec.fields, !/hdg_id$/.test(sec.h.id))}</div>`}
+  ${!closed && html`<div class="fields fields--3">${gridView(sec.fields, /hdg_id$/.test(sec.h.id) ? "id" : "personal")}</div>`}
   ${!closed && !last && html`<div class="sec-actions" data-key="done-${sec.h.id}"><button type="button" class="btn btn-neutral btn-sm" data-click="${on(doneClick)}">Done</button></div>`}
 </section>`;
     }) }</div>`;
