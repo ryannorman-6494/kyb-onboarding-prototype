@@ -426,13 +426,13 @@
   // ---------------------------------------------------------------------------
 
   const STEPS = [
-    { n: 1, label: "Business and address", time: "3 min" },
-    { n: 2, label: "Owners & signatory", time: "4 min" },
-    { n: 3, label: "How you take payments", time: "3 min" },
-    { n: 4, label: "Payout account", time: "1 min" },
-    { n: 5, label: "Compliance declarations", time: "2 min" },
-    { n: 6, label: "Supporting documents", time: "2 min" },
-    { n: 7, label: "Agreement and submit", time: "2 min" }
+    { n: 1, label: "Business and address" },
+    { n: 2, label: "Owners & signatory" },
+    { n: 3, label: "How you take payments" },
+    { n: 4, label: "Payout account" },
+    { n: 5, label: "Compliance declarations" },
+    { n: 6, label: "Supporting documents" },
+    { n: 7, label: "Agreement and submit" }
   ];
 
   // Answers the merchant supplies. The prototype starts empty so the flow can be
@@ -1260,13 +1260,15 @@
 
   // The same tally as stepPct, as counts: how many answers the step needs and how many are in. A step with no problems reports every answer as done (decision summary-counts-only).
   // Time left (decision minutes-left-per-field): 15 seconds for every answer still needed across all seven steps, and the figure only moves once another 6 answers are in, so it does not flicker on every keystroke.
-  const SECONDS_PER_ANSWER = 15, ANSWERS_PER_TICK = 6;
+  const SECONDS_PER_ANSWER = 15, ANSWERS_PER_TICK = 4;
   function minutesLeft() {
     let total = 0, done = 0;
     for (let n = 1; n <= 7; n++) { const c = stepCount(n); total += c.total; done += c.done; }
     const shown = Math.max(0, total - Math.floor(done / ANSWERS_PER_TICK) * ANSWERS_PER_TICK);
     return Math.max(1, Math.ceil((shown * SECONDS_PER_ANSWER) / 60));
   }
+  // Minutes for a step in the list (decision time-per-field-step-list): 15 seconds for every field the step holds, at least 1 minute.
+  const stepMinutes = (n) => Math.max(1, Math.round((stepCount(n).total * SECONDS_PER_ANSWER) / 60)) + " min";
   function stepCount(step) {
     const tally = { total: 0, done: 0 };
     const complete = !Object.keys(stepErrors(step, false, tally)).length;
@@ -1720,7 +1722,7 @@
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: st.bankSaved && !st.bankEditing ? "This is the account your payouts go to. Once you're approved, you can add more accounts." : "Add the account your payouts should go to. We need every detail before we can save it. Once you're approved, you can add more accounts.",
         5: "Every application includes these. If you answer yes to any of them, a person reviews your application.",
-        6: "Add each file we ask for. You can add up to 5 files to each one. We take PDF, PNG and JPEG files, up to 5MB each.",
+        6: "Add each file we ask for.",
         7: "Check everything you've told us. When you sign, we send everything at once."
       }[st.step],
       stepComplete: stepComplete,
@@ -2433,7 +2435,7 @@
     // A step the applicant has already moved past keeps its percentage ring when they come back to it, in place of the minutes estimate (decision step-ring-stays-on-return).
     // A finished step reads a green tick and Done in place of the ring and 100% (decision step-done-tick).
     const doneMeta = html`<span class="step-meta step-meta--done">${icon("check", 14, "i-b")}Done</span>`;
-    const currentMeta = (s) => s.n < state.maxStep ? (stepPct(s.n) >= 100 ? doneMeta : html`<span class="step-meta step-meta--pct">${ringView(stepPct(s.n))}<span class="step-pct">${stepPct(s.n)}%</span></span>`) : html`<span class="step-meta">${s.time}</span>`;
+    const currentMeta = (s) => s.n < state.maxStep ? (stepPct(s.n) >= 100 ? doneMeta : html`<span class="step-meta step-meta--pct">${ringView(stepPct(s.n))}<span class="step-pct">${stepPct(s.n)}%</span></span>`) : html`<span class="step-meta">${stepMinutes(s.n)}</span>`;
     const items = STEPS.map((s) => {
       if (s.n === state.step && !state.editing) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span>${currentMeta(s)}</div></li>`;
@@ -2447,7 +2449,7 @@
       if (s.n === state.step) {
         return html`<li><div class="step is-current" aria-current="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span>${currentMeta(s)}</div></li>`;
       }
-      return html`<li><div class="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${s.time}</span></div></li>`;
+      return html`<li><div class="step"><span class="step-dot">${s.n}</span><span class="step-label">${stepName(s)}</span><span class="step-meta">${stepMinutes(s.n)}</span></div></li>`;
     });
     const cur = STEPS[state.step - 1];
     return html`<nav class="rail${state.railOpen ? " is-open" : ""}" data-key="rail" aria-label="Verification steps">
@@ -2539,7 +2541,7 @@
     <span class="avatar" aria-hidden="true">${o.initials === "—" || o.initials === "?" ? icon("user", 16) : o.initials}</span>
     <div class="grow">
       <h3 class="person-name">${o.name}</h3>
-      <div class="person-meta">${invited && !String(ownerVal(o, "name")).trim() ? "Waiting for their details" : (o.self ? "You · " : "") + (isSole() ? "Sole owner" : isNonprofit() ? o.role : [o.pct > 0 ? fmtPct(o.pct) + "%" : "", o.role].filter(Boolean).join(" · "))}</div>
+      ${invited && !String(ownerVal(o, "name")).trim() && html`<div class="person-meta">Waiting for their details</div>`}
     </div>
     ${!recipient && Object.keys(ERR).some((k) => k.indexOf("o" + o.id + "_") === 0) && html`<span class="pill pill--danger">${icon("alert", 13)}Needs a look</span>`}
     ${!recipient && invited && !o.signedIn && html`<span class="pill pill--warning">${icon("clock", 13)}Invited · ${o.inviteEmail || "filling in their own details"}</span>`}
@@ -2603,7 +2605,7 @@
     else if (small.length > keep.length) showToast("Only " + keep.length + " added", "You can add up to " + FILE_MAX_COUNT + " files here.");
     if (keep.length) add(keep.map((f) => f.name));
   }
-  const dropZoneView = (label, add, have) => html`<button type="button" class="dropzone" aria-label="${label}" data-click="${on(() => takeFiles([], have, add))}" data-drop="${on((e) => takeFiles(Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => ({ name: String(f.name).slice(0, 120), size: f.size })), have, add))}"><span class="dz-icon" aria-hidden="true">${icon("upload", 24)}</span><span class="dz-text"><span class="dz-prompt">Drag a file here</span><span class="dz-drop">Drop to upload</span><span class="dz-action">or <span class="dz-link">browse</span></span></span></button>`;
+  const dropZoneView = (label, add, have) => html`<button type="button" class="dropzone" aria-label="${label}" data-click="${on(() => takeFiles([], have, add))}" data-drop="${on((e) => takeFiles(Array.from((e.dataTransfer && e.dataTransfer.files) || []).map((f) => ({ name: String(f.name).slice(0, 120), size: f.size })), have, add))}"><span class="dz-icon" aria-hidden="true">${icon("upload", 24)}</span><span class="dz-text"><span class="dz-prompt">Drag and drop files here</span><span class="dz-drop">Drop to upload</span><span class="dz-action">or <span class="dz-link">Choose files</span></span></span><span class="dz-hint">PDF, JPG or PNG. Up to 5 MB each.</span></button><p class="dz-helper">You can upload up to 5 files</p>`;
 
   function docView(d) {
     const s = d.skip ? "skipped" : doc(d.key).state;
@@ -2629,8 +2631,7 @@
   }
 
   function step6View(v) {
-    return html`<div class="doc-grid" data-key="s6-docs">${v.docList.filter((d) => !d.skip).map((d) => docView(d))}</div>
-<div class="callout callout--lg" data-key="s6-assure">${icon("lock", 16)}<span>Files are stored encrypted and shared only with Trulioo, our verification partner.${pin("read-on-upload")}</span></div>`;
+    return html`<div class="doc-grid" data-key="s6-docs">${v.docList.filter((d) => !d.skip).map((d) => docView(d))}</div>`;
   }
 
   // ---------------------------------------------------------------------------

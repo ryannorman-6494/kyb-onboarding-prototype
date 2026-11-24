@@ -352,7 +352,7 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
 .person { background: var(--color-background-surface-raised-1); border-radius: var(--radius-large); box-shadow: inset 0 0 0 1px var(--color-border-default); overflow: hidden; }
 .person-head { display: flex; align-items: center; gap: var(--space-gap-related); padding: var(--space-padding-hero); }
 .avatar { width: 32px; height: 32px; flex: none; border-radius: var(--radius-full); background: var(--color-background-brand-subtle); color: var(--color-text-link-hover); display: flex; align-items: center; justify-content: center; font-size: var(--type-body-small-size); font-weight: var(--type-control-bold-weight); }
-.person-name { font-size: var(--type-body-default-size); font-weight: var(--type-control-bold-weight); color: var(--color-text-primary); }
+.person-name { margin: 0; font: var(--font-section-title); letter-spacing: var(--type-section-title-letter-spacing); color: var(--color-text-primary); }
 .person-meta { font-size: var(--type-caption-default-size); color: var(--color-text-subtle); }
 .person-body { padding: 0 var(--space-padding-hero) var(--space-padding-hero); animation: xrise 200ms ease both; }
 .add-row { display: flex; align-items: center; justify-content: center; gap: var(--space-gap-related); min-height: var(--size-control-large); padding: 0 var(--space-padding-surface); border: 1px dashed var(--color-border-default); border-radius: var(--radius-default); background: var(--color-background-surface-raised-1); color: var(--color-text-brand); font: var(--font-control-default); letter-spacing: var(--type-control-default-letter-spacing); cursor: pointer; }
@@ -397,6 +397,10 @@ textarea.input { height: auto; padding: var(--space-padding-cell) var(--componen
 .dz-prompt, .dz-drop { font: var(--font-body-bold); color: var(--color-text-primary); }
 .dz-drop { display: none; }
 .dz-action { font: var(--font-body-default); color: var(--color-text-secondary); }
+/* Atlas File drop hint and helper row (decision file-drop-hint-from-atlas): the hint is the caption line inside the zone, hidden while a file is dragged over (the Atlas drag-over state is 24px shorter); the helper row sits under the zone. */
+.dz-hint { font: var(--font-caption-default); color: var(--color-text-secondary); }
+.dropzone.is-over .dz-hint { display: none; }
+.dz-helper { margin: 8px 0 0; font: var(--font-caption-default); color: var(--color-text-secondary); }
 .dz-link { color: var(--color-text-link-default); text-decoration: underline; text-underline-offset: 2px; }
 .dropzone:hover .dz-link, .dropzone.is-over .dz-link { color: var(--color-text-link-hover); }
 .dropzone:hover { border-color: var(--color-border-brand); }
@@ -822,8 +826,11 @@ html[data-motion="enhanced"] .btn:active:not(:disabled) { transform: scale(.98);
 .fields--3 > .span-2 { grid-column: span 2; }
 .fields--3 > .span-3 { grid-column: 1 / -1; }
 .fields-pair { grid-column: span 2; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--space-gap-group); align-items: start; }
-@container content (max-width: 639px) { .fields--3 { grid-template-columns: minmax(0,1fr); } .fields--3 > .span-2, .fields--3 > .span-3, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
-@media (max-width: 720px) { .fields--3 > .span-2, .fields--3 > .span-3, .fields--3 > .fields-pair { grid-column: auto; } .fields-pair { grid-template-columns: minmax(0,1fr); } }
+/* On a narrow card the two-thirds boxes fill the card, so a pair is half each (decision owner-fields-fill-narrow). Pairs only stack in a very narrow card. */
+@container content (max-width: 639px) { .fields--3 { grid-template-columns: minmax(0,1fr); } .fields--3 > .span-2, .fields--3 > .span-3, .fields--3 > .fields-pair { grid-column: auto; } }
+@media (max-width: 720px) { .fields--3 > .span-2, .fields--3 > .span-3, .fields--3 > .fields-pair { grid-column: auto; } }
+@container content (max-width: 419px) { .fields-pair { grid-template-columns: minmax(0,1fr); } }
+@media (max-width: 420px) { .fields-pair { grid-template-columns: minmax(0,1fr); } }
 .s-contract { margin-bottom: var(--space-gap-group); }
 
 /* Why we ask on a sensitive field: icon + label, popover on hover. Popover text is body-small to match the step-level note. */

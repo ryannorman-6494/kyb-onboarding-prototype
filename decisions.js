@@ -3595,7 +3595,7 @@ window.DECISIONS = [
     "area": "Copy",
     "where": "Left progress column · About N minutes left, and the mobile step line",
     "t": "The time left is 15 seconds for every answer still needed, and only moves once another 6 answers are in",
-    "b": "Ryan, 2026-11-24: the earlier figure was a best guess (17 minutes, less 2 per step) and no longer fits now that steps can be left partly filled. Ryan: each field takes roughly 8 seconds in the wild, so 10 is used because the applicant is entering sensitive information. The count is the same one the step percentages use, added up across all seven steps (answers needed minus answers in), times 10 seconds, rounded up to whole minutes with a floor of 1 minute. The figure only changes after each further 6 answers are in, so it does not flicker on every field. A new Company application starts at about 7 minutes. Update, 2026-11-24 (Ryan): the time per answer is now 15 seconds, not 10, so a new Company application starts at about 10 minutes (the 7 minutes above was at 10 seconds). The 6 answers per change and the 1 minute floor are unchanged. The mismatch with the welcome page and the step list is still open. Update, 2026-11-24 (Ryan): the welcome page's line now uses the same figure (It takes about 10 minutes for a new Company application) and no longer says 15. The step list's own minutes (3, 4, 3, 1, 2, 2, 2) are still fixed estimates and still add up to 17.",
+    "b": "Ryan, 2026-11-24: the earlier figure was a best guess (17 minutes, less 2 per step) and no longer fits now that steps can be left partly filled. Ryan: each field takes roughly 8 seconds in the wild, so 10 is used because the applicant is entering sensitive information. The count is the same one the step percentages use, added up across all seven steps (answers needed minus answers in), times 10 seconds, rounded up to whole minutes with a floor of 1 minute. The figure only changes after each further 6 answers are in, so it does not flicker on every field. A new Company application starts at about 7 minutes. Update, 2026-11-24 (Ryan): the time per answer is now 15 seconds, not 10, so a new Company application starts at about 10 minutes (the 7 minutes above was at 10 seconds). The 6 answers per change and the 1 minute floor are unchanged. The mismatch with the welcome page and the step list is still open. Update, 2026-11-24 (Ryan): the welcome page's line now uses the same figure (It takes about 10 minutes for a new Company application) and no longer says 15. The step list's own minutes (3, 4, 3, 1, 2, 2, 2) are still fixed estimates and still add up to 17. Superseded by 364 (time-fixed-ten-minutes), 2026-11-24 (Ryan): the time is a fixed 10 minutes. Restored 2026-11-24 (Ryan): my fixed-10 change was a misreading; the smart countdown stands. Restored 2026-11-24 (Ryan): my fixed-10 change was a misreading; the countdown stands (see time-ten-minutes-start).",
     "tradeoff": "The welcome page still says about 15 minutes and the progress list still shows 3, 4, 3, 1, 2, 2 and 2 minutes (17 in all), so the three now disagree. The count includes documents and the signature as one answer each, which take longer than 10 seconds. Answers that appear later (more owners) make the total, and so the figure, grow.",
     "by": "Ryan",
     "when": "2026-11-24"
@@ -3605,7 +3605,7 @@ window.DECISIONS = [
     "area": "Flow",
     "where": "Step 6 drop zones and the More info needed drop zones",
     "t": "Each file can be up to 5MB, and up to 5 files can be added to any one drop zone",
-    "b": "Ryan, 2026-11-24: 5MB per file and 5 files maximum were initially agreed with the back end. A file over 5MB is not added and a toast names it. A sixth file is not added and a toast says only 5 can be added; a zone already holding 5 says so when used again. Applies to the step 6 document cards, each More info needed request card and the simple More info drop zone. The step 6 description now says you can add up to 5 files to each one, up to 5MB each, and no longer says as many as you need. No file type limit is set. Update, 2026-11-24 (Ryan): the file types are PDF, PNG and JPEG (so the line above saying no file type limit is set no longer holds). A dropped file of another type is not added and a toast says so; the type is judged by the extension. Per drop zone confirmed by Ryan. The step 6 description now names the types.",
+    "b": "Ryan, 2026-11-24: 5MB per file and 5 files maximum were initially agreed with the back end. A file over 5MB is not added and a toast names it. A sixth file is not added and a toast says only 5 can be added; a zone already holding 5 says so when used again. Applies to the step 6 document cards, each More info needed request card and the simple More info drop zone. The step 6 description now says you can add up to 5 files to each one, up to 5MB each, and no longer says as many as you need. No file type limit is set. Update, 2026-11-24 (Ryan): the file types are PDF, PNG and JPEG (so the line above saying no file type limit is set no longer holds). A dropped file of another type is not added and a toast says so; the type is judged by the extension. Per drop zone confirmed by Ryan. The step 6 description now names the types. 2026-11-24 (Ryan): the callout 'Files are stored encrypted and shared only with Trulioo, our verification partner' is removed from step 6. 2026-11-24 (Ryan): the callout 'Files are stored encrypted and shared only with Trulioo, our verification partner' is removed from step 6.",
     "tradeoff": "Whether the 5 files is per document slot, as built here, or for the whole application was not stated. Only dropped files carry a size; clicking the zone adds the canned file, so the size limit can only be tried by dropping. The limits are shown only in the step 6 description and in the toast, not on the drop zone itself (the Atlas File drop has no hint line, see atlas-file-drop-hint-line). File types are not limited.",
     "by": "Ryan",
     "when": "2026-11-24"
@@ -3627,6 +3627,46 @@ window.DECISIONS = [
     "t": "Personal details is one column on a grid of thirds: the three name boxes share a row, Title and Ownership percentage share a row, Email and Phone share a row, and every other box spans two thirds",
     "b": "Ryan, 2026-11-24: the front end engineer asked for a single column, keeping first, middle and last on one row, because form research favours one column for accuracy, which matters on a business verification form. Ryan agreed. First name, Middle name and Last name stay on one row; Title / role, Ownership percentage, Date of birth, Nationality, Country of residence, the home address, Email and Phone each take a full row. Identity verification keeps its rows of two. This replaces the rows of three and four in owner-name-three-fields and owner-nationality-dob-residence-row, and the phone box taking the middle third in owner-phone-middle-third. Update, 2026-11-24 (Ryan): the first version put every box on its own full-width row, which was too wide. Now the card is a grid of thirds: First, Middle and Last name fill one row; Title / role and Ownership percentage share a row (a third each); Email and Phone share a row (a third each); Date of birth, Nationality, Country of residence and the home address each span two thirds. Below 640px everything stacks in one column. A non-profit has no ownership percentage, so its Title / role spans two thirds alone. Replaces the wording above that says every other box has a row to itself and takes the full width. Update, 2026-11-24 (Ryan, after the deploy): the home address takes the full width of the grid so its search box and street boxes are two thirds wide (city, state and ZIP stay a third each), as in owner-address-two-thirds; in the first thirds version it sat inside a two-thirds wrapper and came out about four ninths. Identity verification now follows the same grid: every box (ID type, ID number, expiry, issuing country, SSN or SIN, the politically exposed person question) is two thirds wide on its own row. This replaces the line above saying Identity verification keeps its rows of two. Not deployed.",
     "tradeoff": "The owner card is much longer, so a person scrolls further to finish it. The boxes are as wide as the card, which is wider than a role, a percentage or a date needs. Ryan has not asked for the Identity verification section to change. The phone number is no longer clipped at widths between 960px and about 1100px, since it has the full row.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "owner-name-larger-fields-fill-narrow",
+    "area": "Owners",
+    "where": "Step 2, owner card",
+    "t": "The owner's name is the 20px section title, and on a narrow card the two-thirds boxes fill the card so a pair is half each",
+    "b": "The name sat at body size, the same as the section titles inside the card, so the hierarchy was flat. The name is now the Atlas section title size (20px, 600) with the section titles at 16px below it. At a card narrower than 640px the boxes that take two thirds on a wide card fill the whole card, so the Title + Ownership percentage and Email + Phone pairs are half each; the pairs only stack below about 420px, and the three name boxes stack one per row. 2026-11-24 (Ryan): the line under the owner's name (You, percentage, title) is removed; only avatar and name sit in the header (an invited owner with no name still shows Waiting for their details).",
+    "tradeoff": "Name boxes stack rather than staying three across, since a third of a narrow card is too small for a name.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "time-ten-minutes-start",
+    "area": "Progress",
+    "where": "Welcome page, step list, progress panel",
+    "t": "A new application starts at about 10 minutes and the time left counts down with the answers; the step list adds up to 10",
+    "b": "Ryan asked for 10 minutes everywhere. I first made the figure a fixed 10, which removed the countdown; Ryan corrected that (2026-11-24): only the starting figure was meant. The countdown is as in minutes-left-per-field (15 seconds per answer still needed, moving every 6 answers). The step list is now 2, 2, 2, 1, 1, 1, 1 minutes, which adds to 10; the split is my call. The invited owner's welcome still says about 5 minutes because it covers only their own part.",
+    "tradeoff": "The per-step times are fixed guesses and do not change with answers.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "file-drop-hint-from-atlas",
+    "area": "Documents",
+    "where": "Every drop zone (step 6, More info needed)",
+    "t": "The drop zone carries its own file types and size, as the Atlas File drop does",
+    "b": "The Atlas File drop (Figma page File drop, 2026-11-24) holds the prompt 'Drag and drop files here', the link 'Choose files', a hint line 'PDF, JPG or PNG. Up to 5 MB each.' inside the zone, and a helper row 'You can upload up to 5 files' under it. The prototype now uses that wording and layout, so the step 6 description no longer repeats the limits. The hint hides while a file is dragged over, because the Atlas drag-over state is 24px shorter. Ryan: always use Atlas components. The hint says JPG where the toast says JPEG; the prototype accepts .jpg and .jpeg.",
+    "tradeoff": "Copy follows Atlas rather than the earlier 'Drag a file here / or browse'.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "time-per-field-step-list",
+    "area": "Progress",
+    "where": "Step list, progress panel",
+    "t": "The step list time is 15 seconds for every field the step holds, and the countdown updates every 4 answers (a minute)",
+    "b": "Ryan, 2026-11-24: the countdown should move every 4 answers, which is a minute at 15 seconds each, and the per-step minutes in the step list follow the number of fields the step contains at 15 seconds each (at least 1 minute) instead of fixed guesses. Replaces the fixed 2, 2, 2, 1, 1, 1, 1 split in time-ten-minutes-start.",
+    "tradeoff": "A step's time can change as optional or conditional fields appear.",
     "by": "Ryan",
     "when": "2026-11-24"
   }
