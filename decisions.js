@@ -3689,6 +3689,16 @@ window.DECISIONS = [
     "tradeoff": "An applicant who is only a signer or employee, with no ownership, cannot pass step 2.",
     "by": "Ryan",
     "when": "2026-11-24"
+  },
+  {
+    "id": "documents-optional",
+    "area": "Documents",
+    "where": "Step 6 and the welcome page",
+    "t": "Every document at step 6 is optional, for all business types and countries, and none is needed to submit",
+    "b": "Ryan, 2026-11-24: document upload is optional for all business types and countries. It stays in the prototype but is not a blocker to submission. The Required badge is removed from every document card (no Optional badge replaces it), step 6 no longer counts toward the answers needed, so it shows Done without any file and does not hold the Submit step. The step 6 description now reads 'Adding these files is optional, and you can submit without them. If we need any of them, we'll ask.', the title is 'Documents that help us verify your details', the Why are we asking pop-over says documents are optional, the processing-statements hint says 'you can add' instead of 'we need', and the welcome page lists the photo ID, bank proof and W-9 as things you can add but don't have to. Claude's wording to check: 'If we need any of them, we'll ask' assumes Ops can ask for a file later on the More info needed screen, which the prototype does; 'one way Trulioo can confirm' softens the earlier claim about what documents do. The invited owner's photo ID (Slice 2) was left as it was. The Excel spec and the reply document were updated.",
+    "tradeoff": "Without the ID, bank proof or W-9 on file, Ops may have to ask for them after submit, and the back end must not assume they are there.",
+    "by": "Ryan",
+    "when": "2026-11-24"
   }
 ];
 

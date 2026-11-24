@@ -1614,7 +1614,7 @@
       3: { t: "Why are we asking?", b: "This isn't a credit check. Your answers help us see what a normal day looks like for you.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why are we asking?", b: ca ? "This is the account your payouts are paid into. We ask for proof of it in step 6, then check it after you submit." : "This is the account your payouts are paid into. Trulioo, our verification partner, checks it after you submit, so your payouts go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
       5: { t: "Why are we asking?", b: "Card networks and regulators require these exact questions on every application. If you answer yes to any of them, a person reviews your application.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
-      6: { t: "Why are we asking?", b: "Documents are how Trulioo, our verification partner, confirms the details you've given are real. Add each file we ask for.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
+      6: { t: "Why are we asking?", b: "Documents are one way Trulioo, our verification partner, can confirm the details you've given. They're optional, so you can submit without them.", p: ["Stored encrypted", "Shared only with your verification partner", "Swap out or delete any file before you submit"] },
       7: { t: "What gets sent", b: "One package: your " + orgWord() + " record, the identity and sanctions checks we've already run, " + (isNonprofit() ? "who runs the organization" : "ownership") + ", bank verification, your declarations and the signed agreement.", p: ["Anything missing comes back as one clear request", "A signed copy of the agreement is emailed to you"] }
     }[step];
   }
@@ -1623,7 +1623,7 @@
     const a = state.a;
     // A government photo ID is asked for each person listed at step 2 (decision photo-id-asked-at-step-6, which replaces id-only-when-trulioo-cannot-match).
     const idRows = owners.map((o) => ({
-      key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Required",
+      key: "id_" + o.id, title: "Government photo ID for " + o.name, requirement: "Optional",
       hint: (o.status === "invited" ? "They can add this, or you can. " : "") + "Passport or driver's " + licWord() + ". Include all four corners and avoid glare.",
       file: "id-" + o.id + "-license.jpg",
     }));
@@ -1632,13 +1632,13 @@
     const list = idRows.slice();
     // The EIN letter (US) and the CRA business number confirmation (Canada) are no longer asked for: Trulioo validates the number (decision ein-bn-document-removed).
     // Canada only (decision ca-bank-proof-row): Trulioo does not verify Canadian bank accounts, so the applicant adds one proof of the payout account. The US account is verified without a document (decision bank-verified-by-trulioo).
-    if (ca) list.push({ key: "bank", title: "Bank account verification", requirement: "Required", hint: "Any one of these: a void cheque with your " + orgWord() + " name and account details printed on it, a letter from your bank, or a recent bank statement.", file: "void-cheque.pdf" });
+    if (ca) list.push({ key: "bank", title: "Bank account verification", requirement: "Optional", hint: "Any one of these: a void cheque with your " + orgWord() + " name and account details printed on it, a letter from your bank, or a recent bank statement.", file: "void-cheque.pdf" });
     if (!ca) {
-      list.push({ key: "w9", title: "W-9 tax certification", requirement: "Required", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
+      list.push({ key: "w9", title: "W-9 tax certification", requirement: "Optional", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
     }
-    if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Required", hint: "Because you've processed cards before, we need your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf" });
+    if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Optional", hint: "Because you've processed cards before, you can add your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf" });
     // Division rows (decision clubready-lease-by-division; Club Essentials and its financial history row were removed, see club-essentials-financial-history). Wording is a draft, not approved copy.
-    if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business " + licWord() + " or utility bill", requirement: "Required", hint: "Your club's signed lease. If you don't have one yet, a business " + licWord() + " or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf" });
+    if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business " + licWord() + " or utility bill", requirement: "Optional", hint: "Your club's signed lease. If you don't have one yet, a business " + licWord() + " or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf" });
     return list;
   }
 
@@ -1711,14 +1711,14 @@
       signatoryName, signatoryTitle,
       needRegistration: (ca ? "Your CRA business number, plus the legal name, registered address and registration date as they appear on your registration." : "Your EIN, plus the legal name, registered address and incorporation details as they appear on your registration.") + " You'll also choose your merchant category from a short list.",
       needIds: "You, as the person filling out this application, and owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN. For a non-profit or government body, we need each person's title, address and a driver's licence or passport." : "a driver's license or passport and an SSN. For a non-profit or government body, we need each person's title, address and a driver's license or passport.") + (invitesOn() ? " If it's easier, they can fill in their own details." : " You fill this in for everyone, so have it all ready."),
-      needBank: ca ? "Your institution, transit and account numbers, plus a photo ID for each owner and proof of your bank account." : "Your routing and account numbers, plus a photo ID for each owner and a signed W-9.",
+      needBank: ca ? "Your institution, transit and account numbers. You can also add a photo ID for each owner and proof of your bank account, but you don't have to." : "Your routing and account numbers. You can also add a photo ID for each owner and a signed W-9, but you don't have to.",
       shellRailNote: isStatus ? "Submitted to our verification partner" : "Step " + progStep + " of 7 · about " + minutesLeft() + " min left",
       remainingLabel: "About " + minutesLeft() + (minutesLeft() === 1 ? " minute" : " minutes") + " left",
       stepCounter: "Step " + st.step + " of 7",
       stepTitle: {
         1: isNonprofit() ? "Tell us about your organization" : "Tell us about your business", 2: isSole() ? "Tell us about you" : isNonprofit() ? "Who runs the organization?" : "Who owns the business?",
         3: "How you'll take payments", 4: "Where should we send your money?",
-        5: "A few questions we have to ask", 6: "The documents we need to verify your details",
+        5: "A few questions we have to ask", 6: "Documents that help us verify your details",
         7: "One last look, then you're done"
       }[st.step],
       stepSubtitle: {
@@ -1727,7 +1727,7 @@
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: st.bankSaved && !st.bankEditing ? "This is the account your payouts go to. Once you're approved, you can add more accounts." : "Add the account your payouts should go to. We need every detail before we can save it. Once you're approved, you can add more accounts.",
         5: "Every application includes these. If you answer yes to any of them, a person reviews your application.",
-        6: "Add each file we ask for.",
+        6: "Adding these files is optional, and you can submit without them. If we need any of them, we'll ask.",
         7: "Check everything you've told us. When you sign, we send everything at once."
       }[st.step],
       stepComplete: stepComplete,
@@ -2625,7 +2625,7 @@
   <div class="doc-row">
     <span class="icon-tile icon-tile--neutral">${icon("file", 17)}</span>
     <div class="grow">
-      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${s === "done" ? "" : html`<span class="req${d.requirement === "Required" ? " req--required" : ""}">${d.requirement}</span>`}${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
+      <div class="doc-titlebar"><h3 class="doc-title">${d.title}</h3>${d.division && html`<span class="division-tag">${d.division} only</span>`}</div>
       <p class="body-sm">${d.hint}</p>
       ${errView("doc_" + d.key)}
     </div>
