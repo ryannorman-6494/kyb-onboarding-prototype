@@ -1631,11 +1631,11 @@
     // An invited owner's ID row stays: they or the applicant can add it, and step 6 and 7 wait for it (decision invite-no-exemption).
     const list = idRows.slice();
     // The EIN letter (US) and the CRA business number confirmation (Canada) are no longer asked for: Trulioo validates the number (decision ein-bn-document-removed).
-    // Canada only (decision ca-bank-proof-row): Trulioo does not verify Canadian bank accounts, so the applicant adds one proof of the payout account. The US account is verified without a document (decision bank-verified-by-trulioo).
-    if (ca) list.push({ key: "bank", title: "Bank account verification", requirement: "Optional", hint: "Any one of these: a void cheque with your " + orgWord() + " name and account details printed on it, a letter from your bank, or a recent bank statement.", file: "void-cheque.pdf" });
-    if (!ca) {
-      list.push({ key: "w9", title: "W-9 tax certification", requirement: "Optional", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
-    }
+    // Every document is optional (decision documents-optional), so the ones that were dropped as unnecessary are back: the EIN letter (US) and the CRA business number confirmation (Canada), plus the bank proof in both regions. Wording is a draft, not approved copy.
+    if (ca) list.push({ key: "bn", title: "Business number confirmation", requirement: "Optional", hint: "Any one of these: a CRA business registration confirmation, an RC145 letter, a Filing and Balance Confirmation letter from CRA My Business Account, or articles of incorporation that show your business number.", file: "cra-bn-confirmation.pdf" });
+    if (!ca) list.push({ key: "ein", title: "EIN confirmation letter", requirement: "Optional", hint: "Your IRS letter that shows your EIN, such as a CP-575 or a 147C.", file: "ein-letter.pdf" });
+    if (!ca) list.push({ key: "w9", title: "W-9 tax certification", requirement: "Optional", hint: "Upload your signed Form W-9.", file: "w9-uploaded.pdf" });
+    list.push({ key: "bank", title: "Bank account verification", requirement: "Optional", hint: "Any one of these: a void " + (ca ? "cheque" : "check") + " with your " + orgWord() + " name and account details printed on it, a letter from your bank, or a recent bank statement.", file: ca ? "void-cheque.pdf" : "void-check.pdf" });
     if (a.prior === "yes") list.push({ key: "stmt", title: "Last 3 months of processing statements", requirement: "Optional", hint: "Because you've processed cards before, you can add your last 3 months of processing statements from " + (a.priorName || "your prior processor") + ". They help us judge risk.", file: "prior-processor-statement.pdf" });
     // Division rows (decision clubready-lease-by-division; Club Essentials and its financial history row were removed, see club-essentials-financial-history). Wording is a draft, not approved copy.
     if (ctx.division === DIV_CLUBREADY && !isNonprofit()) list.push({ key: "lease", division: DIV_CLUBREADY, title: "Signed lease, business " + licWord() + " or utility bill", requirement: "Optional", hint: "Your club's signed lease. If you don't have one yet, a business " + licWord() + " or a utility bill in the " + orgWord() + " name works.", file: "club-lease.pdf" });

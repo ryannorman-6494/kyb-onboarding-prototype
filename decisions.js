@@ -3699,6 +3699,16 @@ window.DECISIONS = [
     "tradeoff": "Without the ID, bank proof or W-9 on file, Ops may have to ask for them after submit, and the back end must not assume they are there.",
     "by": "Ryan",
     "when": "2026-11-24"
+  },
+  {
+    "id": "documents-back-in",
+    "area": "Documents",
+    "where": "Step 6",
+    "t": "The documents that were dropped as unnecessary are back on step 6, all optional",
+    "b": "Ryan, 2026-11-24: if documents are optional, add them all back. Restored from the register: the EIN confirmation letter for the US (ein-bn-document-removed), the CRA business number confirmation for Canada (ca-bn-confirmation-document), and Bank account verification for the US as well as Canada (bank-verified-by-trulioo, ca-bank-proof-row). Step 6 now offers, in order: a photo ID per person, EIN letter (US) or Business number confirmation (Canada), W-9 (US), Bank account verification, processing statements (only if the business has processed cards before), and the ClubReady lease (division only). Claude's calls: the wording is the draft from the earlier entries, not approved copy; the CRA row lists the four options from the old entry; every row shows for every business type, including sole proprietors, since none is required; Club Essentials financial history stays out because that option was removed. The Excel spec has the new rows.",
+    "tradeoff": "More files are on offer, and the reasons they were dropped still stand: Trulioo validates the number and, in the US, the bank account.",
+    "by": "Ryan",
+    "when": "2026-11-24"
   }
 ];
 
