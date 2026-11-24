@@ -1566,7 +1566,7 @@ window.DECISIONS = [
     "area": "Flow",
     "where": "Ops · Deleting an application or removing someone's access",
     "t": "To delete an application or remove someone's access, Ops deletes the user or disables the business",
-    "b": "There is no separate remove or delete application feature for Ops. If an Ops user wants an application gone, or wants to take a person's access away, they delete that user from the system. If they want to stop a whole business, they disable the business. The prototype has no Ops screens, so nothing is built for this, and the applicant-facing flow does not change.",
+    "b": "There is no separate remove or delete application feature for Ops. If an Ops user wants an application gone, or wants to take a person's access away, they delete that user from the system. If they want to stop a whole business, they disable the business. The prototype has no Ops screens, so nothing is built for this, and the applicant-facing flow does not change. 2026-11-24 (Ryan): Only Ops can delete an application. Business contacts have no access to applications in Odin, so they never can.",
     "tradeoff": "Ops needs no new screens or states, and the applicant never sees a half-removed application. What happens to the data an applicant already entered, and whether a deleted user can be restored or re-invited, is not decided here; engineering and Ops should say.",
     "by": "Ryan",
     "when": "2026-10-29"
@@ -3525,7 +3525,7 @@ window.DECISIONS = [
     "area": "Layout",
     "where": "The steps, all screens with the progress panel",
     "t": "The progress panel moves above the step below 960px, not 760px",
-    "b": "The panel with the progress bar and step list sat beside the form until a 760px page. Ryan asked for it to go on top at 960px, so the owner form has room for the phone number in its middle third (owner-phone-middle-third). Below 960px the panel is one row (the current step and Show steps button, as in step-rail-collapses-narrow) and the form takes the full width. Only the panel layout moved; the rest of the narrow layout (single-column fields, 20px side padding) still starts at 760px. The same reason moved the ITIN line into the step 2 description: An ITIN is fine for a US tax resident without an SSN, for US only, which Ryan agreed to after the SSN Why we ask text was removed. Update, 2026-11-23 (Ryan): 960px is fine as it is. The phone number can still clip between 960px and about 1100px; Ryan accepted that and did not ask for a higher breakpoint.",
+    "b": "The panel with the progress bar and step list sat beside the form until a 760px page. Ryan asked for it to go on top at 960px, so the owner form has room for the phone number in its middle third (owner-phone-middle-third). Below 960px the panel is one row (the current step and Show steps button, as in step-rail-collapses-narrow) and the form takes the full width. Only the panel layout moved; the rest of the narrow layout (single-column fields, 20px side padding) still starts at 760px. The same reason moved the ITIN line into the step 2 description: An ITIN is fine for a US tax resident without an SSN, for US only, which Ryan agreed to after the SSN Why we ask text was removed. Update, 2026-11-23 (Ryan): 960px is fine as it is. The phone number can still clip between 960px and about 1100px; Ryan accepted that and did not ask for a higher breakpoint. Update, 2026-11-24 (Ryan): the ITIN line is removed from the step 2 description. It was carried over by Claude from an earlier Why we ask note without Ryan asking, there is no ITIN field, Legal and Compliance have not approved it, and it is not confirmed what Trulioo or Ops accept for an owner with no SSN. Bring it back once that is confirmed.",
     "tradeoff": "Measured by Claude: at 940px the number box is 140px and the number fits, but at 1000px, just above the new breakpoint, it is 50px wide and the number (about 86px of text) is still clipped. The number needs a page of roughly 1100px or more to fit with the panel beside the form. So 960px fixes the narrow cases but not the 960 to about 1100 range. The ITIN line is a claim carried over unchanged from the old pop-up; it was not checked with Legal or Compliance.",
     "by": "Ryan",
     "when": "2026-11-23"
@@ -3667,6 +3667,26 @@ window.DECISIONS = [
     "t": "The step list time is 15 seconds for every field the step holds, and the countdown updates every 4 answers (a minute)",
     "b": "Ryan, 2026-11-24: the countdown should move every 4 answers, which is a minute at 15 seconds each, and the per-step minutes in the step list follow the number of fields the step contains at 15 seconds each (at least 1 minute) instead of fixed guesses. Replaces the fixed 2, 2, 2, 1, 1, 1, 1 split in time-ten-minutes-start.",
     "tradeoff": "A step's time can change as optional or conditional fields appear.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "rejected-status-onboarding-hidden",
+    "area": "Odin",
+    "where": "Odin Applications and Business tabs (reply to the front end engineer)",
+    "t": "The business status is Rejected, not Declined, and a business in the back-end onboarding status is never shown to Ops",
+    "b": "Ryan, 2026-11-24: a rejected application moves to the Business tab with the business status Rejected, so the Applications tab only holds open applications. Ryan's first plan was to keep rejected applications in the Applications tab, hidden by default, but he agreed the current approach with Gaurav and Sandy (he does not love it, but it is agreed). Businesses will have an onboarding status in the back end; the plan is to hide it in the front end so Ops never see a business in onboarding. Also in the reply document the same day: the time left changes every 4 answers (60 seconds), and the phone country list is to be confirmed, probably every country with phone numbers or a 'My country is not listed' option.",
+    "tradeoff": "Ops cannot filter to rejected applications from the Applications tab.",
+    "by": "Ryan",
+    "when": "2026-11-24"
+  },
+  {
+    "id": "self-owner-required",
+    "area": "Owners",
+    "where": "Step 2 (company and non-profit)",
+    "t": "The person filling out the form must add themselves as an owner, whatever their share; everyone else has to hold 25% or more",
+    "b": "Ryan, 2026-11-24: at least one person adding themselves is required, because the person filling out the form is captured even if they own less than 25%. Their ownership percentage only has to be above zero; every other owner still has to be 25% or more (owner-share-minimum). The step 2 description, the Why are we asking pop-over, the What you'll need line and the percentage hint now say so, in the Xplor Pay content guidelines' plain wording. Without the applicant in the list the step counts as incomplete and the Submit hold names it, with the message 'Add yourself to finish this step', as for any other missing answer. Sole proprietors are unaffected, since they are the only owner. The message is only shown from the submit hold; Save and continue still moves on (partial-steps-allowed). My call: a 0% share is refused for the applicant; Ryan did not say. 2026-11-24 (Ryan): ', plus whoever's signing. Add their details here' removed from the step 2 description, because the person filling out the form signs.",
+    "tradeoff": "An applicant who is only a signer or employee, with no ownership, cannot pass step 2.",
     "by": "Ryan",
     "when": "2026-11-24"
   }

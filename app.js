@@ -1186,7 +1186,10 @@
       const n = parseFloat(v);
       if (!isFinite(n) || n < 0 || n > 100) return "Enter a number from 0 to 100.";
       // Only owners with 25% or more are listed (decision owner-share-minimum).
-      if (key === "pct" && n < 25) return "Enter 25 or more. We need owners who hold 25% or more.";
+      // The person filling out the form has to be added whatever their share (decision self-owner-required), so their share only has to be above zero.
+      const selfOwner = state.owners.some((o) => o.self && f.id.indexOf("o" + o.id + "_") === 0);
+      if (key === "pct" && selfOwner && n <= 0) return "Enter the share you own, even if it's under 25%.";
+      if (key === "pct" && !selfOwner && n < 25) return "Enter 25 or more. We need owners who hold 25% or more.";
     }
     if (f.kind === "currency" && !(parseFloat(String(v).replace(/,/g, "")) > 0)) return "Enter an amount greater than zero.";
     // The biggest single sale cannot be smaller than the average one. Only checked once both amounts are in.
@@ -1226,7 +1229,9 @@
       state.owners.forEach((o) => { if (o.status === "pending") ownerFields(o).forEach(add); });
       const total = owners.reduce((x, o) => x + o.pct, 0);
       unit(true, owners.length > 0);
-      if (!owners.length) { if (!problemsOnly) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " to finish this step."; }
+      // The person filling out the form must be one of the owners, whatever their share (decision self-owner-required).
+      if (!isSole() && !state.owners.some((o) => o.self)) { if (!problemsOnly) errs.owners = "Add yourself to finish this step. You're filling out this application, so we need your details" + (isNonprofit() ? "." : ", even if you own less than 25%."); }
+      else if (!owners.length) { if (!problemsOnly) errs.owners = "Add the " + (isNonprofit() ? "people who run the organization" : "owners") + " to finish this step."; }
       else if (!isCompany()) { /* ownership percentages only apply to companies */ }
       else if (total > 100) errs.ownership = "Ownership comes to more than 100%. Check each owner's percentage.";
     }
@@ -1423,7 +1428,7 @@
       f("last", "Last name", "text", { placeholder: "As printed on their ID" }),
       // Their place in the business: title, then ownership percentage (decision owner-personal-details-grouped). Title is free text for every business type (decision owner-title-free-text); a sole proprietor starts with Owner and 100%, both editable.
       f("role", "Title or role", "text", { placeholder: "For example, Director" }),
-      isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "For example, 40", hint: isSole() ? "" : "We need owners who hold 25% or more." }),
+      isNonprofit() ? null : f("pct", "Ownership percentage", "text", { placeholder: "For example, 40", hint: isSole() ? "" : (o && o.self ? "Enter your share, even if it's under 25%." : "We need owners who hold 25% or more.") }),
       // Facts about the person.
       f("dob", "Date of birth", "mono", { placeholder: datePh() }),
       f("nationality", "Nationality", "select", { placeholder: "Choose a country", options: allCountries() }),
@@ -1605,7 +1610,7 @@
   function whyFor(step, ca) {
     return {
       1: { t: "Why are we asking?", b: "We need to see that the " + orgWord() + " really exists and that its name, number and address all line up. Type these details as they appear on your registration.", p: ["We use these to confirm the " + orgWord() + " exists", "Typing them as they appear on your registration avoids questions later"] },
-      2: { t: "Why are we asking?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trulioo, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
+      2: { t: "Why are we asking?", b: isNonprofit() ? "Anti-money-laundering rules mean the people who run an organization, such as directors or trustees, have to be named and identified, along with whoever signs the agreement. We have to ask for this. We also need to know who is filling out this application, so please add yourself." : "Anti-money-laundering rules mean anyone controlling 25% or more of a business has to be named and identified, along with whoever signs the agreement. We have to ask for this. We also need to know who is filling out this application, so please add yourself, even if you own less than 25%.", p: [(isNonprofit() ? "" : (ca ? "SIN" : "SSN") + " and ") + "ID numbers go straight to Trulioo, our verification partner", "Never stored on Xplor systems, never visible to Xplor staff", "Owners can fill in their own part by link, so you're never blocked"] },
       3: { t: "Why are we asking?", b: "This isn't a credit check. Your answers help us see what a normal day looks like for you.", p: ["Best guesses are expected, and nothing here is a commitment", "Telling us the history now is faster than us finding it later", "None of it changes the rate you pay"] },
       4: { t: "Why are we asking?", b: ca ? "This is the account your payouts are paid into. We ask for proof of it in step 6, then check it after you submit." : "This is the account your payouts are paid into. Trulioo, our verification partner, checks it after you submit, so your payouts go where they should.", p: ["We may take fees, chargebacks and refunds from it", "You can change this account later", "Extra accounts are optional and can be added after approval"] },
       5: { t: "Why are we asking?", b: "Card networks and regulators require these exact questions on every application. If you answer yes to any of them, a person reviews your application.", p: ["Consents shown here are not credit checks", "None of this affects your personal credit score", "You can explain anything in your own words"] },
@@ -1705,7 +1710,7 @@
       why: whyFor(st.step, ca),
       signatoryName, signatoryTitle,
       needRegistration: (ca ? "Your CRA business number, plus the legal name, registered address and registration date as they appear on your registration." : "Your EIN, plus the legal name, registered address and incorporation details as they appear on your registration.") + " You'll also choose your merchant category from a short list.",
-      needIds: "Owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN. For a non-profit or government body, we need each person's title, address and a driver's licence or passport." : "a driver's license or passport and an SSN. For a non-profit or government body, we need each person's title, address and a driver's license or passport.") + (invitesOn() ? " If it's easier, they can fill in their own details." : " You fill this in for everyone, so have it all ready."),
+      needIds: "You, as the person filling out this application, and owners with 25% or more (or directors and trustees, for a non-profit)" + (invitesOn() ? " and whoever signs" : "") + ": their title, " + (ca ? "a driver's licence or passport and a SIN. For a non-profit or government body, we need each person's title, address and a driver's licence or passport." : "a driver's license or passport and an SSN. For a non-profit or government body, we need each person's title, address and a driver's license or passport.") + (invitesOn() ? " If it's easier, they can fill in their own details." : " You fill this in for everyone, so have it all ready."),
       needBank: ca ? "Your institution, transit and account numbers, plus a photo ID for each owner and proof of your bank account." : "Your routing and account numbers, plus a photo ID for each owner and a signed W-9.",
       shellRailNote: isStatus ? "Submitted to our verification partner" : "Step " + progStep + " of 7 · about " + minutesLeft() + " min left",
       remainingLabel: "About " + minutesLeft() + (minutesLeft() === 1 ? " minute" : " minutes") + " left",
@@ -1718,7 +1723,7 @@
       }[st.step],
       stepSubtitle: {
         1: "",
-        2: (isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "We need to know about the people who run the organization, such as directors or trustees, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".") : "We need to know about anyone who owns 25% or more, plus whoever's signing. Add their details here" + (invitesOn() ? ", or send them a link and let them do their own." : ".")) + (isCa() ? "" : " An ITIN is fine for a US tax resident without an SSN."),
+        2: (isSole() ? "As a sole proprietor you're the only owner, so this is just you. We need these details to check who you are." : isNonprofit() ? "Add yourself first, because you're filling out this application. Then add the other people who run the organization, such as directors or trustees" + (invitesOn() ? ". You can also send them a link to fill in their own details." : ".") : "Add yourself first, because you're filling out this application, even if you own less than 25%. Then add everyone else who owns 25% or more" + (invitesOn() ? ". You can also send them a link to fill in their own details." : ".")),
         3: "A few questions about your sales. Rough estimates are absolutely fine, and nothing here changes your rate.",
         4: st.bankSaved && !st.bankEditing ? "This is the account your payouts go to. Once you're approved, you can add more accounts." : "Add the account your payouts should go to. We need every detail before we can save it. Once you're approved, you can add more accounts.",
         5: "Every application includes these. If you answer yes to any of them, a person reviews your application.",
@@ -1740,7 +1745,7 @@
         ? "The shares come to more than 100%. Have another look at each owner's percentage."
         : ownedPct > 75
           ? "Everyone who owns 25% or more is listed. Anyone else owns less than 25%, so we don't need them."
-          : "Add everyone who owns 25% or more.",
+          : "Add yourself, then everyone else who owns 25% or more.",
       ownersIdLabel: solo ? (owners[0].self ? "Your own ID is the only one to check" : "The only ID is in and being checked") : settled === owners.length ? "Every ID is in and being checked" : settled + " of " + owners.length + " IDs in",
       // The status screens name the owners actually entered, never the sample people.
       payoutAccountLabel: st.bankSaved ? st.bankSaved.values.bankNickname + " •••• " + bankLast4(st.bankSaved.values.accountNumber) : a.bankName ? a.bankName + " •••• " + (bankLast4(a.accountNumber) || "4417") : "Not set",
@@ -2572,6 +2577,7 @@
     return html`${isCompany() && v.ownersOver100 && html`<div data-key="s2-total"${ERR.ownership ? html` data-error="1"` : ""}>${errView("ownership")}</div>`}
 <div class="stack" data-key="s2-owners">
   ${v.owners.map((o) => ownerView(o))}
+  ${errView("owners")}
   ${!isSole() && !v.owners.some((o) => o.self) && html`<button type="button" class="add-row" data-key="add-self" data-click="${on(addSelf)}">${icon("user", 16)}${isNonprofit() ? "Add myself as a director or trustee" : "Add myself as an owner"}</button>`}
   ${!isSole() && html`<button type="button" class="add-row" data-key="add-owner" data-click="${on(addOwner)}">${icon("plus", 16)}${addLabel}</button>`}${isSole() ? "" : pin("owner-self-serve")}
 </div>`;
